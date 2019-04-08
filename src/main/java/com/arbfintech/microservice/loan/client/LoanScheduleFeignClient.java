@@ -1,0 +1,17 @@
+package com.arbfintech.microservice.loan.client;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@FeignClient(name = "microservice-schedule")
+@RequestMapping("/schedule")
+public interface LoanScheduleFeignClient {
+
+	
+	
+	@GetMapping("/schedule-item")
+	  public String getScheduleAndScheduleItem(@RequestParam("contractNo") String contractNo);
+	
+}

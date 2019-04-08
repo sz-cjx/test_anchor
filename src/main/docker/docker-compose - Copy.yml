@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  microservice-loan:
+    image: registry.arbfintech.com/microservice/loan
+    ports:
+      - "8201:8201"
+    environment:
+      - spring.profiles.active=develop
+    networks:
+      - arbfintech-network
+
+networks:
+  arbfintech-network:
+    external: true
