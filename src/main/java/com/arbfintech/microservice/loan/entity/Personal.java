@@ -93,13 +93,13 @@ public class Personal {
 	private Boolean homePhoneDoNotCall;
 
 	@Column(length = 6)
-	private Boolean homePhoneUnContactable;
+	private Boolean homePhoneUncontactable;
 
 	@Column(length = 6)
 	private Boolean otherPhoneDoNotCall;
 
 	@Column(length = 6)
-	private Boolean otherPhoneUnContactable;
+	private Boolean otherPhoneUncontactable;
 
 	@Column(length = 6)
 	private Boolean otherPhoneSmsOperational;
@@ -322,14 +322,6 @@ public class Personal {
 		this.homePhoneDoNotCall = homePhoneDoNotCall;
 	}
 
-	public Boolean getHomePhoneUnContactable() {
-		return homePhoneUnContactable;
-	}
-
-	public void setHomePhoneUnContactable(Boolean homePhoneUnContactable) {
-		this.homePhoneUnContactable = homePhoneUnContactable;
-	}
-
 	public Boolean getOtherPhoneDoNotCall() {
 		return otherPhoneDoNotCall;
 	}
@@ -338,12 +330,20 @@ public class Personal {
 		this.otherPhoneDoNotCall = otherPhoneDoNotCall;
 	}
 
-	public Boolean getOtherPhoneUnContactable() {
-		return otherPhoneUnContactable;
+	public Boolean getHomePhoneUncontactable() {
+		return homePhoneUncontactable;
 	}
 
-	public void setOtherPhoneUnContactable(Boolean otherPhoneUnContactable) {
-		this.otherPhoneUnContactable = otherPhoneUnContactable;
+	public void setHomePhoneUncontactable(Boolean homePhoneUncontactable) {
+		this.homePhoneUncontactable = homePhoneUncontactable;
+	}
+
+	public Boolean getOtherPhoneUncontactable() {
+		return otherPhoneUncontactable;
+	}
+
+	public void setOtherPhoneUncontactable(Boolean otherPhoneUncontactable) {
+		this.otherPhoneUncontactable = otherPhoneUncontactable;
 	}
 
 	public Boolean getOtherPhoneSmsOperational() {

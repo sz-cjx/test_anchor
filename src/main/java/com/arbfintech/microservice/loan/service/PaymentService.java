@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @author Richard
+ * @author Wade
  */
 @Service
 public class PaymentService {
@@ -18,7 +18,12 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    public Payment getPaymentByLoanId(Integer loanId){
+    public Payment getDataByLoanId(Integer loanId){
         return paymentRepository.findByLoanId(loanId);
+    }
+
+    public Payment saveData(Payment payment){
+        logger.info("Save the payment Data");
+        return paymentRepository.save(payment);
     }
 }

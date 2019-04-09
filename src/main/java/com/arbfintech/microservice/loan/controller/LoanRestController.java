@@ -66,7 +66,15 @@ public class LoanRestController {
 		return result;
 	}
 
-	@GetMapping("/contractInfo/{contractNo}")
+    @PostMapping("/properties")
+    String updateLoanProperty(@RequestParam (value = "loanId")Integer loanId,
+                              @RequestParam (value = "section")Integer section,
+                              @RequestParam(value ="properties" ) String properties){
+        loanService.saveLoanProperty(loanId, section, properties);
+        return "OK";
+    }
+
+    @GetMapping("/contractInfo/{contractNo}")
 	public String getContractNoInfo(@PathVariable("contractNo") String contractNo){
 		JSONObject resultData = loanService.getContractInfoByContractNo(contractNo);
 		return JSON.toJSONString(resultData);

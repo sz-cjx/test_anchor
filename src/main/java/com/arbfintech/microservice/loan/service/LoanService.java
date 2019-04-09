@@ -26,6 +26,7 @@ import org.slf4j.helpers.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -118,6 +119,84 @@ public class LoanService {
         return result;
     }
 
+    public String saveLoanProperty(Integer loanId, Integer section, String properties){
+        String oldStr;
+        String newStr;
+        switch (section){
+            case 1:
+                Personal personal = personalRepository.findByLoanId(loanId);
+                oldStr = (personal == null ? "" : JSON.toJSONString(personal));
+                newStr = updatePropertyInJSON(oldStr, properties);
+                Personal newPersonal = JSON.parseObject(newStr, Personal.class);
+                newPersonal.setLoanId(loanId);
+
+                String firstName = newPersonal.getFirstName();
+                String middleName = newPersonal.getMiddleName();
+                String lastName = newPersonal.getLastName();
+                String fullName = (StringUtils.isEmpty(firstName) ? "" : firstName) +
+                        (StringUtils.isEmpty(middleName) ? "" : " " + middleName) +
+                        (StringUtils.isEmpty(lastName) ? "" : " " + lastName);
+                newPersonal.setFullName(fullName);
+
+                personalRepository.save(newPersonal);
+                break;
+            case 2:
+                Bank bank = bankRepository.findByLoanId(loanId);
+                oldStr = (bank == null ? "" : JSON.toJSONString(bank));
+                newStr =  updatePropertyInJSON(oldStr, properties);
+                Bank newBank = JSON.parseObject(newStr, Bank.class);
+                newBank.setLoanId(loanId);
+                bankRepository.save(newBank);
+                break;
+            case 3:
+                Employment employment = employmentRepository.findByLoanId(loanId);
+                oldStr = (employment == null ? "" : JSON.toJSONString(employment));
+                newStr =  updatePropertyInJSON(oldStr, properties);
+                Employment newEmployment = JSON.parseObject(newStr, Employment.class);
+                newEmployment.setLoanId(loanId);
+                employmentRepository.save(newEmployment);
+                break;
+            case 4:
+                Payment payment = paymentRepository.findByLoanId(loanId);
+                oldStr = (payment == null ? "" : JSON.toJSONString(payment));
+                newStr =  updatePropertyInJSON(oldStr, properties);
+                Payment newPayment = JSON.parseObject(newStr, Payment.class);
+                newPayment.setLoanId(loanId);
+                paymentRepository.save(newPayment);
+                break;
+            case 5:
+                Document document = documentRepository.findByLoanId(loanId);
+                oldStr = (document == null ? "" : JSON.toJSONString(document));
+                newStr =  updatePropertyInJSON(oldStr, properties);
+                Document newDocument = JSON.parseObject(newStr, Document.class);
+                newDocument.setLoanId(loanId);
+                documentRepository.save(newDocument);
+                break;
+            default:
+                logger.error("invalid section number:{}", section);
+                break;
+        }
+        return "";
+    }
+
+    private String updatePropertyInJSON(String jsonStr, String properties){
+        JSONObject jsonObject;
+        if(StringUtils.isNotEmpty(jsonStr)){
+            jsonObject = JSON.parseObject(jsonStr);
+        }else {
+            jsonObject = new JSONObject();
+        }
+
+        JSONArray jsonArray = JSONArray.parseArray(properties);
+        for(Object o : jsonArray){
+            JSONObject jo = (JSONObject)o;
+            String key = jo.getString("fieldKey");
+            String newValue = jo.getString("fieldValue");
+            jsonObject.put(key, newValue);
+        }
+
+        return JSON.toJSONString(jsonObject);
+    }
     public JSONObject getContractInfoByContractNo(String contractNo) {
         JSONObject resultData = new JSONObject();
         Loan loan = loanRepository.findByContractNo(contractNo);

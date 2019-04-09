@@ -19,9 +19,6 @@ public class Employment {
 	@Column(length = 10)
 	private Integer loanId;
 
-	@Column(length = 32)
-	private String incomeType;
-
 	@Column(length = 10)
 	private Integer payrollType;
 
@@ -52,12 +49,6 @@ public class Employment {
 	@Column(length = 10)
 	private String employerPhoneExt;
 
-	@Column(length = 16)
-	private Long hireDate;
-
-	@Column(length = 10)
-	private String employerType;
-
 	@Column(length = 32)
 	private String position;
 
@@ -65,13 +56,7 @@ public class Employment {
 	private Integer payrollFrequency;
 
 	@Column(length = 16)
-	private Long lastPayDate;
-
-	@Column(length = 16)
 	private Long firstPayDate;
-
-	@Column(length = 16)
-	private Long secondPayDate;
 
 	@Column(length = 32)
 	private String workShift;
@@ -135,14 +120,6 @@ public class Employment {
 
 	public void setLoanId(Integer loanId) {
 		this.loanId = loanId;
-	}
-
-	public String getIncomeType() {
-		return incomeType;
-	}
-
-	public void setIncomeType(String incomeType) {
-		this.incomeType = incomeType;
 	}
 
 	public Integer getPayrollType() {
@@ -225,22 +202,6 @@ public class Employment {
 		this.employerPhoneExt = employerPhoneExt;
 	}
 
-	public Long getHireDate() {
-		return hireDate;
-	}
-
-	public void setHireDate(Long hireDate) {
-		this.hireDate = hireDate;
-	}
-
-	public String getEmployerType() {
-		return employerType;
-	}
-
-	public void setEmployerType(String employerType) {
-		this.employerType = employerType;
-	}
-
 	public String getPosition() {
 		return position;
 	}
@@ -257,28 +218,12 @@ public class Employment {
 		this.payrollFrequency = payrollFrequency;
 	}
 
-	public Long getLastPayDate() {
-		return lastPayDate;
-	}
-
-	public void setLastPayDate(Long lastPayDate) {
-		this.lastPayDate = lastPayDate;
-	}
-
 	public Long getFirstPayDate() {
 		return firstPayDate;
 	}
 
 	public void setFirstPayDate(Long firstPayDate) {
 		this.firstPayDate = firstPayDate;
-	}
-
-	public Long getSecondPayDate() {
-		return secondPayDate;
-	}
-
-	public void setSecondPayDate(Long secondPayDate) {
-		this.secondPayDate = secondPayDate;
 	}
 
 	public String getWorkShift() {
