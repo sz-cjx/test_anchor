@@ -42,6 +42,12 @@ public class LoanRestController {
 	@Autowired
 	private SendLoanService sendLoanService;
 
+    @PostMapping("/newLead")
+    public String saveLoanFromLeads(@RequestBody String leads){
+        loanService.saveLoanFromLead(leads);
+        return null;
+    }
+
 	@GetMapping("/newLoan")
 	public String getNewLoan(@RequestParam("category") Integer category,
 							 @RequestParam("priority") Integer priority,
@@ -81,12 +87,6 @@ public class LoanRestController {
 	public String getConsumerData(@RequestParam("ssns") String ssns){
 		List<Customer> customerData = loanService.getCustomerData(ssns);
 		return JSON.toJSONString(customerData);
-	}
-
-	@PostMapping("/loan_contracts")
-	public String saveLoanContractFromLeads(@RequestBody String leads){
-		loanService.saveLoanFromLead(leads);
-		return null;
 	}
 
 	@GetMapping("/loan_contracts")

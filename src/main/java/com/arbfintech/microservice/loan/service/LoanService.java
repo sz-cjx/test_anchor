@@ -93,7 +93,8 @@ public class LoanService {
 
     public String getNewContractNoOfAgentReview(Integer category, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
-        Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(category, statusList);
+        //Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(category, statusList);
+        Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(category, statusList);
 
         if (loan != null) {
             result = loan.getContractNo();
@@ -516,6 +517,20 @@ public class LoanService {
             Personal personal = loan.getPersonal();
             if(personal != null){
                 personal.setLoanId(loanId);
+
+                String firstName = personal.getFirstName();
+                String middleName = personal.getMiddleName();
+                String lastName = personal.getLastName();
+
+                String fullName = (StringUtils.isEmpty(firstName) ? "" : firstName) +
+                        (StringUtils.isEmpty(middleName) ? "" : " " + middleName) +
+                        (StringUtils.isEmpty(lastName) ? "" : " " + lastName);
+                personal.setFullName(fullName);
+
+                String address2 = personal.getAddress2();
+                String address = personal.getAddress1() + (StringUtils.isEmpty(address2) ? "" : " | " + address2);
+                personal.setAddress(address);
+
                 personalRepository.save(personal);
                 logger.debug("save personal info success.");
             }
@@ -530,11 +545,16 @@ public class LoanService {
             Employment employment = loan.getEmployment();
             if(employment != null){
                 employment.setLoanId(loanId);
+
+                String address2 = employment.getEmployerAddress2();
+                String address = employment.getEmployerAddress1() + (StringUtils.isEmpty(address2) ? "" : " | " + address2);
+                employment.setEmployerAddress(address);
+
                 employmentRepository.save(employment);
                 logger.debug("save employment info success.");
             }
 
-            logger.info("Loan Contract saved.");
+            logger.info("Loan saved success.");
             //timeLineApiService.addLoanStatusChangeTimeline(contractNo, null, LoanStatusEnum.INITIALIZED.getValue(), "");
         } else {
             logger.error("Can't create a contractNo");

@@ -68,28 +68,13 @@ public class Personal {
 	private Double requestPrincipal;
 
 	@Column(length = 32)
-	private String contactTime;
-
-	@Column(length = 32)
 	private String gender;
 
-	@Column(length = 32)
+	@Column(length = 16)
 	private String isMilitary;
-
-	@Column(length = 32)
-	private String isCitizen;
-
-	@Column(length = 32)
-	private String rentOrOwn;
-
-	@Column(length = 32)
-	private String otherOffers;
 
 	@Column(length = 16)
 	private String language;
-
-	@Column(length = 10)
-	private String driverLicenseState;
 
 	@Column(length = 32)
 	private String city;
@@ -273,14 +258,6 @@ public class Personal {
 		this.requestPrincipal = requestPrincipal;
 	}
 
-	public String getContactTime() {
-		return contactTime;
-	}
-
-	public void setContactTime(String contactTime) {
-		this.contactTime = contactTime;
-	}
-
 	public String getGender() {
 		return gender;
 	}
@@ -297,44 +274,12 @@ public class Personal {
 		this.isMilitary = isMilitary;
 	}
 
-	public String getIsCitizen() {
-		return isCitizen;
-	}
-
-	public void setIsCitizen(String isCitizen) {
-		this.isCitizen = isCitizen;
-	}
-
-	public String getRentOrOwn() {
-		return rentOrOwn;
-	}
-
-	public void setRentOrOwn(String rentOrOwn) {
-		this.rentOrOwn = rentOrOwn;
-	}
-
-	public String getOtherOffers() {
-		return otherOffers;
-	}
-
-	public void setOtherOffers(String otherOffers) {
-		this.otherOffers = otherOffers;
-	}
-
 	public String getLanguage() {
 		return language;
 	}
 
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-
-	public String getDriverLicenseState() {
-		return driverLicenseState;
-	}
-
-	public void setDriverLicenseState(String driverLicenseState) {
-		this.driverLicenseState = driverLicenseState;
 	}
 
 	public String getCity() {
