@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.component.core.constant.JsonKeyConst;
+import com.arbfintech.component.core.enumerate.BankAccountTypeEnum;
 import com.arbfintech.component.core.enumerate.LoanStatusEnum;
+import com.arbfintech.component.core.enumerate.PayrollFrequencyEnum;
+import com.arbfintech.component.core.enumerate.PayrollTypeEnum;
 import com.arbfintech.component.core.enumerate.converter.LoanStatusConverter;
 import com.arbfintech.component.core.enumerate.converter.WithdrawnResonConverter;
 import com.arbfintech.component.core.util.BigDecimalUtil;
@@ -101,7 +104,7 @@ public class LoanService {
                 loan.setStatus(newStatus);
                 loan.setLockedOperatorNo(operatorNo);
                 loan.setLockedOperatorName(operatorName);
-                loan.setLockedAt(new Date());
+                loan.setLockedAt(DateUtil.getCurrentTimestamp());
                 loanRepository.save(loan);
 
                 JSONObject additionalObj = new JSONObject();
@@ -443,59 +446,102 @@ public class LoanService {
             if (StringUtils.isNotEmpty(portfolioWebsite)) {
                 jsonObject.put("portfolioWebsite", portfolioWebsite);
             }
-
         }
 
         return jsonObject;
     }
 
 
-    public void saveLoanContractFromLeads(String leads) {
+    public void saveLoanFromLead(String leadStr) {
 
-        Loan loan = JSON.parseObject(leads, Loan.class);
+        JSONObject jsonLeadObject = JSON.parseObject(leadStr);
+        if(jsonLeadObject == null){
+            logger.error("Error happened during parse json data:" + leadStr);
+            return;
+        }
 
-        JSONObject options = oamApiService.getOptions(loan.getPortfolioId());
-        //String contractNo = getContractNo(options);
+        JSONObject jsonBankObj = jsonLeadObject.getJSONObject("bank");
+        if(jsonBankObj != null){
+            String keyBankAccountType = "bankAccountType";
+            String bankAccountTypeVal = jsonBankObj.getString(keyBankAccountType);
+            for(BankAccountTypeEnum type : BankAccountTypeEnum.values()){
+                if(type.getCode().equals(bankAccountTypeVal)){
+                    jsonBankObj.put(keyBankAccountType, type.getValue());
+                    break;
+                }
+            }
+        }
+
+        JSONObject jsonEmpObj = jsonLeadObject.getJSONObject("employment");
+        if(jsonEmpObj != null){
+            String keyPayrollType = "payrollType";
+            String payrollTypeVal = jsonEmpObj.getString(keyPayrollType);
+            for(PayrollTypeEnum type : PayrollTypeEnum.values()){
+                if(type.getCode().equals(payrollTypeVal)){
+                    jsonEmpObj.put(keyPayrollType, type.getValue());
+                    break;
+                }
+            }
+
+            String keyPayrollFrequency = "payrollFrequency";
+            String payrollFrequencyVal = jsonEmpObj.getString(keyPayrollFrequency);
+            for(PayrollFrequencyEnum frequencyEnum : PayrollFrequencyEnum.values()){
+                if(frequencyEnum.getCode().equals(payrollFrequencyVal)){
+                    jsonEmpObj.put(keyPayrollFrequency, frequencyEnum.getValue());
+                    break;
+                }
+            }
+        }
+
+        String newLeadStr = JSON.toJSONString(jsonLeadObject);
+        Loan loan = JSON.parseObject(newLeadStr, Loan.class);
+
         int maxLength = 7;
         String portfolioCode = "IC";
         String year = DateUtil.date2str(new Date(), "yy");
         String flowNumber = businessFeignClient.getSeed(maxLength, portfolioCode, year);
         String contractNo = portfolioCode + year + flowNumber;
-        logger.info("Create loan No:{}", contractNo);
+        logger.info("New Loan No Created: {}", contractNo);
         if (StringUtils.isNotEmpty(contractNo)) {
-            logger.info("save Loan Contract:" + loan.toString());
+            logger.info("Start to save Loan Contract:" + loan.toString());
             loan.setContractNo(contractNo);
             loan.setLeadId(loan.getId());
             loan.setId(null);
             loan.setStatus(LoanStatusEnum.INITIALIZED.getValue());
-            Integer loanId = saveContractOnly(loan);
-            loan.setId(loanId);
+            loan.setCreateTime(DateUtil.getCurrentTimestamp());
+            loan.setUpdateTime(DateUtil.getCurrentTimestamp());
+            loan = loanRepository.save(loan);
 
+            Integer loanId = loan.getId();
             Personal personal = loan.getPersonal();
             if(personal != null){
                 personal.setLoanId(loanId);
                 personalRepository.save(personal);
+                logger.debug("save personal info success.");
             }
 
             Bank bank = loan.getBank();
             if(bank != null){
                 bank.setLoanId(loanId);
                 bankRepository.save(bank);
+                logger.debug("save bank info success.");
             }
 
             Employment employment = loan.getEmployment();
             if(employment != null){
                 employment.setLoanId(loanId);
                 employmentRepository.save(employment);
+                logger.debug("save employment info success.");
             }
 
+            logger.info("Loan Contract saved.");
             //timeLineApiService.addLoanStatusChangeTimeline(contractNo, null, LoanStatusEnum.INITIALIZED.getValue(), "");
         } else {
             logger.error("Can't create a contractNo");
         }
     }
 
-    public Integer saveContractOnly(Loan loan) {
+    public Integer saveLoanOnly(Loan loan) {
         return loanRepository.save(loan).getId();
     }
 

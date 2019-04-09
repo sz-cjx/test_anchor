@@ -13,15 +13,15 @@ public class LoanOverView {
 
 	private String contractNo;
 
-	private Date createTime;
+	private Long createTime;
 
-	private Date updateTime;
+	private Long updateTime;
 
 	private String lockedOperatorNo;
 
 	private String lockedOperatorName;
 
-	private Date lockTime;
+	private Long lockTime;
 
 	private String firstName;
 
@@ -47,19 +47,19 @@ public class LoanOverView {
 		this.contractNo = contractNo;
 	}
 
-	public Date getCreateTime() {
+	public Long getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(Long createTime) {
 		this.createTime = createTime;
 	}
 
-	public Date getUpdateTime() {
+	public Long getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(Date updateTime) {
+	public void setUpdateTime(Long updateTime) {
 		this.updateTime = updateTime;
 	}
 
@@ -79,11 +79,11 @@ public class LoanOverView {
 		this.lockedOperatorName = lockedOperatorName;
 	}
 
-	public Date getLockTime() {
+	public Long getLockTime() {
 		return lockTime;
 	}
 
-	public void setLockTime(Date lockTime) {
+	public void setLockTime(Long lockTime) {
 		this.lockTime = lockTime;
 	}
 

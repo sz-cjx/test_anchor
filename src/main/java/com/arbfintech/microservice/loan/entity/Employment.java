@@ -47,13 +47,13 @@ public class Employment {
 	private String employerZip;
 
 	@Column(length = 32)
-	private Double employerPhone;
+	private String employerPhone;
 
 	@Column(length = 10)
 	private String employerPhoneExt;
 
-	@Column(length = 8)
-	private String hireDate;
+	@Column(length = 16)
+	private Long hireDate;
 
 	@Column(length = 10)
 	private String employerType;
@@ -64,14 +64,14 @@ public class Employment {
 	@Column(length = 10)
 	private Integer payrollFrequency;
 
-	@Column(length = 32)
-	private String lastPayDate;
+	@Column(length = 16)
+	private Long lastPayDate;
 
-	@Column(length = 32)
-	private String firstPayDate;
+	@Column(length = 16)
+	private Long firstPayDate;
 
-	@Column(length = 32)
-	private String secondPayDate;
+	@Column(length = 16)
+	private Long secondPayDate;
 
 	@Column(length = 32)
 	private String workShift;
@@ -107,7 +107,7 @@ public class Employment {
 	private Boolean supervisorPhoneDoNotCall;
 
 	@Column(length = 32)
-	private Boolean supervisorPhoneUnContacable;
+	private Boolean supervisorPhoneUnContactable;
 
 	@Column(length = 6)
 	private Integer paydayMoveDirection;
@@ -209,11 +209,11 @@ public class Employment {
 		this.employerZip = employerZip;
 	}
 
-	public Double getEmployerPhone() {
+	public String getEmployerPhone() {
 		return employerPhone;
 	}
 
-	public void setEmployerPhone(Double employerPhone) {
+	public void setEmployerPhone(String employerPhone) {
 		this.employerPhone = employerPhone;
 	}
 
@@ -225,11 +225,11 @@ public class Employment {
 		this.employerPhoneExt = employerPhoneExt;
 	}
 
-	public String getHireDate() {
+	public Long getHireDate() {
 		return hireDate;
 	}
 
-	public void setHireDate(String hireDate) {
+	public void setHireDate(Long hireDate) {
 		this.hireDate = hireDate;
 	}
 
@@ -257,27 +257,27 @@ public class Employment {
 		this.payrollFrequency = payrollFrequency;
 	}
 
-	public String getLastPayDate() {
+	public Long getLastPayDate() {
 		return lastPayDate;
 	}
 
-	public void setLastPayDate(String lastPayDate) {
+	public void setLastPayDate(Long lastPayDate) {
 		this.lastPayDate = lastPayDate;
 	}
 
-	public String getFirstPayDate() {
+	public Long getFirstPayDate() {
 		return firstPayDate;
 	}
 
-	public void setFirstPayDate(String firstPayDate) {
+	public void setFirstPayDate(Long firstPayDate) {
 		this.firstPayDate = firstPayDate;
 	}
 
-	public String getSecondPayDate() {
+	public Long getSecondPayDate() {
 		return secondPayDate;
 	}
 
-	public void setSecondPayDate(String secondPayDate) {
+	public void setSecondPayDate(Long secondPayDate) {
 		this.secondPayDate = secondPayDate;
 	}
 
@@ -369,12 +369,12 @@ public class Employment {
 		this.supervisorPhoneDoNotCall = supervisorPhoneDoNotCall;
 	}
 
-	public Boolean getSupervisorPhoneUnContacable() {
-		return supervisorPhoneUnContacable;
+	public Boolean getSupervisorPhoneUnContactable() {
+		return supervisorPhoneUnContactable;
 	}
 
-	public void setSupervisorPhoneUnContacable(Boolean supervisorPhoneUnContacable) {
-		this.supervisorPhoneUnContacable = supervisorPhoneUnContacable;
+	public void setSupervisorPhoneUnContactable(Boolean supervisorPhoneUnContactable) {
+		this.supervisorPhoneUnContactable = supervisorPhoneUnContactable;
 	}
 
 	public Integer getPaydayMoveDirection() {

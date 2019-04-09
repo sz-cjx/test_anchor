@@ -31,15 +31,11 @@ public class Loan {
 	@Column(length = 32, unique = true)
 	private String contractNo;
 
-	@Column
-	@Temporal(TemporalType.TIMESTAMP)
-	@CreationTimestamp
-	private Date createTime;
+	@Column(length = 16)
+	private Long createTime;
 
-	@Column
-	@Temporal(TemporalType.TIMESTAMP)
-	@UpdateTimestamp
-	private Date updateTime;
+	@Column(length = 16)
+	private Long updateTime;
 
 	@Column(length = 32)
 	private String lockedOperatorNo;
@@ -47,10 +43,8 @@ public class Loan {
 	@Column(length = 32)
 	private String lockedOperatorName;
 
-	@Column
-	@Temporal(TemporalType.TIMESTAMP)
-	@UpdateTimestamp
-	private Date lockedAt;
+	@Column(length = 16)
+	private Long lockedAt;
 
 	@Column(length = 10)
 	private Integer status;
@@ -123,19 +117,19 @@ public class Loan {
 		this.contractNo = contractNo;
 	}
 
-	public Date getCreateTime() {
+	public Long getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(Long createTime) {
 		this.createTime = createTime;
 	}
 
-	public Date getUpdateTime() {
+	public Long getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(Date updateTime) {
+	public void setUpdateTime(Long updateTime) {
 		this.updateTime = updateTime;
 	}
 
@@ -155,11 +149,11 @@ public class Loan {
 		this.lockedOperatorName = lockedOperatorName;
 	}
 
-	public Date getLockedAt() {
+	public Long getLockedAt() {
 		return lockedAt;
 	}
 
-	public void setLockedAt(Date lockedAt) {
+	public void setLockedAt(Long lockedAt) {
 		this.lockedAt = lockedAt;
 	}
 

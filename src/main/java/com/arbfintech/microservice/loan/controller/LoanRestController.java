@@ -90,7 +90,7 @@ public class LoanRestController {
 
 	@PostMapping("/loan_contracts")
 	public String saveLoanContractFromLeads(@RequestBody String leads){
-		loanService.saveLoanContractFromLeads(leads);
+		loanService.saveLoanFromLead(leads);
 		return null;
 	}
 
@@ -163,20 +163,6 @@ public class LoanRestController {
 		return result;
 	}
 
-
-	@GetMapping("/items")
-	public String getLoanContractItemsByContactId(@RequestParam("loanContractId") int loanId){
-		LOG.info("Start query loan loan items by Id:{}",loanId);
-		String result = "";
-		Payment payment = paymentService.getPaymentByLoanId(loanId);
-		if(payment != null){
-			result = payment.getItems();
-		}
-
-		LOG.info("Find the Loan Data Items" + result);
-		return result;
-	}
-	
 	@GetMapping("/exited_loan_info/{leadId}")
 	public String findExitedLoanInfo(@PathVariable("leadId")Integer leadId) {
 		return loanService.findByLeadId(leadId);
@@ -219,7 +205,7 @@ public class LoanRestController {
 				if (e.getText().equals(status)) {
 					isStatusFound = true;
 					loan.setStatus(e.getValue());
-					loanService.saveContractOnly(loan);
+					loanService.saveLoanOnly(loan);
 				}
 			}
 
