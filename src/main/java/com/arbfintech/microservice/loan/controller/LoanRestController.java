@@ -9,9 +9,7 @@ import com.arbfintech.component.core.system.AjaxResult;
 import com.arbfintech.microservice.loan.entity.Customer;
 import com.arbfintech.microservice.loan.entity.Loan;
 import com.arbfintech.microservice.loan.entity.LoanOverView;
-import com.arbfintech.microservice.loan.entity.Payment;
 import com.arbfintech.microservice.loan.service.LoanService;
-import com.arbfintech.microservice.loan.service.PaymentService;
 import com.arbfintech.microservice.loan.service.SendLoanService;
 import com.arbfintech.microservice.loan.service.TimeLineApiService;
 import org.slf4j.Logger;
@@ -30,7 +28,7 @@ import java.util.List;
  *
  */
 @RestController
-@RequestMapping("/contract")
+@RequestMapping("/loan")
 public class LoanRestController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoanRestController.class);
@@ -40,9 +38,6 @@ public class LoanRestController {
 
 	@Autowired
     private LoanService loanService;
-
-	@Autowired
-	private PaymentService paymentService;
 
 	@Autowired
 	private SendLoanService sendLoanService;
