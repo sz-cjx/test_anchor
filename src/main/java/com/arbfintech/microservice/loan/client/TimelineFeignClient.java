@@ -5,13 +5,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 
-@FeignClient(name = "microservice-timeline")
-@RequestMapping("/timeline")
+@FeignClient(name = "microservice-business")
+@RequestMapping("/business/timeline")
 public interface TimelineFeignClient {
-	
-
-	@GetMapping("/loan-status")
-	public String getLoanStatusByContractNo(@RequestParam("contractNo") String contractNo);
 
 //	@PostMapping("/timelines")
 //	public String addTimeline(@RequestBody String timelineInfo);

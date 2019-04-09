@@ -2,6 +2,7 @@ package com.arbfintech.microservice.loan.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.component.core.enumerate.EventTypeEnum;
+import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,14 @@ public class TimeLineApiService {
 	@Autowired
 	private TimelineFeignClient timelineFeignClient;
 
+
+	@Autowired
+	private LoanStatusFeignClient loanStatusFeignclient;
+
 	public String getLoanStatus(String contractNo) {
 		
 		JSONObject loanStatus=new  JSONObject();
-		String status = timelineFeignClient.getLoanStatusByContractNo(contractNo);
+		String status = loanStatusFeignclient.getLoanStatusByContractNo(contractNo);
 		
 		loanStatus.put("status", status);
 				
@@ -58,7 +63,6 @@ public class TimeLineApiService {
 			timelineObj.put("operatorName", additionalObj.getString("operatorName"));
 			timelineObj.put("operatorNo", additionalObj.getString("operatorNo"));
 		}
-
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(timelineObj));
 	}
 
