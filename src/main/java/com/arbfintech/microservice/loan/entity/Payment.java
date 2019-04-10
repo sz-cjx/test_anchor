@@ -34,14 +34,14 @@ public class Payment {
 	@Column(length = 32)
 	private Integer expeditePayment;
 
-	@Column(length = 32)
-	private Boolean isWaiveAdditionalFee;
+	@Column(length = 8)
+	private Boolean waiveAdditionalFee;
 
 	@Column(length = 32)
-	private Long effectiveDate;
+	private String effectiveDate;
 
-	@Column(length = 32)
-	private Long interestRate;
+	@Column(length = 16)
+	private Double interestRate;
 
 	@Column(length = 32)
 	private Long firstInstallmentDate;
@@ -125,26 +125,26 @@ public class Payment {
 	}
 
 	public Boolean getWaiveAdditionalFee() {
-		return isWaiveAdditionalFee;
+		return waiveAdditionalFee;
 	}
 
 	public void setWaiveAdditionalFee(Boolean waiveAdditionalFee) {
-		isWaiveAdditionalFee = waiveAdditionalFee;
+		this.waiveAdditionalFee = waiveAdditionalFee;
 	}
 
-	public Long getEffectiveDate() {
+	public String getEffectiveDate() {
 		return effectiveDate;
 	}
 
-	public void setEffectiveDate(Long effectiveDate) {
+	public void setEffectiveDate(String effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
 
-	public Long getInterestRate() {
+	public Double getInterestRate() {
 		return interestRate;
 	}
 
-	public void setInterestRate(Long interestRate) {
+	public void setInterestRate(Double interestRate) {
 		this.interestRate = interestRate;
 	}
 
