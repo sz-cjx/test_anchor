@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.loan.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.component.core.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
@@ -40,8 +41,7 @@ public class TimeLineApiService {
 		return timelineFeignClient.getToDoListContractNo(operatorNo, evebtType);
 	}
 
-
-	public String addLoanStatusChangeTimeline(String contractNo, Integer sourceStatus, Integer targetStatus, String additionData){
+	public String addLoanStatusChangeTimeline(Integer sourceStatus, Integer targetStatus, String additionData){
 
 		JSONObject sourceData = new JSONObject();
 		sourceData.put("loanStatus", sourceStatus == null ? "" : sourceStatus);
@@ -50,7 +50,6 @@ public class TimeLineApiService {
 		targetData.put("loanStatus", targetStatus);
 
 		JSONObject timelineObj = new JSONObject();
-		timelineObj.put("contractNo", contractNo);
 		timelineObj.put("eventTime", new Date());
 		timelineObj.put("eventType", EventTypeEnum.UPDATE_LOAN_STATUS.getValue().toString());
 		timelineObj.put("eventDescription", "Loan Status change Operation");
@@ -62,8 +61,44 @@ public class TimeLineApiService {
 			timelineObj.put("note", additionalObj.getString("note"));
 			timelineObj.put("operatorName", additionalObj.getString("operatorName"));
 			timelineObj.put("operatorNo", additionalObj.getString("operatorNo"));
+			timelineObj.put("contractNo", additionalObj.getString("contractNo"));
 		}
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(timelineObj));
 	}
 
+	public String addSaveTimeline(String updateProperties, String additionalData){
+		JSONObject resultOb = new JSONObject();
+
+		String contractNo = "";
+		String note = "";
+		String operatorNo ="";
+		String operatorName = "";
+		Integer loanStatus = 0;
+		if(StringUtils.isNotEmpty(additionalData)){
+			JSONObject additionalObj = JSONObject.parseObject(additionalData);
+			loanStatus = additionalObj.getInteger("loanStatus");
+			note = additionalObj.getString("note");
+			operatorNo = additionalObj.getString("operatorNo");
+			operatorName = additionalObj.getString("operatorName");
+			contractNo = additionalObj.getString("contractNo");
+		}
+
+		JSONObject targetSnapshot = new JSONObject();
+		JSONArray updateArr = JSONArray.parseArray(updateProperties);
+		targetSnapshot.put("updateProperties",updateArr);
+		targetSnapshot.put("status",loanStatus);
+
+		resultOb.put("eventTime", new Date());
+		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
+		resultOb.put("eventDescription", "Save Operation");
+		resultOb.put("targetSnapshot", targetSnapshot);
+		resultOb.put("relationNo", contractNo);
+		resultOb.put("contractNo", contractNo);
+		resultOb.put("note",note);
+		resultOb.put("operatorName", operatorName);
+		resultOb.put("operatorNo", operatorNo);
+		timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+
+		return JSONObject.toJSONString(resultOb);
+	}
 }

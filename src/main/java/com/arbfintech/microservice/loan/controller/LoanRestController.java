@@ -69,8 +69,10 @@ public class LoanRestController {
     @PostMapping("/properties")
     String updateLoanProperty(@RequestParam (value = "loanId")Integer loanId,
                               @RequestParam (value = "section")Integer section,
-                              @RequestParam(value ="properties" ) String properties){
+                              @RequestParam(value ="properties" ) String properties,
+							  @RequestParam(value = "additionalData", required = false) String addictionData){
         loanService.saveLoanProperty(loanId, section, properties);
+        timeLineApiService.addSaveTimeline(properties, addictionData);
         return "OK";
     }
 

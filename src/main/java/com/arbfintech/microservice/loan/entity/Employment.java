@@ -98,13 +98,13 @@ public class Employment {
 	private Boolean employerPhoneDoNotCall;
 
 	@Column(length = 32)
-	private Boolean employerPhoneUnContactable;
+	private Boolean employerPhoneUncontactable;
 
 	@Column(length = 32)
 	private Boolean supervisorPhoneDoNotCall;
 
 	@Column(length = 32)
-	private Boolean supervisorPhoneUnContactable;
+	private Boolean supervisorPhoneUncontactable;
 
 	public Integer getId() {
 		return id;
@@ -298,14 +298,6 @@ public class Employment {
 		this.employerPhoneDoNotCall = employerPhoneDoNotCall;
 	}
 
-	public Boolean getEmployerPhoneUnContactable() {
-		return employerPhoneUnContactable;
-	}
-
-	public void setEmployerPhoneUnContactable(Boolean employerPhoneUnContactable) {
-		this.employerPhoneUnContactable = employerPhoneUnContactable;
-	}
-
 	public Boolean getSupervisorPhoneDoNotCall() {
 		return supervisorPhoneDoNotCall;
 	}
@@ -314,12 +306,20 @@ public class Employment {
 		this.supervisorPhoneDoNotCall = supervisorPhoneDoNotCall;
 	}
 
-	public Boolean getSupervisorPhoneUnContactable() {
-		return supervisorPhoneUnContactable;
+	public Boolean getEmployerPhoneUncontactable() {
+		return employerPhoneUncontactable;
 	}
 
-	public void setSupervisorPhoneUnContactable(Boolean supervisorPhoneUnContactable) {
-		this.supervisorPhoneUnContactable = supervisorPhoneUnContactable;
+	public void setEmployerPhoneUncontactable(Boolean employerPhoneUncontactable) {
+		this.employerPhoneUncontactable = employerPhoneUncontactable;
+	}
+
+	public Boolean getSupervisorPhoneUncontactable() {
+		return supervisorPhoneUncontactable;
+	}
+
+	public void setSupervisorPhoneUncontactable(Boolean supervisorPhoneUncontactable) {
+		this.supervisorPhoneUncontactable = supervisorPhoneUncontactable;
 	}
 
 	public Integer getPaydayMoveDirection() {

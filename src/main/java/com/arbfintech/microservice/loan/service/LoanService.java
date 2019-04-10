@@ -112,7 +112,8 @@ public class LoanService {
                 JSONObject additionalObj = new JSONObject();
                 additionalObj.put("operatorNo", operatorNo);
                 additionalObj.put("operatorName", operatorName);
-                //timeLineApiService.addLoanStatusChangeTimeline(loan.getContractNo(), oldStatus, newStatus, additionalObj.toJSONString());
+                additionalObj.put("contractNo", loan.getContractNo());
+                timeLineApiService.addLoanStatusChangeTimeline(oldStatus, newStatus, additionalObj.toJSONString());
             }
         }
 
