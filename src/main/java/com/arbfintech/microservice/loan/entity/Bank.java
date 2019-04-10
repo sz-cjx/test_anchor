@@ -47,34 +47,34 @@ public class Bank {
 	private String bankSessionId;
 
 	@Column(length = 8)
-	private Boolean isBankNameVerified;
+	private Boolean bankNameVerified;
 
 	@Column(length = 8)
-	private Boolean isBankAccountTypeVerified;
+	private Boolean bankAccountTypeVerified;
 
 	@Column(length = 8)
-	private Boolean isBankRoutingNumberVerified;
+	private Boolean bankRoutingNumberVerified;
 
 	@Column(length = 8)
-	private Boolean isBankAccountNumberVerified;
+	private Boolean bankAccountNumberVerified;
 
 	@Column(length = 8)
-	private Boolean isBankPhoneNumberVerified;
+	private Boolean bankPhoneNumberVerified;
 
 	@Column(length = 8)
-	private Boolean isBankAccountOwnerVerified;
+	private Boolean bankAccountOwnerVerified;
 
 	@Column(length = 8)
-	private Boolean isPrimaryNameInAccount;
+	private Boolean primaryNameInAccount;
 
 	@Column(length = 8)
-	private Boolean isAccountUnlimited;
+	private Boolean accountUnlimited;
 
 	@Column(length = 8)
-	private Boolean isAddressMatched;
+	private Boolean addressMatched;
 
 	@Column(length = 8)
-	private Boolean isAccountException;
+	private Boolean accountException;
 
 	@Column(length = 10)
 	private String recentRequestCode;
@@ -190,83 +190,83 @@ public class Bank {
 	}
 
 	public Boolean getBankNameVerified() {
-		return isBankNameVerified;
+		return bankNameVerified;
 	}
 
 	public void setBankNameVerified(Boolean bankNameVerified) {
-		isBankNameVerified = bankNameVerified;
+		this.bankNameVerified = bankNameVerified;
 	}
 
 	public Boolean getBankAccountTypeVerified() {
-		return isBankAccountTypeVerified;
+		return bankAccountTypeVerified;
 	}
 
 	public void setBankAccountTypeVerified(Boolean bankAccountTypeVerified) {
-		isBankAccountTypeVerified = bankAccountTypeVerified;
+		this.bankAccountTypeVerified = bankAccountTypeVerified;
 	}
 
 	public Boolean getBankRoutingNumberVerified() {
-		return isBankRoutingNumberVerified;
+		return bankRoutingNumberVerified;
 	}
 
 	public void setBankRoutingNumberVerified(Boolean bankRoutingNumberVerified) {
-		isBankRoutingNumberVerified = bankRoutingNumberVerified;
+		this.bankRoutingNumberVerified = bankRoutingNumberVerified;
 	}
 
 	public Boolean getBankAccountNumberVerified() {
-		return isBankAccountNumberVerified;
+		return bankAccountNumberVerified;
 	}
 
 	public void setBankAccountNumberVerified(Boolean bankAccountNumberVerified) {
-		isBankAccountNumberVerified = bankAccountNumberVerified;
+		this.bankAccountNumberVerified = bankAccountNumberVerified;
 	}
 
 	public Boolean getBankPhoneNumberVerified() {
-		return isBankPhoneNumberVerified;
+		return bankPhoneNumberVerified;
 	}
 
 	public void setBankPhoneNumberVerified(Boolean bankPhoneNumberVerified) {
-		isBankPhoneNumberVerified = bankPhoneNumberVerified;
+		this.bankPhoneNumberVerified = bankPhoneNumberVerified;
 	}
 
 	public Boolean getBankAccountOwnerVerified() {
-		return isBankAccountOwnerVerified;
+		return bankAccountOwnerVerified;
 	}
 
 	public void setBankAccountOwnerVerified(Boolean bankAccountOwnerVerified) {
-		isBankAccountOwnerVerified = bankAccountOwnerVerified;
+		this.bankAccountOwnerVerified = bankAccountOwnerVerified;
 	}
 
 	public Boolean getPrimaryNameInAccount() {
-		return isPrimaryNameInAccount;
+		return primaryNameInAccount;
 	}
 
 	public void setPrimaryNameInAccount(Boolean primaryNameInAccount) {
-		isPrimaryNameInAccount = primaryNameInAccount;
+		this.primaryNameInAccount = primaryNameInAccount;
 	}
 
 	public Boolean getAccountUnlimited() {
-		return isAccountUnlimited;
+		return accountUnlimited;
 	}
 
 	public void setAccountUnlimited(Boolean accountUnlimited) {
-		isAccountUnlimited = accountUnlimited;
+		this.accountUnlimited = accountUnlimited;
 	}
 
 	public Boolean getAddressMatched() {
-		return isAddressMatched;
+		return addressMatched;
 	}
 
 	public void setAddressMatched(Boolean addressMatched) {
-		isAddressMatched = addressMatched;
+		this.addressMatched = addressMatched;
 	}
 
 	public Boolean getAccountException() {
-		return isAccountException;
+		return accountException;
 	}
 
 	public void setAccountException(Boolean accountException) {
-		isAccountException = accountException;
+		this.accountException = accountException;
 	}
 
 	public String getRecentRequestCode() {

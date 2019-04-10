@@ -122,6 +122,7 @@ public class LoanService {
     public String saveLoanProperty(Integer loanId, Integer section, String properties){
         String oldStr;
         String newStr;
+        logger.info("start to save property: " + properties);
         switch (section){
             case 1:
                 Personal personal = personalRepository.findByLoanId(loanId);
@@ -143,7 +144,7 @@ public class LoanService {
             case 2:
                 Bank bank = bankRepository.findByLoanId(loanId);
                 oldStr = (bank == null ? "" : JSON.toJSONString(bank));
-                newStr =  updatePropertyInJSON(oldStr, properties);
+                newStr = updatePropertyInJSON(oldStr, properties);
                 Bank newBank = JSON.parseObject(newStr, Bank.class);
                 newBank.setLoanId(loanId);
                 bankRepository.save(newBank);
@@ -195,6 +196,7 @@ public class LoanService {
             jsonObject.put(key, newValue);
         }
 
+        logger.info("Update the attribute in Object: " + JSON.toJSONString(jsonObject));
         return JSON.toJSONString(jsonObject);
     }
     public JSONObject getContractInfoByContractNo(String contractNo) {

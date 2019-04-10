@@ -55,8 +55,20 @@ public class Employment {
 	@Column(length = 10)
 	private Integer payrollFrequency;
 
-	@Column(length = 16)
-	private Long firstPayDate;
+	@Column(length = 32)
+	private String firstPayDate;
+
+	@Column(length = 6)
+	private Integer paydayMoveDirection;
+
+	@Column(length = 10)
+	private String firstPayday;
+
+	@Column(length = 10)
+	private String secondPayday;
+
+	@Column(length = 10)
+	private String monthlyPayday;
 
 	@Column(length = 32)
 	private String workShift;
@@ -93,18 +105,6 @@ public class Employment {
 
 	@Column(length = 32)
 	private Boolean supervisorPhoneUnContactable;
-
-	@Column(length = 6)
-	private Integer paydayMoveDirection;
-
-	@Column(length = 10)
-	private String firstPayday;
-
-	@Column(length = 10)
-	private String secondPayday;
-
-	@Column(length = 10)
-	private String monthlyPayday;
 
 	public Integer getId() {
 		return id;
@@ -218,11 +218,11 @@ public class Employment {
 		this.payrollFrequency = payrollFrequency;
 	}
 
-	public Long getFirstPayDate() {
+	public String getFirstPayDate() {
 		return firstPayDate;
 	}
 
-	public void setFirstPayDate(Long firstPayDate) {
+	public void setFirstPayDate(String firstPayDate) {
 		this.firstPayDate = firstPayDate;
 	}
 
