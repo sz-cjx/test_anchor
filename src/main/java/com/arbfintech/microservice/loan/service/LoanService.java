@@ -120,64 +120,78 @@ public class LoanService {
         return result;
     }
 
-    public String saveLoanProperty(Integer loanId, Integer section, String properties){
+    public String saveLoanProperty(Integer loanId, String section, String properties){
         String oldStr;
         String newStr;
-        logger.info("start to save property: " + properties);
-        switch (section){
-            case 1:
-                Personal personal = personalRepository.findByLoanId(loanId);
-                oldStr = (personal == null ? "" : JSON.toJSONString(personal));
-                newStr = updatePropertyInJSON(oldStr, properties);
-                Personal newPersonal = JSON.parseObject(newStr, Personal.class);
-                newPersonal.setLoanId(loanId);
+        logger.info("start to save (section:{}) property:{} " ,section , properties);
 
-                String firstName = newPersonal.getFirstName();
-                String middleName = newPersonal.getMiddleName();
-                String lastName = newPersonal.getLastName();
-                String fullName = (StringUtils.isEmpty(firstName) ? "" : firstName) +
-                        (StringUtils.isEmpty(middleName) ? "" : " " + middleName) +
-                        (StringUtils.isEmpty(lastName) ? "" : " " + lastName);
-                newPersonal.setFullName(fullName);
-
-                personalRepository.save(newPersonal);
-                break;
-            case 2:
-                Bank bank = bankRepository.findByLoanId(loanId);
-                oldStr = (bank == null ? "" : JSON.toJSONString(bank));
-                newStr = updatePropertyInJSON(oldStr, properties);
-                Bank newBank = JSON.parseObject(newStr, Bank.class);
-                newBank.setLoanId(loanId);
-                bankRepository.save(newBank);
-                break;
-            case 3:
-                Employment employment = employmentRepository.findByLoanId(loanId);
-                oldStr = (employment == null ? "" : JSON.toJSONString(employment));
-                newStr =  updatePropertyInJSON(oldStr, properties);
-                Employment newEmployment = JSON.parseObject(newStr, Employment.class);
-                newEmployment.setLoanId(loanId);
-                employmentRepository.save(newEmployment);
-                break;
-            case 4:
-                Payment payment = paymentRepository.findByLoanId(loanId);
-                oldStr = (payment == null ? "" : JSON.toJSONString(payment));
-                newStr =  updatePropertyInJSON(oldStr, properties);
-                Payment newPayment = JSON.parseObject(newStr, Payment.class);
-                newPayment.setLoanId(loanId);
-                paymentRepository.save(newPayment);
-                break;
-            case 5:
-                Document document = documentRepository.findByLoanId(loanId);
-                oldStr = (document == null ? "" : JSON.toJSONString(document));
-                newStr =  updatePropertyInJSON(oldStr, properties);
-                Document newDocument = JSON.parseObject(newStr, Document.class);
-                newDocument.setLoanId(loanId);
-                documentRepository.save(newDocument);
-                break;
-            default:
-                logger.error("invalid section number:{}", section);
-                break;
+        if(StringUtils.isEmpty(section) || StringUtils.isEmpty(properties)){
+            logger.error("Empty parameter for (section:{}) property:{}",section , properties);
+            return "";
         }
+
+        String[] sectionArray = section.split(",");
+        for(String sectionNumber : sectionArray){
+            switch (sectionNumber){
+                case "1":
+                    Personal personal = personalRepository.findByLoanId(loanId);
+                    oldStr = (personal == null ? "" : JSON.toJSONString(personal));
+                    newStr = updatePropertyInJSON(oldStr, properties);
+                    Personal newPersonal = JSON.parseObject(newStr, Personal.class);
+                    newPersonal.setLoanId(loanId);
+
+                    String firstName = newPersonal.getFirstName();
+                    String middleName = newPersonal.getMiddleName();
+                    String lastName = newPersonal.getLastName();
+                    String fullName = (StringUtils.isEmpty(firstName) ? "" : firstName) +
+                            (StringUtils.isEmpty(middleName) ? "" : " " + middleName) +
+                            (StringUtils.isEmpty(lastName) ? "" : " " + lastName);
+                    newPersonal.setFullName(fullName);
+                    logger.info("Save personal:" + JSON.toJSONString(newPersonal));
+                    personalRepository.save(newPersonal);
+                    break;
+                case "2":
+                    Bank bank = bankRepository.findByLoanId(loanId);
+                    oldStr = (bank == null ? "" : JSON.toJSONString(bank));
+                    newStr = updatePropertyInJSON(oldStr, properties);
+                    Bank newBank = JSON.parseObject(newStr, Bank.class);
+                    newBank.setLoanId(loanId);
+                    logger.info("Save bank:" + JSON.toJSONString(newBank));
+                    bankRepository.save(newBank);
+                    break;
+                case "3":
+                    Employment employment = employmentRepository.findByLoanId(loanId);
+                    oldStr = (employment == null ? "" : JSON.toJSONString(employment));
+                    newStr =  updatePropertyInJSON(oldStr, properties);
+                    Employment newEmployment = JSON.parseObject(newStr, Employment.class);
+                    newEmployment.setLoanId(loanId);
+                    logger.info("Save employ:" + JSON.toJSONString(newEmployment));
+                    employmentRepository.save(newEmployment);
+                    break;
+                case "4":
+                    Payment payment = paymentRepository.findByLoanId(loanId);
+                    oldStr = (payment == null ? "" : JSON.toJSONString(payment));
+                    newStr =  updatePropertyInJSON(oldStr, properties);
+                    Payment newPayment = JSON.parseObject(newStr, Payment.class);
+                    newPayment.setLoanId(loanId);
+                    logger.info("Save payment:" + JSON.toJSONString(newPayment));
+                    paymentRepository.save(newPayment);
+                    break;
+                case "5":
+                    Document document = documentRepository.findByLoanId(loanId);
+                    oldStr = (document == null ? "" : JSON.toJSONString(document));
+                    newStr =  updatePropertyInJSON(oldStr, properties);
+                    Document newDocument = JSON.parseObject(newStr, Document.class);
+                    newDocument.setLoanId(loanId);
+                    logger.info("Save document:" + JSON.toJSONString(newDocument));
+                    documentRepository.save(newDocument);
+                    break;
+                default:
+                    logger.error("invalid section number:{}", sectionNumber);
+                    break;
+            }
+        }
+
         return "";
     }
 
@@ -196,8 +210,6 @@ public class LoanService {
             String newValue = jo.getString("fieldValue");
             jsonObject.put(key, newValue);
         }
-
-        logger.info("Update the attribute in Object: " + JSON.toJSONString(jsonObject));
         return JSON.toJSONString(jsonObject);
     }
     public JSONObject getContractInfoByContractNo(String contractNo) {

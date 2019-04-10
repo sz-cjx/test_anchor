@@ -68,7 +68,7 @@ public class LoanRestController {
 
     @PostMapping("/properties")
     String updateLoanProperty(@RequestParam (value = "loanId")Integer loanId,
-                              @RequestParam (value = "section")Integer section,
+                              @RequestParam (value = "section")String section,
                               @RequestParam(value ="properties" ) String properties,
 							  @RequestParam(value = "additionalData", required = false) String addictionData){
         loanService.saveLoanProperty(loanId, section, properties);
