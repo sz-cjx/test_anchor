@@ -22,6 +22,12 @@ public class Bank {
 	@Column(length = 32)
 	private String bankName;
 
+	@Column(length = 6)
+	private String verifiedBy;
+
+	@Column(length = 16)
+	private String verifiedOn;
+
 	@Column(length = 32)
 	private String bankPhone;
 
@@ -115,6 +121,22 @@ public class Bank {
 
 	public void setLoanId(Integer loanId) {
 		this.loanId = loanId;
+	}
+
+	public String getVerifiedBy() {
+		return verifiedBy;
+	}
+
+	public void setVerifiedBy(String verifiedBy) {
+		this.verifiedBy = verifiedBy;
+	}
+
+	public String getVerifiedOn() {
+		return verifiedOn;
+	}
+
+	public void setVerifiedOn(String verifiedOn) {
+		this.verifiedOn = verifiedOn;
 	}
 
 	public String getBankName() {
