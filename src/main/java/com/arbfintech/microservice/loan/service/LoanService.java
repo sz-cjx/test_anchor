@@ -827,7 +827,7 @@ public class LoanService {
 
         Date start = new Date(Long.parseLong(startTime));
         Date end = new Date(Long.parseLong(endTime));
-        List<Loan> withdrawnLoancs = loanRepository.countWithDrawnloans(start, end);
+        List<Loan> withdrawnLoancs = loanRepository.countWithDrawnloans(start.getTime(), end.getTime());
 
 
         for (Loan contract : withdrawnLoancs) {
