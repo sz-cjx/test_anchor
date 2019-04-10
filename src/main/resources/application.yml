@@ -25,11 +25,15 @@ feign:
       microservice-timeline:
         connectTimeout: 600000
         readTimeout: 600000
+      microservice-business:
+        connectTimeout: 600000
+        readTimeout: 600000
 spring:
   application:
-    name: ${arb.service.name}  
+    name: ${arb.service.name}
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://${arb.database.url}/test_contract?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     url: jdbc:mysql://${arb.database.url}/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     username: ${arb.database.username}
     password: ${arb.database.password}

@@ -802,10 +802,15 @@ public class LoanService {
 
         if (contractNos != null) {
             for (String contractNo : contractNos) {
-                JSONObject contractInfo = getFormedContractDataByContactNo(contractNo);
-                if (contractInfo != null) {
-                    contractInfo.put("eventType", eventType);
-                    toDoList.add(contractInfo);
+
+                Loan loan = getLoanByContactNo(contractNo);
+
+                if (loan!=null) {
+                    JSONObject contractInfo = getFormedLoanDataById(loan.getId());
+                    if (contractInfo != null) {
+                        contractInfo.put("eventType", eventType);
+                        toDoList.add(contractInfo);
+                    }
                 }
             }
         }
