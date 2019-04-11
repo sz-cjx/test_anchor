@@ -16,7 +16,6 @@ import com.arbfintech.component.core.util.DateUtil;
 import com.arbfintech.component.core.util.EnumUtil;
 import com.arbfintech.component.core.util.StringUtil;
 import com.arbfintech.microservice.loan.client.BusinessFeignClient;
-import com.arbfintech.microservice.loan.client.MetadataFeignClient;
 import com.arbfintech.microservice.loan.entity.*;
 import com.arbfintech.microservice.loan.repository.*;
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +25,6 @@ import org.slf4j.helpers.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -61,9 +59,6 @@ public class LoanService {
     private DocumentRepository documentRepository;
 
     @Autowired
-    private OamApiService oamApiService;
-
-    @Autowired
     private TimeLineApiService timeLineApiService;
 
     @Autowired
@@ -74,9 +69,6 @@ public class LoanService {
 
     @Autowired
     private TransactionItemApiService transactionItemApiService;
-
-    @Autowired
-    private MetadataFeignClient metadataFeignClient;
 
     @Autowired
     private BusinessFeignClient businessFeignClient;
@@ -425,6 +417,37 @@ public class LoanService {
         String jsonStr = JSON.toJSONString(loan);
         JSONObject jsonObject = JSONObject.parseObject(jsonStr);
 
+        //set personal info
+        Personal personal = personalRepository.findByLoanId(loanId);
+        if(personal != null){
+            fillContractAttr(jsonObject, "fullName", personal.getFullName());
+            fillContractAttr(jsonObject, "address", personal.getAddress());
+            fillContractAttr(jsonObject, "city", personal.getCity());
+            fillContractAttr(jsonObject, "state", personal.getState());
+            fillContractAttr(jsonObject, "zipCode", personal.getZip());
+            fillContractAttr(jsonObject, "homePhone", personal.getHomePhone());
+            fillContractAttr(jsonObject, "email", personal.getEmail());
+            fillContractAttr(jsonObject, "otherPhone", personal.getMobilePhone());
+        }
+
+        Bank bank = bankRepository.findByLoanId(loanId);
+        if(bank != null){
+            jsonObject.put("bankAvailableBalance", StringUtil.toCurrency(bank.getBankAvailableBalance()));
+            fillContractAttr(jsonObject, "bankName", bank.getBankName());
+            fillContractAttr(jsonObject, "bankRoutingNumber", bank.getBankRoutingNo());
+            fillContractAttr(jsonObject, "bankAccount", bank.getBankAccountNo());
+        }
+
+        Document document = documentRepository.findByLoanId(loanId);
+        String keyDocumentSignatureTime = "documentSignatureTime";
+        if(document != null && document.getDocumentSignatureTime() != 0L){
+            Date date = new Date(document.getDocumentSignatureTime());
+            jsonObject.put(keyDocumentSignatureTime, DateUtil.date2str(date));
+        }else {
+            jsonObject.put(keyDocumentSignatureTime, DateUtil.date2str(new Date()));
+        }
+
+
         // set loan items
         Payment payment = paymentRepository.findByLoanId(loanId);
         if(payment != null){
@@ -448,42 +471,44 @@ public class LoanService {
                 }
             }
 
-            jsonObject.put("paymentPlanPrincipal", StringUtil.toCurrency(payment.getTotalPrincipal()));
-            jsonObject.put("summaryTotalFinanceFee", StringUtil.toCurrency(payment.getTotalInterest()));
-            jsonObject.put("summaryTotalPaymentAmount", StringUtil.toCurrency(payment.getTotalAmount()));
-            jsonObject.put("summaryRegularInstallment", StringUtil.toCurrency(payment.getRegularAmount()));
-            jsonObject.put("summaryAPR", payment.getAnnualPercentageRate() + "%");
+            fillContractAttr(jsonObject, "paymentEffectiveDate", payment.getEffectiveDate());
 
             DecimalFormat df = new DecimalFormat("#.00");
             double interestRate = payment.getInterestRate() * 100;
             String newRateVal = df.format(interestRate) + "%";
             jsonObject.put("paymentInterestRate", newRateVal);
+
+            double apr = payment.getAnnualPercentageRate() * 100;
+            String newAPR = df.format(apr) + "%";
+            jsonObject.put("summaryAPR",newAPR);
+
+            jsonObject.put("paymentPlanPrincipal", StringUtil.toCurrency(payment.getTotalPrincipal()));
+            jsonObject.put("summaryTotalFinanceFee", StringUtil.toCurrency(payment.getTotalInterest()));
+            jsonObject.put("summaryTotalPaymentAmount", StringUtil.toCurrency(payment.getTotalAmount()));
+            jsonObject.put("summaryRegularInstallment", StringUtil.toCurrency(payment.getRegularAmount()));
         }
 
-        Bank bank = bankRepository.findByLoanId(loanId);
-        if(bank != null){
-            jsonObject.put("bankAvailableBalance", StringUtil.toCurrency(bank.getBankAvailableBalance()));
-        }
+        //String portfolioStr = metadataFeignClient.getPortfolioById(portfolioId);
+        //logger.info("get portfolio information: " + portfolioStr);
+        //if (StringUtils.isNotEmpty(portfolioStr)) {
+            //Portfolio portfolio = JSONObject.parseObject(portfolioStr, Portfolio.class);
+        // this data is only for test
+        Portfolio portfolio = new Portfolio();
+        portfolio.setPortfolioName("inbox credit");
+        portfolio.setDisplayName("Inbox Credit");
+        portfolio.setAddress("Inbox Address");
+        portfolio.setCity("Norward");
+        portfolio.setState("AO");
+        portfolio.setZip("0303033");
+        portfolio.setLateFee(new BigDecimal(556.33));
+        portfolio.setTribeName("Tribe");
+        portfolio.setEmail("a@b.com");
+        portfolio.setTelephone("1223333");
+        portfolio.setNsfFee(new BigDecimal(3333.55));
+        portfolio.setFax("233322");
+        portfolio.setWebsite("http:aaa.com");
 
-        Document document = documentRepository.findByLoanId(loanId);
-        if(document != null){
-            String keyDocumentSignatureTime = "documentSignatureTime";
-            if (StringUtils.isEmpty(jsonObject.getString(keyDocumentSignatureTime))) {
-                jsonObject.put(keyDocumentSignatureTime, DateUtil.date2str(new Date()));
-            }else {
-                if(document.getDocumentSignatureTime() != 0L){
-                    Date date = new Date(document.getDocumentSignatureTime());
-                    jsonObject.put(keyDocumentSignatureTime, DateUtil.date2str(date));
-                }
-            }
-        }
-
-        String portfolioStr = metadataFeignClient.getPortfolioById(portfolioId);
-        logger.info("get portfolio information: " + portfolioStr);
-        if (StringUtils.isNotEmpty(portfolioStr)) {
-            Portfolio portfolio = JSONObject.parseObject(portfolioStr, Portfolio.class);
-
-            String portfolioName = portfolio.getPortfolioName();
+        String portfolioName = portfolio.getPortfolioName();
             if (StringUtils.isNotEmpty(portfolioName)) {
                 jsonObject.put("portfolioName", portfolioName);
             }
@@ -541,9 +566,17 @@ public class LoanService {
             if (StringUtils.isNotEmpty(portfolioWebsite)) {
                 jsonObject.put("portfolioWebsite", portfolioWebsite);
             }
-        }
+        //}
 
         return jsonObject;
+    }
+
+    private void fillContractAttr(JSONObject jsonObject, String key, String value){
+        if(StringUtils.isNotEmpty(value)){
+            jsonObject.put(key, value);
+        }else {
+            jsonObject.put(key, "");
+        }
     }
 
 
@@ -605,9 +638,10 @@ public class LoanService {
             loan.setStatus(LoanStatusEnum.INITIALIZED.getValue());
             loan.setCreateTime(DateUtil.getCurrentTimestamp());
             loan.setUpdateTime(DateUtil.getCurrentTimestamp());
-            loan = loanRepository.save(loan);
+            Loan dbLoan = loanRepository.save(loan);
+            Integer loanId = dbLoan.getId();
+            loan.setId(loanId);
 
-            Integer loanId = loan.getId();
             Personal personal = loan.getPersonal();
             if(personal != null){
                 personal.setLoanId(loanId);
