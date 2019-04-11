@@ -440,7 +440,7 @@ public class LoanService {
 
         Document document = documentRepository.findByLoanId(loanId);
         String keyDocumentSignatureTime = "documentSignatureTime";
-        if(document != null && document.getDocumentSignatureTime() != 0L){
+        if(document != null && document.getDocumentSignatureTime() != null){
             Date date = new Date(document.getDocumentSignatureTime());
             jsonObject.put(keyDocumentSignatureTime, DateUtil.date2str(date));
         }else {

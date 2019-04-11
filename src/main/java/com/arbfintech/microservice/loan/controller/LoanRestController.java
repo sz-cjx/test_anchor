@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.component.core.enumerate.LoanStatusEnum;
 import com.arbfintech.component.core.message.RabbitMQMessage;
-import com.arbfintech.component.core.system.AjaxResult;
 import com.arbfintech.microservice.loan.entity.Customer;
 import com.arbfintech.microservice.loan.entity.Loan;
 import com.arbfintech.microservice.loan.entity.LoanOverView;
@@ -196,10 +195,9 @@ public class LoanRestController {
 		return loanService.countContractByLeadIdAndStatus(leadIdsArray, status);
 	}
 
-
-	@PostMapping("/status")
-	public String updateContractStatus(@RequestParam(value = "contractNo") String contractNo,
-									   @RequestParam(value = "status") String status) {
+	@PostMapping("/loan-status")
+	public String updateLoanStatus(@RequestParam(value = "contractNo") String contractNo,
+								   @RequestParam(value = "status") String status){
 
 		Loan loan = loanService.getLoanByContactNo(contractNo);
 
@@ -216,13 +214,13 @@ public class LoanRestController {
 
 			if(isStatusFound){
 				LOG.info("Update Loan status to ：{} for loan: {}", status, contractNo);
-				return loan.toString();
+				return "OK";
 			}else {
 				LOG.error("Invalid status ：{}", status);
-				return AjaxResult.failure();
+				return "NOK";
 			}
 		}else{
-			return AjaxResult.failure();
+			return "NOK";
 		}
 	}
 

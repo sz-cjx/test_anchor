@@ -92,7 +92,7 @@ public class Bank {
 	private String newRequestCode;
 
 	@Column(length = 32)
-	private Double newRequestCodeStatus;
+	private String newRequestCodeStatus;
 
 	@Column(length = 32)
 	private String bankException;
@@ -315,11 +315,11 @@ public class Bank {
 		this.newRequestCode = newRequestCode;
 	}
 
-	public Double getNewRequestCodeStatus() {
+	public String getNewRequestCodeStatus() {
 		return newRequestCodeStatus;
 	}
 
-	public void setNewRequestCodeStatus(Double newRequestCodeStatus) {
+	public void setNewRequestCodeStatus(String newRequestCodeStatus) {
 		this.newRequestCodeStatus = newRequestCodeStatus;
 	}
 

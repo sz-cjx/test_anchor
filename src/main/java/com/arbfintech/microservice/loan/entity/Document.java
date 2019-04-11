@@ -31,22 +31,22 @@ public class Document {
 	@Column(length = 32)
 	private Long documentSignatureTime;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String documentSignerName;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String documentUrl;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String documentImgUrl;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String certificateUrl;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String certificateImgUrl;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String previewUrl;
 
 	public Integer getId() {
