@@ -25,13 +25,13 @@ public class Employment {
 	@Column(length = 32)
 	private String employerName;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String employerAddress1;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String employerAddress2;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String employerAddress;
 
 	@Column(length = 32)

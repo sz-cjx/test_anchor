@@ -19,7 +19,7 @@ public class Bank {
 	@Column(length = 10)
 	private Integer loanId;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String bankName;
 
 	@Column(length = 6)

@@ -40,13 +40,13 @@ public class Personal {
 	@Column(length = 32)
 	private String driverLicenseNo;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String address1;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String address2;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String address;
 
 	@Column(length = 10)
@@ -58,7 +58,7 @@ public class Personal {
 	@Column(length = 32)
 	private String mobilePhone;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String email;
 
 	@Column(length = 32)
