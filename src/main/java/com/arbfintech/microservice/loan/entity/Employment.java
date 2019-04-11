@@ -22,7 +22,7 @@ public class Employment {
 	@Column(length = 10)
 	private Integer payrollType;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String employerName;
 
 	@Column(length = 255)

@@ -16,7 +16,7 @@ eureka:
 feign:
   client:
     config:
-      microservice-schedule:
+      microservice-payment:
         connectTimeout: 600000
         readTimeout: 600000
       microservice-transaction:

@@ -5,11 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "microservice-schedule")
-@RequestMapping("/schedule")
+@FeignClient(name = "microservice-payment")
+@RequestMapping("/payment")
 public interface LoanScheduleFeignClient {
 
-	
 	
 	@GetMapping("/schedule-item")
 	  public String getScheduleAndScheduleItem(@RequestParam("contractNo") String contractNo);
