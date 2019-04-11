@@ -31,10 +31,9 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
 
     List<Loan> findAllByStatusAndCreateTimeAfter(int status, Date recentDays);
 
-
-    @Query(value="SELECT * FROM loan_contract where withdrawn_code!='' AND update_time BETWEEN ?1 AND ?2",nativeQuery = true)
+    @Query(value="SELECT * FROM loan where withdrawn_code!='' AND update_time BETWEEN ?1 AND ?2",nativeQuery = true)
     public List<Loan> countWithDrawnloans(long startRecieveTime, long endReceiveTime);
 
-    @Query(value="SELECT * FROM loan_contract where status=?1 and lead_id in (?2) ",nativeQuery = true)
+    @Query(value="SELECT * FROM loan where status=?1 and lead_id in (?2) ",nativeQuery = true)
     public List<Loan> getLoanByStatusAndLeadId(Integer status, List<Integer> leadId);
 }
