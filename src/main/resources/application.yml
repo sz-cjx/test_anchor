@@ -1,0 +1,104 @@
+#自定义配置
+arb:
+  service:
+    name: microservice-loan
+    port: 8201
+
+server:
+  max-http-header-size: 10240000
+  port: ${arb.service.port}
+eureka:
+  instance:
+    hostname: ${arb.service.name}
+  client:
+    service-url:
+      defaultZone: http://${arb.eureka.url}:8901/eureka/
+feign:
+  client:
+    config:
+      microservice-payment:
+        connectTimeout: 600000
+        readTimeout: 600000
+      microservice-transaction:
+        connectTimeout: 600000
+        readTimeout: 600000
+      microservice-timeline:
+        connectTimeout: 600000
+        readTimeout: 600000
+      microservice-business:
+        connectTimeout: 600000
+        readTimeout: 600000
+spring:
+  application:
+    name: ${arb.service.name}
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://${arb.database.url}/test_contract?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+    url: jdbc:mysql://${arb.database.url}/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+    username: ${arb.database.username}
+    password: ${arb.database.password}
+    test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
+    test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
+    time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+  http:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 256Mb
+      max-request-size: 256Mb
+  jpa:
+    database: mysql
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: false
+  rabbitmq:
+    host: ${arb.rabbitmq.host}
+    port: ${arb.rabbitmq.port}
+    username: ${arb.rabbitmq.username}
+    password: ${arb.rabbitmq.password}
+    publisher-confirms: true
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+logging:
+  config: classpath:log4j2.xml
+---
+spring:
+  profiles: release
+arb:
+  eureka:
+    url: china-dev.vertical.arbcalls.com
+  database:
+    url: china-dev.vertical.arbcalls.com
+    username: root
+    password: arbfintech
+---
+spring:
+  profiles: develop
+arb:
+  eureka:
+    url: develop.arbfintech.com
+  database:
+    url: database.arbfintech.com
+    username: root
+    password: arbfintech
+---
+spring:
+  profiles: debug
+arb:
+  eureka:
+    url: 192.168.0.100
+  database:
+    url: 192.168.0.100
+    username: root
+    password: Arbfintech@123
+  rabbitmq:
+    host: 192.168.0.100
+    port: 5672
+    username: Arbfintech
+    password: Arbfintech

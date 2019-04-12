@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="3" strict="true" schema="Log4J-V2.7.xsd">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%highlight{%d{yyyy-MM-dd-'T'HH:mm:ss.SSSZ} | %sn | %T | %-15t | %-5p | %c | %m%n}"/>
+        </Console>
+        <RollingFile name="ARB_TRACE_LOG" fileName=".logs/arb_panda_trace0_0.log"
+                     filePattern="arb_panda_trace0_%i.log">
+            <ThresholdFilter level="off" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd-'T'HH:mm:ss.SSSZ} | %sn | %T | %-15t | %-5p | %c | %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="49"/>
+        </RollingFile>
+        <RollingFile name="ARB_LOG" fileName=".logs/arb_panda_activity0_0.log"
+                     filePattern="arb_panda_activity0_%i.log">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%highlight{%d{yyyy-MM-dd-'T'HH:mm:ss.SSSZ} | %sn | %T | %-15t | %-5p | %c | %m%n}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="49"/>
+        </RollingFile>
+        <RollingFile name="ARB_ERROR_LOG" fileName=".logs/arb_panda_error0_0.log"
+                     filePattern="arb_panda_error0_%i.log">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd-'T'HH:mm:ss.SSSZ} | %sn | %T | %-15t | %-5p | %c | %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="49"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="ARB_LOG"/>-->
+            <!--<AppenderRef ref="ARB_TRACE_LOG"/>-->
+            <!--<AppenderRef ref="ARB_ERROR_LOG"/>-->
+        </Root>
+        <logger name="com.arbfintech.microservice.loan" level="info"/>
+    </Loggers>
+</Configuration>
