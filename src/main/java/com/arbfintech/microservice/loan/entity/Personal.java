@@ -28,7 +28,7 @@ public class Personal {
 	@Column(length = 32)
 	private String lastName;
 
-	@Column(length = 32)
+	@Column(length = 255)
 	private String fullName;
 
 	@Column(length = 32)

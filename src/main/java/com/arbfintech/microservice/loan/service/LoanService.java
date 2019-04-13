@@ -229,7 +229,7 @@ public class LoanService {
             resultData.put(JsonKeyConst.LAST_NAME, customerObj.getLastName());
             resultData.put(JsonKeyConst.BIRTHDAY, customerObj.getBirthday());
             resultData.put(JsonKeyConst.EMAIL, "");
-            resultData.put(JsonKeyConst.HOMEPHONE, "");
+            resultData.put(JsonKeyConst.HOME_PHONE, "");
             resultData.put(JsonKeyConst.TELEPHONE, "");
             resultData.put(JsonKeyConst.FAX, "");
         }
