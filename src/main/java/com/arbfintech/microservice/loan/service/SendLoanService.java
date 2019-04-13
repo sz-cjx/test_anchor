@@ -1,7 +1,10 @@
 package com.arbfintech.microservice.loan.service;
 
 import com.alibaba.fastjson.JSON;
-import com.arbfintech.component.core.message.RabbitMQMessage;
+import com.arbfintech.component.core.constant.RabbitMqExchangeConst;
+import com.arbfintech.component.core.constant.RabbitMqOperationConst;
+import com.arbfintech.component.core.constant.RabbitMqProducerConst;
+import com.arbfintech.component.core.message.RabbitmqMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -22,7 +25,7 @@ public class SendLoanService implements RabbitTemplate.ReturnCallback, RabbitTem
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void send(RabbitMQMessage content) {
+    public void send(RabbitmqMessage content) {
         this.rabbitTemplate.setReturnCallback(this);  //回调
         //获取到回调的
         this.rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
@@ -32,7 +35,7 @@ public class SendLoanService implements RabbitTemplate.ReturnCallback, RabbitTem
                 LOG.info("消息发送成功 ");
             }
         });
-        this.rabbitmqTemplate.convertAndSend("exchange_contract", "loan-service.send_contract_to_schedule", JSON.toJSONString(content));
+        this.rabbitmqTemplate.convertAndSend(RabbitMqExchangeConst.EXCHANGE_LOAN, RabbitMqProducerConst.MICROSERVICE_LOAN+"."+ RabbitMqOperationConst.SEND_LOAN_TO_PAYMENT, JSON.toJSONString(content));
     }
 
     @Override

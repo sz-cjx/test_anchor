@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.component.core.enumerate.LoanStatusEnum;
-import com.arbfintech.component.core.message.RabbitMQMessage;
+import com.arbfintech.component.core.message.RabbitmqMessage;
 import com.arbfintech.microservice.loan.entity.Customer;
 import com.arbfintech.microservice.loan.entity.Loan;
 import com.arbfintech.microservice.loan.entity.LoanOverView;
@@ -178,7 +178,7 @@ public class LoanRestController {
 		String contract = JSON.toJSONString(loanService.getFormedLoanDataById(Integer.parseInt(contractId)));
 
 		LOG.error("发送数据：" + contract);
-        RabbitMQMessage message=new RabbitMQMessage();
+        RabbitmqMessage message=new RabbitmqMessage();
         message.setCreateTime(new Date());
         message.setMessageData(contract);
         message.setOperationName("send loan to loanSchedule");
