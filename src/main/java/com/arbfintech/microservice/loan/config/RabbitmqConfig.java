@@ -1,8 +1,8 @@
 package com.arbfintech.microservice.loan.config;
 
-import com.arbfintech.component.core.constant.RabbitMqExchangeConst;
-import com.arbfintech.component.core.constant.RabbitMqOperationConst;
-import com.arbfintech.component.core.constant.RabbitMqProducerConst;
+import com.arbfintech.component.core.constant.RabbitExchangeConst;
+import com.arbfintech.component.core.constant.RabbitOperationConst;
+import com.arbfintech.component.core.constant.RabbitProducerConst;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -15,17 +15,17 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue queueMessageContract() {
-        return new Queue(RabbitMqProducerConst.MICROSERVICE_LOAN+"."+ RabbitMqOperationConst.SEND_LOAN_TO_PAYMENT);
+        return new Queue(RabbitProducerConst.MICROSERVICE_LOAN+"."+ RabbitOperationConst.SEND_LOAN_TO_PAYMENT);
     }
 
     @Bean
     DirectExchange exchangeContract() {
-        return new DirectExchange(RabbitMqExchangeConst.EXCHANGE_LOAN);
+        return new DirectExchange(RabbitExchangeConst.EXCHANGE_LOAN);
     }
 
     @Bean
     Binding bindingDirectExchangeMessageContract(Queue queueMessageContract, DirectExchange exchangeContract) {
-        return BindingBuilder.bind(queueMessageContract).to(exchangeContract).with(RabbitMqProducerConst.MICROSERVICE_LOAN+"."+ RabbitMqOperationConst.SEND_LOAN_TO_PAYMENT);
+        return BindingBuilder.bind(queueMessageContract).to(exchangeContract).with(RabbitProducerConst.MICROSERVICE_LOAN+"."+ RabbitOperationConst.SEND_LOAN_TO_PAYMENT);
 
     }
 }
