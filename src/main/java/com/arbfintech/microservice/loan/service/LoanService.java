@@ -655,32 +655,56 @@ public class LoanService {
                         (StringUtils.isEmpty(lastName) ? "" : " " + lastName);
                 personal.setFullName(fullName);
 
+                String address1 = personal.getAddress1();
                 String address2 = personal.getAddress2();
-                String address = personal.getAddress1() + (StringUtils.isEmpty(address2) ? "" : " | " + address2);
+                String address = (StringUtils.isEmpty(address1) ? "" : address1) + (StringUtils.isEmpty(address2) ? "" : " | " + address2);
                 personal.setAddress(address);
 
                 personalRepository.save(personal);
                 logger.debug("save personal info success.");
-            }
-
-            Bank bank = loan.getBank();
-            if(bank != null){
-                bank.setLoanId(loanId);
-                bankRepository.save(bank);
-                logger.debug("save bank info success.");
+            }else {
+                logger.error("No Personal information found in lead.");
             }
 
             Employment employment = loan.getEmployment();
             if(employment != null){
                 employment.setLoanId(loanId);
 
+                String address1 = employment.getEmployerAddress1();
                 String address2 = employment.getEmployerAddress2();
-                String address = employment.getEmployerAddress1() + (StringUtils.isEmpty(address2) ? "" : " | " + address2);
+                String address = (StringUtils.isEmpty(address1) ? "" : address1) + (StringUtils.isEmpty(address2) ? "" : " | " + address2);
                 employment.setEmployerAddress(address);
 
                 employmentRepository.save(employment);
                 logger.debug("save employment info success.");
+            }else {
+                logger.error("No employment information found in lead.");
             }
+
+            Bank bank = loan.getBank();
+            if(bank != null){
+                bank.setLoanId(loanId);
+
+                if(employment != null){
+                    if(employment.getPayrollType() != null){
+                        bank.setPayrollType(employment.getPayrollType());
+                    }
+
+                    if(employment.getPayrollFrequency() != null){
+                        bank.setPayrollFrequency(employment.getPayrollFrequency());
+                    }
+
+                    if(employment.getFirstPayDate() != null){
+                        bank.setFirstPayDate(employment.getFirstPayDate());
+                    }
+                }
+
+                bankRepository.save(bank);
+                logger.debug("save bank info success.");
+            }else {
+                logger.error("No Bank information found in lead.");
+            }
+
 
             logger.info("Loan saved success.");
             //timeLineApiService.addLoanStatusChangeTimeline(contractNo, null, LoanStatusEnum.INITIALIZED.getValue(), "");

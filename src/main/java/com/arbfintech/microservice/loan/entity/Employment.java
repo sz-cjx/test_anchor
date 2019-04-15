@@ -22,16 +22,16 @@ public class Employment {
 	@Column(length = 10)
 	private Integer payrollType;
 
-	@Column(length = 255)
+	@Column
 	private String employerName;
 
-	@Column(length = 255)
+	@Column
 	private String employerAddress1;
 
-	@Column(length = 255)
+	@Column
 	private String employerAddress2;
 
-	@Column(length = 255)
+	@Column
 	private String employerAddress;
 
 	@Column(length = 32)
