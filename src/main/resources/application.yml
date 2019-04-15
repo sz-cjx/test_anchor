@@ -28,6 +28,9 @@ feign:
       microservice-business:
         connectTimeout: 600000
         readTimeout: 600000
+      cache-server:
+        connectTimeout: 600000
+        readTimeout: 600000
 spring:
   application:
     name: ${arb.service.name}

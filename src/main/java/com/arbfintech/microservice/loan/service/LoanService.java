@@ -5,17 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.component.core.constant.JsonKeyConst;
-import com.arbfintech.component.core.enumerate.BankAccountTypeEnum;
-import com.arbfintech.component.core.enumerate.LoanStatusEnum;
-import com.arbfintech.component.core.enumerate.PayrollFrequencyEnum;
-import com.arbfintech.component.core.enumerate.PayrollTypeEnum;
-import com.arbfintech.component.core.enumerate.converter.LoanStatusConverter;
-import com.arbfintech.component.core.enumerate.converter.WithdrawnResonConverter;
+import com.arbfintech.component.core.enumerate.*;
 import com.arbfintech.component.core.util.BigDecimalUtil;
 import com.arbfintech.component.core.util.DateUtil;
 import com.arbfintech.component.core.util.EnumUtil;
 import com.arbfintech.component.core.util.StringUtil;
 import com.arbfintech.microservice.loan.client.BusinessFeignClient;
+import com.arbfintech.microservice.loan.client.RuntimeFeignClient;
 import com.arbfintech.microservice.loan.entity.*;
 import com.arbfintech.microservice.loan.repository.*;
 import org.apache.commons.lang.StringUtils;
@@ -72,6 +68,9 @@ public class LoanService {
 
     @Autowired
     private BusinessFeignClient businessFeignClient;
+
+    @Autowired
+    private RuntimeFeignClient runtimeFeignClient;
 
     public String getContractNoByCategoryAndStatus(Integer catetory, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
@@ -488,86 +487,43 @@ public class LoanService {
             jsonObject.put("summaryRegularInstallment", StringUtil.toCurrency(payment.getRegularAmount()));
         }
 
-        //String portfolioStr = metadataFeignClient.getPortfolioById(portfolioId);
-        //logger.info("get portfolio information: " + portfolioStr);
-        //if (StringUtils.isNotEmpty(portfolioStr)) {
-            //Portfolio portfolio = JSONObject.parseObject(portfolioStr, Portfolio.class);
+        String portfolioStr = runtimeFeignClient.getPortfolioParameter(portfolioId);
+        logger.info("get portfolio information: " + portfolioStr);
+        Portfolio portfolio;
+        if (StringUtils.isNotEmpty(portfolioStr)) {
+            portfolio = JSONObject.parseObject(portfolioStr, Portfolio.class);
+        }else {
+            portfolio = new Portfolio();
+        }
         // this data is only for test
-        Portfolio portfolio = new Portfolio();
-        portfolio.setPortfolioName("inbox credit");
-        portfolio.setDisplayName("Inbox Credit");
-        portfolio.setAddress("Inbox Address");
-        portfolio.setCity("Norward");
-        portfolio.setState("AO");
-        portfolio.setZip("0303033");
-        portfolio.setLateFee(new BigDecimal(556.33));
-        portfolio.setTribeName("Tribe");
-        portfolio.setEmail("a@b.com");
-        portfolio.setTelephone("1223333");
-        portfolio.setNsfFee(new BigDecimal(3333.55));
-        portfolio.setFax("233322");
-        portfolio.setWebsite("http:aaa.com");
+//        Portfolio portfolio = new Portfolio();
+//        portfolio.setPortfolioName("inbox credit");
+//        portfolio.setDisplayName("Inbox Credit");
+//        portfolio.setAddress("Inbox Address");
+//        portfolio.setCity("Norward");
+//        portfolio.setState("AO");
+//        portfolio.setZip("0303033");
+//        portfolio.setLateFee(new BigDecimal(556.33));
+//        portfolio.setTribeName("Tribe");
+//        portfolio.setEmail("a@b.com");
+//        portfolio.setTelephone("1223333");
+//        portfolio.setNsfFee(new BigDecimal(3333.55));
+//        portfolio.setFax("233322");
+//        portfolio.setWebsite("http:aaa.com");
 
-        String portfolioName = portfolio.getPortfolioName();
-            if (StringUtils.isNotEmpty(portfolioName)) {
-                jsonObject.put("portfolioName", portfolioName);
-            }
-
-            String portfolioDisplayName = portfolio.getDisplayName();
-            if (StringUtils.isNotEmpty(portfolioDisplayName)) {
-                jsonObject.put("portfolioDisplayName", portfolioDisplayName);
-            }
-
-            String portfolioAddress = portfolio.getAddress();
-            if (StringUtils.isNotEmpty(portfolioAddress)) {
-                jsonObject.put("portfolioAddress", portfolioAddress);
-            }
-
-            String portfolioCity = portfolio.getCity();
-            if (StringUtils.isNotEmpty(portfolioCity)) {
-                jsonObject.put("portfolioCity", portfolioCity);
-            }
-
-            String portfolioState = portfolio.getState();
-            if (StringUtils.isNotEmpty(portfolioState)) {
-                jsonObject.put("portfolioState", portfolioState);
-            }
-
-            String portfolioZip = portfolio.getZip();
-            if (StringUtils.isNotEmpty(portfolioZip)) {
-                jsonObject.put("portfolioZip", portfolioZip);
-            }
-
-            jsonObject.put("portfolioLateFee", StringUtil.toCurrency(portfolio.getLateFee()));
-
-            String tribeName = portfolio.getTribeName();
-            if (StringUtils.isNotEmpty(tribeName)) {
-                jsonObject.put("tribeName", tribeName);
-            }
-
-            String portfolioEmail = portfolio.getEmail();
-            if (StringUtils.isNotEmpty(portfolioEmail)) {
-                jsonObject.put("portfolioEmail", portfolioEmail);
-            }
-
-            String portfolioTelephone = portfolio.getTelephone();
-            if (StringUtils.isNotEmpty(portfolioTelephone)) {
-                jsonObject.put("portfolioTelephone", portfolioTelephone);
-            }
-
-            jsonObject.put("portfolioNsfFee", StringUtil.toCurrency(portfolio.getNsfFee()));
-
-            String portfolioFax = portfolio.getFax();
-            if (StringUtils.isNotEmpty(portfolioFax)) {
-                jsonObject.put("portfolioFax", portfolioFax);
-            }
-
-            String portfolioWebsite = portfolio.getWebsite();
-            if (StringUtils.isNotEmpty(portfolioWebsite)) {
-                jsonObject.put("portfolioWebsite", portfolioWebsite);
-            }
-        //}
-
+        fillContractAttr(jsonObject, "portfolioName" ,portfolio.getPortfolioName());
+        fillContractAttr(jsonObject, "portfolioDisplayName" ,portfolio.getDisplayName());
+        fillContractAttr(jsonObject, "portfolioAddress" ,portfolio.getAddress());
+        fillContractAttr(jsonObject, "portfolioCity" ,portfolio.getCity());
+        fillContractAttr(jsonObject, "portfolioState" ,portfolio.getState());
+        fillContractAttr(jsonObject, "portfolioZip" ,portfolio.getZip());
+        fillContractAttr(jsonObject, "portfolioLateFee" ,StringUtil.toCurrency(portfolio.getLateFee()));
+        fillContractAttr(jsonObject, "tribeName" ,portfolio.getTribeName());
+        fillContractAttr(jsonObject, "portfolioEmail" ,portfolio.getEmail());
+        fillContractAttr(jsonObject, "portfolioTelephone" ,portfolio.getTelephone());
+        fillContractAttr(jsonObject, "portfolioNsfFee" ,StringUtil.toCurrency(portfolio.getNsfFee()));
+        fillContractAttr(jsonObject, "portfolioFax" ,portfolio.getFax());
+        fillContractAttr(jsonObject, "portfolioWebsite" ,portfolio.getWebsite());
         return jsonObject;
     }
 
@@ -592,33 +548,18 @@ public class LoanService {
         if(jsonBankObj != null){
             String keyBankAccountType = "bankAccountType";
             String bankAccountTypeVal = jsonBankObj.getString(keyBankAccountType);
-            for(BankAccountTypeEnum type : BankAccountTypeEnum.values()){
-                if(type.getCode().equals(bankAccountTypeVal)){
-                    jsonBankObj.put(keyBankAccountType, type.getValue());
-                    break;
-                }
-            }
+            jsonBankObj.put(keyBankAccountType, EnumUtil.getByCode(BankAccountTypeEnum.class, bankAccountTypeVal).getValue());
         }
 
         JSONObject jsonEmpObj = jsonLeadObject.getJSONObject("employment");
         if(jsonEmpObj != null){
             String keyPayrollType = "payrollType";
             String payrollTypeVal = jsonEmpObj.getString(keyPayrollType);
-            for(PayrollTypeEnum type : PayrollTypeEnum.values()){
-                if(type.getCode().equals(payrollTypeVal)){
-                    jsonEmpObj.put(keyPayrollType, type.getValue());
-                    break;
-                }
-            }
+            jsonEmpObj.put(keyPayrollType, EnumUtil.getByCode(PayrollTypeEnum.class, payrollTypeVal).getValue());
 
             String keyPayrollFrequency = "payrollFrequency";
             String payrollFrequencyVal = jsonEmpObj.getString(keyPayrollFrequency);
-            for(PayrollFrequencyEnum frequencyEnum : PayrollFrequencyEnum.values()){
-                if(frequencyEnum.getCode().equals(payrollFrequencyVal)){
-                    jsonEmpObj.put(keyPayrollFrequency, frequencyEnum.getValue());
-                    break;
-                }
-            }
+            jsonEmpObj.put(keyPayrollFrequency, EnumUtil.getByCode(PayrollFrequencyEnum.class, payrollFrequencyVal).getValue());
         }
 
         String newLeadStr = JSON.toJSONString(jsonLeadObject);
@@ -842,7 +783,7 @@ public class LoanService {
 
                 if (contractInfo != null) {
                     contractNum = contractInfo.getString("contractNo");
-                    Util.report(timeLineApiService.getLoanStatus(contractNum));
+                    logger.info(timeLineApiService.getLoanStatus(contractNum));
                     loanStatus = Integer.parseInt(JSONObject.parseObject(timeLineApiService.getLoanStatus(contractNum)).getString("status"));
                     contractInfo.put("status", loanStatus);
                 }
@@ -881,7 +822,6 @@ public class LoanService {
         JSONArray withdrawnLoans = new JSONArray();
         HashSet<Integer> reasonsPositive = new HashSet<Integer>();
         HashSet<Integer> reasonsNegative = new HashSet<Integer>();
-        WithdrawnResonConverter withdrawnResonConverter = new WithdrawnResonConverter();
 
         Date start = new Date(Long.parseLong(startTime));
         Date end = new Date(Long.parseLong(endTime));
@@ -902,7 +842,7 @@ public class LoanService {
             Integer i = 0;
 
             countDataP.put("type", "POSITIVE");
-            countDataP.put("withdrawnReason", withdrawnResonConverter.convertToEntityAttribute(reasonCode).getText());
+            countDataP.put("withdrawnReason", EnumUtil.getByValue(WithdrawnReasonEnum.class,reasonCode).getText());
             for (Loan contractWithdrawn : withdrawnLoancs) {
                 if (contractWithdrawn.getWithdrawnCode().equals(reasonCode)) {
                     i++;
@@ -920,7 +860,7 @@ public class LoanService {
             Integer i = 0;
 
             countDataN.put("type", "NEGATIVE");
-            countDataN.put("withdrawnReason", withdrawnResonConverter.convertToEntityAttribute(reasonCodeN).getText());
+            countDataN.put("withdrawnReason", EnumUtil.getByValue(WithdrawnReasonEnum.class, reasonCodeN).getText());
             for (Loan contractWithdrawn : withdrawnLoancs) {
                 if (contractWithdrawn.getWithdrawnCode().equals(reasonCodeN)) {
                     i++;
@@ -984,14 +924,13 @@ public class LoanService {
 
     public JSONObject countResult(JSONArray purcharsedIddArr, JSONArray returnIdArr, JSONArray newcustIdArr, Integer status) {
 
-        LoanStatusConverter loanStatusConverter = new LoanStatusConverter();
         JSONObject result = new JSONObject();
         Integer reapplied = 0;
         Integer purchased = countPendingByItems(purcharsedIddArr, status);
         Integer newcust = countPendingByItems(newcustIdArr, status);
         Integer returncust = countPendingByItems(returnIdArr, status);
 
-        result.put("loanStatus", loanStatusConverter.convertToEntityAttribute(status));
+        result.put("loanStatus", EnumUtil.getByValue(WithdrawnReasonEnum.class, status).getText());
         result.put("purchased", purchased);
         result.put("reapplied", reapplied);
         result.put("newcust", newcust);
