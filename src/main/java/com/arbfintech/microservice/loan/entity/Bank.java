@@ -19,7 +19,7 @@ public class Bank {
 	@Column(length = 10)
 	private Integer loanId;
 
-	@Column(length = 255)
+	@Column
 	private String bankName;
 
 	@Column(length = 6)
@@ -102,6 +102,28 @@ public class Bank {
 
 	@Column(length = 32)
 	private Integer numberOfOpenLoans;
+
+	@Column(length = 6)
+	private Integer paydayMoveDirection;
+
+	@Column(length = 10)
+	private Integer payrollType;
+
+	@Column(length = 10)
+	private Integer payrollFrequency;
+
+	@Column(length = 32)
+	private String firstPayDate;
+
+	@Column(length = 10)
+	private String firstPayday;
+
+	@Column(length = 10)
+	private String secondPayday;
+
+	@Column(length = 10)
+	private String monthlyPayday;
+
 
 	@Column
 	@Lob
@@ -345,6 +367,62 @@ public class Bank {
 
 	public void setNumberOfOpenLoans(Integer numberOfOpenLoans) {
 		this.numberOfOpenLoans = numberOfOpenLoans;
+	}
+
+	public Integer getPaydayMoveDirection() {
+		return paydayMoveDirection;
+	}
+
+	public void setPaydayMoveDirection(Integer paydayMoveDirection) {
+		this.paydayMoveDirection = paydayMoveDirection;
+	}
+
+	public Integer getPayrollType() {
+		return payrollType;
+	}
+
+	public void setPayrollType(Integer payrollType) {
+		this.payrollType = payrollType;
+	}
+
+	public Integer getPayrollFrequency() {
+		return payrollFrequency;
+	}
+
+	public void setPayrollFrequency(Integer payrollFrequency) {
+		this.payrollFrequency = payrollFrequency;
+	}
+
+	public String getFirstPayDate() {
+		return firstPayDate;
+	}
+
+	public void setFirstPayDate(String firstPayDate) {
+		this.firstPayDate = firstPayDate;
+	}
+
+	public String getFirstPayday() {
+		return firstPayday;
+	}
+
+	public void setFirstPayday(String firstPayday) {
+		this.firstPayday = firstPayday;
+	}
+
+	public String getSecondPayday() {
+		return secondPayday;
+	}
+
+	public void setSecondPayday(String secondPayday) {
+		this.secondPayday = secondPayday;
+	}
+
+	public String getMonthlyPayday() {
+		return monthlyPayday;
+	}
+
+	public void setMonthlyPayday(String monthlyPayday) {
+		this.monthlyPayday = monthlyPayday;
 	}
 
 	public String getBankDeposits() {
