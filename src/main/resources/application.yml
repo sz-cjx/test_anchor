@@ -69,7 +69,7 @@ spring:
       simple:
         acknowledge-mode: manual
 logging:
-  config: classpath:log4j2.xml
+  config: classpath:log4j2.yml
 ---
 spring:
   profiles: release
