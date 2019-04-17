@@ -700,7 +700,8 @@ public class LoanService {
 //                i++;
 //            }
 //        }
-            List<Loan> loans = loanRepository.getLoanByStatusAndLeadId(status, leadIds);
+//            List<Loan> loans = loanRepository.getLoanByStatusAndLeadId(status, leadIds);
+        List<Loan> loans = loanRepository.findAllByStatusAndLeadIdIn(status, leadIds);
             if (loans != null) {
                 i = loans.size();
             }
@@ -930,7 +931,7 @@ public class LoanService {
         Integer newcust = countPendingByItems(newcustIdArr, status);
         Integer returncust = countPendingByItems(returnIdArr, status);
 
-        result.put("loanStatus", EnumUtil.getByValue(WithdrawnReasonEnum.class, status).getText());
+        result.put("loanStatus", EnumUtil.getByValue(LoanStatusEnum.class, status).getText());
         result.put("purchased", purchased);
         result.put("reapplied", reapplied);
         result.put("newcust", newcust);
@@ -949,8 +950,8 @@ public class LoanService {
             for (int i = 0; i < arr.size(); i++) {
                 leads.add((int) arr.get(i));
             }
-            List<Loan> loans = loanRepository.getLoanByStatusAndLeadId(status, leads);
-
+//            List<Loan> loans = loanRepository.getLoanByStatusAndLeadId(status, leads);
+            List<Loan> loans = loanRepository.findAllByStatusAndLeadIdIn(status, leads);
             if (loans != null) {
                 resultCount = loans.size();
             }
