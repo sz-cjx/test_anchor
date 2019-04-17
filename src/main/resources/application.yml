@@ -60,7 +60,7 @@ spring:
     show-sql: false
   rabbitmq:
     host: ${arb.rabbitmq.host}
-    port: ${arb.rabbitmq.port}
+    port: 5672
     username: ${arb.rabbitmq.username}
     password: ${arb.rabbitmq.password}
     publisher-confirms: true
@@ -85,11 +85,15 @@ spring:
   profiles: develop
 arb:
   eureka:
-    url: develop.arbfintech.com
+    url: panda.arbfintech.com
   database:
-    url: database.arbfintech.com
-    username: root
-    password: arbfintech
+    url: dbpanda-cluster.cluster-cuxwfpxsyc7c.ap-southeast-1.rds.amazonaws.com
+    username: PandaUsr
+    password: PndaPasWrd
+  rabbitmq:
+    url: rmq.arbfintech.com
+    username: panda
+    password: 3JU6BvkC^1iI@LN5
 ---
 spring:
   profiles: debug
@@ -102,6 +106,5 @@ arb:
     password: Arbfintech@123
   rabbitmq:
     host: 192.168.0.100
-    port: 5672
     username: Arbfintech
     password: Arbfintech
