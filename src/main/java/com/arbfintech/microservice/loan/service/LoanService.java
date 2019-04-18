@@ -784,8 +784,18 @@ public class LoanService {
 
                 if (contractInfo != null) {
                     contractNum = contractInfo.getString("contractNo");
-                    logger.info(timeLineApiService.getLoanStatus(contractNum));
-                    loanStatus = Integer.parseInt(JSONObject.parseObject(timeLineApiService.getLoanStatus(contractNum)).getString("status"));
+                    String loanStatusStr = timeLineApiService.getLoanStatus(contractNum);
+                    logger.info(loanStatusStr);
+                    if(StringUtils.isNotEmpty(loanStatusStr)){
+                        JSONObject jsonObject = JSONObject.parseObject(timeLineApiService.getLoanStatus(contractNum));
+                        if(jsonObject != null){
+                            String statusValue = jsonObject.getString("status");
+                            if(StringUtils.isNotEmpty(statusValue)){
+                                loanStatus = Integer.parseInt(statusValue);
+                            }
+                        }
+                    }
+
                     contractInfo.put("status", loanStatus);
                 }
                 result.add(contractInfo);
