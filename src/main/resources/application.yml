@@ -59,7 +59,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
     show-sql: false
   rabbitmq:
-    host: ${arb.rabbitmq.host}
+    host: ${arb.rabbitmq.url}
     port: 5672
     username: ${arb.rabbitmq.username}
     password: ${arb.rabbitmq.password}
