@@ -87,9 +87,9 @@ arb:
   eureka:
     url: panda.arbfintech.com
   database:
-    url: dbpanda-cluster.cluster-cuxwfpxsyc7c.ap-southeast-1.rds.amazonaws.com
-    username: PandaUsr
-    password: PndaPasWrd
+    url: arb-panda.cuxwfpxsyc7c.ap-southeast-1.rds.amazonaws.com
+    username: panda_admin
+    password: uGEqetW#a8uEKA2z
   rabbitmq:
     url: rmq.arbfintech.com
     username: panda
