@@ -224,6 +224,34 @@ public class LoanRestController {
 		}
 	}
 
+
+	@PostMapping("/loan-withdrawn")
+	public String withdrawLoan(
+			@RequestParam(value = "contractNo") String contractNo,
+			@RequestParam(value = "status") String status,
+			@RequestParam("withdrawnCode")Integer withdrawnCode){
+		Loan loan = loanService.getLoanByContactNo(contractNo);
+		if (loan !=null) {
+			boolean isStatusFound = false;
+			for (LoanStatusEnum e : LoanStatusEnum.values()) {
+
+				if (e.getText().equals(status)) {
+					isStatusFound = true;
+					loan.setStatus(e.getValue());
+					loan.setWithdrawnCode(withdrawnCode);
+					loanService.saveLoanOnly(loan);
+				}
+			}
+			if(isStatusFound){
+				return "OK";
+			}else {
+				return "NOK";
+			}
+		}else{
+			return "NOK";
+		}
+	}
+
 	@GetMapping("/searching")
 	public String searchLeads(
 			@RequestParam(value = "name") String name,

@@ -9,10 +9,10 @@ server:
   port: ${arb.service.port}
 eureka:
   instance:
-    hostname: ${arb.service.name}
+    hostname: localhost
   client:
     service-url:
-      defaultZone: http://${arb.eureka.url}:8901/eureka/
+      defaultZone: http://localhost:8901/eureka/
 feign:
   client:
     config:
