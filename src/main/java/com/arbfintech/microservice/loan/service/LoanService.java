@@ -470,7 +470,25 @@ public class LoanService {
                 }
             }
 
-            fillContractAttr(jsonObject, "paymentEffectiveDate", payment.getEffectiveDate());
+            String effectiveDateStr = payment.getEffectiveDate();
+            fillContractAttr(jsonObject, "paymentEffectiveDate", effectiveDateStr);
+
+            if(StringUtils.isNotEmpty(effectiveDateStr)){
+                logger.debug(effectiveDateStr);
+                long effectiveDateTimeStamp = DateUtil.str2date(effectiveDateStr).getTime();
+                effectiveDateTimeStamp = effectiveDateTimeStamp - (1000 * 60 * 60 * 24);
+                Date expireDate = DateUtil.long2date(effectiveDateTimeStamp);
+                String expiredDateStr = DateUtil.date2str(expireDate);
+                logger.debug(expiredDateStr);
+                String expiredDateTimeStr = expiredDateStr +  " 22:30:00";
+                logger.debug(expiredDateTimeStr);
+                Date expiredDate = DateUtil.str2datetime(expiredDateTimeStr);
+                logger.debug(expiredDate.toString());
+                Long expiredDateTimeStamp = expiredDate.getTime();
+                logger.debug(expiredDateTimeStamp + "");
+                logger.debug(DateUtil.long2date(expiredDateTimeStamp).toString());
+                jsonObject.put("expiredTime", expiredDateTimeStamp);
+            }
 
             DecimalFormat df = new DecimalFormat("#.00");
             double interestRate = payment.getInterestRate() * 100;
