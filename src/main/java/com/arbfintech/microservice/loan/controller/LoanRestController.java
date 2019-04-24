@@ -286,4 +286,10 @@ public class LoanRestController {
 	public String countPendingApplicationSummary(@RequestParam(value = "pendingSummaryIds") String pendingSummaryIds){
 		return loanService.countPendingSummary(pendingSummaryIds);
 	}
+
+	@GetMapping("/dashboard/pending-summary")
+	public String pendingSummary(@RequestParam(value = "startTime") String startTime,
+								 @RequestParam(value = "endTime") String endTime){
+		return loanService.newPendingSummary(Long.parseLong(startTime),Long.parseLong(endTime));
+	}
 }

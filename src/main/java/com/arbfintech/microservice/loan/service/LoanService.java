@@ -915,22 +915,13 @@ public class LoanService {
 
 
         JSONArray summaryArr = new JSONArray();
-//        Date startDate = new Date(Long.parseLong(start));
-//        Date endDate = new Date(Long.parseLong(end));
-
-//        List<Loan> initialiedLoans=loanContractRepository.getLoanByStatusAndTime(LoanStatusEnum.INITIALIZED.getValue(), startDate, endDate);
-//        List<Loan> agentLoans=loanContractRepository.getLoanByStatusAndTime(LoanStatusEnum.AGENT_REVIEW.getValue(), startDate, endDate);
-//        List<Loan> underwriterLoans=loanContractRepository.getLoanByStatusAndTime(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), startDate, endDate);
-//        List<Loan> tribeLoans=loanContractRepository.getLoanByStatusAndTime(LoanStatusEnum.TRIBE_REVIEW.getValue(), startDate, endDate);
-//        List<Loan> correctionLoans=loanContractRepository.getLoanByStatusAndTime(LoanStatusEnum.CORRECTION.getValue(), startDate, endDate);
-//        List<Loan> approvedLoans=loanContractRepository.getLoanByStatusAndTime(LoanStatusEnum.APPROVED.getValue(), startDate, endDate);
-
-
         JSONObject leadIds = JSONObject.parseObject(ids);
 
         JSONArray newcustIdArr = JSONArray.parseArray(leadIds.getString("newcustids"));
+
         JSONArray returnIdArr = leadIds.getJSONArray("returnIds");
-        JSONArray purcharsedIddArr = leadIds.getJSONArray("purchasedIds");
+//        JSONArray purcharsedIddArr = leadIds.getJSONArray("purchasedIds");
+        JSONArray purcharsedIddArr = new JSONArray();
 
         Util.report(JSONArray.toJSONString(newcustIdArr));
         Util.report(JSONArray.toJSONString(returnIdArr));
@@ -1006,6 +997,24 @@ public class LoanService {
         countResult.put("resultCount", resultCount);
         countResult.put("loanIds", loanIds);
         return countResult;
+    }
+
+
+
+    public String newPendingSummary(long startTime,long endTime){
+
+        JSONObject leadIds = new JSONObject();
+        List<Integer> newLeadIds=loanRepository.listLeadIdByTimeRange(1, startTime, endTime);
+        List<Integer> returnLeadIds=loanRepository.listLeadIdByTimeRange(2, startTime, endTime);
+        if (newLeadIds!=null && returnLeadIds!=null){
+            leadIds.put("newcustids", newLeadIds);
+            leadIds.put("returnIds", returnLeadIds);
+        }
+
+        String summaryResut =countPendingSummary(JSONObject.toJSONString(leadIds));
+
+        return summaryResut;
+
     }
 
 
