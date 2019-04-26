@@ -15,11 +15,7 @@ import java.util.List;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecificationExecutor<Loan> {
 
-    List<Loan> findAllByContractNoIn(String[] contactNoArray);
-
     Loan findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(Integer category, List<Integer> integerList);
-
-    Loan findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(Integer category, List<Integer> integerList);
 
     Loan findByContractNo(String contractNo);
 
@@ -39,8 +35,7 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     @Query(value = "select lead_id from loan where category=?1 and update_time BETWEEN ?2 AND ?3 ",nativeQuery =true)
     public List<Integer> listLeadIdByTimeRange(Integer category,long startTime, long endTime);
 
-    @Query(value = "SELECT * FROM loan LEFT JOIN loan_personal ON loan.id=loan_personal.loan_id WHERE loan.id in(?1)",nativeQuery =true)
-    public List<String> listLoanAndPersonalInfoByIds(List<Integer> ids);
-
     List<Loan> findAllById(List<Integer> ids);
+
+    List<Loan> findAllByCustomerIdentifyKey(String customerIdentifyKey);
 }
