@@ -72,6 +72,7 @@ public class LoanService {
     @Autowired
     private RuntimeFeignClient runtimeFeignClient;
 
+
     public String getContractNoByCategoryAndStatus(Integer catetory, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
         Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(catetory, statusList);
@@ -557,6 +558,7 @@ public class LoanService {
 
     public void saveLoanFromLead(String leadStr) {
 
+        String customerIdentifyKey = "";
         JSONObject jsonLeadObject = JSON.parseObject(leadStr);
         if (jsonLeadObject == null) {
             logger.error("Error happened during parse json data:" + leadStr);
@@ -568,6 +570,10 @@ public class LoanService {
             String keyBankAccountType = "bankAccountType";
             String bankAccountTypeVal = jsonBankObj.getString(keyBankAccountType);
             jsonBankObj.put(keyBankAccountType, EnumUtil.getByCode(BankAccountTypeEnum.class, bankAccountTypeVal).getValue());
+
+            String bankAccountNoAfterFormat = combineAccountNo(jsonBankObj.getString("bankAccountNo"));
+            String bankRoutingNo=jsonBankObj.getString("bankRoutingNo");
+            customerIdentifyKey = bankAccountNoAfterFormat +"_"+ bankRoutingNo;
         }
 
         JSONObject jsonEmpObj = jsonLeadObject.getJSONObject("employment");
@@ -598,6 +604,7 @@ public class LoanService {
             loan.setStatus(LoanStatusEnum.INITIALIZED.getValue());
             loan.setCreateTime(DateUtil.getCurrentTimestamp());
             loan.setUpdateTime(DateUtil.getCurrentTimestamp());
+            loan.setCustomerIdentifyKey(customerIdentifyKey);
             Loan dbLoan = loanRepository.save(loan);
             Integer loanId = dbLoan.getId();
             loan.setId(loanId);
@@ -1034,6 +1041,70 @@ public class LoanService {
         }
 
         return JSONArray.toJSONString(loans);
+    }
+
+
+    public String combineAccountNo(String accountNo){
+        String ac1 = removePrefix(accountNo);
+        String ac2 = removeSuffix(ac1);
+        return ac2;
+    }
+
+    public String removePrefix(String target) {
+
+        if (target.startsWith("0")) {
+            String temp = target.substring(1);
+            return removePrefix(temp);
+        } else {
+            return  target;
+        }
+
+    }
+
+    public String removeSuffix(String target) {
+        if (target.endsWith("0")) {
+            String temp = target.substring(0,target.length()-1);
+            return removeSuffix(temp);
+        } else {
+            return  target;
+        }
+    }
+
+
+    public String listReturningCustomerRecentLoans(Integer loanId) {
+
+
+        JSONArray recentLoanLists = new JSONArray();
+//        String customerIdentifyKey = "303094440903_124303120";
+        String customerIdentifyKey = loanRepository.findById(loanId).getCustomerIdentifyKey();
+        List<Loan> loans=loanRepository.findAllByCustomerIdentifyKey(customerIdentifyKey);
+
+        List<Integer> loanIds = new ArrayList<>();
+        if (loans!=null && loans.size()!=0){
+            for (Loan loan:loans){
+               JSONObject recentLoan= getFormedLoanDataById(loan.getId());
+
+                String contractNum;
+                Integer loanStatus = null;
+                if (recentLoan != null) {
+                    contractNum = recentLoan.getString("contractNo");
+                    String loanStatusStr = timeLineApiService.getLoanStatus(contractNum);
+                    logger.info(loanStatusStr);
+                    if (StringUtils.isNotEmpty(loanStatusStr)) {
+                        JSONObject jsonObject = JSONObject.parseObject(timeLineApiService.getLoanStatus(contractNum));
+                        if (jsonObject != null) {
+                            String statusValue = jsonObject.getString("status");
+                            if (StringUtils.isNotEmpty(statusValue)) {
+                                loanStatus = Integer.parseInt(statusValue);
+                            }
+                        }
+                    }
+                    recentLoan.put("status", loanStatus);
+                }
+                recentLoanLists.add(recentLoan);
+            }
+        }
+        return JSONArray.toJSONString(recentLoanLists);
     }
 
 

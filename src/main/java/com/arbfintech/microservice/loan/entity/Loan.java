@@ -61,6 +61,9 @@ public class Loan {
     @Column(length = 10)
     private Integer withdrawnCode;
 
+    @Column(length = 255)
+	private String customerIdentifyKey;
+
 	@Transient
 	private Personal personal;
 
@@ -75,7 +78,6 @@ public class Loan {
 
 	@Transient
 	private Document document;
-
 
 	public Integer getId() {
 		return id;
@@ -193,7 +195,15 @@ public class Loan {
         return withdrawnCode;
     }
 
-    public void setWithdrawnCode(Integer withdrawnCode) {
+	public String getCustomerIdentifyKey() {
+		return customerIdentifyKey;
+	}
+
+	public void setCustomerIdentifyKey(String customerIdentifyKey) {
+		this.customerIdentifyKey = customerIdentifyKey;
+	}
+
+	public void setWithdrawnCode(Integer withdrawnCode) {
         this.withdrawnCode = withdrawnCode;
     }
 
@@ -236,6 +246,8 @@ public class Loan {
 	public void setDocument(Document document) {
 		this.document = document;
 	}
+
+
 
 	@Override
     public String toString() {

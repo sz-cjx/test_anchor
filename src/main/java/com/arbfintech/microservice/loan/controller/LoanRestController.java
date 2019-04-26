@@ -268,8 +268,6 @@ public class LoanRestController {
 	public String getToDolist(@RequestParam(value = "operatorNo")String operatorNo,
 							  @RequestParam(value = "eventtype") Integer eventtype ) {
 
-//		String operatorNo = "12";
-//		Integer eventtype = 2001;
 		String toDoArr= loanService.getTodoListLoanInfo(operatorNo,eventtype);
 
 		return toDoArr;
@@ -292,5 +290,11 @@ public class LoanRestController {
 	public String pendingSummary(@RequestParam(value = "startTime") String startTime,
 								 @RequestParam(value = "endTime") String endTime){
 		return loanService.newPendingSummary(Long.parseLong(startTime),Long.parseLong(endTime));
+	}
+
+	@GetMapping("/recent-loans")
+	public String listRecentLoans(@RequestParam(value = "loanId")Integer loanId){
+		String result = loanService.listReturningCustomerRecentLoans(loanId);
+		return result;
 	}
 }
