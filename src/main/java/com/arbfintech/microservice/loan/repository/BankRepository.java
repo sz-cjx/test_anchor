@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.loan.repository;
 
 import com.arbfintech.microservice.loan.entity.Bank;
+import com.arbfintech.microservice.loan.entity.Personal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,6 @@ public interface BankRepository
 
 	@Query("select loanId from Bank where bankAccountNo like ?1")
 	List<Integer> findAllLoanIdsByAccountNumber(String bankAccountNo);
+
+	List<Personal> findAllByLoanId(List<Integer> loanIds);
 }

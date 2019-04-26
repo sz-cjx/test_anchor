@@ -925,7 +925,6 @@ public class LoanService {
 
         Util.report(JSONArray.toJSONString(newcustIdArr));
         Util.report(JSONArray.toJSONString(returnIdArr));
-        Util.report(JSONArray.toJSONString(newcustIdArr));
 
         JSONObject initSummary = countResult(purcharsedIddArr, returnIdArr, newcustIdArr, LoanStatusEnum.INITIALIZED.getValue());
         JSONObject agentSummary = countResult(purcharsedIddArr, returnIdArr, newcustIdArr, LoanStatusEnum.AGENT_REVIEW.getValue());
@@ -951,9 +950,13 @@ public class LoanService {
         Integer newcust = countPendingByItems(newcustIdArr, status).getInteger("resultCount");
         Integer returncust = countPendingByItems(returnIdArr, status).getInteger("resultCount");
 
+
+
         JSONArray newcustLoanIds = countPendingByItems(newcustIdArr, status).getJSONArray("loanIds");
         JSONArray purchasedLoanIds = countPendingByItems(purcharsedIddArr, status).getJSONArray("loanIds");
         JSONArray returncustLoanIds = countPendingByItems(returnIdArr, status).getJSONArray("loanIds");
+
+//        logger.warn("newcustLoanIds: "+newcustLoanIds);
 
         newcustLoanIds.addAll(purchasedLoanIds);
         newcustLoanIds.addAll(returncustLoanIds);
@@ -1015,6 +1018,22 @@ public class LoanService {
 
         return summaryResut;
 
+    }
+
+    public String getLoanAndPersonalInfoByIds(String ids){
+        JSONArray idsArr = JSONArray.parseArray(ids);
+        List<Integer> idsList = new ArrayList<>();
+        if (idsArr!=null && idsArr.size()!=0) {
+            for (Object loanId : idsArr) {
+                idsList.add(((int) loanId));
+            }
+        }
+        List<Loan> loans = loanRepository.findAllById(idsList);
+        for (Loan loan:loans){
+            loan.setPersonal(personalRepository.findByLoanId(loan.getId()));
+        }
+
+        return JSONArray.toJSONString(loans);
     }
 
 
