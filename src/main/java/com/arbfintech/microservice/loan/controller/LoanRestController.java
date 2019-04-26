@@ -284,7 +284,8 @@ public class LoanRestController {
 
 	@GetMapping("/pending-summary")
 	public String countPendingApplicationSummary(@RequestParam(value = "pendingSummaryIds") String pendingSummaryIds){
-		return loanService.countPendingSummary(pendingSummaryIds);
+//		return loanService.countPendingSummary(pendingSummaryIds);
+		return loanService.getLoanAndPersonalInfoByIds(pendingSummaryIds);
 	}
 
 	@GetMapping("/dashboard/pending-summary")
