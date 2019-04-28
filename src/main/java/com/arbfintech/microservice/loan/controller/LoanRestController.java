@@ -208,6 +208,7 @@ public class LoanRestController {
 				if (e.getText().equals(status)) {
 					isStatusFound = true;
 					loan.setStatus(e.getValue());
+					loan.setUpdateTime((new Date()).getTime());
 					loanService.saveLoanOnly(loan);
 				}
 			}
@@ -239,6 +240,7 @@ public class LoanRestController {
 					isStatusFound = true;
 					loan.setStatus(e.getValue());
 					loan.setWithdrawnCode(withdrawnCode);
+					loan.setUpdateTime((new Date()).getTime());
 					loanService.saveLoanOnly(loan);
 				}
 			}
