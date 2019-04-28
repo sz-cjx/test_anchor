@@ -99,7 +99,23 @@ spring:
   profiles: debug
 arb:
   eureka:
+    url: localhost
+  database:
     url: 192.168.0.100
+    username: root
+    password: Arbfintech@123
+  rabbitmq:
+    host: 192.168.0.100
+    username: Arbfintech
+    password: Arbfintech
+---
+spring:
+  profiles: slave-23
+arb:
+  eureka:
+    url: 192.168.0.100
+  service:
+    url: 192.168.0.23
   database:
     url: 192.168.0.100
     username: root
