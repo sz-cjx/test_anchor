@@ -17,6 +17,8 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
 
     Loan findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(Integer category, List<Integer> integerList);
 
+    Loan findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(Integer category, List<Integer> integerList);
+
     Loan findByContractNo(String contractNo);
 
     Loan findById(Integer contractid);

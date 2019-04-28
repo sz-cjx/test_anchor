@@ -86,8 +86,8 @@ public class LoanService {
 
     public String getNewContractNoOfAgentReview(Integer category, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
-        //Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(category, statusList);
-        Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(category, statusList);
+        Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(category, statusList);
+        //Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(category, statusList);
 
         if (loan != null) {
             result = loan.getContractNo();
