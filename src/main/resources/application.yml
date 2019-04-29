@@ -9,8 +9,15 @@ server:
   port: ${arb.service.port}
 eureka:
   instance:
-    hostname: ${arb.service.name}
+    instance-id: ${arb.service.url}:${spring.application.name}:${server.port}
+    hostname: ${arb.service.url}
+    ip-address: ${arb.service.url}
+    prefer-ip-address: true
+
+  #    lease-renewal-interval-in-seconds: 10
+  #    lease-expiration-duration-in-seconds: 30
   client:
+    healthcheck: enabled
     service-url:
       defaultZone: http://${arb.eureka.url}:8901/eureka/
 feign:
@@ -35,9 +42,8 @@ spring:
   application:
     name: ${arb.service.name}
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://${arb.database.url}/test_contract?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
-    url: jdbc:mysql://${arb.database.url}/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+    driver-class-name: ${arb.database.driver}
+    url: ${arb.database.url}
     username: ${arb.database.username}
     password: ${arb.database.password}
     test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
@@ -50,14 +56,15 @@ spring:
       max-file-size: 256Mb
       max-request-size: 256Mb
   jpa:
-    database: mysql
+    database: mysql  #only worked for mysql
     generate-ddl: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQL5Dialect #only worked for mysql
     show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect  #only worked for h2
   rabbitmq:
     host: ${arb.rabbitmq.url}
     port: 5672
@@ -77,7 +84,8 @@ arb:
   eureka:
     url: china-dev.vertical.arbcalls.com
   database:
-    url: china-dev.vertical.arbcalls.com
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://china-dev.vertical.arbcalls.com/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     username: root
     password: arbfintech
 ---
@@ -87,7 +95,8 @@ arb:
   eureka:
     url: panda.arbfintech.com
   database:
-    url: arb-panda.cuxwfpxsyc7c.ap-southeast-1.rds.amazonaws.com
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://arb-panda.cuxwfpxsyc7c.ap-southeast-1.rds.amazonaws.com/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     username: panda_admin
     password: uGEqetW#a8uEKA2z
   rabbitmq:
@@ -100,8 +109,11 @@ spring:
 arb:
   eureka:
     url: localhost
+  service:
+    url: 192.168.0.23
   database:
-    url: 192.168.0.100
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.0.100/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     username: root
     password: Arbfintech@123
   rabbitmq:
@@ -117,10 +129,28 @@ arb:
   service:
     url: 192.168.0.23
   database:
-    url: 192.168.0.100
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.0.100/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     username: root
     password: Arbfintech@123
   rabbitmq:
     host: 192.168.0.100
+    username: Arbfintech
+    password: Arbfintech
+---
+spring:
+  profiles: test
+arb:
+  eureka:
+    url: localhost
+  service:
+    url: localhost
+  database:
+    driver: org.h2.Driver
+    url: jdbc:h2:file:~/.h2/testdb
+    username: sa
+    password:
+  rabbitmq:
+    host: localhost
     username: Arbfintech
     password: Arbfintech
