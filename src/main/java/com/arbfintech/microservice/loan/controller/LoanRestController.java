@@ -299,4 +299,11 @@ public class LoanRestController {
 		String result = loanService.listReturningCustomerRecentLoans(loanId);
 		return result;
 	}
+
+	@PostMapping("/follow-up")
+	public String setFollowUp(@RequestParam(value = "type") String type,
+							  @RequestParam(value = "timeData")String timeData,
+							  @RequestParam(value = "contractNo")String contractNo){
+		return loanService.setFollowUp(type, timeData,contractNo);
+	}
 }

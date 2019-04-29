@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Richard
@@ -1105,6 +1102,33 @@ public class LoanService {
             }
         }
         return JSONArray.toJSONString(recentLoanLists);
+    }
+
+    public String setFollowUp(String type,String timeData,String cotractNo){
+        long followUpDatetime = 0;
+        JSONObject dateObj = JSONObject.parseObject(timeData);
+        if (("relative").equals(type)){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            int day = cal.get(Calendar.DATE);
+            int hour = cal.get(Calendar.HOUR);
+            int minute = cal.get(Calendar.MINUTE);
+            cal.set(Calendar.DAY_OF_MONTH,day+dateObj.getInteger("Day"));
+            cal.set(Calendar.HOUR_OF_DAY, hour+dateObj.getInteger("Hour"));
+            cal.set(Calendar.MINUTE,minute+dateObj.getInteger("Minute"));
+            followUpDatetime = cal.getTimeInMillis();
+        }else if (("absolute").equals(type)){
+            followUpDatetime = dateObj.getLong("absoluteTime");
+        }else{
+            logger.error("Save Follow Up Date Time failed!");
+        }
+        Loan loan=loanRepository.findByContractNo(cotractNo);
+
+        if (loan!=null){
+            loan.setFollowUp(followUpDatetime);
+            loanRepository.save(loan);
+        }
+        return JSONObject.toJSONString(loan);
     }
 
 
