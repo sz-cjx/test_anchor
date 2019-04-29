@@ -64,6 +64,9 @@ public class Loan {
     @Column(length = 255)
 	private String customerIdentifyKey;
 
+    @Column(length = 16)
+	private Long followUp;
+
 	@Transient
 	private Personal personal;
 
@@ -231,6 +234,14 @@ public class Loan {
 		this.employment = employment;
 	}
 
+	public Long getFollowUp() {
+		return followUp;
+	}
+
+	public void setFollowUp(Long followUp) {
+		this.followUp = followUp;
+	}
+
 	public Payment getPayment() {
 		return payment;
 	}
@@ -246,6 +257,7 @@ public class Loan {
 	public void setDocument(Document document) {
 		this.document = document;
 	}
+
 
 
 
