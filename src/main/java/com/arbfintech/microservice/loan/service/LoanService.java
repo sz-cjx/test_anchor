@@ -418,6 +418,8 @@ public class LoanService {
         //set personal info
         Personal personal = personalRepository.findByLoanId(loanId);
         if (personal != null) {
+            fillContractAttr(jsonObject, "firstName", personal.getFirstName());
+            fillContractAttr(jsonObject, "lastName", personal.getLastName());
             fillContractAttr(jsonObject, "fullName", personal.getFullName());
             fillContractAttr(jsonObject, "address", personal.getAddress());
             fillContractAttr(jsonObject, "city", personal.getCity());

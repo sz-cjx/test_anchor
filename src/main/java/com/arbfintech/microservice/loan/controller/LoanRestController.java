@@ -1,16 +1,22 @@
 package com.arbfintech.microservice.loan.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.component.core.enumerate.LoanStatusEnum;
 import com.arbfintech.component.core.message.RabbitMessage;
+import com.arbfintech.component.core.util.EmailUtil;
+import com.arbfintech.component.core.util.FreeMarkerUtil;
+import com.arbfintech.microservice.loan.client.MaintenanceFeignClient;
 import com.arbfintech.microservice.loan.entity.Customer;
 import com.arbfintech.microservice.loan.entity.Loan;
 import com.arbfintech.microservice.loan.entity.LoanOverView;
+import com.arbfintech.microservice.loan.entity.Personal;
 import com.arbfintech.microservice.loan.service.LoanService;
 import com.arbfintech.microservice.loan.service.SendLoanService;
 import com.arbfintech.microservice.loan.service.TimeLineApiService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +36,7 @@ import java.util.List;
 @RequestMapping("/loan")
 public class LoanRestController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LoanRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoanRestController.class);
 
 	@Autowired
 	private TimeLineApiService timeLineApiService;
@@ -40,6 +46,9 @@ public class LoanRestController {
 
 	@Autowired
 	private SendLoanService sendLoanService;
+
+	@Autowired
+	private MaintenanceFeignClient maintenanceFeignClient;
 
     @PostMapping("/newLead")
     public String saveLoanFromLeads(@RequestBody String leads){
@@ -117,53 +126,53 @@ public class LoanRestController {
 
 	@GetMapping("/loan_contract/{loanContractId}")
 	public String getLoanContractByContactId(@PathVariable("loanContractId") int loanContactId){
-		LOG.info("Start query loan loan by Id:{}",loanContactId);
+		logger.info("Start query loan loan by Id:{}",loanContactId);
 		Loan loan = loanService.getLoanByLoanId(loanContactId);
 
 		String result = "";
 		if(loan != null){
 			result = loan.toString();
 		}
-		LOG.info("Find the Loan Data:" + result);
+		logger.info("Find the Loan Data:" + result);
 		return result;
 	}
 
 	@GetMapping("/loan/{loanContractNo}")
 	public String getLoanContractByContactNo(@PathVariable("loanContractNo") String loanContactNo){
-		LOG.info("Start query loan loan by contractNo:{}",loanContactNo);
+		logger.info("Start query loan loan by contractNo:{}",loanContactNo);
 		Loan loan = loanService.getLoanByContactNo(loanContactNo);
 
 		String result = "";
 		if(loan != null){
 			result = loan.toString();
 		}
-		LOG.info("Find the Loan Data:" + result);
+		logger.info("Find the Loan Data:" + result);
 		return result;
 	}
 
 	@GetMapping("/loan_formed/{loanId}")
 	public String getFormedLoanById(@PathVariable("loanId") int loanId){
-		LOG.info("Start query loan loan by Id:{}",loanId);
+		logger.info("Start query loan loan by Id:{}",loanId);
 		JSONObject jsonObject = loanService.getFormedLoanDataById(loanId);
 
 		String result = "";
 		if(jsonObject != null){
 			result = JSON.toJSONString(jsonObject);
 		}
-		LOG.info("Find the Formed Loan Data:" + result);
+		logger.info("Find the Formed Loan Data:" + result);
 		return result;
 	}
 
 	@GetMapping("/contract_formed/{contractNo}")
 	public String getFormedContractByContactNo(@PathVariable("contractNo") String contactNo){
-		LOG.info("Start query loan loan by Number:{}",contactNo);
+		logger.info("Start query loan loan by Number:{}",contactNo);
 		JSONObject jsonObject = loanService.getFormedContractDataByContactNo(contactNo);
 
 		String result = "";
 		if(jsonObject != null){
 			result = JSON.toJSONString(jsonObject);
 		}
-		LOG.info("Find the Formed Contract Data:" + result);
+		logger.info("Find the Formed Contract Data:" + result);
 		return result;
 	}
 
@@ -177,7 +186,7 @@ public class LoanRestController {
 
 		String contract = JSON.toJSONString(loanService.getFormedLoanDataById(Integer.parseInt(contractId)));
 
-		LOG.error("发送数据：" + contract);
+		logger.error("发送数据：" + contract);
         RabbitMessage message=new RabbitMessage();
         message.setCreateTime(new Date());
         message.setMessageData(contract);
@@ -212,12 +221,53 @@ public class LoanRestController {
 					loanService.saveLoanOnly(loan);
 				}
 			}
-
+			String email = "";
 			if(isStatusFound){
-				LOG.info("Update Loan status to ：{} for loan: {}", status, contractNo);
+				logger.info("Update Loan status to ：{} for loan: {}", status, contractNo);
+
+				if("Approved Application".equals(status)){
+					try {
+						String title = "Your loan has been approved";
+
+						String tempaltes = maintenanceFeignClient.listEmailTemplateByPortfolioId(1);
+						JSONArray jsonArray = JSON.parseArray(tempaltes);
+						for(Object o : jsonArray){
+							JSONObject jsObject = (JSONObject)o;
+							if("LOS-003".equals(jsObject.getString("code"))){
+								String template = jsObject.getString("template");
+								JSONObject dataObject = new JSONObject();
+
+								Personal personal = loan.getPersonal();
+								if(personal != null){
+									String firstName = personal.getFirstName();
+									if(StringUtils.isEmpty(firstName)){
+										firstName = "";
+									}
+									dataObject.put("firstName", firstName);
+
+									String lastName = personal.getLastName();
+									if(StringUtils.isEmpty(lastName)){
+										lastName = "";
+									}
+									dataObject.put("lastName",lastName);
+
+									email = personal.getEmail();
+								}
+
+								String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+								EmailUtil.emailSender(email,false,title,	content, "","");
+							}
+						}
+						logger.info("Mail has been sent to :" + email);
+					}catch (Exception e){
+						logger.info("Mail sent Failed to :" + email);
+						e.printStackTrace();
+					}
+				}
+
 				return "OK";
 			}else {
-				LOG.error("Invalid status ：{}", status);
+				logger.error("Invalid status ：{}", status);
 				return "NOK";
 			}
 		}else{
