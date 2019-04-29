@@ -94,6 +94,8 @@ spring:
 arb:
   eureka:
     url: panda.arbfintech.com
+  service:
+    url: 54.255.235.134
   database:
     driver: com.mysql.jdbc.Driver
     url: jdbc:mysql://arb-panda.cuxwfpxsyc7c.ap-southeast-1.rds.amazonaws.com/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
