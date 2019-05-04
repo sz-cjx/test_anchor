@@ -62,6 +62,7 @@ public class TimeLineApiService {
 			timelineObj.put("operatorName", additionalObj.getString("operatorName"));
 			timelineObj.put("operatorNo", additionalObj.getString("operatorNo"));
 			timelineObj.put("contractNo", additionalObj.getString("contractNo"));
+			timelineObj.put("appData", additionalObj.getString("appData"));
 		}
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(timelineObj));
 	}

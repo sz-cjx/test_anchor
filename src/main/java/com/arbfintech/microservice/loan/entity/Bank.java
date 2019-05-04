@@ -22,6 +22,12 @@ public class Bank {
 	@Column
 	private String bankName;
 
+	@Column
+	private Integer bankYears;
+
+	@Column
+	private Integer bankMonths;
+
 	@Column(length = 6)
 	private String verifiedBy;
 
@@ -33,6 +39,9 @@ public class Bank {
 
 	@Column(length = 32)
 	private String bankAccountType;
+
+	@Column
+	private String bankAccountTypeText;
 
 	@Column(length = 32)
 	private String bankRoutingNo;
@@ -169,6 +178,22 @@ public class Bank {
 		this.bankName = bankName;
 	}
 
+	public Integer getBankYears() {
+		return bankYears;
+	}
+
+	public void setBankYears(Integer bankYears) {
+		this.bankYears = bankYears;
+	}
+
+	public Integer getBankMonths() {
+		return bankMonths;
+	}
+
+	public void setBankMonths(Integer bankMonths) {
+		this.bankMonths = bankMonths;
+	}
+
 	public String getBankPhone() {
 		return bankPhone;
 	}
@@ -183,6 +208,14 @@ public class Bank {
 
 	public void setBankAccountType(String bankAccountType) {
 		this.bankAccountType = bankAccountType;
+	}
+
+	public String getBankAccountTypeText() {
+		return bankAccountTypeText;
+	}
+
+	public void setBankAccountTypeText(String bankAccountTypeText) {
+		this.bankAccountTypeText = bankAccountTypeText;
 	}
 
 	public String getBankRoutingNo() {

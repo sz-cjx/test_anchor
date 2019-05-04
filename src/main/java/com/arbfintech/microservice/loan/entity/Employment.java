@@ -22,6 +22,9 @@ public class Employment {
 	@Column(length = 10)
 	private Integer payrollType;
 
+	@Column(length = 32)
+	private String payrollTypeText;
+
 	@Column
 	private String employerName;
 
@@ -128,6 +131,14 @@ public class Employment {
 
 	public void setPayrollType(Integer payrollType) {
 		this.payrollType = payrollType;
+	}
+
+	public String getPayrollTypeText() {
+		return payrollTypeText;
+	}
+
+	public void setPayrollTypeText(String payrollTypeText) {
+		this.payrollTypeText = payrollTypeText;
 	}
 
 	public String getEmployerName() {
