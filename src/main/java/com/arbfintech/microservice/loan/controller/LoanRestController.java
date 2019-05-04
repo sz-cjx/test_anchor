@@ -79,8 +79,7 @@ public class LoanRestController {
                               @RequestParam (value = "section")String section,
                               @RequestParam(value ="properties" ) String properties,
 							  @RequestParam(value = "additionalData", required = false) String addictionData){
-        loanService.saveLoanProperty(loanId, section, properties);
-        timeLineApiService.addSaveTimeline(properties, addictionData);
+        loanService.saveLoanProperty(loanId, section, properties, addictionData);
         return "OK";
     }
 
@@ -217,6 +216,7 @@ public class LoanRestController {
 				if (e.getText().equals(status)) {
 					isStatusFound = true;
 					loan.setLoanStatus(e.getValue());
+					loan.setLoanStatusText(status);
 					loan.setUpdateTime((new Date()).getTime());
 					loanService.saveLoanOnly(loan);
 				}

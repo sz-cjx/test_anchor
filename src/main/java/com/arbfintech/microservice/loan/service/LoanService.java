@@ -93,15 +93,18 @@ public class LoanService {
                 Integer oldStatus = LoanStatusEnum.INITIALIZED.getValue();
                 Integer newStatus = LoanStatusEnum.AGENT_REVIEW.getValue();
                 loan.setLoanStatus(newStatus);
+                loan.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
                 loan.setLockedOperatorNo(operatorNo);
                 loan.setLockedOperatorName(operatorName);
                 loan.setLockedAt(DateUtil.getCurrentTimestamp());
+                loan.setUpdateTime(DateUtil.getCurrentTimestamp());
                 loanRepository.save(loan);
 
                 JSONObject additionalObj = new JSONObject();
                 additionalObj.put("operatorNo", operatorNo);
                 additionalObj.put("operatorName", operatorName);
                 additionalObj.put("contractNo", loan.getContractNo());
+                additionalObj.put("appData",JSON.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(oldStatus, newStatus, additionalObj.toJSONString());
             }
         }
@@ -109,7 +112,7 @@ public class LoanService {
         return result;
     }
 
-    public String saveLoanProperty(Integer loanId, String section, String properties) {
+    public String saveLoanProperty(Integer loanId, String section, String properties, String additionalData) {
         String oldStr;
         String newStr;
         logger.info("start to save (section:{}) property:{} ", section, properties);
@@ -145,6 +148,12 @@ public class LoanService {
                     newStr = updatePropertyInJSON(oldStr, properties);
                     Bank newBank = JSON.parseObject(newStr, Bank.class);
                     newBank.setLoanId(loanId);
+
+                    Integer bankAccountType = newBank.getBankAccountType();
+                    if(bankAccountType != null){
+                        newBank.setBankAccountTypeText(EnumUtil.getByValue(BankAccountTypeEnum.class, bankAccountType).getText());
+                    }
+
                     logger.info("Save bank:" + JSON.toJSONString(newBank));
                     bankRepository.save(newBank);
                     break;
@@ -154,6 +163,12 @@ public class LoanService {
                     newStr = updatePropertyInJSON(oldStr, properties);
                     Employment newEmployment = JSON.parseObject(newStr, Employment.class);
                     newEmployment.setLoanId(loanId);
+
+                    Integer payrollType = newEmployment.getPayrollType();
+                    if(payrollType != null){
+                        newEmployment.setPayrollTypeText(EnumUtil.getByValue(PayrollTypeEnum.class, payrollType).getText());
+                    }
+
                     logger.info("Save employ:" + JSON.toJSONString(newEmployment));
                     employmentRepository.save(newEmployment);
                     break;
@@ -179,6 +194,13 @@ public class LoanService {
                     logger.error("invalid section number:{}", sectionNumber);
                     break;
             }
+        }
+
+        if(StringUtils.isNotEmpty(additionalData)){
+            JSONObject jsonObject = JSON.parseObject(additionalData);
+            Loan loan = getSimpleLoanByLoanId(loanId);
+            jsonObject.put("appData",JSON.toJSONString(loan));
+            timeLineApiService.addSaveTimeline(properties, jsonObject.toJSONString());
         }
 
         return "";
@@ -374,6 +396,21 @@ public class LoanService {
         }
         return loan;
     }
+
+    public Loan getSimpleLoanByLoanId(int loanId) {
+        Loan loan = loanRepository.findById(loanId);
+        if (loan != null) {
+            fillPropertyForLoan(loan);
+
+            Payment payment = loan.getPayment();
+            payment.setItems("");
+            loan.setPayment(payment);
+
+
+        }
+        return loan;
+    }
+
 
     /**
      * @param contractNo

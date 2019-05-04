@@ -38,7 +38,7 @@ public class Bank {
 	private String bankPhone;
 
 	@Column(length = 32)
-	private String bankAccountType;
+	private Integer bankAccountType;
 
 	@Column
 	private String bankAccountTypeText;
@@ -202,11 +202,11 @@ public class Bank {
 		this.bankPhone = bankPhone;
 	}
 
-	public String getBankAccountType() {
+	public Integer getBankAccountType() {
 		return bankAccountType;
 	}
 
-	public void setBankAccountType(String bankAccountType) {
+	public void setBankAccountType(Integer bankAccountType) {
 		this.bankAccountType = bankAccountType;
 	}
 
