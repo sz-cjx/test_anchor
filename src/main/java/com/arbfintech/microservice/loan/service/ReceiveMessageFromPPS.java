@@ -45,11 +45,16 @@ public class ReceiveMessageFromPPS {
             if (channel != null && contractArr.size() != 0) {
                 for (Object contractNo : contractArr) {
                     Loan loan=loanRepository.findByContractNo((String) contractNo);
-                    loan.setStatus(LoanStatusEnum.NEW.getValue());
-                    loanRepository.save(loan);
-                    JSONObject additionData = new JSONObject();
-                    additionData.put("contractNo", contractNo);
-                    timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.APPROVED.getValue(), LoanStatusEnum.NEW.getValue(), JSONObject.toJSONString(additionData));
+
+                    if (loan!=null) {
+                        loan.setStatus(LoanStatusEnum.NEW.getValue());
+                        loanRepository.save(loan);
+                        JSONObject additionData = new JSONObject();
+                        additionData.put("contractNo", contractNo);
+                        timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.APPROVED.getValue(), LoanStatusEnum.NEW.getValue(), JSONObject.toJSONString(additionData));
+                    }else {
+                        continue;
+                    }
                 }
             }
         } catch (IOException e) {
