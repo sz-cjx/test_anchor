@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.loan.controller;
+package com.arbfintech.microservice.loan.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.arbfintech.component.core.constant.RabbitOperationConst;

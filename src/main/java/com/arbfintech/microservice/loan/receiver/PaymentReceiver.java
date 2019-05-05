@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.loan.service;
+package com.arbfintech.microservice.loan.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -7,9 +7,10 @@ import com.arbfintech.component.core.constant.RabbitOperationConst;
 import com.arbfintech.component.core.constant.RabbitProducerConst;
 import com.arbfintech.component.core.enumerate.LoanStatusEnum;
 import com.arbfintech.component.core.message.RabbitMessage;
-import com.arbfintech.microservice.loan.controller.LeadReceiver;
+import com.arbfintech.microservice.loan.receiver.LeadReceiver;
 import com.arbfintech.microservice.loan.entity.Loan;
 import com.arbfintech.microservice.loan.repository.LoanRepository;
+import com.arbfintech.microservice.loan.service.TimeLineApiService;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import java.io.IOException;
 
 @Service
 @RabbitListener(queues = RabbitProducerConst.MICROSERVICE_PAYMENT + "." + RabbitOperationConst.SEND_PAYMENT_TO_LOAN)
-public class ReceiveMessageFromPPS {
+public class PaymentReceiver {
 
     private Logger logger = LoggerFactory.getLogger(LeadReceiver.class);
 
