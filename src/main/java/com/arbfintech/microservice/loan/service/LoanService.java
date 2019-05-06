@@ -403,9 +403,24 @@ public class LoanService {
             fillPropertyForLoan(loan);
 
             Payment payment = loan.getPayment();
-            payment.setItems("");
-            loan.setPayment(payment);
+            if(payment!=null) {
+                payment.setItems("");
+                loan.setPayment(payment);
+            }
+        }
+        return loan;
+    }
 
+    public Loan getSimpleLoanByContractNo(String contractNo) {
+        Loan loan = loanRepository.findByContractNo(contractNo);
+        if (loan != null) {
+            fillPropertyForLoan(loan);
+
+            Payment payment = loan.getPayment();
+            if(payment!=null) {
+                payment.setItems("");
+                loan.setPayment(payment);
+            }
 
         }
         return loan;

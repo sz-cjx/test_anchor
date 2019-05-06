@@ -205,12 +205,13 @@ public class LoanRestController {
 
 	@PostMapping("/loan-status")
 	public String updateLoanStatus(@RequestParam(value = "contractNo") String contractNo,
-								   @RequestParam(value = "status") String status){
+								   @RequestParam(value = "status") String status,
+								   @RequestParam(value = "additionalData", required = false) String additionalData){
 
-		Loan loan = loanService.getLoanByContactNo(contractNo);
-
+		Loan loan = loanService.getSimpleLoanByContractNo(contractNo);
 		if (loan !=null) {
 			boolean isStatusFound = false;
+			Integer sourseStatus = loan.getLoanStatus();
 			for (LoanStatusEnum e : LoanStatusEnum.values()) {
 
 				if (e.getText().equals(status)) {
@@ -219,6 +220,10 @@ public class LoanRestController {
 					loan.setLoanStatusText(status);
 					loan.setUpdateTime((new Date()).getTime());
 					loanService.saveLoanOnly(loan);
+
+					JSONObject jsonObject = JSON.parseObject(additionalData);
+					jsonObject.put("appData",JSON.toJSONString(loan));
+					timeLineApiService.addLoanStatusChangeTimeline(sourseStatus,e.getValue(),jsonObject.toJSONString());
 				}
 			}
 			String email = "";
