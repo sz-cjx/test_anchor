@@ -119,7 +119,7 @@ arb:
     username: root
     password: Arbfintech@123
   rabbitmq:
-    host: 192.168.0.100
+    url: 192.168.0.100
     username: Arbfintech
     password: Arbfintech
 ---
