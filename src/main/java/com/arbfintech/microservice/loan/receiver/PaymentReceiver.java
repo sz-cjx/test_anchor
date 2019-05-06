@@ -48,7 +48,7 @@ public class PaymentReceiver {
                     Loan loan=loanRepository.findByContractNo((String) contractNo);
 
                     if (loan!=null) {
-                        loan.setStatus(LoanStatusEnum.NEW.getValue());
+                        loan.setLoanStatus(LoanStatusEnum.NEW.getValue());
                         loanRepository.save(loan);
                         JSONObject additionData = new JSONObject();
                         additionData.put("contractNo", contractNo);
