@@ -1,12 +1,7 @@
 package com.arbfintech.microservice.loan.entity;
 import com.alibaba.fastjson.JSON;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author Wade He
@@ -24,12 +19,18 @@ public class Loan {
 	
 	@Column(length = 10)
 	private Integer leadId;
-	
+
+	@Column(length = 10)
+	private Integer leadStatus;
+
 	@Column(length = 10)
 	private Integer customerId;
 
 	@Column(length = 32, unique = true)
 	private String contractNo;
+
+	@Column(length = 16)
+	private Long receiveTime;
 
 	@Column(length = 16)
 	private Long createTime;
@@ -47,7 +48,10 @@ public class Loan {
 	private Long lockedAt;
 
 	@Column(length = 10)
-	private Integer status;
+	private Integer loanStatus;
+
+	@Column(length = 64)
+	private String loanStatusText;
 
 	@Column(length = 10)
 	private Integer category;
@@ -61,7 +65,7 @@ public class Loan {
     @Column(length = 10)
     private Integer withdrawnCode;
 
-    @Column(length = 255)
+    @Column
 	private String customerIdentifyKey;
 
     @Column(length = 16)
@@ -106,6 +110,14 @@ public class Loan {
 		this.leadId = leadId;
 	}
 
+	public Integer getLeadStatus() {
+		return leadStatus;
+	}
+
+	public void setLeadStatus(Integer leadStatus) {
+		this.leadStatus = leadStatus;
+	}
+
 	public Integer getCustomerId() {
 		return customerId;
 	}
@@ -120,6 +132,14 @@ public class Loan {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public Long getReceiveTime() {
+		return receiveTime;
+	}
+
+	public void setReceiveTime(Long receiveTime) {
+		this.receiveTime = receiveTime;
 	}
 
 	public Long getCreateTime() {
@@ -162,12 +182,20 @@ public class Loan {
 		this.lockedAt = lockedAt;
 	}
 
-	public Integer getStatus() {
-		return status;
+	public Integer getLoanStatus() {
+		return loanStatus;
 	}
 
-	public void setStatus(Integer status) {
-		this.status = status;
+	public void setLoanStatus(Integer loanStatus) {
+		this.loanStatus = loanStatus;
+	}
+
+	public String getLoanStatusText() {
+		return loanStatusText;
+	}
+
+	public void setLoanStatusText(String loanStatusText) {
+		this.loanStatusText = loanStatusText;
 	}
 
 	public Integer getCategory() {

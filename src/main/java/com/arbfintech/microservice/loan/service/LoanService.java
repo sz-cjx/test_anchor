@@ -72,7 +72,7 @@ public class LoanService {
 
     public String getContractNoByCategoryAndStatus(Integer catetory, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
-        Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(catetory, statusList);
+        Loan loan = loanRepository.findTopByCategoryEqualsAndLoanStatusInOrderByCreateTimeDesc(catetory, statusList);
 
         if (loan != null) {
             result = loan.getContractNo();
@@ -83,25 +83,28 @@ public class LoanService {
 
     public String getNewContractNoOfAgentReview(Integer category, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
-        Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(category, statusList);
-        //Loan loan = loanRepository.findTopByCategoryEqualsAndStatusInOrderByCreateTimeDesc(category, statusList);
+        Loan loan = loanRepository.findTopByCategoryEqualsAndLoanStatusInAndLockedOperatorNoIsNullOrderByCreateTimeDesc(category, statusList);
+        //Loan loan = loanRepository.findTopByCategoryEqualsAndLoanStatusInOrderByCreateTimeDesc(category, statusList);
 
         if (loan != null) {
             result = loan.getContractNo();
 
-            if (LoanStatusEnum.INITIALIZED.getValue().equals(loan.getStatus())) {
+            if (LoanStatusEnum.INITIALIZED.getValue().equals(loan.getLoanStatus())) {
                 Integer oldStatus = LoanStatusEnum.INITIALIZED.getValue();
                 Integer newStatus = LoanStatusEnum.AGENT_REVIEW.getValue();
-                loan.setStatus(newStatus);
+                loan.setLoanStatus(newStatus);
+                loan.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
                 loan.setLockedOperatorNo(operatorNo);
                 loan.setLockedOperatorName(operatorName);
                 loan.setLockedAt(DateUtil.getCurrentTimestamp());
+                loan.setUpdateTime(DateUtil.getCurrentTimestamp());
                 loanRepository.save(loan);
 
                 JSONObject additionalObj = new JSONObject();
                 additionalObj.put("operatorNo", operatorNo);
                 additionalObj.put("operatorName", operatorName);
                 additionalObj.put("contractNo", loan.getContractNo());
+                additionalObj.put("appData",JSON.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(oldStatus, newStatus, additionalObj.toJSONString());
             }
         }
@@ -109,7 +112,7 @@ public class LoanService {
         return result;
     }
 
-    public String saveLoanProperty(Integer loanId, String section, String properties) {
+    public String saveLoanProperty(Integer loanId, String section, String properties, String additionalData) {
         String oldStr;
         String newStr;
         logger.info("start to save (section:{}) property:{} ", section, properties);
@@ -145,6 +148,12 @@ public class LoanService {
                     newStr = updatePropertyInJSON(oldStr, properties);
                     Bank newBank = JSON.parseObject(newStr, Bank.class);
                     newBank.setLoanId(loanId);
+
+                    Integer bankAccountType = newBank.getBankAccountType();
+                    if(bankAccountType != null){
+                        newBank.setBankAccountTypeText(EnumUtil.getByValue(BankAccountTypeEnum.class, bankAccountType).getText());
+                    }
+
                     logger.info("Save bank:" + JSON.toJSONString(newBank));
                     bankRepository.save(newBank);
                     break;
@@ -154,6 +163,12 @@ public class LoanService {
                     newStr = updatePropertyInJSON(oldStr, properties);
                     Employment newEmployment = JSON.parseObject(newStr, Employment.class);
                     newEmployment.setLoanId(loanId);
+
+                    Integer payrollType = newEmployment.getPayrollType();
+                    if(payrollType != null){
+                        newEmployment.setPayrollTypeText(EnumUtil.getByValue(PayrollTypeEnum.class, payrollType).getText());
+                    }
+
                     logger.info("Save employ:" + JSON.toJSONString(newEmployment));
                     employmentRepository.save(newEmployment);
                     break;
@@ -179,6 +194,13 @@ public class LoanService {
                     logger.error("invalid section number:{}", sectionNumber);
                     break;
             }
+        }
+
+        if(StringUtils.isNotEmpty(additionalData)){
+            JSONObject jsonObject = JSON.parseObject(additionalData);
+            Loan loan = getSimpleLoanByLoanId(loanId);
+            jsonObject.put("appData",JSON.toJSONString(loan));
+            timeLineApiService.addSaveTimeline(properties, jsonObject.toJSONString());
         }
 
         return "";
@@ -289,7 +311,7 @@ public class LoanService {
         LoanStatusEnum loanStatusEnum = EnumUtil.getByValue(LoanStatusEnum.class, loanStatus);
         logger.info("loanStatus:{}, the Enum Object is:{}", loanStatus, loanStatusEnum);
         if (loanStatusEnum != null) {
-            loans = loanRepository.findAllByStatus(loanStatus);
+            loans = loanRepository.findAllByLoanStatus(loanStatus);
             if (loans != null) {
                 for (Loan loan : loans) {
                     fillPropertyForLoan(loan);
@@ -306,7 +328,7 @@ public class LoanService {
         LoanStatusEnum loanStatusEnum = EnumUtil.getByValue(LoanStatusEnum.class, loanStatus);
         logger.info("loanStatus:{}, the Enum Object is:{}", loanStatus, loanStatusEnum);
         if (loanStatusEnum != null) {
-            loans = loanRepository.findAllByStatusAndCreateTimeAfter(loanStatus, startTime);
+            loans = loanRepository.findAllByLoanStatusAndCreateTimeAfter(loanStatus, startTime.getTime());
             if (loans != null) {
                 for (Loan loan : loans) {
                     fillPropertyForLoan(loan);
@@ -374,6 +396,21 @@ public class LoanService {
         }
         return loan;
     }
+
+    public Loan getSimpleLoanByLoanId(int loanId) {
+        Loan loan = loanRepository.findById(loanId);
+        if (loan != null) {
+            fillPropertyForLoan(loan);
+
+            Payment payment = loan.getPayment();
+            payment.setItems("");
+            loan.setPayment(payment);
+
+
+        }
+        return loan;
+    }
+
 
     /**
      * @param contractNo
@@ -567,8 +604,10 @@ public class LoanService {
         JSONObject jsonBankObj = jsonLeadObject.getJSONObject("bank");
         if (jsonBankObj != null) {
             String keyBankAccountType = "bankAccountType";
+            String keyBankAccountTypeText = "bankAccountTypeText";
             String bankAccountTypeVal = jsonBankObj.getString(keyBankAccountType);
             jsonBankObj.put(keyBankAccountType, EnumUtil.getByCode(BankAccountTypeEnum.class, bankAccountTypeVal).getValue());
+            jsonBankObj.put(keyBankAccountTypeText, EnumUtil.getByCode(BankAccountTypeEnum.class, bankAccountTypeVal).getText());
 
             String bankAccountNoAfterFormat = combineAccountNo(jsonBankObj.getString("bankAccountNo"));
             String bankRoutingNo=jsonBankObj.getString("bankRoutingNo");
@@ -578,8 +617,10 @@ public class LoanService {
         JSONObject jsonEmpObj = jsonLeadObject.getJSONObject("employment");
         if (jsonEmpObj != null) {
             String keyPayrollType = "payrollType";
+            String keyPayrollTypeText = "payrollTypeText";
             String payrollTypeVal = jsonEmpObj.getString(keyPayrollType);
             jsonEmpObj.put(keyPayrollType, EnumUtil.getByCode(PayrollTypeEnum.class, payrollTypeVal).getValue());
+            jsonEmpObj.put(keyPayrollTypeText,EnumUtil.getByCode(PayrollTypeEnum.class, payrollTypeVal).getText());
 
             String keyPayrollFrequency = "payrollFrequency";
             String payrollFrequencyVal = jsonEmpObj.getString(keyPayrollFrequency);
@@ -600,7 +641,8 @@ public class LoanService {
             loan.setContractNo(contractNo);
             loan.setLeadId(loan.getId());
             loan.setId(null);
-            loan.setStatus(LoanStatusEnum.INITIALIZED.getValue());
+            loan.setLoanStatus(LoanStatusEnum.INITIALIZED.getValue());
+            loan.setLoanStatusText(LoanStatusEnum.INITIALIZED.getText());
             loan.setCreateTime(DateUtil.getCurrentTimestamp());
             loan.setUpdateTime(DateUtil.getCurrentTimestamp());
             loan.setCustomerIdentifyKey(customerIdentifyKey);
@@ -671,9 +713,11 @@ public class LoanService {
                 logger.error("No Bank information found in lead.");
             }
 
-
             logger.info("Loan saved success.");
-            //timeLineApiService.addLoanStatusChangeTimeline(contractNo, null, LoanStatusEnum.INITIALIZED.getValue(), "");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("contractNo",contractNo);
+            jsonObject.put("appData", JSON.toJSONString(loan));
+            timeLineApiService.addLoanStatusChangeTimeline(null, LoanStatusEnum.INITIALIZED.getValue(), jsonObject.toJSONString());
         } else {
             logger.error("Can't create a contractNo");
         }
@@ -721,12 +765,12 @@ public class LoanService {
         int i = 0;
 //        for (Integer leadId : leadIds) {
 //            loan = loanContractRepository.findByLeadId(leadId);
-//            if (loan != null && loan.getStatus() == status) {
+//            if (loan != null && loan.getLoanStatus() == status) {
 //                i++;
 //            }
 //        }
 //            List<Loan> loans = loanRepository.getLoanByStatusAndLeadId(status, leadIds);
-        List<Loan> loans = loanRepository.findAllByStatusAndLeadIdIn(status, leadIds);
+        List<Loan> loans = loanRepository.findAllByLoanStatusAndLeadIdIn(status, leadIds);
         if (loans != null) {
             i = loans.size();
         }
@@ -865,9 +909,9 @@ public class LoanService {
 
 
         for (Loan contract : withdrawnLoancs) {
-            if (((contract.getStatus()) & (LoanStatusEnum.POSITIVE.getValue())) == LoanStatusEnum.POSITIVE.getValue()) {
+            if (((contract.getLoanStatus()) & (LoanStatusEnum.POSITIVE.getValue())) == LoanStatusEnum.POSITIVE.getValue()) {
                 reasonsPositive.add(contract.getWithdrawnCode());
-            } else if (((contract.getStatus()) & (LoanStatusEnum.NEGATIVE.getValue())) == LoanStatusEnum.NEGATIVE.getValue()) {
+            } else if (((contract.getLoanStatus()) & (LoanStatusEnum.NEGATIVE.getValue())) == LoanStatusEnum.NEGATIVE.getValue()) {
                 reasonsNegative.add(contract.getWithdrawnCode());
             }
         }
@@ -994,7 +1038,7 @@ public class LoanService {
             for (int i = 0; i < arr.size(); i++) {
                 leads.add((int) arr.get(i));
             }
-            List<Loan> loans = loanRepository.findAllByStatusAndLeadIdIn(status, leads);
+            List<Loan> loans = loanRepository.findAllByLoanStatusAndLeadIdIn(status, leads);
             if (loans != null) {
                 resultCount = loans.size();
 
