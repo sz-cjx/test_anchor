@@ -62,6 +62,7 @@ public class TimeLineApiService {
 			timelineObj.put("operatorName", additionalObj.getString("operatorName"));
 			timelineObj.put("operatorNo", additionalObj.getString("operatorNo"));
 			timelineObj.put("contractNo", additionalObj.getString("contractNo"));
+			timelineObj.put("appData", additionalObj.getString("appData"));
 		}
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(timelineObj));
 	}
@@ -74,6 +75,7 @@ public class TimeLineApiService {
 		String operatorNo ="";
 		String operatorName = "";
 		Integer loanStatus = 0;
+		String appDataStr = "";
 		if(StringUtils.isNotEmpty(additionalData)){
 			JSONObject additionalObj = JSONObject.parseObject(additionalData);
 			loanStatus = additionalObj.getInteger("loanStatus");
@@ -81,6 +83,7 @@ public class TimeLineApiService {
 			operatorNo = additionalObj.getString("operatorNo");
 			operatorName = additionalObj.getString("operatorName");
 			contractNo = additionalObj.getString("contractNo");
+			appDataStr = additionalObj.getString("appData");
 		}
 
 		JSONObject targetSnapshot = new JSONObject();
@@ -97,6 +100,7 @@ public class TimeLineApiService {
 		resultOb.put("note",note);
 		resultOb.put("operatorName", operatorName);
 		resultOb.put("operatorNo", operatorNo);
+		resultOb.put("appData",appDataStr);
 		timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
 
 		return JSONObject.toJSONString(resultOb);

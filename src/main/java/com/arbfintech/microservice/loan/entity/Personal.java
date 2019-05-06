@@ -28,7 +28,7 @@ public class Personal {
 	@Column(length = 32)
 	private String lastName;
 
-	@Column(length = 255)
+	@Column
 	private String fullName;
 
 	@Column(length = 32)
@@ -40,14 +40,26 @@ public class Personal {
 	@Column(length = 32)
 	private String driverLicenseNo;
 
-	@Column(length = 255)
+	@Column
 	private String address1;
 
-	@Column(length = 255)
+	@Column
 	private String address2;
 
-	@Column(length = 255)
+	@Column
 	private String address;
+
+	@Column
+	private Integer addressMonths;
+
+	@Column
+	private Integer addressYears;
+
+	private String rentOrOwn;
+
+	private Boolean otherOffers;
+
+	private Boolean isCitizen;
 
 	@Column(length = 10)
 	private String zip;
@@ -58,7 +70,7 @@ public class Personal {
 	@Column(length = 32)
 	private String mobilePhone;
 
-	@Column(length = 255)
+	@Column
 	private String email;
 
 	@Column(length = 32)
@@ -70,8 +82,7 @@ public class Personal {
 	@Column(length = 32)
 	private String gender;
 
-	@Column(length = 16)
-	private String isMilitary;
+	private Boolean isMilitary;
 
 	@Column(length = 16)
 	private String language;
@@ -96,16 +107,16 @@ public class Personal {
 	private Boolean homePhoneUncontactable;
 
 	@Column(length = 6)
-	private Boolean otherPhoneDoNotCall;
+	private Boolean mobilePhoneDoNotCall;
 
 	@Column(length = 6)
-	private Boolean otherPhoneUncontactable;
+	private Boolean mobilePhoneUncontactable;
 
 	@Column(length = 6)
-	private Boolean otherPhoneSmsOperational;
+	private Boolean mobilePhoneSmsOperational;
 
 	@Column(length = 6)
-	private Boolean otherPhoneSmsMarketing;
+	private Boolean mobilePhoneSmsMarketing;
 
 	@Column(length = 6)
 	private Boolean emailOperational;
@@ -210,6 +221,54 @@ public class Personal {
 		this.address = address;
 	}
 
+	public Integer getAddressMonths() {
+		return addressMonths;
+	}
+
+	public void setAddressMonths(Integer addressMonths) {
+		this.addressMonths = addressMonths;
+	}
+
+	public Integer getAddressYears() {
+		return addressYears;
+	}
+
+	public void setAddressYears(Integer addressYears) {
+		this.addressYears = addressYears;
+	}
+
+	public String getRentOrOwn() {
+		return rentOrOwn;
+	}
+
+	public void setRentOrOwn(String rentOrOwn) {
+		this.rentOrOwn = rentOrOwn;
+	}
+
+	public Boolean getOtherOffers() {
+		return otherOffers;
+	}
+
+	public void setOtherOffers(Boolean otherOffers) {
+		this.otherOffers = otherOffers;
+	}
+
+	public Boolean getCitizen() {
+		return isCitizen;
+	}
+
+	public void setCitizen(Boolean citizen) {
+		isCitizen = citizen;
+	}
+
+	public Boolean getMilitary() {
+		return isMilitary;
+	}
+
+	public void setMilitary(Boolean military) {
+		isMilitary = military;
+	}
+
 	public String getZip() {
 		return zip;
 	}
@@ -266,14 +325,6 @@ public class Personal {
 		this.gender = gender;
 	}
 
-	public String getIsMilitary() {
-		return isMilitary;
-	}
-
-	public void setIsMilitary(String isMilitary) {
-		this.isMilitary = isMilitary;
-	}
-
 	public String getLanguage() {
 		return language;
 	}
@@ -322,12 +373,12 @@ public class Personal {
 		this.homePhoneDoNotCall = homePhoneDoNotCall;
 	}
 
-	public Boolean getOtherPhoneDoNotCall() {
-		return otherPhoneDoNotCall;
+	public Boolean getMobilePhoneDoNotCall() {
+		return mobilePhoneDoNotCall;
 	}
 
-	public void setOtherPhoneDoNotCall(Boolean otherPhoneDoNotCall) {
-		this.otherPhoneDoNotCall = otherPhoneDoNotCall;
+	public void setMobilePhoneDoNotCall(Boolean mobilePhoneDoNotCall) {
+		this.mobilePhoneDoNotCall = mobilePhoneDoNotCall;
 	}
 
 	public Boolean getHomePhoneUncontactable() {
@@ -338,28 +389,28 @@ public class Personal {
 		this.homePhoneUncontactable = homePhoneUncontactable;
 	}
 
-	public Boolean getOtherPhoneUncontactable() {
-		return otherPhoneUncontactable;
+	public Boolean getMobilePhoneUncontactable() {
+		return mobilePhoneUncontactable;
 	}
 
-	public void setOtherPhoneUncontactable(Boolean otherPhoneUncontactable) {
-		this.otherPhoneUncontactable = otherPhoneUncontactable;
+	public void setMobilePhoneUncontactable(Boolean mobilePhoneUncontactable) {
+		this.mobilePhoneUncontactable = mobilePhoneUncontactable;
 	}
 
-	public Boolean getOtherPhoneSmsOperational() {
-		return otherPhoneSmsOperational;
+	public Boolean getMobilePhoneSmsOperational() {
+		return mobilePhoneSmsOperational;
 	}
 
-	public void setOtherPhoneSmsOperational(Boolean otherPhoneSmsOperational) {
-		this.otherPhoneSmsOperational = otherPhoneSmsOperational;
+	public void setMobilePhoneSmsOperational(Boolean mobilePhoneSmsOperational) {
+		this.mobilePhoneSmsOperational = mobilePhoneSmsOperational;
 	}
 
-	public Boolean getOtherPhoneSmsMarketing() {
-		return otherPhoneSmsMarketing;
+	public Boolean getMobilePhoneSmsMarketing() {
+		return mobilePhoneSmsMarketing;
 	}
 
-	public void setOtherPhoneSmsMarketing(Boolean otherPhoneSmsMarketing) {
-		this.otherPhoneSmsMarketing = otherPhoneSmsMarketing;
+	public void setMobilePhoneSmsMarketing(Boolean mobilePhoneSmsMarketing) {
+		this.mobilePhoneSmsMarketing = mobilePhoneSmsMarketing;
 	}
 
 	public Boolean getEmailOperational() {
