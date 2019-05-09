@@ -6,6 +6,8 @@ import com.arbfintech.framework.component.core.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,8 @@ import java.util.HashSet;
  */
 @Service
 public class TimeLineApiService {
-	
+
+	private Logger logger = LoggerFactory.getLogger(TimeLineApiService.class);
 	
 	@Autowired
 	private TimelineFeignClient timelineFeignClient;
@@ -36,9 +39,9 @@ public class TimeLineApiService {
 		return status;
 	}
 
-	public HashSet<String> getTodoContractNo(String operatorNo,Integer evebtType){
-
-		return timelineFeignClient.getToDoListContractNo(operatorNo, evebtType);
+	public HashSet<String> getTodoContractNo(String operatorNo,String operationNameListStr){
+		logger.info("operationNameListStr:" + operationNameListStr);
+		return timelineFeignClient.getToDoListContractNo(operatorNo, operationNameListStr);
 	}
 
 	public String addLoanStatusChangeTimeline(Integer sourceStatus, Integer targetStatus, String additionData){
