@@ -889,20 +889,17 @@ public class LoanService {
         return JSONArray.toJSONString(result);
     }
 
-    public String getTodoListLoanInfo(String operatorNo, Integer eventType) {
-
-        HashSet<String> contractNos = timeLineApiService.getTodoContractNo(operatorNo, eventType);
+    public String getTodoListLoanInfo(String operatorNo, String operationNameListStr) {
+        HashSet<String> contractNos = timeLineApiService.getTodoContractNo(operatorNo, operationNameListStr);
         JSONArray toDoList = new JSONArray();
 
         if (contractNos != null) {
             for (String contractNo : contractNos) {
-
                 Loan loan = getLoanByContactNo(contractNo);
-
                 if (loan != null) {
                     JSONObject contractInfo = getFormedLoanDataById(loan.getId());
                     if (contractInfo != null) {
-                        contractInfo.put("eventType", eventType);
+                        contractInfo.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue());
                         toDoList.add(contractInfo);
                     }
                 }
@@ -969,8 +966,6 @@ public class LoanService {
 
 //        return JSONArray.toJSONString(withdrawnLoancs);
 
-        Util.report(JSONArray.toJSONString(withdrawnLoans));
-
         return JSONArray.toJSONString(withdrawnLoans);
 
     }
@@ -987,9 +982,6 @@ public class LoanService {
         JSONArray returnIdArr = leadIds.getJSONArray("returnIds");
 //        JSONArray purcharsedIddArr = leadIds.getJSONArray("purchasedIds");
         JSONArray purcharsedIddArr = new JSONArray();
-
-        Util.report(JSONArray.toJSONString(newcustIdArr));
-        Util.report(JSONArray.toJSONString(returnIdArr));
 
         JSONObject initSummary = countResult(purcharsedIddArr, returnIdArr, newcustIdArr, LoanStatusEnum.INITIALIZED.getValue());
         JSONObject agentSummary = countResult(purcharsedIddArr, returnIdArr, newcustIdArr, LoanStatusEnum.AGENT_REVIEW.getValue());
