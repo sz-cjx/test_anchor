@@ -1,9 +1,9 @@
 package com.arbfintech.microservice.loan.receiver;
 
 import com.alibaba.fastjson.JSON;
-import com.arbfintech.component.core.constant.RabbitOperationConst;
-import com.arbfintech.component.core.constant.RabbitProducerConst;
-import com.arbfintech.component.core.message.RabbitMessage;
+import com.arbfintech.framework.component.core.constant.RabbitOperationConst;
+import com.arbfintech.framework.component.core.constant.RabbitProducerConst;
+import com.arbfintech.framework.component.core.type.RabbitMessage;
 import com.arbfintech.microservice.loan.service.LoanService;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
