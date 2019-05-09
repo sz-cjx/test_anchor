@@ -2,7 +2,7 @@ package com.arbfintech.microservice.loan.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.component.core.enumerate.EventTypeEnum;
+import com.arbfintech.framework.component.core.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;

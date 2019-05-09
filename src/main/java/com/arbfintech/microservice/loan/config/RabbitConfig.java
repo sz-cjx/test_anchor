@@ -1,8 +1,8 @@
 package com.arbfintech.microservice.loan.config;
 
-import com.arbfintech.component.core.constant.RabbitExchangeConst;
-import com.arbfintech.component.core.constant.RabbitOperationConst;
-import com.arbfintech.component.core.constant.RabbitProducerConst;
+import com.arbfintech.framework.component.core.constant.RabbitExchangeConst;
+import com.arbfintech.framework.component.core.constant.RabbitOperationConst;
+import com.arbfintech.framework.component.core.constant.RabbitProducerConst;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -26,6 +26,5 @@ public class RabbitConfig {
     @Bean
     Binding bindingDirectExchangeMessageContract(Queue queueMessageContract, DirectExchange exchangeContract) {
         return BindingBuilder.bind(queueMessageContract).to(exchangeContract).with(RabbitProducerConst.MICROSERVICE_LOAN+"."+ RabbitOperationConst.SEND_LOAN_TO_PAYMENT);
-
     }
 }

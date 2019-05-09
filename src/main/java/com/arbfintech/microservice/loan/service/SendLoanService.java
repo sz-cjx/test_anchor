@@ -1,10 +1,10 @@
 package com.arbfintech.microservice.loan.service;
 
 import com.alibaba.fastjson.JSON;
-import com.arbfintech.component.core.constant.RabbitExchangeConst;
-import com.arbfintech.component.core.constant.RabbitOperationConst;
-import com.arbfintech.component.core.constant.RabbitProducerConst;
-import com.arbfintech.component.core.message.RabbitMessage;
+import com.arbfintech.framework.component.core.constant.RabbitExchangeConst;
+import com.arbfintech.framework.component.core.constant.RabbitOperationConst;
+import com.arbfintech.framework.component.core.constant.RabbitProducerConst;
+import com.arbfintech.framework.component.core.type.RabbitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;

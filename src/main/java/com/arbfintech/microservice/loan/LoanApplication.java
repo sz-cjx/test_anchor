@@ -1,6 +1,6 @@
 package com.arbfintech.microservice.loan;
 
-import com.arbfintech.component.core.constant.GlobalConst;
+import com.arbfintech.framework.component.core.constant.GlobalConst;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
