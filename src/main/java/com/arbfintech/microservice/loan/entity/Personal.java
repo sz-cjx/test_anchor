@@ -253,19 +253,19 @@ public class Personal {
 		this.otherOffers = otherOffers;
 	}
 
-	public Boolean getCitizen() {
+	public Boolean getIsCitizen() {
 		return isCitizen;
 	}
 
-	public void setCitizen(Boolean citizen) {
+	public void setIsCitizen(Boolean citizen) {
 		isCitizen = citizen;
 	}
 
-	public Boolean getMilitary() {
+	public Boolean getIsMilitary() {
 		return isMilitary;
 	}
 
-	public void setMilitary(Boolean military) {
+	public void setIsMilitary(Boolean military) {
 		isMilitary = military;
 	}
 

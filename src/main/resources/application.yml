@@ -38,12 +38,14 @@ feign:
       cache-server:
         connectTimeout: 600000
         readTimeout: 600000
+  httpclient:
+    connection-timeout: 60000
 ribbon:
   read-timout: 60000
   connect-timeout: 60000
   eager-load:
     enabled: true
-    clients: maintenance-restapi,microservice-business,oauth-server,cache-server,microservice-collect,microservice-lead,microservice-payment
+    clients: microservice-business,cache-server
 spring:
   application:
     name: ${arb.service.name}
