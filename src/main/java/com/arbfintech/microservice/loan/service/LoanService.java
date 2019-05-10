@@ -1157,8 +1157,9 @@ public class LoanService {
         return JSONArray.toJSONString(recentLoanLists);
     }
 
-    public String setFollowUp(String type,String timeData,String cotractNo){
+    public String setFollowUp(String type,String timeData,String contractNo, String additionalData){
         long followUpDatetime = 0;
+
         JSONObject dateObj = JSONObject.parseObject(timeData);
         if (("relative").equals(type)){
             Calendar cal = Calendar.getInstance();
@@ -1175,12 +1176,14 @@ public class LoanService {
         }else{
             logger.error("Save Follow Up Date Time failed!");
         }
-        Loan loan=loanRepository.findByContractNo(cotractNo);
+        Loan loan=loanRepository.findByContractNo(contractNo);
 
         if (loan!=null){
             loan.setFollowUp(followUpDatetime);
             loanRepository.save(loan);
         }
+
+        timeLineApiService.addFollowUpTimeline(contractNo, additionalData);
         return JSONObject.toJSONString(loan);
     }
 
