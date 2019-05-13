@@ -9,10 +9,7 @@ import com.arbfintech.framework.component.core.type.RabbitMessage;
 import com.arbfintech.framework.component.core.util.EmailUtil;
 import com.arbfintech.framework.component.core.util.FreeMarkerUtil;
 import com.arbfintech.microservice.loan.client.MaintenanceFeignClient;
-import com.arbfintech.microservice.loan.entity.Customer;
-import com.arbfintech.microservice.loan.entity.Loan;
-import com.arbfintech.microservice.loan.entity.LoanOverView;
-import com.arbfintech.microservice.loan.entity.Personal;
+import com.arbfintech.microservice.loan.entity.*;
 import com.arbfintech.microservice.loan.service.LoanService;
 import com.arbfintech.microservice.loan.service.SendLoanService;
 import com.arbfintech.microservice.loan.service.TimeLineApiService;
@@ -208,7 +205,7 @@ public class LoanRestController {
 								   @RequestParam(value = "status") String status,
 								   @RequestParam(value = "additionalData", required = false) String additionalData){
 
-		Loan loan = loanService.getSimpleLoanByContractNo(contractNo);
+		Loan loan = loanService.getLoanByContactNo(contractNo);
 		if (loan !=null) {
 			boolean isStatusFound = false;
 			Integer sourseStatus = loan.getLoanStatus();
@@ -222,6 +219,11 @@ public class LoanRestController {
 					loanService.saveLoanOnly(loan);
 
 					JSONObject jsonObject = JSON.parseObject(additionalData);
+					Payment payment = loan.getPayment();
+					if(payment!=null) {
+						payment.setItems("");
+						loan.setPayment(payment);
+					}
 					jsonObject.put("appData",JSON.toJSONString(loan));
 					timeLineApiService.addLoanStatusChangeTimeline(sourseStatus,e.getValue(),jsonObject.toJSONString());
 				}
