@@ -120,8 +120,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.arbfintech.component</groupId>
-            <artifactId>algorithm</artifactId>
+            <groupId>com.arbfintech.framework</groupId>
+            <artifactId>component.algorithm</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
