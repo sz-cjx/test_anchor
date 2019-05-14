@@ -19,4 +19,8 @@ public interface TimelineFeignClient {
 	public HashSet getToDoListContractNo(@RequestParam(value = "operatorNo") String operatorNo,
 										 @RequestParam(value = "operationNameList") String operationNameListStr);
 
+	@GetMapping("/loan-timelines/new-loan")
+	public String getContractNoByEventTypeAndOperatorNo(@RequestParam(value = "operatorNo") String operatorNo,
+														@RequestParam(value = "eventType") Integer eventType);
+
 }

@@ -109,6 +109,12 @@ public class TimeLineApiService {
 		return JSONObject.toJSONString(resultOb);
 	}
 
+
+	public JSONArray getWorkedConteactNo(String operatorNo, Integer eventType){
+		String contractNos=timelineFeignClient.getContractNoByEventTypeAndOperatorNo(operatorNo, eventType);
+		return JSONArray.parseArray(contractNos);
+	}
+
 	public String addFollowUpTimeline(String contractNo, String additionalStr){
 		JSONObject resultOb = new JSONObject();
 

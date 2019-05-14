@@ -71,8 +71,11 @@ public class Loan {
     @Column(length = 16)
 	private Long followUp;
 
-	@Transient
-	private Personal personal;
+    @Column(length = 32)
+    private String operatorNo;
+
+    @Transient
+    private Personal personal;
 
 	@Transient
 	private Bank bank;
@@ -286,8 +289,13 @@ public class Loan {
 		this.document = document;
 	}
 
+    public String getOperatorNo() {
+        return operatorNo;
+    }
 
-
+    public void setOperatorNo(String operatorNo) {
+        this.operatorNo = operatorNo;
+    }
 
 	@Override
     public String toString() {

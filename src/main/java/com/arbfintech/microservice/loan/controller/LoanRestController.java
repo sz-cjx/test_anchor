@@ -14,6 +14,7 @@ import com.arbfintech.microservice.loan.service.LoanService;
 import com.arbfintech.microservice.loan.service.SendLoanService;
 import com.arbfintech.microservice.loan.service.TimeLineApiService;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.cert.ocsp.Req;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,6 +217,8 @@ public class LoanRestController {
 					loan.setLoanStatus(e.getValue());
 					loan.setLoanStatusText(status);
 					loan.setUpdateTime((new Date()).getTime());
+					loan.setLockedOperatorNo(null);
+					loan.setLockedOperatorName(null);
 					loanService.saveLoanOnly(loan);
 
 					JSONObject jsonObject = JSON.parseObject(additionalData);
@@ -364,4 +367,11 @@ public class LoanRestController {
 							  @RequestParam(value = "additionalData")String additionalData){
 		return loanService.setFollowUp(type, timeData, contractNo, additionalData);
 	}
+
+	@GetMapping("/generation/newloan")
+	public String generateNewLoan(@RequestParam(value = "operatorNo")String operatorNo,
+								  @RequestParam(value = "loanStatus")Integer loanStatus){
+		return loanService.generateNewLoan(operatorNo,loanStatus);
+	}
+
 }
