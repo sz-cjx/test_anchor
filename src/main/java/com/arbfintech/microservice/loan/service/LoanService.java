@@ -1199,7 +1199,7 @@ public class LoanService {
                 List<Integer> loanStatusList = new ArrayList<>();
                 loanStatusList.add(LoanStatusEnum.INITIALIZED.getValue());
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
-                String lockedLoanNo = getLoackedLoan(portfolioId, operaterNo, loanStatusList);
+                String lockedLoanNo = getLockedLoan(portfolioId, operaterNo, loanStatusList);
 
                 if (("notEnoughLockedLoans").equals(lockedLoanNo)) {
                     String followupContractNo = getfollowUpLoans(portfolioId, operaterNo);
@@ -1225,7 +1225,7 @@ public class LoanService {
 
                 List<Integer> loanStatusList = new ArrayList<>();
                 loanStatusList.add(loanStatus);
-                String lockedLoanNo = getLoackedLoan(portfolioId, operaterNo, loanStatusList);
+                String lockedLoanNo = getLockedLoan(portfolioId, operaterNo, loanStatusList);
 
                 if (("notEnoughLockedLoans").equals(lockedLoanNo)) {
                     contractNo = getNewApplication(operaterNo, loanStatusList,level);
@@ -1261,14 +1261,14 @@ public class LoanService {
      * @param operaterNo
      * @return
      */
-    public String getLoackedLoan(Integer portfolioId,String operaterNo,List<Integer> loanStatus){
+    public String getLockedLoan(Integer portfolioId,String operaterNo,List<Integer> loanStatus){
         String newLoanContractNo = "";
         List<Loan> lockedLoans=loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(operaterNo, portfolioId,loanStatus);
         if (lockedLoans!=null){
             if (lockedLoans.size()<2){
                 newLoanContractNo = "notEnoughLockedLoans";
             }else{
-                sortLoanByLoackedTime(lockedLoans);
+                sortLoanByLockedTime(lockedLoans);
                 newLoanContractNo=lockedLoans.get(0).getContractNo();
             }
         }
@@ -1372,7 +1372,7 @@ public class LoanService {
      * sort loans by lockedTime DESC
      * @param loans
      */
-    public void sortLoanByLoackedTime(List<Loan> loans) {
+    public void sortLoanByLockedTime(List<Loan> loans) {
         Collections.sort(loans, new Comparator<Loan>() {
             @Override
             public int compare(Loan loan1, Loan loan2) {
