@@ -327,10 +327,11 @@ public class LoanRestController {
 	}
 
 	@GetMapping("/todo-list")
-	public String getToDolist(@RequestParam(value = "operatorNo") String operatorNo,
-							  @RequestParam(value = "operationNameList") String operationNameListStr){
+	public String getToDoList(@RequestParam(value = "operatorNo") String operatorNo,
+							  @RequestParam(value = "operationNameList") String operationNameListStr,
+							  @RequestParam(value = "queryStatusList") String queryStatusList){
 
-		String toDoArr= loanService.getTodoListLoanInfo(operatorNo,operationNameListStr);
+		String toDoArr= loanService.getTodoListLoanInfo(operatorNo,operationNameListStr, queryStatusList);
 
 		return toDoArr;
 	}

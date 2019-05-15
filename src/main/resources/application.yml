@@ -115,12 +115,12 @@ arb:
     password: 3JU6BvkC^1iI@LN5
 ---
 spring:
-  profiles: debug
+  profiles: slave_local
 arb:
   eureka:
     url: localhost
   service:
-    url: 192.168.0.23
+    url: localhost
   database:
     driver: com.mysql.jdbc.Driver
     url: jdbc:mysql://192.168.0.100/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
