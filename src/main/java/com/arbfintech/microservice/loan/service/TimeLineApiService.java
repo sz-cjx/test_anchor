@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -39,9 +40,9 @@ public class TimeLineApiService {
 		return status;
 	}
 
-	public HashSet<String> getTodoContractNo(String operatorNo,String operationNameListStr){
+	public HashSet<String> getTodoContractNo(String operatorNo,String operationNameListStr, String queryStatusList){
 		logger.info("operationNameListStr:" + operationNameListStr);
-		return timelineFeignClient.getToDoListContractNo(operatorNo, operationNameListStr);
+		return timelineFeignClient.getToDoListContractNo(operatorNo, operationNameListStr, queryStatusList);
 	}
 
 	public String addLoanStatusChangeTimeline(Integer sourceStatus, Integer targetStatus, String additionData){

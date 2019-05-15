@@ -877,8 +877,8 @@ public class LoanService {
         return JSONArray.toJSONString(result);
     }
 
-    public String getTodoListLoanInfo(String operatorNo, String operationNameListStr) {
-        HashSet<String> contractNos = timeLineApiService.getTodoContractNo(operatorNo, operationNameListStr);
+    public String getTodoListLoanInfo(String operatorNo, String operationNameListStr, String queryStatusList) {
+        HashSet<String> contractNos = timeLineApiService.getTodoContractNo(operatorNo, operationNameListStr,queryStatusList);
         JSONArray toDoList = new JSONArray();
 
         if (contractNos != null) {
