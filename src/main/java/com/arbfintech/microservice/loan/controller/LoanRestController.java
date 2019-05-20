@@ -364,9 +364,8 @@ public class LoanRestController {
 	@PostMapping("/follow-up")
 	public String setFollowUp(@RequestParam(value = "type") String type,
 							  @RequestParam(value = "timeData")String timeData,
-							  @RequestParam(value = "contractNo")String contractNo,
-							  @RequestParam(value = "additionalData")String additionalData){
-		return loanService.setFollowUp(type, timeData, contractNo, additionalData);
+							  @RequestParam(value = "contractNo")String contractNo){
+		return loanService.setFollowUp(type, timeData, contractNo);
 	}
 
 	@GetMapping("/generation/newloan")

@@ -1148,7 +1148,10 @@ public class LoanService {
         return JSONArray.toJSONString(recentLoanLists);
     }
 
-    public String setFollowUp(String type,String timeData,String contractNo, String additionalData){
+    public String setFollowUp(String type,String timeData,String contractNo){
+
+        JSONObject additionObj = new JSONObject();
+
         long followUpDatetime = 0;
 
         JSONObject dateObj = JSONObject.parseObject(timeData);
@@ -1174,7 +1177,10 @@ public class LoanService {
             loanRepository.save(loan);
         }
 
-        timeLineApiService.addFollowUpTimeline(contractNo, additionalData);
+        additionObj.put("operatorNo", loan.getLockedOperatorNo());
+        additionObj.put("operatorName", loan.getLockedOperatorName());
+
+        timeLineApiService.addFollowUpTimeline(contractNo, JSONObject.toJSONString(additionObj));
         return JSONObject.toJSONString(loan);
     }
 
