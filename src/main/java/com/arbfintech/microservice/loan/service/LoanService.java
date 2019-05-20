@@ -12,13 +12,13 @@ import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.microservice.loan.client.BusinessFeignClient;
 import com.arbfintech.microservice.loan.client.EmployeeFeignClient;
+import com.arbfintech.microservice.loan.client.GrabLoanFeignClient;
 import com.arbfintech.microservice.loan.client.RuntimeFeignClient;
 import com.arbfintech.microservice.loan.entity.*;
 import com.arbfintech.microservice.loan.repository.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +72,9 @@ public class LoanService {
 
     @Autowired
     private EmployeeFeignClient employeeFeignClient;
+
+    @Autowired
+    private GrabLoanFeignClient grabLoanFeignClient;
 
 
     public String getContractNoByCategoryAndStatus(Integer catetory, List<Integer> statusList, String operatorNo, String operatorName) {
@@ -1423,6 +1426,86 @@ public class LoanService {
                 }
             }
         });
+    }
+
+
+    /**
+     * 提出Grab Loan
+     * @param contractNo
+     * @param operatorNo
+     * @return
+     */
+    public String grabLoan(String contractNo,String operatorNo,String operatorName){
+
+        String result = "";
+        Loan loan=loanRepository.findByContractNo(contractNo);
+        Timer timer = new Timer();
+        if (loan!=null){
+            String grabTargetOperatorNo=loan.getLockedOperatorNo();
+            String agentLevelStr = employeeFeignClient.getAgentLevel(operatorNo);
+            String targetAgentLevelStr=employeeFeignClient.getAgentLevel(grabTargetOperatorNo);
+
+            JSONObject agentLevelObj = JSONObject.parseObject(agentLevelStr);
+            JSONObject targetAgentLevelObj=JSONObject.parseObject(targetAgentLevelStr);
+
+            Integer agentLevel = agentLevelObj.getInteger("level");
+            Integer targetAgentLevel = targetAgentLevelObj.getInteger("level");
+
+            JSONObject grabInfoObj = new JSONObject();
+            grabInfoObj.put("contractNo", contractNo);
+            grabInfoObj.put("grabBy", operatorNo);
+            grabInfoObj.put("grabTarget", grabTargetOperatorNo);
+
+            if (agentLevel>targetAgentLevel){
+                grabInfoObj.put("isToSubordinate", 1);
+                logger.error(JSONObject.toJSONString(grabInfoObj));
+                result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
+                DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),operatorNo,operatorName,grabLoanFeignClient,loanRepository);
+                timer.schedule(delayTask,5*60*1000);
+            }else if(agentLevel<targetAgentLevel){
+                result ="false";
+            }else {
+                grabInfoObj.put("isToSubordinate", 2);
+                result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
+            }
+        }
+        if (StringUtils.isNotEmpty(result)){
+            return result;
+        }else {
+            logger.error("Grab Loan Failed!");
+            return "Grab Loan Failed!";
+        }
+    }
+
+
+    public String acceptGrabLoan(Integer grabId){
+
+        String grabResultStr = grabLoanFeignClient.acceptGrab(grabId);
+
+        if (StringUtils.isNotEmpty(grabResultStr)){
+
+            Loan loan=loanRepository.findByContractNo(JSONObject.parseObject(grabResultStr).getString("contractNo"));
+
+            String operatoeNo = JSONObject.parseObject(grabResultStr).getString("grabBy");
+            String employeeInfo = employeeFeignClient.getAgentLevel(operatoeNo);
+            String operatorName=JSONObject.parseObject(employeeInfo).getString("employeeFullName");
+
+            loan.setLockedAt(DateUtil.getCurrentTimestamp());
+            loan.setLockedOperatorNo(operatoeNo);
+            loan.setLockedOperatorName(operatorName);
+            loan.setOperatorNo(operatoeNo);
+            Loan grabbedLoanInfo=loanRepository.save(loan);
+            return JSONObject.toJSONString(grabbedLoanInfo);
+        }else {
+            return "false";
+        }
+
+    }
+
+    public String rejectGrabLoan(Integer grabId){
+        String grabResultStr = grabLoanFeignClient.rejectGrab(grabId);
+
+        return grabResultStr;
     }
 
 

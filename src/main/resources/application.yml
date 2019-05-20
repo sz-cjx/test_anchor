@@ -149,6 +149,23 @@ arb:
     password: Arbfintech
 ---
 spring:
+  profiles: user-99
+arb:
+  eureka:
+    url: 192.168.0.99
+  service:
+    url: 192.168.0.99
+  database:
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.0.100/panda?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+    username: root
+    password: Arbfintech@123
+  rabbitmq:
+    url: 192.168.0.100
+    username: Arbfintech
+    password: Arbfintech
+---
+spring:
   profiles: test
 arb:
   eureka:

@@ -375,4 +375,23 @@ public class LoanRestController {
 		return loanService.generateNewLoan(operatorNo,loanStatus);
 	}
 
+
+	@PostMapping("/grab-loan")
+	public String grabLoan(@RequestParam(value = "contractNo") String contractNo,
+						   @RequestParam(value = "operatorNo") String operatorNo,
+						   @RequestParam(value = "operatorName")String operatorName) {
+		return loanService.grabLoan(contractNo, operatorNo,operatorName);
+	}
+
+
+	@PostMapping("/grab-loan-accept")
+	public String acceptGrab(@RequestParam(value = "grabId")Integer grabId){
+		return loanService.acceptGrabLoan(grabId);
+	}
+
+	@PostMapping("/grab-loan-reject")
+	public String rejectGrabLoan(@RequestParam(value = "grabId") Integer grabId){
+		return loanService.rejectGrabLoan(grabId);
+	}
+
 }
