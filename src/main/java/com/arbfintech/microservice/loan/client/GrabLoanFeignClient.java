@@ -14,7 +14,8 @@ public interface GrabLoanFeignClient {
     public String fetchGrabbedLoans(@RequestParam(value = "operatorNo") String operatorNo);
 
     @GetMapping("/grab-loan/time-out")
-    public String handleGrabLoanTimeOut(@RequestParam(value = "grabLoanId") Integer grabLoanId);
+    public String handleGrabLoanTimeOut(@RequestParam(value = "grabLoanId") Integer grabLoanId,
+                                        @RequestParam(value = "levelFlag")Integer levelFlag);
 
     @PostMapping("/grab-accept")
     public String acceptGrab(@RequestParam(value = "grabId") Integer grabId);

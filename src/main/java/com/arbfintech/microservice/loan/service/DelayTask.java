@@ -10,8 +10,9 @@ public class DelayTask extends TimerTask {
 
 
     private Integer grabId;
-
+    private Integer levelFlag;
     private String operatorNo;
+
 
     private String operatorName;
 
@@ -19,8 +20,9 @@ public class DelayTask extends TimerTask {
     private LoanRepository loanRepository;
 
 
-    public DelayTask(Integer grabId,String operatorNo,String operatorName,GrabLoanFeignClient grabLoanFeignClient,LoanRepository loanRepository){
+    public DelayTask(Integer grabId,Integer levelFlag,String operatorNo,String operatorName,GrabLoanFeignClient grabLoanFeignClient,LoanRepository loanRepository){
         this.grabId = grabId;
+        this.levelFlag = levelFlag;
         this.operatorNo = operatorNo;
         this.operatorName = operatorName;
         this.grabLoanFeignClient = grabLoanFeignClient;
@@ -30,18 +32,20 @@ public class DelayTask extends TimerTask {
     @Override
     public void run() {
 
-        String grabResult = grabLoanFeignClient.handleGrabLoanTimeOut(grabId);
+        String grabResult = grabLoanFeignClient.handleGrabLoanTimeOut(grabId,levelFlag);
 
         if (!("false").equals(grabResult) || !("error").equals(grabResult)) {
 
             Loan loan = loanRepository.findByContractNo(grabResult);
 
-            if (loan != null) {
-                loan.setLockedOperatorName(operatorName);
-                loan.setOperatorNo(operatorNo);
-                loan.setLockedOperatorNo(operatorNo);
-                loan.setLockedAt(DateUtil.getCurrentTimestamp());
-                loanRepository.save(loan);
+            if (levelFlag==1) {
+                if (loan != null) {
+                    loan.setLockedOperatorName(operatorName);
+                    loan.setOperatorNo(operatorNo);
+                    loan.setLockedOperatorNo(operatorNo);
+                    loan.setLockedAt(DateUtil.getCurrentTimestamp());
+                    loanRepository.save(loan);
+                }
             }
         }
 
