@@ -393,4 +393,8 @@ public class LoanRestController {
 		return loanService.rejectGrabLoan(grabId);
 	}
 
+	@PostMapping("/unlock")
+	public String unlockLoan(@RequestParam(value = "contractNo")String contractNo){
+		return loanService.unlockLoan(contractNo);
+	}
 }
