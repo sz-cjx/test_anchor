@@ -1357,9 +1357,9 @@ public class LoanService {
         List<Loan> newloans = new ArrayList<>();
         if (agentCategory!=null &&agentLevel!=null){
             if(agentCategory==2){
-                newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel,loanSatus);
+                newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel,loanSatus,operatorNo);
             }else {
-                newloans=loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanSatus);
+                newloans=loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanSatus,operatorNo);
             }
             if (newloans.size()>0){
                 contractNo = newloans.get(0).getContractNo();
