@@ -1517,4 +1517,27 @@ public class LoanService {
     }
 
 
+    public String unlockLoan(String contractNo){
+        String result = "";
+        Loan loan=loanRepository.findByContractNo(contractNo);
+        if (loan!=null){
+            loan.setLockedOperatorName(null);
+            loan.setLockedOperatorNo(null);
+            loan.setLockedAt(null);
+            loan.setFollowUp(null);
+            Loan resultLoan=loanRepository.save(loan);
+            result = JSONObject.toJSONString(resultLoan);
+        }else {
+            logger.error("Get Unlocked Loan Failed,Please Check And Make Sure The Loan Number Correct!");
+            result = "false";
+        }
+
+        if (StringUtils.isNotEmpty(result)){
+            return result;
+        }else {
+            return "false";
+        }
+
+    }
+
 }
