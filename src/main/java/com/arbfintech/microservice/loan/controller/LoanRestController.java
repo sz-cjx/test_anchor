@@ -14,7 +14,6 @@ import com.arbfintech.microservice.loan.service.LoanService;
 import com.arbfintech.microservice.loan.service.SendLoanService;
 import com.arbfintech.microservice.loan.service.TimeLineApiService;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.cert.ocsp.Req;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,8 +180,9 @@ public class LoanRestController {
     @PostMapping("/message")
 	public String sendMessageTest(@RequestParam(value = "contractId") String contractId) {
 
-		String contract = JSON.toJSONString(loanService.getFormedLoanDataById(Integer.parseInt(contractId)));
-
+		JSONObject formatLoan = loanService.getFormedLoanDataById(Integer.parseInt(contractId));
+		formatLoan.put("bankInterestDue", 0);
+		String contract = JSON.toJSONString(formatLoan);
 		logger.error("发送数据：" + contract);
         RabbitMessage message=new RabbitMessage();
         message.setCreateTime(new Date());
