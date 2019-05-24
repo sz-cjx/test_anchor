@@ -41,8 +41,6 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
 
     List<Loan> findAllByCustomerIdentifyKey(String customerIdentifyKey);
 
-
-
     List<Loan> findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(String operatoorNo,Integer portfolioId,List<Integer> loanStatus);
     List<Loan> findAllByOperatorNoAndPortfolioId(String operatorNo, Integer portfolioId);
 

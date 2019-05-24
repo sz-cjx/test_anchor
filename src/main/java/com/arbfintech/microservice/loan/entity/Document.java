@@ -49,6 +49,12 @@ public class Document {
 	@Column(length = 255)
 	private String previewUrl;
 
+	@Column(length = 255)
+	private String signerIpAddress;
+
+	@Column(length = 255)
+	private String documentId;
+
 	public Integer getId() {
 		return id;
 	}
@@ -143,6 +149,22 @@ public class Document {
 
 	public void setPreviewUrl(String previewUrl) {
 		this.previewUrl = previewUrl;
+	}
+
+	public String getDocumentId() {
+		return documentId;
+	}
+
+	public void setDocumentId(String documentId) {
+		this.documentId = documentId;
+	}
+
+	public String getSignerIpAddress() {
+		return signerIpAddress;
+	}
+
+	public void setSignerIpAddress(String signerIpAddress) {
+		this.signerIpAddress = signerIpAddress;
 	}
 
 	@Override
