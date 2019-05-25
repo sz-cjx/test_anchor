@@ -586,6 +586,15 @@ public class LoanService {
         fillContractAttr(jsonObject, "portfolioNsfFee", StringUtil.toCurrency(portfolio.getNsfFee()));
         fillContractAttr(jsonObject, "portfolioFax", portfolio.getFax());
         fillContractAttr(jsonObject, "portfolioWebsite", portfolio.getWebsite());
+
+        String sbMailingAddress = (StringUtils.isEmpty(portfolio.getAddress()) ? "" : portfolio.getAddress()) +
+                " " +
+                (StringUtils.isEmpty(portfolio.getCity()) ? "" : portfolio.getCity()) +
+                " " +
+                (StringUtils.isEmpty(portfolio.getState()) ? "" : portfolio.getState()) +
+                " " +
+                (StringUtils.isEmpty(portfolio.getZip()) ? "" : portfolio.getZip());
+        fillContractAttr(jsonObject, "portfolioMailingAddress", sbMailingAddress);
         return jsonObject;
     }
 
