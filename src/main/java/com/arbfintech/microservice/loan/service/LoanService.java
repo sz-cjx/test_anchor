@@ -1476,14 +1476,14 @@ public class LoanService {
                 logger.error(JSONObject.toJSONString(grabInfoObj));
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),1,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
-                timer.schedule(delayTask,5*60*1000);
+                timer.schedule(delayTask,5*1000);
             }else if(agentLevel<targetAgentLevel){
                 result ="false";
             }else {
                 grabInfoObj.put("isToSubordinate", 2);
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),2,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
-                timer.schedule(delayTask,25*60*1000);
+                timer.schedule(delayTask,25*1000);
             }
         }
         if (StringUtils.isNotEmpty(result)){
