@@ -124,6 +124,36 @@ public class Personal {
 	@Column(length = 6)
 	private Boolean emailMarketing;
 
+	@Column
+	private Boolean personalPersonalInformationVerify;
+	@Column
+	private Boolean personalContactInformationVerify;
+	@Column
+	private Boolean personalReferencesVerify;
+
+	public Boolean getPersonalPersonalInformationVerify() {
+		return personalPersonalInformationVerify;
+	}
+
+	public void setPersonalPersonalInformationVerify(Boolean personalPersonalInformationVerify) {
+		this.personalPersonalInformationVerify = personalPersonalInformationVerify;
+	}
+
+	public Boolean getPersonalContactInformationVerify() {
+		return personalContactInformationVerify;
+	}
+
+	public void setPersonalContactInformationVerify(Boolean personalContactInformationVerify) {
+		this.personalContactInformationVerify = personalContactInformationVerify;
+	}
+
+	public Boolean getPersonalReferencesVerify() {
+		return personalReferencesVerify;
+	}
+
+	public void setPersonalReferencesVerify(Boolean personalReferencesVerify) {
+		this.personalReferencesVerify = personalReferencesVerify;
+	}
 
 	public Integer getId() {
 		return id;
