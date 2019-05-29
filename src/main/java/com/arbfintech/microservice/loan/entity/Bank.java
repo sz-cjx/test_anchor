@@ -138,6 +138,47 @@ public class Bank {
 	@Lob
 	private String bankDeposits;
 
+	@Column
+	private Boolean bankBankBalanceDepositsVerify;
+	@Column
+	private Boolean bankPayrollInformationVerify;
+	@Column
+	private Boolean bankDecisionLogicVerify;
+	@Column
+	private Boolean bankBankInformationVerify;
+
+	public Boolean getBankBankBalanceDepositsVerify() {
+		return bankBankBalanceDepositsVerify;
+	}
+
+	public void setBankBankBalanceDepositsVerify(Boolean bankBankBalanceDepositsVerify) {
+		this.bankBankBalanceDepositsVerify = bankBankBalanceDepositsVerify;
+	}
+
+	public Boolean getBankPayrollInformationVerify() {
+		return bankPayrollInformationVerify;
+	}
+
+	public void setBankPayrollInformationVerify(Boolean bankPayrollInformationVerify) {
+		this.bankPayrollInformationVerify = bankPayrollInformationVerify;
+	}
+
+	public Boolean getBankDecisionLogicVerify() {
+		return bankDecisionLogicVerify;
+	}
+
+	public void setBankDecisionLogicVerify(Boolean bankDecisionLogicVerify) {
+		this.bankDecisionLogicVerify = bankDecisionLogicVerify;
+	}
+
+	public Boolean getBankBankInformationVerify() {
+		return bankBankInformationVerify;
+	}
+
+	public void setBankBankInformationVerify(Boolean bankBankInformationVerify) {
+		this.bankBankInformationVerify = bankBankInformationVerify;
+	}
+
 	public Integer getId() {
 		return id;
 	}

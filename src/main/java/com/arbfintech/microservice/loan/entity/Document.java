@@ -55,6 +55,27 @@ public class Document {
 	@Column(length = 255)
 	private String documentId;
 
+	@Column
+	private Boolean documentLoanAgreementVerify;
+	@Column
+	private Boolean documentLoanAgreementStatusVerify;
+
+	public Boolean getDocumentLoanAgreementVerify() {
+		return documentLoanAgreementVerify;
+	}
+
+	public void setDocumentLoanAgreementVerify(Boolean documentLoanAgreementVerify) {
+		this.documentLoanAgreementVerify = documentLoanAgreementVerify;
+	}
+
+	public Boolean getDocumentLoanAgreementStatusVerify() {
+		return documentLoanAgreementStatusVerify;
+	}
+
+	public void setDocumentLoanAgreementStatusVerify(Boolean documentLoanAgreementStatusVerify) {
+		this.documentLoanAgreementStatusVerify = documentLoanAgreementStatusVerify;
+	}
+
 	public Integer getId() {
 		return id;
 	}

@@ -68,6 +68,27 @@ public class Payment {
 	@Lob
 	private String items;
 
+	@Column
+	private Boolean paymentPaymentPlanOptionsVerify;
+	@Column
+	private Boolean paymentPaymentScheduleVerify;
+
+	public Boolean getPaymentPaymentPlanOptionsVerify() {
+		return paymentPaymentPlanOptionsVerify;
+	}
+
+	public void setPaymentPaymentPlanOptionsVerify(Boolean paymentPaymentPlanOptionsVerify) {
+		this.paymentPaymentPlanOptionsVerify = paymentPaymentPlanOptionsVerify;
+	}
+
+	public Boolean getPaymentPaymentScheduleVerify() {
+		return paymentPaymentScheduleVerify;
+	}
+
+	public void setPaymentPaymentScheduleVerify(Boolean paymentPaymentScheduleVerify) {
+		this.paymentPaymentScheduleVerify = paymentPaymentScheduleVerify;
+	}
+
 	public Integer getId() {
 		return id;
 	}

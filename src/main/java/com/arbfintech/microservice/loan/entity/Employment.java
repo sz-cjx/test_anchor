@@ -109,6 +109,17 @@ public class Employment {
 	@Column(length = 32)
 	private Boolean supervisorPhoneUncontactable;
 
+	@Column
+	private Boolean employmentEmploymentInformationVerify;
+
+	public Boolean getEmploymentEmploymentInformationVerify() {
+		return employmentEmploymentInformationVerify;
+	}
+
+	public void setEmploymentEmploymentInformationVerify(Boolean employmentEmploymentInformationVerify) {
+		this.employmentEmploymentInformationVerify = employmentEmploymentInformationVerify;
+	}
+
 	public Integer getId() {
 		return id;
 	}
