@@ -137,4 +137,25 @@ public class TimeLineApiService {
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
 	}
 
+	public String addLockOrUnlockOrGrabLockTimeLine(String contractNo, String additionalStr, String eventDescription){
+		JSONObject resultOb = new JSONObject();
+
+		if(StringUtils.isNotEmpty(additionalStr)){
+			JSONObject additionalObj = JSONObject.parseObject(additionalStr);
+			String operatorNo = additionalObj.getString("operatorNo");
+			String operatorName = additionalObj.getString("operatorName");
+
+			resultOb.put("contractNo", contractNo);
+			resultOb.put("relationNo", contractNo);
+			resultOb.put("operatorNo", operatorNo);
+			resultOb.put("operatorName", operatorName);
+		}
+
+		resultOb.put("eventTime", new Date());
+		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
+		resultOb.put("eventDescription", eventDescription);
+
+		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+	}
+
 }
