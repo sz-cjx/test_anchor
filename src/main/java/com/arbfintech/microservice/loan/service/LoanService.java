@@ -1203,13 +1203,15 @@ public class LoanService {
 
         String agentLevelObj = employeeFeignClient.getAgentLevel(operaterNo);
 
+        String operatorName = "";
+
         if (agentLevelObj!=null){
 
             logger.warn("get agent information: "+agentLevelObj);
 
             Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
             Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
-            String operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
+            operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
 
 
             if (loanStatus <= 2) {
@@ -1254,6 +1256,7 @@ public class LoanService {
 
             Loan newLoan=loanRepository.findByContractNo(contractNo);
             if (newLoan!=null){
+                String oldOperaterNo = newLoan.getLockedOperatorNo();
                 newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
                 newLoan.setLockedOperatorName(operatorName);
                 newLoan.setLockedOperatorNo(operaterNo);
@@ -1261,6 +1264,13 @@ public class LoanService {
                 newLoan.setFollowUp(null);
                 newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
                 loanRepository.save(newLoan);
+
+                if (oldOperaterNo == null ||(oldOperaterNo !=null && !operaterNo.equals(oldOperaterNo))){
+                    JSONObject additionObj = new JSONObject();
+                    additionObj.put("operatorNo", operaterNo);
+                    additionObj.put("operatorName", operatorName);
+                    timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+                }
             }
 
 
@@ -1486,6 +1496,12 @@ public class LoanService {
                 timer.schedule(delayTask,25*1000);
             }
         }
+
+        JSONObject additionObj = new JSONObject();
+        additionObj.put("operatorNo", operatorNo);
+        additionObj.put("operatorName", operatorName);
+        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj),"Grab Request Operation");
+
         if (StringUtils.isNotEmpty(result)){
             return result;
         }else {
@@ -1500,18 +1516,28 @@ public class LoanService {
         String grabResultStr = grabLoanFeignClient.acceptGrab(grabId);
 
         if (StringUtils.isNotEmpty(grabResultStr)){
-
-            Loan loan=loanRepository.findByContractNo(JSONObject.parseObject(grabResultStr).getString("contractNo"));
+            String contractNo = JSONObject.parseObject(grabResultStr).getString("contractNo");
+            Loan loan=loanRepository.findByContractNo(contractNo);
 
             String operatoeNo = JSONObject.parseObject(grabResultStr).getString("grabBy");
             String employeeInfo = employeeFeignClient.getAgentLevel(operatoeNo);
             String operatorName=JSONObject.parseObject(employeeInfo).getString("employeeFullName");
+
+            String grabTarget = JSONObject.parseObject(grabResultStr).getString("grabTarget");
+            String employeeInfoTarget = employeeFeignClient.getAgentLevel(grabTarget);
+            String operatorNameTarget=JSONObject.parseObject(employeeInfoTarget).getString("employeeFullName");
 
             loan.setLockedAt(DateUtil.getCurrentTimestamp());
             loan.setLockedOperatorNo(operatoeNo);
             loan.setLockedOperatorName(operatorName);
             loan.setOperatorNo(operatoeNo);
             Loan grabbedLoanInfo=loanRepository.save(loan);
+
+            JSONObject additionObj = new JSONObject();
+            additionObj.put("operatorNo", grabTarget);
+            additionObj.put("operatorName", operatorNameTarget);
+            timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj),"Grab Accept Operation");
+
             return JSONObject.toJSONString(grabbedLoanInfo);
         }else {
             return "false";
@@ -1522,6 +1548,15 @@ public class LoanService {
     public String rejectGrabLoan(Integer grabId){
         String grabResultStr = grabLoanFeignClient.rejectGrab(grabId);
 
+        String contractNo = JSONObject.parseObject(grabResultStr).getString("contractNo");
+        String grabTarget = JSONObject.parseObject(grabResultStr).getString("grabTarget");
+        String employeeInfoTarget = employeeFeignClient.getAgentLevel(grabTarget);
+        String operatorNameTarget=JSONObject.parseObject(employeeInfoTarget).getString("employeeFullName");
+        JSONObject additionObj = new JSONObject();
+        additionObj.put("operatorNo", grabTarget);
+        additionObj.put("operatorName", operatorNameTarget);
+        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj),"Grab Reject Operation");
+
         return grabResultStr;
     }
 
@@ -1529,6 +1564,11 @@ public class LoanService {
     public String unlockLoan(String contractNo){
         String result = "";
         Loan loan=loanRepository.findByContractNo(contractNo);
+
+        JSONObject additionObj = new JSONObject();
+        additionObj.put("operatorNo", loan.getLockedOperatorNo());
+        additionObj.put("operatorName", loan.getLockedOperatorName());
+
         if (loan!=null){
             loan.setLockedOperatorName(null);
             loan.setLockedOperatorNo(null);
@@ -1540,6 +1580,8 @@ public class LoanService {
             logger.error("Get Unlocked Loan Failed,Please Check And Make Sure The Loan Number Correct!");
             result = "false";
         }
+
+        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Unlock Operation");
 
         if (StringUtils.isNotEmpty(result)){
             return result;
