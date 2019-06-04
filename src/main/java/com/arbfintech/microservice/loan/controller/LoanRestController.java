@@ -374,7 +374,6 @@ public class LoanRestController {
 		return loanService.generateNewLoan(operatorNo,loanStatus);
 	}
 
-
 	@PostMapping("/grab-loan")
 	public String grabLoan(@RequestParam(value = "contractNo") String contractNo,
 						   @RequestParam(value = "operatorNo") String operatorNo,
