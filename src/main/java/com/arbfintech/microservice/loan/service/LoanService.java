@@ -1398,7 +1398,6 @@ public class LoanService {
             if(agentCategory==2){
                 newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel,loanSatus,operatorNo);
             }else {
-                logger.warn("!!!!!!   agentCategory ="+agentCategory +"loanSatus = "+loanSatus +"operatorNo = " +operatorNo);
                 newloans = loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanSatus,operatorNo);
             }
 
