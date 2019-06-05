@@ -1197,37 +1197,22 @@ public class LoanService {
     public String generateNewLoan(String operaterNo, Integer loanStatus) {
 
         String contractNo = "";
-
-//        Integer portfolioId = null;
-//        Integer level = null;
-//        String operatorName= "";
-
         String agentLevelObj = employeeFeignClient.getAgentLevel(operaterNo);
-
         String operatorName = "";
 
         if (agentLevelObj!=null){
-
-
-            logger.warn("get agent information: "+agentLevelObj);
-
+            logger.info("get agent information: "+agentLevelObj);
             Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
             Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
             operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
 
-
             if (loanStatus <= 2) {
-
                 List<Integer> loanStatusList = new ArrayList<>();
                 loanStatusList.add(LoanStatusEnum.INITIALIZED.getValue());
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
-
-
                 String lockedLoanNo = getLockedLoan(portfolioId, operaterNo, loanStatusList);
-
-
                 if (("notEnoughLockedLoans").equals(lockedLoanNo)) {
-                    String followupContractNo = getfollowUpLoans(portfolioId, operaterNo);
+                    String followupContractNo = getFollowUpLoans(portfolioId, operaterNo);
 
                     if (("There are no followup loan").equals(followupContractNo)) {
                         String workedContractNo = getWorkedLoan(operaterNo);
@@ -1277,10 +1262,6 @@ public class LoanService {
                     timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
                 }
             }
-
-
-
-
         }else {
             return "Get Agent Information Error! Please Check And Make Your Account Correct ";
         }
@@ -1289,7 +1270,7 @@ public class LoanService {
     }
 
     /**
-     * ????lockedLoans?????��??contractNo
+     * get lockedLoans
      * @param portfolioId
      * @param operaterNo
      * @return
@@ -1314,21 +1295,16 @@ public class LoanService {
      * @param portfolioId
      * @return
      */
-    public String getfollowUpLoans(Integer portfolioId,String operatorNo){
-
+    public String getFollowUpLoans(Integer portfolioId, String operatorNo){
         String contractNo="";
         long outtime = 5;
 
-        List<Loan> followUpedLoans = loanRepository.findAllFollowUpdLoans(portfolioId);
+        List<Loan> followUpLoans = loanRepository.findAllFollowUpdLoans(portfolioId);
+        if (followUpLoans!=null && followUpLoans.size()!=0){
 
-//            logger.warn(followUpedLoans.toString());
+            sortLoanByFollowupTime(followUpLoans);
 
-
-        if (followUpedLoans!=null && followUpedLoans.size()!=0){
-
-            sortLoanByFollowupTime(followUpedLoans);
-
-            for (Loan loan:followUpedLoans){
+            for (Loan loan:followUpLoans){
                 if (operatorNo.equals(loan.getLockedOperatorNo())){
                     if (loan.getFollowUp()-(new Date()).getTime()<outtime*60*1000){
                         contractNo = loan.getContractNo();
@@ -1349,7 +1325,7 @@ public class LoanService {
             contractNo = "There are no followup loan";
         }
 
-        logger.warn("get followUpd loan!  "+contractNo);
+        logger.info("get followUpd loan!  "+contractNo);
 
         return contractNo;
     }
@@ -1361,14 +1337,14 @@ public class LoanService {
 
         List<String> agentContractNos = loanRepository.findContractNoByLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
 
-        logger.warn("contractArr = "+contractArr);
-        logger.warn("agentContractNos = "+agentContractNos);
+        logger.info("contractArr = "+contractArr);
+        logger.info("agentContractNos = "+agentContractNos);
 
         List<Loan> loans = new ArrayList<>();
 
         agentContractNos.retainAll(contractArr);
 
-        logger.warn("agentContractNos = "+agentContractNos);
+        logger.info("agentContractNos = "+agentContractNos);
 
         if (agentContractNos.size()>0){
             for (String contractNo:agentContractNos){
@@ -1384,7 +1360,7 @@ public class LoanService {
         }else{
             workedContractNo = "There are not loan in worked";
         }
-        logger.warn("get worked loan!  "+workedContractNo);
+        logger.info("get worked loan!  "+ workedContractNo);
         return workedContractNo;
     }
 
@@ -1392,7 +1368,7 @@ public class LoanService {
         String contractNo = "";
         Integer agentCategory=employeeFeignClient.getCategoryByEmployeeNo(operatorNo);
 
-        logger.warn("agentCategory:"+agentCategory);
+        logger.info("agentCategory:"+agentCategory);
         List<Loan> newloans = new ArrayList<>();
         if (agentCategory!=null &&agentLevel!=null){
             if(agentCategory==2){
@@ -1401,9 +1377,7 @@ public class LoanService {
                 newloans = loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanSatus,operatorNo);
             }
 
-            logger.warn("newloans: "+newloans);
-
-
+            logger.info("newloans: "+newloans);
             if (newloans.size()>0){
                 contractNo = newloans.get(0).getContractNo();
             }else {
@@ -1413,7 +1387,7 @@ public class LoanService {
         }else {
             logger.error("that agent haven`t permission to get new loan!");
         }
-        logger.warn("get new application loan!  "+contractNo);
+        logger.info("get new application loan!  "+contractNo);
         return contractNo;
     }
 
