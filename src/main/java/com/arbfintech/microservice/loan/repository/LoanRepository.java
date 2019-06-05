@@ -56,4 +56,5 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     @Query(value = "SELECT * FROM loan WHERE  category=?1 AND priority<=?2 AND locked_operator_no IS NULL AND loan_status in (?3) AND operator_no!=?4 ORDER BY create_time DESC,priority DESC;", nativeQuery = true)
     List<Loan> findLoansByCategoryAndPriority(Integer category, Integer piority,List<Integer> loanStatus,String operatorNo);
 
+    Loan findByCustomerInAutoId(Integer customerInAutoId);
 }
