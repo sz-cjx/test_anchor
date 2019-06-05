@@ -97,7 +97,7 @@ public class TimeLineApiService {
 
 		resultOb.put("eventTime", new Date());
 		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
-		resultOb.put("eventDescription", "Save Operation");
+		resultOb.put("eventDescription", "Stamp Operation");
 		resultOb.put("targetSnapshot", targetSnapshot);
 		resultOb.put("relationNo", contractNo);
 		resultOb.put("contractNo", contractNo);
