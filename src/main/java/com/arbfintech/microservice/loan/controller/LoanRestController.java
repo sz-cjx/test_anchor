@@ -396,4 +396,11 @@ public class LoanRestController {
 	public String unlockLoan(@RequestParam(value = "contractNo")String contractNo){
 		return loanService.unlockLoan(contractNo);
 	}
+
+
+	@PostMapping("/loans-auto")
+	public String saveLoanFromCustomerInAuto(@RequestParam(value = "customerInAutoStr")String customerInAutoStr){
+		return loanService.saveLoanFromCustomerInAuto(customerInAutoStr);
+	}
+
 }

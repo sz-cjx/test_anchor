@@ -74,6 +74,16 @@ public class Loan {
     @Column(length = 32)
     private String operatorNo;
 
+    @Column(length = 10)
+	private Integer flags;
+
+    @Column(length = 10)
+	private Integer customerInAutoId;
+
+	@Column
+	@Lob
+	private String reviewData;
+
     @Transient
     private Personal personal;
 
@@ -296,6 +306,32 @@ public class Loan {
     public void setOperatorNo(String operatorNo) {
         this.operatorNo = operatorNo;
     }
+
+	public Integer getFlags() {
+		return flags;
+	}
+
+	public void setFlags(Integer flags) {
+		this.flags = flags;
+	}
+
+	public String getReviewData() {
+		return reviewData;
+	}
+
+	public void setReviewData(String reviewData) {
+		this.reviewData = reviewData;
+	}
+
+	public Integer getCustomerInAutoId() {
+		return customerInAutoId;
+	}
+
+	public void setCustomerInAutoId(Integer customerInAutoId) {
+		this.customerInAutoId = customerInAutoId;
+	}
+
+
 
 	@Override
     public String toString() {

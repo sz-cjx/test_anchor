@@ -1615,4 +1615,40 @@ public class LoanService {
 
     }
 
+
+    public String saveLoanFromCustomerInAuto(String customerStr){
+
+
+        if (StringUtils.isEmpty(customerStr)){
+            return "Customer Information Error!";
+        }
+        JSONObject customerObj = JSONObject.parseObject(customerStr);
+        Loan loan = new Loan();
+        loan.setCreateTime(DateUtil.getCurrentTimestamp());
+        loan.setUpdateTime(DateUtil.getCurrentTimestamp());
+        loan.setCustomerInAutoId(customerObj.getInteger("customerInAutoId"));
+        loan.setPortfolioId(customerObj.getInteger(JsonKeyConst.PORTFOLIO_ID));
+        loan.setFlags(10);
+        Loan dbLoan = loanRepository.save(loan);
+        Integer loanId = dbLoan.getId();
+        loan.setId(loanId);
+
+        JSONObject personalObj = customerObj.getJSONObject(JsonKeyConst.PERSONAL);
+        personalObj.put("loanId", loanId);
+        Personal personal = JSONObject.parseObject(JSONObject.toJSONString(personalObj), Personal.class);
+        personalRepository.save(personal);
+
+        JSONObject bankObj = customerObj.getJSONObject(JsonKeyConst.BANK);
+        bankObj.put("loanId", loanId);
+        Bank bank = JSONObject.parseObject(JSONObject.toJSONString(bankObj), Bank.class);
+        bankRepository.save(bank);
+
+        JSONObject employmentObj = customerObj.getJSONObject(JsonKeyConst.EMPLOYMENT);
+        bankObj.put("loanId", loanId);
+        Employment employment = JSONObject.parseObject(JSONObject.toJSONString(employmentObj), Employment.class);
+        employmentRepository.save(employment);
+
+        return JSONObject.toJSONString(loan);
+    }
+
 }
