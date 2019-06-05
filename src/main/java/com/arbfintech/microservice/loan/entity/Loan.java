@@ -72,7 +72,7 @@ public class Loan {
 	private Long followUp;
 
     @Column(length = 32)
-    private String operatorNo;
+	private String operatorNo;
 
     @Column(length = 10)
 	private Integer flags;
@@ -80,7 +80,7 @@ public class Loan {
     @Column(length = 10)
 	private Integer customerInAutoId;
 
-	@Column
+    @Column
 	@Lob
 	private String reviewData;
 
