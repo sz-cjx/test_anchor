@@ -142,7 +142,8 @@ public class LoanRestController {
 		if(loan != null){
 			result = loan.toString();
 		}
-		logger.info("Find the Loan Data:" + result);
+		logger.info("Find the Loan Data success");
+		logger.debug("Find the Loan Data:" + result);
 		return result;
 	}
 
@@ -155,7 +156,8 @@ public class LoanRestController {
 		if(jsonObject != null){
 			result = JSON.toJSONString(jsonObject);
 		}
-		logger.info("Find the Formed Loan Data:" + result);
+		logger.info("Find the Formed Loan Data success");
+		logger.debug("Find the Formed Loan Data:" + result);
 		return result;
 	}
 
@@ -168,7 +170,8 @@ public class LoanRestController {
 		if(jsonObject != null){
 			result = JSON.toJSONString(jsonObject);
 		}
-		logger.info("Find the Formed Contract Data:" + result);
+		logger.info("Find the Formed Contract Data success");
+		logger.debug("Find the Formed Contract Data:" + result);
 		return result;
 	}
 
@@ -183,7 +186,8 @@ public class LoanRestController {
 		JSONObject formatLoan = loanService.getFormedLoanDataById(Integer.parseInt(contractId));
 		formatLoan.put("bankInterestDue", 0);
 		String contract = JSON.toJSONString(formatLoan);
-		logger.error("发送数据：" + contract);
+		logger.info("Start to send message to payment");
+		logger.debug("Start to send message to payment, loan data:{}", contract);
         RabbitMessage message=new RabbitMessage();
         message.setCreateTime(new Date());
         message.setMessageData(contract);
