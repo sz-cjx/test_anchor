@@ -213,7 +213,7 @@ public class LoanRestController {
 		Loan loan = loanService.getLoanByContactNo(contractNo);
 		if (loan !=null) {
 			boolean isStatusFound = false;
-			Integer sourseStatus = loan.getLoanStatus();
+			Integer sourceStatus = loan.getLoanStatus();
 			for (LoanStatusEnum e : LoanStatusEnum.values()) {
 
 				if (e.getText().equals(status)) {
@@ -232,7 +232,7 @@ public class LoanRestController {
 						loan.setPayment(payment);
 					}
 					jsonObject.put("appData",JSON.toJSONString(loan));
-					timeLineApiService.addLoanStatusChangeTimeline(sourseStatus,e.getValue(),jsonObject.toJSONString());
+					timeLineApiService.addLoanStatusChangeTimeline(sourceStatus,e.getValue(),jsonObject.toJSONString());
 				}
 			}
 			String email = "";
