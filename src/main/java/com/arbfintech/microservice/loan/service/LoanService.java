@@ -1272,12 +1272,13 @@ public class LoanService {
     /**
      * get lockedLoans
      * @param portfolioId
-     * @param operaterNo
+     * @param operatorNo
      * @return
      */
-    public String getLockedLoan(Integer portfolioId,String operaterNo,List<Integer> loanStatus){
+    public String getLockedLoan(Integer portfolioId,String operatorNo,List<Integer> loanStatus){
+        logger.info("start to query the locked loan for portfolioId:{}, operatorNo:{}, loanStatus:{}", portfolioId, operatorNo, JSON.toJSONString(loanStatus));
         String newLoanContractNo = "";
-        List<Loan> lockedLoans=loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(operaterNo, portfolioId,loanStatus);
+        List<Loan> lockedLoans=loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(operatorNo, portfolioId,loanStatus);
         if (lockedLoans!=null){
             if (lockedLoans.size()<2){
                 newLoanContractNo = "notEnoughLockedLoans";
@@ -1286,7 +1287,7 @@ public class LoanService {
                 newLoanContractNo=lockedLoans.get(0).getContractNo();
             }
         }
-        logger.warn("get locked loan!  "+newLoanContractNo);
+        logger.warn("get locked loan:  "+newLoanContractNo);
         return newLoanContractNo;
     }
 
@@ -1364,7 +1365,8 @@ public class LoanService {
         return workedContractNo;
     }
 
-    public String getNewApplication(String operatorNo,List<Integer> loanSatus,Integer agentLevel){
+    public String getNewApplication(String operatorNo,List<Integer> loanStatus,Integer agentLevel){
+        logger.info("Start to get new loan for operatorNo:{}, loanStatus:{}, agentLevel:{}", operatorNo, JSON.toJSONString(loanStatus), agentLevel);
         String contractNo = "";
         Integer agentCategory=employeeFeignClient.getCategoryByEmployeeNo(operatorNo);
 
@@ -1372,12 +1374,12 @@ public class LoanService {
         List<Loan> newloans = new ArrayList<>();
         if (agentCategory!=null &&agentLevel!=null){
             if(agentCategory==2){
-                newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel,loanSatus,operatorNo);
+                newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel,loanStatus,operatorNo);
             }else {
-                newloans = loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanSatus,operatorNo);
+                newloans = loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanStatus,operatorNo);
             }
 
-            logger.info("newloans: "+newloans);
+            logger.info("new loans: "+newloans);
             if (newloans.size()>0){
                 contractNo = newloans.get(0).getContractNo();
             }else {
@@ -1404,7 +1406,7 @@ public class LoanService {
             public int compare(Loan loan1, Loan loan2) {
                 if (loan1.getLockedAt() < loan2.getLockedAt()) {
                     return 1;
-                } else if (loan1.getLockedAt() == loan2.getLockedAt()) {
+                } else if (loan1.getLockedAt().equals(loan2.getLockedAt()) ) {
                     return 0;
                 } else {
                     return -1;
