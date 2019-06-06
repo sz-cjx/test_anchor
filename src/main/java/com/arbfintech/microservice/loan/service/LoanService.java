@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.enumerate.*;
+import com.arbfintech.framework.component.core.type.RabbitMessage;
 import com.arbfintech.framework.component.core.util.BigDecimalUtil;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
@@ -1713,6 +1714,9 @@ public class LoanService {
             personal.setEmail(personalObj.getString(JsonKeyConst.EMAIL));
             personalRepository.save(personal);
 
+            JSONObject addtionData = new JSONObject();
+            addtionData.put("contractNo", loan.getContractNo());
+            timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.TRIBE_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
             if (employment==null){
                 Employment employmentNew = new Employment();
                 employmentNew.setEmployerName(employmentObj.getString(JsonKeyConst.EMPLOYER_NAME));
@@ -1748,6 +1752,7 @@ public class LoanService {
         if (loan!=null){
 
             loan.setContractNo(loanObj.getString("contractNo"));
+            loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
             loanRepository.save(loan);
             JSONObject paymentObj = loanObj.getJSONObject("payment");
             JSONObject bankObj = loanObj.getJSONObject("bank");
@@ -1770,7 +1775,7 @@ public class LoanService {
                 paymentRepository.save(paymentNew);
             }
         }else{
-            logger.error("Catch Loan Failed When Save Loan Size!");
+            logger.error("Catch Loan Failed When Save Loan Size! and which customerId=");
         }
         return JSONObject.toJSONString(loan);
 
@@ -1781,13 +1786,37 @@ public class LoanService {
         if(StringUtils.isEmpty(loanStr)){
             return "Update Loan Failed!";
         }
+
+
         JSONObject loanObj = JSONObject.parseObject(loanStr);
         Loan loan = loanRepository.findById(loanObj.getInteger("id"));
 
         if (loan!=null){
-            loan.setReviewData(loanObj.getString("reviewData"));
-            loan.setLoanStatus(LoanStatusEnum.APPROVED.getValue());
-            loanRepository.save(loan);
+            if (loanObj.getInteger("loanStatus")==32) {
+                loan.setReviewData(loanObj.getString("reviewData"));
+                loan.setLoanStatus(LoanStatusEnum.APPROVED.getValue());
+                loanRepository.save(loan);
+                JSONObject addtionData = new JSONObject();
+                addtionData.put("contractNo", loan.getContractNo());
+                timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.TRIBE_REVIEW.getValue(), LoanStatusEnum.APPROVED.getValue(), JSONObject.toJSONString(addtionData));
+
+                JSONObject formatLoan = getFormedLoanDataById(loan.getId());
+                formatLoan.put("bankInterestDue", 0);
+                String contract = JSON.toJSONString(formatLoan);
+                RabbitMessage message=new RabbitMessage();
+                message.setCreateTime(new Date());
+                message.setMessageData(contract);
+                message.setOperationName("send loan to loanSchedule");
+                message.setProducer("Contract service");
+
+            }else if (loanObj.getInteger("loanStatus")==4){
+                loan.setReviewData(loanObj.getString("reviewData"));
+                loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
+                loanRepository.save(loan);
+                JSONObject addtionData = new JSONObject();
+                addtionData.put("contractNo", loan.getContractNo());
+                timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.TRIBE_REVIEW.getValue(), LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
+            }
         }else{
             logger.error("Save Online Tribe Loan Failed!");
         }
@@ -1797,12 +1826,15 @@ public class LoanService {
 
     public String updatePaymentScheduleInAuto(String loanStr){
         if(StringUtils.isEmpty(loanStr)){
+            logger.error("Loan info is Null in Payment!");
             return "Update Loan Failed!";
         }
+
         JSONObject loanObj = JSONObject.parseObject(loanStr);
         Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInAutoId"));
 
         if (loan!=null) {
+
             JSONObject bankObj = loanObj.getJSONObject("bank");
             JSONObject paymentObj = loanObj.getJSONObject("payment");
 
@@ -1824,11 +1856,12 @@ public class LoanService {
             jsonObject.put("contractNo",contractNo);
             jsonObject.put("appData", JSON.toJSONString(loanDetail));
             timeLineApiService.addLoanStatusChangeTimeline(null, LoanStatusEnum.ONLINE.getValue(), jsonObject.toJSONString());
+            loan.setLoanStatus(LoanStatusEnum.ONLINE.getValue());
+            loanRepository.save(loan);
         }else{
             logger.error("Update Loan Payment Info From Auto Failed");
         }
         return JSONObject.toJSONString(loan);
-
     }
 
 }
