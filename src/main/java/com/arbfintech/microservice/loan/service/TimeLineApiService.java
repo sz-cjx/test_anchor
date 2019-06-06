@@ -2,8 +2,9 @@ package com.arbfintech.microservice.loan.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.enumerate.EventTypeEnum;
+import com.arbfintech.framework.component.core.enumerate.*;
 import com.arbfintech.framework.component.core.util.DateUtil;
+import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -94,14 +94,11 @@ public class TimeLineApiService {
 
 		JSONObject targetSnapshot = new JSONObject();
 		JSONArray updateArr = JSONArray.parseArray(updateProperties);
+
 		for(int i = 0; i < updateArr.size(); i ++){
 			JSONObject updateObj = updateArr.getJSONObject(i);
-			String fieldKey = updateObj.getString("fieldKey");
-			if (updateObj.containsKey("fieldKey") && ("documentCreateTime".equals(fieldKey) || ("documentSignatureTime".equals(fieldKey)))){
-				Long originFieldValue = updateObj.getLong("originFieldValue");
-				Long fieldValue = updateObj.getLong("fieldValue");
-				updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
-				updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+			if (updateObj.containsKey("fieldKey")){
+				convertData(updateObj);
 			}
 		}
 
@@ -124,6 +121,77 @@ public class TimeLineApiService {
 		return JSONObject.toJSONString(resultOb);
 	}
 
+	private void convertData(JSONObject updateObj) {
+		String fieldKey = updateObj.getString("fieldKey");
+		if ("documentCreateTime".equals(fieldKey) || ("documentSignatureTime".equals(fieldKey))){
+			Long originFieldValue = updateObj.getLong("originFieldValue");
+			Long fieldValue = updateObj.getLong("fieldValue");
+			updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
+			updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+		}
+		if ("language".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			fieldValue = EnumUtil.getByCode(LanguageEnum.class,fieldValue).getText();
+			updateObj.put("fieldValue", fieldValue);
+			originFieldValue = EnumUtil.getByCode(LanguageEnum.class,originFieldValue).getText();
+			updateObj.put("originFieldValue", originFieldValue);
+		}
+		if ("verifiedBy".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			fieldValue = EnumUtil.getByCode(VerifiedByBankEnum.class,fieldValue).getText();
+			updateObj.put("fieldValue", fieldValue);
+			originFieldValue = EnumUtil.getByCode(VerifiedByBankEnum.class,originFieldValue).getText();
+			updateObj.put("originFieldValue", originFieldValue);
+		}
+		if ("bankAccountType".equals(fieldKey)){
+			Integer originFieldValue = updateObj.getInteger("originFieldValue");
+			Integer fieldValue = updateObj.getInteger("fieldValue");
+			updateObj.put("originFieldValue", EnumUtil.getByValue(BankAccountTypeEnum.class,originFieldValue).getText());
+			updateObj.put("fieldValue", EnumUtil.getByValue(BankAccountTypeEnum.class,fieldValue).getText());
+		}
+		if ("bankAccountOwner".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			fieldValue = EnumUtil.getByCode(BankAccountOwnerEnum.class,fieldValue).getText();
+			updateObj.put("fieldValue", fieldValue);
+			originFieldValue = EnumUtil.getByCode(BankAccountOwnerEnum.class,originFieldValue).getText();
+			updateObj.put("originFieldValue", originFieldValue);
+		}
+		if ("payrollType".equals(fieldKey)){
+			Integer originFieldValue = updateObj.getInteger("originFieldValue");
+			Integer fieldValue = updateObj.getInteger("fieldValue");
+			updateObj.put("fieldValue", EnumUtil.getByValue(PayrollTypeEnum.class,fieldValue).getText());
+			updateObj.put("originFieldValue", EnumUtil.getByValue(PayrollTypeEnum.class,originFieldValue).getText());
+		}
+		if ("payrollFrequency".equals(fieldKey)){
+			Integer originFieldValue = updateObj.getInteger("originFieldValue");
+			Integer fieldValue = updateObj.getInteger("fieldValue");
+			updateObj.put("fieldValue", EnumUtil.getByValue(PayrollFrequencyEnum.class,fieldValue).getText());
+			updateObj.put("originFieldValue", EnumUtil.getByValue(PayrollFrequencyEnum.class,originFieldValue).getText());
+		}
+		if ("bankException".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			fieldValue = EnumUtil.getByCode(ExceptionBankEnum.class,fieldValue).getText();
+			updateObj.put("fieldValue", fieldValue);
+			originFieldValue = EnumUtil.getByCode(ExceptionBankEnum.class,originFieldValue).getText();
+			updateObj.put("originFieldValue", originFieldValue);
+		}
+		if ("transactionMode".equals(fieldKey)){
+			Integer originFieldValue = updateObj.getInteger("originFieldValue");
+			Integer fieldValue = updateObj.getInteger("fieldValue");
+			updateObj.put("fieldValue", EnumUtil.getByValue(FuturePaymentModeEnum.class,fieldValue).getText());
+			updateObj.put("originFieldValue", EnumUtil.getByValue(FuturePaymentModeEnum.class,originFieldValue).getText());
+		}
+		if ("program".equals(fieldKey)){
+			Integer originFieldValue = updateObj.getInteger("originFieldValue");
+			Integer fieldValue = updateObj.getInteger("fieldValue");
+			updateObj.put("fieldValue", EnumUtil.getByValue(ProgramEnum.class,fieldValue).getText());
+			updateObj.put("originFieldValue", EnumUtil.getByValue(ProgramEnum.class,originFieldValue).getText());
+		}
+	}
 
 	public JSONArray getWorkedConteactNo(String operatorNo, Integer eventType){
 		String contractNos=timelineFeignClient.getContractNoByEventTypeAndOperatorNo(operatorNo, eventType);
