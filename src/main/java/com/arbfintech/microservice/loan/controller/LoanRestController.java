@@ -400,4 +400,37 @@ public class LoanRestController {
 	public String unlockLoan(@RequestParam(value = "contractNo")String contractNo){
 		return loanService.unlockLoan(contractNo);
 	}
+
+	@PostMapping("/loans-auto")
+	public String saveLoanFromCustomerInAuto(@RequestParam(value = "customerInAutoStr")String customerInAutoStr){
+		return loanService.saveLoanFromCustomerInAuto(customerInAutoStr);
+	}
+
+	@GetMapping("/loan-auto")
+	public String catchLoanInfoByCustomerInAuto(@RequestParam(value = "loanStatus")Integer loanStatus){
+        return loanService.getLoanInAuto(loanStatus);
+    }
+
+    @PostMapping("/loan-online")
+	public String updateLoanDetailInAuto(@RequestBody String loanStr){
+		return loanService.updateLoanDetailInAuto(loanStr);
+	}
+
+	@PostMapping("/loan-auto/loan-size")
+	public String saveLoanSizeFromAuto(@RequestBody String loanStr){
+		return loanService.saveLoanInAutoLoanSize(loanStr);
+	}
+
+	@PostMapping("/loan-online/correction")
+	public String saveTribeLoanOnline(@RequestBody String loanStr){
+		return loanService.updateLoanTribeOnline(loanStr);
+	}
+
+	@PostMapping("/loan-auto/payment")
+	public String updatePaymentInAuto(@RequestBody String loanStr){
+		return loanService.updatePaymentScheduleInAuto(loanStr);
+	}
+
+
+
 }
