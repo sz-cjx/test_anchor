@@ -134,62 +134,107 @@ public class TimeLineApiService {
 			String fieldValue = updateObj.getString("fieldValue");
 			fieldValue = EnumUtil.getByCode(LanguageEnum.class,fieldValue).getText();
 			updateObj.put("fieldValue", fieldValue);
-			originFieldValue = EnumUtil.getByCode(LanguageEnum.class,originFieldValue).getText();
-			updateObj.put("originFieldValue", originFieldValue);
+			LanguageEnum byCode = EnumUtil.getByCode(LanguageEnum.class, originFieldValue);
+			if (byCode == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				originFieldValue = byCode.getText();
+				updateObj.put("originFieldValue", originFieldValue);
+			}
 		}
 		if ("verifiedBy".equals(fieldKey)){
 			String originFieldValue = updateObj.getString("originFieldValue");
 			String fieldValue = updateObj.getString("fieldValue");
 			fieldValue = EnumUtil.getByCode(VerifiedByBankEnum.class,fieldValue).getText();
 			updateObj.put("fieldValue", fieldValue);
-			originFieldValue = EnumUtil.getByCode(VerifiedByBankEnum.class,originFieldValue).getText();
-			updateObj.put("originFieldValue", originFieldValue);
+			VerifiedByBankEnum byCode = EnumUtil.getByCode(VerifiedByBankEnum.class, originFieldValue);
+			if (byCode == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				originFieldValue = byCode.getText();
+				updateObj.put("originFieldValue", originFieldValue);
+			}
 		}
 		if ("bankAccountType".equals(fieldKey)){
 			Integer originFieldValue = updateObj.getInteger("originFieldValue");
 			Integer fieldValue = updateObj.getInteger("fieldValue");
-			updateObj.put("originFieldValue", EnumUtil.getByValue(BankAccountTypeEnum.class,originFieldValue).getText());
 			updateObj.put("fieldValue", EnumUtil.getByValue(BankAccountTypeEnum.class,fieldValue).getText());
+			BankAccountTypeEnum byValue = EnumUtil.getByValue(BankAccountTypeEnum.class, originFieldValue);
+			if (byValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", byValue.getText());
+			}
 		}
 		if ("bankAccountOwner".equals(fieldKey)){
 			String originFieldValue = updateObj.getString("originFieldValue");
 			String fieldValue = updateObj.getString("fieldValue");
 			fieldValue = EnumUtil.getByCode(BankAccountOwnerEnum.class,fieldValue).getText();
 			updateObj.put("fieldValue", fieldValue);
-			originFieldValue = EnumUtil.getByCode(BankAccountOwnerEnum.class,originFieldValue).getText();
-			updateObj.put("originFieldValue", originFieldValue);
+			BankAccountOwnerEnum byCode = EnumUtil.getByCode(BankAccountOwnerEnum.class, originFieldValue);
+			if (byCode == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				originFieldValue = byCode.getText();
+				updateObj.put("originFieldValue", originFieldValue);
+			}
 		}
 		if ("payrollType".equals(fieldKey)){
 			Integer originFieldValue = updateObj.getInteger("originFieldValue");
 			Integer fieldValue = updateObj.getInteger("fieldValue");
 			updateObj.put("fieldValue", EnumUtil.getByValue(PayrollTypeEnum.class,fieldValue).getText());
-			updateObj.put("originFieldValue", EnumUtil.getByValue(PayrollTypeEnum.class,originFieldValue).getText());
+			PayrollTypeEnum byValue = EnumUtil.getByValue(PayrollTypeEnum.class, originFieldValue);
+			if (byValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", byValue.getText());
+			}
 		}
 		if ("payrollFrequency".equals(fieldKey)){
 			Integer originFieldValue = updateObj.getInteger("originFieldValue");
 			Integer fieldValue = updateObj.getInteger("fieldValue");
 			updateObj.put("fieldValue", EnumUtil.getByValue(PayrollFrequencyEnum.class,fieldValue).getText());
-			updateObj.put("originFieldValue", EnumUtil.getByValue(PayrollFrequencyEnum.class,originFieldValue).getText());
+			PayrollFrequencyEnum byValue = EnumUtil.getByValue(PayrollFrequencyEnum.class, originFieldValue);
+			if (byValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", byValue.getText());
+			}
 		}
 		if ("bankException".equals(fieldKey)){
 			String originFieldValue = updateObj.getString("originFieldValue");
 			String fieldValue = updateObj.getString("fieldValue");
 			fieldValue = EnumUtil.getByCode(ExceptionBankEnum.class,fieldValue).getText();
 			updateObj.put("fieldValue", fieldValue);
-			originFieldValue = EnumUtil.getByCode(ExceptionBankEnum.class,originFieldValue).getText();
-			updateObj.put("originFieldValue", originFieldValue);
+			ExceptionBankEnum byCode = EnumUtil.getByCode(ExceptionBankEnum.class, originFieldValue);
+			if (byCode == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				originFieldValue = byCode.getText();
+				updateObj.put("originFieldValue", originFieldValue);
+			}
 		}
 		if ("transactionMode".equals(fieldKey)){
 			Integer originFieldValue = updateObj.getInteger("originFieldValue");
 			Integer fieldValue = updateObj.getInteger("fieldValue");
 			updateObj.put("fieldValue", EnumUtil.getByValue(FuturePaymentModeEnum.class,fieldValue).getText());
-			updateObj.put("originFieldValue", EnumUtil.getByValue(FuturePaymentModeEnum.class,originFieldValue).getText());
+			FuturePaymentModeEnum byValue = EnumUtil.getByValue(FuturePaymentModeEnum.class, originFieldValue);
+			if (byValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", byValue.getText());
+			}
 		}
 		if ("program".equals(fieldKey)){
 			Integer originFieldValue = updateObj.getInteger("originFieldValue");
 			Integer fieldValue = updateObj.getInteger("fieldValue");
 			updateObj.put("fieldValue", EnumUtil.getByValue(ProgramEnum.class,fieldValue).getText());
-			updateObj.put("originFieldValue", EnumUtil.getByValue(ProgramEnum.class,originFieldValue).getText());
+			ProgramEnum byValue = EnumUtil.getByValue(ProgramEnum.class, originFieldValue);
+			if (byValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", byValue.getText());
+			}
 		}
 	}
 
