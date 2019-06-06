@@ -122,7 +122,7 @@ public class LoanRestController {
 
 	@GetMapping("/loan_contract/{loanContractId}")
 	public String getLoanContractByContactId(@PathVariable("loanContractId") int loanContactId){
-		logger.info("Start query loan loan by Id:{}",loanContactId);
+		logger.info("Start query loan by Id:{}",loanContactId);
 		Loan loan = loanService.getLoanByLoanId(loanContactId);
 
 		String result = "";
@@ -135,7 +135,7 @@ public class LoanRestController {
 
 	@GetMapping("/loan/{loanContractNo}")
 	public String getLoanContractByContactNo(@PathVariable("loanContractNo") String loanContactNo){
-		logger.info("Start query loan loan by contractNo:{}",loanContactNo);
+		logger.info("Start query loan by contractNo:{}",loanContactNo);
 		Loan loan = loanService.getLoanByContactNo(loanContactNo);
 
 		String result = "";
@@ -149,7 +149,7 @@ public class LoanRestController {
 
 	@GetMapping("/loan_formed/{loanId}")
 	public String getFormedLoanById(@PathVariable("loanId") int loanId){
-		logger.info("Start query loan loan by Id:{}",loanId);
+		logger.info("Start query loan by Id:{}",loanId);
 		JSONObject jsonObject = loanService.getFormedLoanDataById(loanId);
 
 		String result = "";
@@ -163,7 +163,7 @@ public class LoanRestController {
 
 	@GetMapping("/contract_formed/{contractNo}")
 	public String getFormedContractByContactNo(@PathVariable("contractNo") String contactNo){
-		logger.info("Start query loan loan by Number:{}",contactNo);
+		logger.info("Start query loan by contactNo:{}",contactNo);
 		JSONObject jsonObject = loanService.getFormedContractDataByContactNo(contactNo);
 
 		String result = "";
