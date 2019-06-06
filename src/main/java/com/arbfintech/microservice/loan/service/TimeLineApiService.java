@@ -3,6 +3,7 @@ package com.arbfintech.microservice.loan.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.enumerate.EventTypeEnum;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -92,6 +94,17 @@ public class TimeLineApiService {
 
 		JSONObject targetSnapshot = new JSONObject();
 		JSONArray updateArr = JSONArray.parseArray(updateProperties);
+		for(int i = 0; i < updateArr.size(); i ++){
+			JSONObject updateObj = updateArr.getJSONObject(i);
+			String fieldKey = updateObj.getString("fieldKey");
+			if (updateObj.containsKey("fieldKey") && ("documentCreateTime".equals(fieldKey) || ("documentSignatureTime".equals(fieldKey)))){
+				Long originFieldValue = updateObj.getLong("originFieldValue");
+				Long fieldValue = updateObj.getLong("fieldValue");
+				updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
+				updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+			}
+		}
+
 		targetSnapshot.put("updateProperties",updateArr);
 		targetSnapshot.put("status",loanStatus);
 
