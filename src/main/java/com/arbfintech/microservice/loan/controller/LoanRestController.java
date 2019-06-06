@@ -402,8 +402,8 @@ public class LoanRestController {
 	}
 
 	@PostMapping("/loans-online")
-	public String saveLoanFromCustomerInAuto(@RequestParam(value = "customerInAutoStr")String customerInAutoStr){
-		return loanService.saveLoanFromCustomerInAuto(customerInAutoStr);
+	public String saveLoanFromCustomerInOnline(@RequestParam(value = "customerInOnlineStr")String customerInOnlineStr){
+		return loanService.saveLoanFromCustomerInAuto(customerInOnlineStr);
 	}
 
 	@GetMapping("/loan-auto")
@@ -412,12 +412,12 @@ public class LoanRestController {
     }
 
     @PostMapping("/loan-online")
-	public String updateLoanDetailInAuto(@RequestBody String loanStr){
+	public String updateLoanDetailInOnline(@RequestBody String loanStr){
 		return loanService.updateLoanDetailInAuto(loanStr);
 	}
 
 	@PostMapping("/loan-online/loan-size")
-	public String saveLoanSizeFromAuto(@RequestBody String loanStr){
+	public String saveLoanSizeFromOnline(@RequestBody String loanStr){
 		return loanService.saveLoanInAutoLoanSize(loanStr);
 	}
 
@@ -427,7 +427,7 @@ public class LoanRestController {
 	}
 
 	@PostMapping("/loan-online/payment")
-	public String updatePaymentInAuto(@RequestBody String loanStr){
+	public String updatePaymentInOnline(@RequestBody String loanStr){
 		return loanService.updatePaymentScheduleInAuto(loanStr);
 	}
 
