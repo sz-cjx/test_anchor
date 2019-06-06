@@ -401,7 +401,7 @@ public class LoanRestController {
 		return loanService.unlockLoan(contractNo);
 	}
 
-	@PostMapping("/loans-auto")
+	@PostMapping("/loans-online")
 	public String saveLoanFromCustomerInAuto(@RequestParam(value = "customerInAutoStr")String customerInAutoStr){
 		return loanService.saveLoanFromCustomerInAuto(customerInAutoStr);
 	}
@@ -416,7 +416,7 @@ public class LoanRestController {
 		return loanService.updateLoanDetailInAuto(loanStr);
 	}
 
-	@PostMapping("/loan-auto/loan-size")
+	@PostMapping("/loan-online/loan-size")
 	public String saveLoanSizeFromAuto(@RequestBody String loanStr){
 		return loanService.saveLoanInAutoLoanSize(loanStr);
 	}
@@ -426,7 +426,7 @@ public class LoanRestController {
 		return loanService.updateLoanTribeOnline(loanStr);
 	}
 
-	@PostMapping("/loan-auto/payment")
+	@PostMapping("/loan-online/payment")
 	public String updatePaymentInAuto(@RequestBody String loanStr){
 		return loanService.updatePaymentScheduleInAuto(loanStr);
 	}
