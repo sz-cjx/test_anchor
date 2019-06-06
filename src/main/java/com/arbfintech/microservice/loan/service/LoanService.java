@@ -1700,6 +1700,7 @@ public class LoanService {
             bank.setBankPhone(bankObj.getString("bankPhone"));
             bank.setBankAvailableBalance(bankObj.getDouble(JsonKeyConst.BANK_AVAILABLEBALANCE));
             bank.setPayrollFrequency(bankObj.getInteger(JsonKeyConst.PAYROLL_FREQUENCY));
+            bank.setBankDeposits(bankObj.getString("bankDeposits"));
             bankRepository.save(bank);
 
         }else{
