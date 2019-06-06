@@ -1593,7 +1593,7 @@ public class LoanService {
 
         JSONObject customerObj = JSONObject.parseObject(customerStr);
 
-        Loan oldLoan = loanRepository.findByCustomerInAutoId(customerObj.getInteger("customerInAutoId"));
+        Loan oldLoan = loanRepository.findByCustomerInAutoId(customerObj.getInteger("customerInOnlineId"));
 
         if(oldLoan!=null) {
 
@@ -1604,7 +1604,7 @@ public class LoanService {
             Loan loan = new Loan();
             loan.setCreateTime(DateUtil.getCurrentTimestamp());
             loan.setUpdateTime(DateUtil.getCurrentTimestamp());
-            loan.setCustomerInAutoId(customerObj.getInteger("customerInAutoId"));
+            loan.setCustomerInAutoId(customerObj.getInteger("customerInOnlineId"));
             loan.setPortfolioId(customerObj.getInteger(JsonKeyConst.PORTFOLIO_ID));
             loan.setFlags(10);
             loan.setCategory(1);
@@ -1714,7 +1714,7 @@ public class LoanService {
             return "Update Loan Failed!";
         }
         JSONObject loanObj = JSONObject.parseObject(loanStr);
-        Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInAutoId"));
+        Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInOnlineId"));
 
         if (loan!=null){
 
@@ -1798,7 +1798,7 @@ public class LoanService {
         }
 
         JSONObject loanObj = JSONObject.parseObject(loanStr);
-        Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInAutoId"));
+        Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInOnlineId"));
 
         if (loan!=null) {
 
