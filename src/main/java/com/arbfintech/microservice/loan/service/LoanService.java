@@ -1634,16 +1634,22 @@ public class LoanService {
     }
 
     public String getLoanInAuto(Integer loanStatus){
-        Loan loan = loanRepository.findCustomerInAutoLoan(loanStatus);
+        List<Loan> loans = loanRepository.findCustomerInAutoLoan(loanStatus);
 
-        if(loan!=null){
-            Loan detailLoan = getLoanByLoanId(loan.getId());
-            return JSONObject.toJSONString(detailLoan);
+        String result = "";
+        if (loans!=null) {
+            Loan loan = loans.get(0);
+            if (loan != null) {
+                Loan detailLoan = getLoanByLoanId(loan.getId());
+                result = JSONObject.toJSONString(detailLoan);
+            } else {
+                result = "Get Auto Loan Failed!";
+            }
         }else {
-            return "Get Auto Loan Failed!";
+            logger.error("Get Auto Loan Error!");
         }
 
-
+        return result;
     }
 
     //Underwrite Online
@@ -1682,6 +1688,7 @@ public class LoanService {
 
             JSONObject addtionData = new JSONObject();
             addtionData.put("contractNo", loan.getContractNo());
+            addtionData.put("appData", JSONObject.toJSONString(loan));
             timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.TRIBE_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
             if (employment==null){
                 Employment employmentNew = new Employment();
@@ -1765,6 +1772,7 @@ public class LoanService {
                 loanRepository.save(loan);
                 JSONObject addtionData = new JSONObject();
                 addtionData.put("contractNo", loan.getContractNo());
+                addtionData.put("appData", JSONObject.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.TRIBE_REVIEW.getValue(), LoanStatusEnum.APPROVED.getValue(), JSONObject.toJSONString(addtionData));
 
                 JSONObject formatLoan = getFormedLoanDataById(loan.getId());
@@ -1782,6 +1790,7 @@ public class LoanService {
                 loanRepository.save(loan);
                 JSONObject addtionData = new JSONObject();
                 addtionData.put("contractNo", loan.getContractNo());
+                addtionData.put("appData", JSONObject.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.TRIBE_REVIEW.getValue(), LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
             }
         }else{
