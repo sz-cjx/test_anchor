@@ -1634,16 +1634,22 @@ public class LoanService {
     }
 
     public String getLoanInAuto(Integer loanStatus){
-        Loan loan = loanRepository.findCustomerInAutoLoan(loanStatus);
+        List<Loan> loans = loanRepository.findCustomerInAutoLoan(loanStatus);
 
-        if(loan!=null){
-            Loan detailLoan = getLoanByLoanId(loan.getId());
-            return JSONObject.toJSONString(detailLoan);
+        String result = "";
+        if (loans!=null) {
+            Loan loan = loans.get(0);
+            if (loan != null) {
+                Loan detailLoan = getLoanByLoanId(loan.getId());
+                result = JSONObject.toJSONString(detailLoan);
+            } else {
+                result = "Get Auto Loan Failed!";
+            }
         }else {
-            return "Get Auto Loan Failed!";
+            logger.error("Get Auto Loan Error!");
         }
 
-
+        return result;
     }
 
     //Underwrite Online
