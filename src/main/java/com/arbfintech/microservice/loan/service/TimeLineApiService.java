@@ -236,6 +236,26 @@ public class TimeLineApiService {
 				updateObj.put("originFieldValue", byValue.getText());
 			}
 		}
+		if ("monthlyPayday".equals(fieldKey) || "secondPayday".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			if ("-1".equals(originFieldValue)){
+				updateObj.put("originFieldValue", "Last Day Of Month");
+			}
+			if ("-1".equals(fieldValue)){
+				updateObj.put("fieldValue", "Last Day Of Month");
+			}
+		}
+		if ("bankAvailableBalance".equals(fieldKey) || "amountOfOpenLoans".equals(fieldKey) || "totalPrincipal".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			if (StringUtils.isNotEmpty(originFieldValue)){
+				updateObj.put("originFieldValue", "$"+originFieldValue);
+			}
+			if (StringUtils.isNotEmpty(fieldValue)){
+				updateObj.put("fieldValue", "$"+fieldValue);
+			}
+		}
 	}
 
 	public JSONArray getWorkedConteactNo(String operatorNo, Integer eventType){
