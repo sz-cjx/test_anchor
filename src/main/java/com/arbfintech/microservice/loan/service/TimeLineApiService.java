@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.enumerate.*;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;
@@ -250,10 +251,10 @@ public class TimeLineApiService {
 			String originFieldValue = updateObj.getString("originFieldValue");
 			String fieldValue = updateObj.getString("fieldValue");
 			if (StringUtils.isNotEmpty(originFieldValue)){
-				updateObj.put("originFieldValue", "$"+originFieldValue);
+				updateObj.put("originFieldValue", StringUtil.toCurrency(originFieldValue));
 			}
 			if (StringUtils.isNotEmpty(fieldValue)){
-				updateObj.put("fieldValue", "$"+fieldValue);
+				updateObj.put("fieldValue", StringUtil.toCurrency(fieldValue));
 			}
 		}
 	}
