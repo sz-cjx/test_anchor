@@ -1593,15 +1593,23 @@ public class LoanService {
 
         JSONObject customerObj = JSONObject.parseObject(customerStr);
 
-        Loan oldLoan = loanRepository.findByCustomerInAutoId(customerObj.getInteger("customerInOnlineId"));
+        List<Loan> oldLoans = loanRepository.findByCustomerInAutoIdOrderByUpdateTimeDesc(customerObj.getInteger("customerInOnlineId"));
 
-        if(oldLoan!=null) {
+        Loan oldLoan = oldLoans.get(0);
+
+        if(oldLoans!=null) {
 
             //Update Loan....
 
             result = "Update Loan!";
         }else {
             Loan loan = new Loan();
+            int maxLength = 7;
+            String portfolioCode = "OIC";
+            String year = DateUtil.date2str(new Date(), "yy");
+            String flowNumber = businessFeignClient.getSeed(maxLength, portfolioCode, year);
+            String contractNo = portfolioCode + year + flowNumber;
+            loan.setContractNo(contractNo);
             loan.setCreateTime(DateUtil.getCurrentTimestamp());
             loan.setUpdateTime(DateUtil.getCurrentTimestamp());
             loan.setCustomerInAutoId(customerObj.getInteger("customerInOnlineId"));
@@ -1627,7 +1635,11 @@ public class LoanService {
             Employment employment = JSONObject.parseObject(JSONObject.toJSONString(employmentObj), Employment.class);
             employmentRepository.save(employment);
 
-            result = JSONObject.toJSONString(dbLoan);
+            JSONObject addtionDataObj = new JSONObject();
+            addtionDataObj.put("contractNo", loan.getContractNo());
+            addtionDataObj.put("appData", JSONObject.toJSONString(getLoanByLoanId(loan.getId())));
+            timeLineApiService.addLoanStatusChangeTimeline(null, LoanStatusEnum.INITIALIZED.getValue(), JSONObject.toJSONString(addtionDataObj));
+            result = dbLoan.getContractNo();
         }
 
         return result;
@@ -1721,12 +1733,13 @@ public class LoanService {
             return "Update Loan Failed!";
         }
         JSONObject loanObj = JSONObject.parseObject(loanStr);
-        Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInOnlineId"));
+        List<Loan> loans = loanRepository.findByCustomerInAutoIdOrderByUpdateTimeDesc(loanObj.getInteger("customerInOnlineId"));
+        Loan loan = loans.get(0);
 
-        if (loan!=null){
+        if (loans!=null){
 
-            loan.setContractNo(loanObj.getString("contractNo"));
-            loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
+//            loan.setContractNo(loanObj.getString("contractNo"));
+//            loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
             loanRepository.save(loan);
             JSONObject paymentObj = loanObj.getJSONObject("payment");
             JSONObject bankObj = loanObj.getJSONObject("bank");
@@ -1807,9 +1820,10 @@ public class LoanService {
         }
 
         JSONObject loanObj = JSONObject.parseObject(loanStr);
-        Loan loan = loanRepository.findByCustomerInAutoId(loanObj.getInteger("customerInOnlineId"));
+        List<Loan> loans = loanRepository.findByCustomerInAutoIdOrderByUpdateTimeDesc(loanObj.getInteger("customerInOnlineId"));
 
-        if (loan!=null) {
+        Loan loan = loans.get(0);
+        if (loans!=null) {
 
             JSONObject bankObj = loanObj.getJSONObject("bank");
             JSONObject paymentObj = loanObj.getJSONObject("payment");
@@ -1839,5 +1853,30 @@ public class LoanService {
         }
         return JSONObject.toJSONString(loan);
     }
+
+
+//    public String getContractNoFromOnlin(String loanStr){
+//        String result = "";
+//
+//        if (StringUtils.isEmpty(loanStr)){
+//            logger.error("Get ContractNo from Online Failed");
+//            return "false";
+//        }
+//        JSONObject loanObj = JSONObject.parseObject(loanStr);
+//        List<Loan> loans = loanRepository.findByCustomerInAutoIdOrderByUpdateTimeDesc(loanObj.getInteger("customerInOnlineId"));
+//        Loan loan = loans.get(0);
+//        if (loans!=null){
+//            if (loan.getContractNo()!=null){
+//                logger.error("That loan Had Been Transacted!");
+//                result = "That loan Had Been Transacted!";
+//            }else{
+//                loan.setContractNo(loanObj.getString("contractNo"));
+//                loan.setUpdateTime(DateUtil.getCurrentTimestamp());
+//                Loan updatedLoan=loanRepository.save(loan);
+//                result = JSONObject.toJSONString(updatedLoan);
+//            }
+//        }
+//        return result;
+//    }
 
 }
