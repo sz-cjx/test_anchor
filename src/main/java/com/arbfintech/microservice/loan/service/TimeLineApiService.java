@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.enumerate.*;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.microservice.loan.client.LoanStatusFeignClient;
 import com.arbfintech.microservice.loan.client.TimelineFeignClient;
 import org.apache.commons.lang.StringUtils;
@@ -234,6 +235,26 @@ public class TimeLineApiService {
 				updateObj.put("originFieldValue", "");
 			}else{
 				updateObj.put("originFieldValue", byValue.getText());
+			}
+		}
+		if ("monthlyPayday".equals(fieldKey) || "secondPayday".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			if ("-1".equals(originFieldValue)){
+				updateObj.put("originFieldValue", "Last Day Of Month");
+			}
+			if ("-1".equals(fieldValue)){
+				updateObj.put("fieldValue", "Last Day Of Month");
+			}
+		}
+		if ("bankAvailableBalance".equals(fieldKey) || "amountOfOpenLoans".equals(fieldKey) || "totalPrincipal".equals(fieldKey)){
+			String originFieldValue = updateObj.getString("originFieldValue");
+			String fieldValue = updateObj.getString("fieldValue");
+			if (StringUtils.isNotEmpty(originFieldValue)){
+				updateObj.put("originFieldValue", StringUtil.toCurrency(originFieldValue));
+			}
+			if (StringUtils.isNotEmpty(fieldValue)){
+				updateObj.put("fieldValue", StringUtil.toCurrency(fieldValue));
 			}
 		}
 	}
