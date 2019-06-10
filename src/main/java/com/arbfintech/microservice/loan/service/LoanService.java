@@ -1590,19 +1590,7 @@ public class LoanService {
         if (StringUtils.isEmpty(customerStr)){
             return "Customer Information Error!";
         }
-
         JSONObject customerObj = JSONObject.parseObject(customerStr);
-
-        List<Loan> oldLoans = loanRepository.findByCustomerInAutoIdOrderByUpdateTimeDesc(customerObj.getInteger("customerInOnlineId"));
-
-        Loan oldLoan = oldLoans.get(0);
-
-        if(oldLoans!=null) {
-
-            //Update Loan....
-
-            result = "Update Loan!";
-        }else {
             Loan loan = new Loan();
             int maxLength = 7;
             String portfolioCode = "OIC";
@@ -1640,8 +1628,6 @@ public class LoanService {
             addtionDataObj.put("appData", JSONObject.toJSONString(getLoanByLoanId(loan.getId())));
             timeLineApiService.addLoanStatusChangeTimeline(null, LoanStatusEnum.INITIALIZED.getValue(), JSONObject.toJSONString(addtionDataObj));
             result = dbLoan.getContractNo();
-        }
-
         return result;
     }
 
