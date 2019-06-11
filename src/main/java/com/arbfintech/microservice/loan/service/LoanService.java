@@ -1044,7 +1044,9 @@ public class LoanService {
         List<Integer> leads = new ArrayList<>();
         if (arr.size() != 0) {
             for (int i = 0; i < arr.size(); i++) {
-                leads.add((int) arr.get(i));
+                if (arr.get(i) != null){
+                    leads.add((int) arr.get(i));
+                }
             }
             List<Loan> loans = loanRepository.findAllByLoanStatusAndLeadIdIn(status, leads);
             if (loans != null) {
