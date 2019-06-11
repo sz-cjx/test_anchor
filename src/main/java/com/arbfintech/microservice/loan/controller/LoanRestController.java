@@ -431,8 +431,8 @@ public class LoanRestController {
 		return loanService.updatePaymentScheduleInAuto(loanStr);
 	}
 
-//	@PostMapping("/loan-online/contractNo")
-//	public String getContracNoFromOnlin(@RequestBody String loanStr){
-//		return loanService.getContracNoFromOnlin(loanStr);
-//	}
+	@PostMapping("/loan-online/initialize")
+	public String loanStausIsInitalized(@RequestParam(value = "contractNo") String contractNo){
+		return loanService.loanStausIsInitalized(contractNo);
+	}
 }
