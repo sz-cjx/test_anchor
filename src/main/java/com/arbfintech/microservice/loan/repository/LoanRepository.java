@@ -50,10 +50,10 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     @Query(value = "SELECT contract_no FROM loan WHERE loan_status=?1",nativeQuery = true)
     List<String> findContractNoByLoanStatus(Integer loanStatus);
 
-    @Query(value = "SELECT * FROM loan WHERE category=?1 AND locked_operator_no IS NULL AND loan_status IN (?2) AND ( operator_no!=?3 or operator_no is NULL ) ORDER BY create_time DESC;", nativeQuery = true)
+    @Query(value = "SELECT * FROM loan WHERE category=?1 AND flags is null AND locked_operator_no IS NULL AND loan_status IN (?2) AND ( operator_no!=?3 or operator_no is NULL ) ORDER BY create_time DESC;", nativeQuery = true)
     List<Loan> findAllByCategoryOrderByCreateTimeDesc(Integer category,List<Integer> loanStatus,String operatorNo);
 
-    @Query(value = "SELECT * FROM loan WHERE  category=?1 AND priority<=?2 AND locked_operator_no IS NULL AND loan_status in (?3) AND operator_no!=?4 ORDER BY create_time DESC,priority DESC;", nativeQuery = true)
+    @Query(value = "SELECT * FROM loan WHERE  category=?1 AND flags is null AND priority<=?2 AND locked_operator_no IS NULL AND loan_status in (?3) AND operator_no!=?4 ORDER BY create_time DESC,priority DESC;", nativeQuery = true)
     List<Loan> findLoansByCategoryAndPriority(Integer category, Integer piority,List<Integer> loanStatus,String operatorNo);
 
     List<Loan> findByCustomerInAutoIdOrderByUpdateTimeDesc(Integer customerInAutoId);
