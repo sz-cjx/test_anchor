@@ -34,7 +34,7 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
 
     public List<Loan> findAllByLoanStatusAndLeadIdIn(Integer status, List<Integer> leadId);
 
-    @Query(value = "select lead_id from loan where category=?1 and update_time BETWEEN ?2 AND ?3 ",nativeQuery =true)
+    @Query(value = "select lead_id from loan where category=?1 and update_time BETWEEN ?2 AND ?3 and flags is null",nativeQuery =true)
     public List<Integer> listLeadIdByTimeRange(Integer category,long startTime, long endTime);
 
     List<Loan> findAllById(List<Integer> ids);
