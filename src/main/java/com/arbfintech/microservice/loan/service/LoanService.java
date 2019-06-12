@@ -1863,4 +1863,9 @@ public class LoanService {
 
         return result;
     }
+
+    public String getPortfolioById(Integer id) {
+        String portfolioStr = runtimeFeignClient.getPortfolioParameter(id);
+        return portfolioStr;
+    }
 }
