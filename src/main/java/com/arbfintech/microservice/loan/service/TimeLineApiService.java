@@ -83,9 +83,11 @@ public class TimeLineApiService {
 		String operatorName = "";
 		Integer loanStatus = 0;
 		String appDataStr = "";
+		String section = "";
 		if(StringUtils.isNotEmpty(additionalData)){
 			JSONObject additionalObj = JSONObject.parseObject(additionalData);
-			loanStatus = additionalObj.getInteger("loanStatus");
+			loanStatus = additionalObj.getInteger("Status");
+			section = additionalObj.getString("section");
 			note = additionalObj.getString("note");
 			operatorNo = additionalObj.getString("operatorNo");
 			operatorName = additionalObj.getString("operatorName");
@@ -105,6 +107,7 @@ public class TimeLineApiService {
 
 		targetSnapshot.put("updateProperties",updateArr);
 		targetSnapshot.put("status",loanStatus);
+		targetSnapshot.put("section",section );
 
 		resultOb.put("eventTime", new Date());
 		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
