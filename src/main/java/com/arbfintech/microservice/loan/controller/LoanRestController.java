@@ -435,4 +435,9 @@ public class LoanRestController {
 	public String loanStausIsInitalized(@RequestParam(value = "contractNo") String contractNo){
 		return loanService.loanStausIsInitalized(contractNo);
 	}
+
+    @GetMapping("/portfolios/{id}")
+    public String getPortfolioById(@PathVariable("id") Integer id) {
+        return loanService.getPortfolioById(id);
+    }
 }
