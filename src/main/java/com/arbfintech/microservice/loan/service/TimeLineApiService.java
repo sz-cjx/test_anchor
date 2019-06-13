@@ -309,4 +309,21 @@ public class TimeLineApiService {
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
 	}
 
+	public String sendEmailTimeline(String additionalValue) {
+		JSONObject resultOb = new JSONObject();
+		if (StringUtils.isNotEmpty(additionalValue)){
+			JSONObject additionalObj = JSONObject.parseObject(additionalValue);
+			String operatorNo = additionalObj.getString("operatorNo");
+			String operatorName = additionalObj.getString("operatorName");
+			String contractNo = additionalObj.getString("contractNo");
+			resultOb.put("contractNo", contractNo);
+			resultOb.put("relationNo", contractNo);
+			resultOb.put("operatorNo", operatorNo);
+			resultOb.put("operatorName", operatorName);
+		}
+		resultOb.put("eventTime", new Date());
+		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
+		resultOb.put("eventDescription", "Loan Agreement is sent to ESS");
+		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+	}
 }

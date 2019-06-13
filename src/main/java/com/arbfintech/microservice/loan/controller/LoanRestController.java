@@ -440,4 +440,9 @@ public class LoanRestController {
     public String getPortfolioById(@PathVariable("id") Integer id) {
         return loanService.getPortfolioById(id);
     }
+
+	@PostMapping("/sendEmailTimeline")
+	String sendEmailTimeline(@RequestParam(value = "additionalValue") String additionalValue){
+    	return loanService.sendEmailTimeline(additionalValue);
+	}
 }

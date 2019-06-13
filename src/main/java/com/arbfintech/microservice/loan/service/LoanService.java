@@ -1868,4 +1868,8 @@ public class LoanService {
         String portfolioStr = runtimeFeignClient.getPortfolioParameter(id);
         return portfolioStr;
     }
+
+    public String sendEmailTimeline(String additionalValue) {
+        return timeLineApiService.sendEmailTimeline(additionalValue);
+    }
 }
