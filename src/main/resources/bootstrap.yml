@@ -9,18 +9,21 @@ spring:
     name: ${arb.service.name}
   cloud:
     config:
-      label: 713
+      label: master
       discovery:
         enabled: true
         service-id: config-server
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        multiplier: 1.1
+        max-interval: 2000
+        max-attempts: 2
 
-server:
-  max-http-header-size: 10240000
-  port: ${arb.service.port}
 
 eureka:
   instance:
-    instance-id: ${arb.service.url}:${spring.application.name}:${server.port}
+    instance-id: ${arb.service.url}:${spring.application.name}:${arb.service.port}
     hostname: ${arb.service.url}
     ip-address: ${arb.service.url}
     prefer-ip-address: true
