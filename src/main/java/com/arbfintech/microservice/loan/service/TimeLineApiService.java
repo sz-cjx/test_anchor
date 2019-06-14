@@ -130,8 +130,16 @@ public class TimeLineApiService {
 		if ("documentCreateTime".equals(fieldKey) || ("documentSignatureTime".equals(fieldKey))){
 			Long originFieldValue = updateObj.getLong("originFieldValue");
 			Long fieldValue = updateObj.getLong("fieldValue");
-			updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
-			updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+			if (originFieldValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
+			}
+			if (fieldValue == null){
+				updateObj.put("fieldValue", "");
+			}else{
+				updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+			}
 		}
 		if ("language".equals(fieldKey)){
 			String originFieldValue = updateObj.getString("originFieldValue");
