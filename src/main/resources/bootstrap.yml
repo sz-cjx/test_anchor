@@ -1,0 +1,50 @@
+#自定义配置
+arb:
+  service:
+    name: microservice-loan
+    port: 8201
+
+spring:
+  application:
+    name: ${arb.service.name}
+  cloud:
+    config:
+      label: master
+      discovery:
+        enabled: true
+        service-id: config-server
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        multiplier: 1.1
+        max-interval: 2000
+        max-attempts: 2
+
+
+eureka:
+  instance:
+    instance-id: ${arb.service.url}:${spring.application.name}:${arb.service.port}
+    hostname: ${arb.service.url}
+    ip-address: ${arb.service.url}
+    prefer-ip-address: true
+
+  #    lease-renewal-interval-in-seconds: 10
+  #    lease-expiration-duration-in-seconds: 30
+  client:
+    healthcheck: enabled
+    service-url:
+      defaultZone: http://${arb.eureka.url}:8901/eureka/
+
+logging:
+  config: classpath:log4j2.yml
+
+---
+spring:
+  profiles: slave-54
+arb:
+  eureka:
+    url: 192.168.0.54
+  service:
+    url: 192.168.0.54
+
+
