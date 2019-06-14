@@ -443,8 +443,9 @@ public class LoanRestController {
 
   @GetMapping("/new-online-loan")
 	public String generateNewOnlineLoan(@RequestParam(value = "loanStatus")Integer loanStatus,
-										@RequestParam(value = "operatorNo")String operatorNo){
-		return loanService.generateOnlineNewLoan(operatorNo, loanStatus);
+										@RequestParam(value = "operatorNo")String operatorNo) {
+	  return loanService.generateOnlineNewLoan(operatorNo, loanStatus);
+  }
     
 	@PostMapping("/sendEmailTimeline")
 	String sendEmailTimeline(@RequestParam(value = "additionalValue") String additionalValue){

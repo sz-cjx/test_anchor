@@ -1884,19 +1884,19 @@ public class LoanService {
             loanStatusList.add(loanStatus);
             List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
             List<Loan> lockedOnlineLoans = new ArrayList<>();
-            for (Loan loan: lockedLoans){
+            for (Loan loan : lockedLoans) {
                 if (loan.getFlags() != null && loan.getFlags() == 10) {
                     lockedOnlineLoans.add(loan);
                 }
             }
-            if (lockedOnlineLoans.size()>0){
+            if (lockedOnlineLoans.size() > 0) {
                 sortLoanByLockedTime(lockedOnlineLoans);
                 contractNo = lockedOnlineLoans.get(0).getContractNo();
-            }else{
+            } else {
                 List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(10, loanStatusList, operatorNo);
-                if (newOnlineloans.size()>0){
+                if (newOnlineloans.size() > 0) {
                     contractNo = newOnlineloans.get(0).getContractNo();
-                }else{
+                } else {
                     logger.error("there were not enough loan of new online loans!");
                     contractNo = "there were not enough loan of new online loans!";
                 }
@@ -1906,8 +1906,8 @@ public class LoanService {
             contractNo = "get new loan of online failed!";
         }
 
-        Loan newLoan=loanRepository.findByContractNo(contractNo);
-        if (newLoan!=null){
+        Loan newLoan = loanRepository.findByContractNo(contractNo);
+        if (newLoan != null) {
             String oldOperatorNo = newLoan.getLockedOperatorNo();
             newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
             newLoan.setLockedOperatorName(operatorName);
@@ -1917,7 +1917,7 @@ public class LoanService {
             newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
             loanRepository.save(newLoan);
 
-            if (oldOperatorNo == null ||!operatorNo.equals(oldOperatorNo)){
+            if (oldOperatorNo == null || !operatorNo.equals(oldOperatorNo)) {
                 JSONObject additionObj = new JSONObject();
                 additionObj.put("operatorNo", operatorNo);
                 additionObj.put("operatorName", operatorName);
@@ -1925,6 +1925,7 @@ public class LoanService {
             }
         }
         return contractNo;
+    }
       
     public String sendEmailTimeline(String additionalValue) {
         return timeLineApiService.sendEmailTimeline(additionalValue);
