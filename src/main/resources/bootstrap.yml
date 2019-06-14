@@ -53,5 +53,5 @@ spring:
 arb:
   eureka:
     url: panda.arbfintech.com
-  server:
+  service:
     url: 54.255.235.134
