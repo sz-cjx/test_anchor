@@ -1925,5 +1925,8 @@ public class LoanService {
             }
         }
         return contractNo;
+      
+    public String sendEmailTimeline(String additionalValue) {
+        return timeLineApiService.sendEmailTimeline(additionalValue);
     }
 }

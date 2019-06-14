@@ -436,14 +436,18 @@ public class LoanRestController {
 		return loanService.loanStausIsInitalized(contractNo);
 	}
 
-    @GetMapping("/portfolios/{id}")
-    public String getPortfolioById(@PathVariable("id") Integer id) {
-        return loanService.getPortfolioById(id);
-    }
+  @GetMapping("/portfolios/{id}")
+  public String getPortfolioById(@PathVariable("id") Integer id) {
+    return loanService.getPortfolioById(id);
+  }
 
-    @GetMapping("/new-online-loan")
+  @GetMapping("/new-online-loan")
 	public String generateNewOnlineLoan(@RequestParam(value = "loanStatus")Integer loanStatus,
 										@RequestParam(value = "operatorNo")String operatorNo){
 		return loanService.generateOnlineNewLoan(operatorNo, loanStatus);
+    
+	@PostMapping("/sendEmailTimeline")
+	String sendEmailTimeline(@RequestParam(value = "additionalValue") String additionalValue){
+    	return loanService.sendEmailTimeline(additionalValue);
 	}
 }

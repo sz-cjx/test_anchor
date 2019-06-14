@@ -130,8 +130,16 @@ public class TimeLineApiService {
 		if ("documentCreateTime".equals(fieldKey) || ("documentSignatureTime".equals(fieldKey))){
 			Long originFieldValue = updateObj.getLong("originFieldValue");
 			Long fieldValue = updateObj.getLong("fieldValue");
-			updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
-			updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+			if (originFieldValue == null){
+				updateObj.put("originFieldValue", "");
+			}else{
+				updateObj.put("originFieldValue", DateUtil.datetime2str(DateUtil.long2date(originFieldValue)));
+			}
+			if (fieldValue == null){
+				updateObj.put("fieldValue", "");
+			}else{
+				updateObj.put("fieldValue", DateUtil.datetime2str(DateUtil.long2date(fieldValue)));
+			}
 		}
 		if ("language".equals(fieldKey)){
 			String originFieldValue = updateObj.getString("originFieldValue");
@@ -309,4 +317,21 @@ public class TimeLineApiService {
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
 	}
 
+	public String sendEmailTimeline(String additionalValue) {
+		JSONObject resultOb = new JSONObject();
+		if (StringUtils.isNotEmpty(additionalValue)){
+			JSONObject additionalObj = JSONObject.parseObject(additionalValue);
+			String operatorNo = additionalObj.getString("operatorNo");
+			String operatorName = additionalObj.getString("operatorName");
+			String contractNo = additionalObj.getString("contractNo");
+			resultOb.put("contractNo", contractNo);
+			resultOb.put("relationNo", contractNo);
+			resultOb.put("operatorNo", operatorNo);
+			resultOb.put("operatorName", operatorName);
+		}
+		resultOb.put("eventTime", new Date());
+		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
+		resultOb.put("eventDescription", "Loan Agreement is sent to ESS");
+		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+	}
 }
