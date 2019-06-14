@@ -440,4 +440,10 @@ public class LoanRestController {
     public String getPortfolioById(@PathVariable("id") Integer id) {
         return loanService.getPortfolioById(id);
     }
+
+    @GetMapping("/new-online-loan")
+	public String generateNewOnlineLoan(@RequestParam(value = "loanStatus")Integer loanStatus,
+										@RequestParam(value = "operatorNo")String operatorNo){
+		return loanService.generateOnlineNewLoan(operatorNo, loanStatus);
+	}
 }

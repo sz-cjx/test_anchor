@@ -1868,4 +1868,62 @@ public class LoanService {
         String portfolioStr = runtimeFeignClient.getPortfolioParameter(id);
         return portfolioStr;
     }
+
+    public String generateOnlineNewLoan(String operatorNo, Integer loanStatus) {
+        String contractNo = "";
+        String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
+        String operatorName = "";
+        int lockedMaxNumber = 2;
+        Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
+        Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
+        operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
+        if (LoanStatusEnum.UNDERWRITER_REVIEW.getValue().equals(loanStatus) ||
+                LoanStatusEnum.TRIBE_REVIEW.getValue().equals(loanStatus)) {
+
+            List<Integer> loanStatusList = new ArrayList<>();
+            loanStatusList.add(loanStatus);
+            List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+            List<Loan> lockedOnlineLoans = new ArrayList<>();
+            for (Loan loan: lockedLoans){
+                if (loan.getFlags() != null && loan.getFlags() == 10) {
+                    lockedOnlineLoans.add(loan);
+                }
+            }
+            if (lockedOnlineLoans.size()>0){
+                sortLoanByLockedTime(lockedOnlineLoans);
+                contractNo = lockedOnlineLoans.get(0).getContractNo();
+            }else{
+                List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(10, loanStatusList, operatorNo);
+                if (newOnlineloans.size()>0){
+                    contractNo = newOnlineloans.get(0).getContractNo();
+                }else{
+                    logger.error("there were not enough loan of new online loans!");
+                    contractNo = "there were not enough loan of new online loans!";
+                }
+            }
+        } else {
+            logger.error("get new loan of online failed!");
+            contractNo = "get new loan of online failed!";
+        }
+
+        Loan newLoan=loanRepository.findByContractNo(contractNo);
+        if (newLoan!=null){
+            String oldOperatorNo = newLoan.getLockedOperatorNo();
+            newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
+            newLoan.setLockedOperatorName(operatorName);
+            newLoan.setLockedOperatorNo(operatorNo);
+            newLoan.setOperatorNo(operatorNo);
+            newLoan.setFollowUp(null);
+            newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
+            loanRepository.save(newLoan);
+
+            if (oldOperatorNo == null ||!operatorNo.equals(oldOperatorNo)){
+                JSONObject additionObj = new JSONObject();
+                additionObj.put("operatorNo", operatorNo);
+                additionObj.put("operatorName", operatorName);
+                timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+            }
+        }
+        return contractNo;
+    }
 }

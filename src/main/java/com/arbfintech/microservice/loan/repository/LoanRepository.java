@@ -60,4 +60,7 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
 
     @Query(value = "SELECT * FROM loan WHERE customer_in_auto_id IS NOT NULL AND contract_no is NOT NULL AND loan_status=?1 ORDER BY receive_time DESC;" ,nativeQuery = true)
     List<Loan> findCustomerInAutoLoan(Integer loanStatus);
+
+    @Query(value = "SELECT * FROM loan WHERE  flags =?1 AND locked_operator_no IS NULL AND loan_status IN (?2) AND ( operator_no!=?3 or operator_no is NULL ) ORDER BY create_time DESC;",nativeQuery = true)
+    List<Loan> findNewOnlineApplications(Integer flags,List<Integer> loanStatusList ,String operatorNo);
 }
