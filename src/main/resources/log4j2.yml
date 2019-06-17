@@ -11,14 +11,14 @@ Configuration:
         onMismatch: DENY
       PatternLayout:
         pattern: "%d{yyyy-MM-dd-'T'HH:mm:ss.SSSZ} | %green{%sn} | %blue{%T} | %white{%-15t} | %cyan{%c} | %highlight{%-5p | %m%n}{info=light-white, warn=yellow, error=red, debug=white, trace=white, fatal=red}"
-    Socket:
-       name: Socket
-       protocol: TCP
-       host: develop.arbfintech.com
-       port: 5602
-       JsonLayout:
-         compact: true
-         eventEol: true
+#    Socket:
+#       name: Socket
+#       protocol: TCP
+#       host: develop.arbfintech.com
+#       port: 5602
+#       JsonLayout:
+#         compact: true
+#         eventEol: true
 #       PatternLayout:
 #         pattern: " { type : %-5p, class :  %c, info :  %m%n }"
 
@@ -28,4 +28,4 @@ Configuration:
       level: info
       AppenderRef:
         - ref: CONSOLE
-        - ref: Socket
+#        - ref: Socket

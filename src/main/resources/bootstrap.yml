@@ -55,3 +55,11 @@ arb:
     url: panda.arbfintech.com
   service:
     url: 54.255.235.134
+---
+spring:
+  profiles: local
+arb:
+  eureka:
+    url: localhost
+  service:
+    url: localhost

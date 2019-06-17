@@ -6,8 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.framework.component.core.enumerate.LoanStatusEnum;
 import com.arbfintech.framework.component.core.type.RabbitMessage;
-import com.arbfintech.framework.component.core.util.EmailUtil;
 import com.arbfintech.framework.component.core.util.FreeMarkerUtil;
+import com.arbfintech.framework.component.core.util.SimpleEmailServiceUtil;
 import com.arbfintech.microservice.loan.client.MaintenanceFeignClient;
 import com.arbfintech.microservice.loan.entity.*;
 import com.arbfintech.microservice.loan.service.LoanService;
@@ -269,7 +269,7 @@ public class LoanRestController {
 								}
 
 								String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
-								EmailUtil.emailSender(email,false,title,	content, "","");
+								SimpleEmailServiceUtil.sendEmail(email,title,content);
 							}
 						}
 						logger.info("Mail has been sent to :" + email);
