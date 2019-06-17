@@ -262,10 +262,10 @@ public class TimeLineApiService {
 			String originFieldValue = updateObj.getString("originFieldValue");
 			String fieldValue = updateObj.getString("fieldValue");
 			if (StringUtils.isNotEmpty(originFieldValue)){
-				updateObj.put("originFieldValue", StringUtil.toCurrency(originFieldValue));
+				updateObj.put("originFieldValue", StringUtil.toCurrency(originFieldValue).replace("\\",""));
 			}
 			if (StringUtils.isNotEmpty(fieldValue)){
-				updateObj.put("fieldValue", StringUtil.toCurrency(fieldValue));
+				updateObj.put("fieldValue", StringUtil.toCurrency(fieldValue).replace("\\",""));
 			}
 		}
 	}
