@@ -210,6 +210,7 @@ public class LoanRestController {
                                    @RequestParam(value = "additionalData", required = false) String additionalData) {
 
         Loan loan = loanService.getLoanByContactNo(contractNo);
+
         if (loan != null) {
             boolean isStatusFound = false;
             Integer sourceStatus = loan.getLoanStatus();
@@ -222,6 +223,9 @@ public class LoanRestController {
                     loan.setUpdateTime((new Date()).getTime());
                     loan.setLockedOperatorNo(null);
                     loan.setLockedOperatorName(null);
+                    if (contractNo.startsWith("OIC")){
+                        loan.setOperatorNo(null);
+                    }
                     loanService.saveLoanOnly(loan);
 
                     JSONObject jsonObject = JSON.parseObject(additionalData);
