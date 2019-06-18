@@ -1928,12 +1928,14 @@ public class LoanService {
     }
 
     public String workOnNewLeadOnline(String operatorNo, Integer loanStatus){
+        String operatorName = "";
         String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
+        operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
         Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
         List<Integer> loanStatusList = new ArrayList<>();
         loanStatusList.add(loanStatus);
         List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
-
+        sortLoanByLockedTime(lockedLoans);
         List<String> lockedOnlineLoanNos = new ArrayList<>();
 
         for (Loan loan:lockedLoans){
@@ -1941,7 +1943,41 @@ public class LoanService {
                 lockedOnlineLoanNos.add(loan.getContractNo());
             }
         }
-        return JSONArray.toJSONString(lockedOnlineLoanNos);
+        if(lockedOnlineLoanNos.size()>1){
+            Loan loan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
+            loan.setLockedAt(DateUtil.getCurrentTimestamp());
+            loanRepository.save(loan);
+            return JSONArray.toJSONString(lockedOnlineLoanNos);
+        }else {
+            String contractNo = "";
+            List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(10, loanStatusList, operatorNo);
+            if (newOnlineloans.size() > 0) {
+                contractNo = newOnlineloans.get(0).getContractNo();
+                lockedOnlineLoanNos.add(contractNo);
+            } else {
+                logger.error("there were not enough loan of new online loans!");
+            }
+            Loan newLoan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
+            if (newLoan != null) {
+                String oldOperatorNo = newLoan.getLockedOperatorNo();
+                newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
+                newLoan.setLockedOperatorName(operatorName);
+                newLoan.setLockedOperatorNo(operatorNo);
+                newLoan.setOperatorNo(operatorNo);
+                newLoan.setFollowUp(null);
+                newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
+                loanRepository.save(newLoan);
+
+                if (oldOperatorNo == null || !operatorNo.equals(oldOperatorNo)) {
+                    JSONObject additionObj = new JSONObject();
+                    additionObj.put("operatorNo", operatorNo);
+                    additionObj.put("operatorName", operatorName);
+                    timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+                }
+            }
+            return JSONArray.toJSONString(lockedOnlineLoanNos);
+        }
+
     }
     public String sendEmailTimeline(String additionalValue) {
         return timeLineApiService.sendEmailTimeline(additionalValue);
