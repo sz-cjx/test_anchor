@@ -1926,7 +1926,23 @@ public class LoanService {
         }
         return contractNo;
     }
-      
+
+    public String workOnNewLeadOnline(String operatorNo, Integer loanStatus){
+        String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
+        Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
+        List<Integer> loanStatusList = new ArrayList<>();
+        loanStatusList.add(loanStatus);
+        List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+
+        List<String> lockedOnlineLoanNos = new ArrayList<>();
+
+        for (Loan loan:lockedLoans){
+            if (loan.getFlags()!=null){
+                lockedOnlineLoanNos.add(loan.getContractNo());
+            }
+        }
+        return JSONArray.toJSONString(lockedOnlineLoanNos);
+    }
     public String sendEmailTimeline(String additionalValue) {
         return timeLineApiService.sendEmailTimeline(additionalValue);
     }
