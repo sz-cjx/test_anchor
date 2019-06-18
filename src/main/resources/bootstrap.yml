@@ -63,3 +63,11 @@ arb:
     url: localhost
   service:
     url: localhost
+---
+spring:
+  profiles: release
+arb:
+  eureka:
+    url: china-dev.vertical.arbcalls.com
+  service:
+    url: 54.255.235.134
