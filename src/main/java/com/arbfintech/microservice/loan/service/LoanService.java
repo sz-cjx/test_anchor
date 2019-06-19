@@ -203,12 +203,22 @@ public class LoanService {
                     break;
             }
         }
-
+        String downloadFilesProperties = null;
+        if("5".equals(section)){
+            String registerProperties = registerFilter(properties);
+            downloadFilesProperties = downloadFilesFilter(properties);
+            if(registerProperties!=null){
+                properties = registerProperties;
+            }
+        }
         if(StringUtils.isNotEmpty(additionalData)){
             JSONObject jsonObject = JSON.parseObject(additionalData);
             Loan loan = getSimpleLoanByLoanId(loanId);
             jsonObject.put("appData",JSON.toJSONString(loan));
             timeLineApiService.addSaveTimeline(properties, jsonObject.toJSONString());
+            if(StringUtils.isNotEmpty(downloadFilesProperties)){
+                timeLineApiService.addDownloadFilesTimeline(downloadFilesProperties, jsonObject.toJSONString());
+            }
         }
 
         return "";
@@ -1991,5 +2001,31 @@ public class LoanService {
             loans = JSON.toJSONString(list);
         }
         return loans;
+    }
+
+    private String downloadFilesFilter(String properties) {
+        JSONArray propJsonObj = JSON.parseArray(properties);
+        JSONArray result = new JSONArray();
+        for (int i = 0;i<propJsonObj.size();i++){
+            JSONObject jsonObj = propJsonObj.getJSONObject(i);
+            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
+                result.add(jsonObj);
+            }
+        }
+
+        return result.toJSONString();
+    }
+
+    private String registerFilter(String properties) {
+        JSONArray propJsonObj = JSON.parseArray(properties);
+        for (int i = 0 ;i<propJsonObj.size();i++){
+            JSONObject jsonObj = propJsonObj.getJSONObject(i);
+            String a = jsonObj.getString("fieldKey");
+            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
+                propJsonObj.remove(i);
+                i--;
+            }
+        }
+        return propJsonObj.toJSONString();
     }
 }

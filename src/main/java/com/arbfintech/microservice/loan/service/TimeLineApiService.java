@@ -25,7 +25,7 @@ import java.util.HashSet;
 public class TimeLineApiService {
 
 	private Logger logger = LoggerFactory.getLogger(TimeLineApiService.class);
-	
+
 	@Autowired
 	private TimelineFeignClient timelineFeignClient;
 
@@ -34,12 +34,12 @@ public class TimeLineApiService {
 	private LoanStatusFeignClient loanStatusFeignclient;
 
 	public String getLoanStatus(String contractNo) {
-		
+
 		JSONObject loanStatus=new  JSONObject();
 		String status = loanStatusFeignclient.getLoanStatusByContractNo(contractNo);
-		
+
 		loanStatus.put("status", status);
-				
+
 		return status;
 	}
 
@@ -330,8 +330,61 @@ public class TimeLineApiService {
 			resultOb.put("operatorName", operatorName);
 		}
 		resultOb.put("eventTime", new Date());
-		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
-		resultOb.put("eventDescription", "Loan Agreement is sent to ESS");
+		resultOb.put("eventType", EventTypeEnum.LOAN_AGREEMENTS.getValue().toString());
+		resultOb.put("eventDescription", "Loan Agreement has been sent for signing");
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+	}
+
+	public String addDownloadFilesTimeline(String updateProperties, String additionalData) {
+		JSONObject resultOb = new JSONObject();
+
+		boolean a = updateProperties.isEmpty();
+
+		String contractNo = "";
+		String note = "";
+		String operatorNo ="";
+		String operatorName = "";
+		Integer loanStatus = 0;
+		String appDataStr = "";
+		String section = "";
+		if(StringUtils.isNotEmpty(additionalData)){
+			JSONObject additionalObj = JSONObject.parseObject(additionalData);
+			loanStatus = additionalObj.getInteger("Status");
+			section = additionalObj.getString("section");
+			note = additionalObj.getString("note");
+			operatorNo = additionalObj.getString("operatorNo");
+			operatorName = additionalObj.getString("operatorName");
+			contractNo = additionalObj.getString("contractNo");
+			appDataStr = additionalObj.getString("appData");
+		}
+
+		JSONObject targetSnapshot = new JSONObject();
+		JSONArray updateArr = JSONArray.parseArray(updateProperties);
+
+		for(int i = 0; i < updateArr.size(); i ++){
+			JSONObject updateObj = updateArr.getJSONObject(i);
+			if (updateObj.containsKey("fieldKey")){
+				convertData(updateObj);
+			}
+		}
+
+		targetSnapshot.put("updateProperties",updateArr);
+		targetSnapshot.put("status",loanStatus);
+		targetSnapshot.put("section",section );
+
+		resultOb.put("eventTime", new Date());
+		resultOb.put("eventType", EventTypeEnum.LOAN_AGREEMENTS.getValue().toString());
+		resultOb.put("eventDescription", "Loan Agreements has be signed");
+		resultOb.put("targetSnapshot", targetSnapshot);
+		resultOb.put("relationNo", contractNo);
+		resultOb.put("contractNo", contractNo);
+		resultOb.put("note",note);
+		resultOb.put("operatorName", operatorName);
+		resultOb.put("operatorNo", operatorNo);
+		resultOb.put("appData",appDataStr);
+		timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+
+
+		return JSONObject.toJSONString(resultOb);
 	}
 }
