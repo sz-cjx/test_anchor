@@ -1215,6 +1215,7 @@ public class LoanService {
                 loanStatusList.add(LoanStatusEnum.INITIALIZED.getValue());
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+                logger.warn("=====lockedLoans====="+lockedLoans);
                 if (lockedLoans.size() < lockedMaxNumber ) {
                     String followupContractNo = getFollowUpLoans(portfolioId, operatorNo);
                     if (("There are no followup loan").equals(followupContractNo)) {
@@ -1477,7 +1478,7 @@ public class LoanService {
                 logger.error(JSONObject.toJSONString(grabInfoObj));
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),1,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
-                timer.schedule(delayTask,5*1000);
+                timer.schedule(delayTask,20*1000);
             }else if(agentLevel<targetAgentLevel){
                 result ="false";
             }else {
