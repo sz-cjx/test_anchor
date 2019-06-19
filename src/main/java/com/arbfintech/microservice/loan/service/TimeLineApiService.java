@@ -330,7 +330,7 @@ public class TimeLineApiService {
 			resultOb.put("operatorName", operatorName);
 		}
 		resultOb.put("eventTime", new Date());
-		resultOb.put("eventType", EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue().toString());
+		resultOb.put("eventType", EventTypeEnum.LOAN_AGREEMENTS.getValue().toString());
 		resultOb.put("eventDescription", "Loan Agreement is sent to ESS");
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
 	}

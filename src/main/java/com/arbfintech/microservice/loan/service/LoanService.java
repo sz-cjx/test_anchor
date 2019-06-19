@@ -2012,10 +2012,8 @@ public class LoanService {
                 result.add(jsonObj);
             }
         }
-        if(result.size()<1){
-            return "";
-        }
-        return result.toString();
+
+        return result.toJSONString();
     }
 
     private String registerFilter(String properties) {
