@@ -460,4 +460,9 @@ public class LoanRestController {
     String sendEmailTimeline(@RequestParam(value = "additionalValue") String additionalValue) {
         return loanService.sendEmailTimeline(additionalValue);
     }
+
+    @GetMapping("/getLoansByFollowUp")
+    public String getLoansByFollowUp(){
+        return loanService.getLoansByFollowUp();
+    }
 }
