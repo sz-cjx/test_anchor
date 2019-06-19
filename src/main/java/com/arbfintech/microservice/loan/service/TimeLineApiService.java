@@ -331,7 +331,7 @@ public class TimeLineApiService {
 		}
 		resultOb.put("eventTime", new Date());
 		resultOb.put("eventType", EventTypeEnum.LOAN_AGREEMENTS.getValue().toString());
-		resultOb.put("eventDescription", "Loan Agreement is sent to ESS");
+		resultOb.put("eventDescription", "Loan Agreement has been sent for signing");
 		return timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
 	}
 
