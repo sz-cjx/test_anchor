@@ -224,34 +224,6 @@ public class LoanService {
         return "";
     }
 
-    private String downloadFilesFilter(String properties) {
-        JSONArray propJsonObj = JSON.parseArray(properties);
-        JSONArray result = new JSONArray();
-        for (int i = 0;i<propJsonObj.size();i++){
-            JSONObject jsonObj = propJsonObj.getJSONObject(i);
-            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
-                result.add(jsonObj);
-            }
-        }
-        if(result.size()<1){
-            return "";
-        }
-        return result.toString();
-    }
-
-    private String registerFilter(String properties) {
-        JSONArray propJsonObj = JSON.parseArray(properties);
-        for (int i = 0 ;i<propJsonObj.size();i++){
-            JSONObject jsonObj = propJsonObj.getJSONObject(i);
-            String a = jsonObj.getString("fieldKey");
-            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
-                propJsonObj.remove(i);
-                i--;
-            }
-        }
-        return propJsonObj.toJSONString();
-    }
-
     private String updatePropertyInJSON(String jsonStr, String properties) {
         JSONObject jsonObject;
         if (StringUtils.isNotEmpty(jsonStr)) {
@@ -1171,7 +1143,7 @@ public class LoanService {
         List<Integer> loanIds = new ArrayList<>();
         if (loans!=null && loans.size()!=0){
             for (Loan loan:loans){
-                JSONObject recentLoan= getFormedLoanDataById(loan.getId());
+               JSONObject recentLoan= getFormedLoanDataById(loan.getId());
 
                 String contractNum;
                 Integer loanStatus = null;
@@ -1253,6 +1225,7 @@ public class LoanService {
                 loanStatusList.add(LoanStatusEnum.INITIALIZED.getValue());
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+                logger.warn("=====lockedLoans====="+lockedLoans);
                 if (lockedLoans.size() < lockedMaxNumber ) {
                     String followupContractNo = getFollowUpLoans(portfolioId, operatorNo);
                     if (("There are no followup loan").equals(followupContractNo)) {
@@ -1515,7 +1488,7 @@ public class LoanService {
                 logger.error(JSONObject.toJSONString(grabInfoObj));
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),1,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
-                timer.schedule(delayTask,5*1000);
+                timer.schedule(delayTask,20*1000);
             }else if(agentLevel<targetAgentLevel){
                 result ="false";
             }else {
@@ -1965,7 +1938,96 @@ public class LoanService {
         return contractNo;
     }
 
+    public String workOnNewLeadOnline(String operatorNo, Integer loanStatus){
+        String operatorName = "";
+        String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
+        operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
+        Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
+        List<Integer> loanStatusList = new ArrayList<>();
+        loanStatusList.add(loanStatus);
+        List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+        sortLoanByLockedTime(lockedLoans);
+        List<String> lockedOnlineLoanNos = new ArrayList<>();
+
+        for (Loan loan:lockedLoans){
+            if (loan.getFlags()!=null){
+                lockedOnlineLoanNos.add(loan.getContractNo());
+            }
+        }
+        if(lockedOnlineLoanNos.size()>1){
+            Loan loan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
+            loan.setLockedAt(DateUtil.getCurrentTimestamp());
+            loanRepository.save(loan);
+            return JSONArray.toJSONString(lockedOnlineLoanNos);
+        }else {
+            String contractNo = "";
+            List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(10, loanStatusList, operatorNo);
+            if (newOnlineloans.size() > 0) {
+                contractNo = newOnlineloans.get(0).getContractNo();
+                lockedOnlineLoanNos.add(contractNo);
+            } else {
+                logger.error("there were not enough loan of new online loans!");
+            }
+            Loan newLoan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
+            if (newLoan != null) {
+                String oldOperatorNo = newLoan.getLockedOperatorNo();
+                newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
+                newLoan.setLockedOperatorName(operatorName);
+                newLoan.setLockedOperatorNo(operatorNo);
+                newLoan.setOperatorNo(operatorNo);
+                newLoan.setFollowUp(null);
+                newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
+                loanRepository.save(newLoan);
+
+                if (oldOperatorNo == null || !operatorNo.equals(oldOperatorNo)) {
+                    JSONObject additionObj = new JSONObject();
+                    additionObj.put("operatorNo", operatorNo);
+                    additionObj.put("operatorName", operatorName);
+                    timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+                }
+            }
+            return JSONArray.toJSONString(lockedOnlineLoanNos);
+        }
+
+    }
     public String sendEmailTimeline(String additionalValue) {
         return timeLineApiService.sendEmailTimeline(additionalValue);
+    }
+
+    public String getLoansByFollowUp() {
+        String loans = "";
+        List<Loan> list = loanRepository.findAllByFollowUpIsNotNull();
+        if (list != null){
+            loans = JSON.toJSONString(list);
+        }
+        return loans;
+    }
+
+    private String downloadFilesFilter(String properties) {
+        JSONArray propJsonObj = JSON.parseArray(properties);
+        JSONArray result = new JSONArray();
+        for (int i = 0;i<propJsonObj.size();i++){
+            JSONObject jsonObj = propJsonObj.getJSONObject(i);
+            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
+                result.add(jsonObj);
+            }
+        }
+        if(result.size()<1){
+            return "";
+        }
+        return result.toString();
+    }
+
+    private String registerFilter(String properties) {
+        JSONArray propJsonObj = JSON.parseArray(properties);
+        for (int i = 0 ;i<propJsonObj.size();i++){
+            JSONObject jsonObj = propJsonObj.getJSONObject(i);
+            String a = jsonObj.getString("fieldKey");
+            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
+                propJsonObj.remove(i);
+                i--;
+            }
+        }
+        return propJsonObj.toJSONString();
     }
 }
