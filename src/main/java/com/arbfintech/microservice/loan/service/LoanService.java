@@ -1983,4 +1983,13 @@ public class LoanService {
     public String sendEmailTimeline(String additionalValue) {
         return timeLineApiService.sendEmailTimeline(additionalValue);
     }
+
+    public String getLoansByFollowUp() {
+        String loans = "";
+        List<Loan> list = loanRepository.findAllByFollowUpIsNotNull();
+        if (list != null){
+            loans = JSON.toJSONString(list);
+        }
+        return loans;
+    }
 }
