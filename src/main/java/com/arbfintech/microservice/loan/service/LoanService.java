@@ -1674,8 +1674,17 @@ public class LoanService {
         JSONObject loanObj = JSONObject.parseObject(loanStr);
         Loan loan = loanRepository.findById(loanObj.getInteger("id"));
         if (loan!=null) {
-            loan.setLoanStatus(LoanStatusEnum.TRIBE_REVIEW.getValue());
+            Double onlineData = loanObj.getDouble("onlineData");
             loan.setReviewData(loanObj.getString("dataReview"));
+            if (onlineData!=null){
+                JSONObject jsonData = new JSONObject();
+                jsonData.put("loanSize", onlineData);
+                loan.setOnlineData(JSONObject.toJSONString(jsonData));
+                loan.setFlags(10);
+                loan.setLoanStatus(LoanStatusEnum.CUSTOMER_REVIEW.getValue());
+            }else {
+                loan.setLoanStatus(LoanStatusEnum.TRIBE_REVIEW.getValue());
+            }
             loanRepository.save(loan);
 
             JSONObject personalObj = loanObj.getJSONObject("personal");
@@ -1685,6 +1694,8 @@ public class LoanService {
             Personal personal = personalRepository.findByLoanId(loan.getId());
             Bank bank = bankRepository.findByLoanId(loan.getId());
             Employment employment = employmentRepository.findByLoanId(loan.getId());
+
+
 
             personal.setFirstName(personalObj.getString(JsonKeyConst.FIRST_NAME));
             personal.setMiddleName(personalObj.getString(JsonKeyConst.MIDDLE_NAME));
@@ -1701,7 +1712,11 @@ public class LoanService {
             JSONObject addtionData = new JSONObject();
             addtionData.put("contractNo", loan.getContractNo());
             addtionData.put("appData", JSONObject.toJSONString(loan));
-            timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.TRIBE_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
+            if (onlineData!=null){
+                timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.CUSTOMER_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
+            }else {
+                timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.TRIBE_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
+            }
             if (employment==null){
                 Employment employmentNew = new Employment();
                 employmentNew.setEmployerName(employmentObj.getString(JsonKeyConst.EMPLOYER_NAME));
@@ -2027,5 +2042,16 @@ public class LoanService {
             }
         }
         return propJsonObj.toJSONString();
+    }
+
+    public String updateFlags(String contractNo,Integer flags){
+        Loan loan=loanRepository.findByContractNo(contractNo);
+        if (loan !=null){
+            loan.setFlags(flags);
+            loanRepository.save(loan);
+        }else{
+            logger.error("Uodate flags failed!");
+        }
+        return JSONObject.toJSONString(loan);
     }
 }

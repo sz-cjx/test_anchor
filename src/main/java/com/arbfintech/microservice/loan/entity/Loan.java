@@ -85,6 +85,10 @@ public class Loan {
     @Lob
     private String reviewData;
 
+    @Column
+    @Lob
+    private String onlineData;
+
     @Transient
     private Personal personal;
 
@@ -332,6 +336,13 @@ public class Loan {
         this.customerInAutoId = customerInAutoId;
     }
 
+    public String getOnlineData() {
+        return onlineData;
+    }
+
+    public void setOnlineData(String onlineData) {
+        this.onlineData = onlineData;
+    }
 
     @Override
     public String toString() {
