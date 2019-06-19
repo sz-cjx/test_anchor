@@ -465,4 +465,10 @@ public class LoanRestController {
     public String getLoansByFollowUp(){
         return loanService.getLoansByFollowUp();
     }
+
+    @PostMapping("/online/flags")
+    public String updateFlags(@RequestParam(value = "contractNo")String contractNo,
+                              @RequestParam(value = "flags")Integer flags){
+        return loanService.updateFlags(contractNo, flags);
+    }
 }
