@@ -40,13 +40,12 @@ logging:
 
 ---
 spring:
-  profiles: slave-54
+  profiles: release
 arb:
   eureka:
-    url: 192.168.0.54
+    url: panda.arbfintech.com
   service:
-    url: 192.168.0.54
-
+    url: 54.255.235.134
 ---
 spring:
   profiles: develop
@@ -65,9 +64,9 @@ arb:
     url: localhost
 ---
 spring:
-  profiles: release
+  profiles: slave-54
 arb:
   eureka:
-    url: china-dev.vertical.arbcalls.com
+    url: 192.168.0.54
   service:
-    url: 54.255.235.134
+    url: 192.168.0.54
