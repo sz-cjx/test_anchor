@@ -19,8 +19,8 @@ public class LoanScheduleApiService {
 		
 		return loanScheduleFeignClient.getScheduleAndScheduleItem(contractNo);
 	}
-	
-		
-	
-	
+
+
+
+
 }

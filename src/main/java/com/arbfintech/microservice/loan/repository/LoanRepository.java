@@ -42,6 +42,8 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     List<Loan> findAllByCustomerIdentifyKey(String customerIdentifyKey);
 
     List<Loan> findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(String operatoorNo,Integer portfolioId,List<Integer> loanStatus);
+
+    List<Loan> findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusInOrderByLockedAt(String operatoorNo,Integer portfolioId,List<Integer> loanStatus);
     List<Loan> findAllByOperatorNoAndPortfolioId(String operatorNo, Integer portfolioId);
 
     @Query(value = "SELECT * FROM loan WHERE portfolio_id=?1 AND follow_up!=''", nativeQuery = true)
