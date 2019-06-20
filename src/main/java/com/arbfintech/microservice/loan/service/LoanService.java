@@ -1984,23 +1984,28 @@ public class LoanService {
             } else {
                 logger.error("there were not enough loan of new online loans!");
             }
-            Loan newLoan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
-            if (newLoan != null) {
-                String oldOperatorNo = newLoan.getLockedOperatorNo();
-                newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
-                newLoan.setLockedOperatorName(operatorName);
-                newLoan.setLockedOperatorNo(operatorNo);
-                newLoan.setOperatorNo(operatorNo);
-                newLoan.setFollowUp(null);
-                newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
-                loanRepository.save(newLoan);
 
-                if (oldOperatorNo == null || !operatorNo.equals(oldOperatorNo)) {
-                    JSONObject additionObj = new JSONObject();
-                    additionObj.put("operatorNo", operatorNo);
-                    additionObj.put("operatorName", operatorName);
-                    timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+            if (lockedOnlineLoanNos.size()>1) {
+                Loan newLoan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
+                if (newLoan != null) {
+                    String oldOperatorNo = newLoan.getLockedOperatorNo();
+                    newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
+                    newLoan.setLockedOperatorName(operatorName);
+                    newLoan.setLockedOperatorNo(operatorNo);
+                    newLoan.setOperatorNo(operatorNo);
+                    newLoan.setFollowUp(null);
+                    newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
+                    loanRepository.save(newLoan);
+
+                    if (oldOperatorNo == null || !operatorNo.equals(oldOperatorNo)) {
+                        JSONObject additionObj = new JSONObject();
+                        additionObj.put("operatorNo", operatorNo);
+                        additionObj.put("operatorName", operatorName);
+                        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+                    }
                 }
+            }else {
+                logger.error("there were not enough loan of new online loans those not been locked!");
             }
             return JSONArray.toJSONString(lockedOnlineLoanNos);
         }
