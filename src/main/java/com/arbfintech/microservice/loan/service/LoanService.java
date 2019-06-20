@@ -7,10 +7,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.enumerate.*;
 import com.arbfintech.framework.component.core.type.RabbitMessage;
-import com.arbfintech.framework.component.core.util.BigDecimalUtil;
-import com.arbfintech.framework.component.core.util.DateUtil;
-import com.arbfintech.framework.component.core.util.EnumUtil;
-import com.arbfintech.framework.component.core.util.StringUtil;
+import com.arbfintech.framework.component.core.util.*;
 import com.arbfintech.microservice.loan.client.BusinessFeignClient;
 import com.arbfintech.microservice.loan.client.EmployeeFeignClient;
 import com.arbfintech.microservice.loan.client.GrabLoanFeignClient;
@@ -1707,13 +1704,15 @@ public class LoanService {
             personal.setHomePhone(personalObj.getString(JsonKeyConst.HOME_PHONE));
             personal.setMobilePhone(personalObj.getString(JsonKeyConst.MOBILE_PHONE));
             personal.setEmail(personalObj.getString(JsonKeyConst.EMAIL));
-            personalRepository.save(personal);
+            Personal savedPersonal= personalRepository.save(personal);
 
             JSONObject addtionData = new JSONObject();
             addtionData.put("contractNo", loan.getContractNo());
             addtionData.put("appData", JSONObject.toJSONString(loan));
             if (onlineData!=null){
+
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.CUSTOMER_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
+                sendEmail(loan.getContractNo());
             }else {
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.TRIBE_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
             }
@@ -1911,7 +1910,7 @@ public class LoanService {
             List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
             List<Loan> lockedOnlineLoans = new ArrayList<>();
             for (Loan loan : lockedLoans) {
-                if (loan.getFlags() != null && loan.getFlags() == 10) {
+                if (loan.getFlags() != null) {
                     lockedOnlineLoans.add(loan);
                 }
             }
@@ -1919,7 +1918,7 @@ public class LoanService {
                 sortLoanByLockedTime(lockedOnlineLoans);
                 contractNo = lockedOnlineLoans.get(0).getContractNo();
             } else {
-                List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(10, loanStatusList, operatorNo);
+                List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(loanStatusList, operatorNo);
                 if (newOnlineloans.size() > 0) {
                     contractNo = newOnlineloans.get(0).getContractNo();
                 } else {
@@ -1977,7 +1976,7 @@ public class LoanService {
             return JSONArray.toJSONString(lockedOnlineLoanNos);
         }else {
             String contractNo = "";
-            List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(10, loanStatusList, operatorNo);
+            List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(loanStatusList, operatorNo);
             if (newOnlineloans.size() > 0) {
                 contractNo = newOnlineloans.get(0).getContractNo();
                 lockedOnlineLoanNos.add(contractNo);
@@ -2059,5 +2058,29 @@ public class LoanService {
             logger.error("Uodate flags failed!");
         }
         return JSONObject.toJSONString(loan);
+    }
+
+
+    public void sendEmail(String contractNo) {
+        String str = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/><meta name=\"description\" content=\"ARB PANDA LOAN SYSTEM\"/><meta name=\"author\" content=\"ARBFINTECH\"/><style>.wrapper {margin: 0 auto;width: 60%;padding: 0px;}.f-w-700 {font-weight: 700;}.underline {border-bottom: 1px solid #e2e7eb !important;}body {margin: 0;}.page {height: 100%;width: 100%;font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.p-35 {padding: 35px;}.p-v-10 {padding-top: 10px !important;padding-bottom: 10px !important;}.m-b-0 {margin-bottom: 0px !important;}.bg-primary {color: #FFF;background: rgb(13, 100, 165);}.bg-secondary {background: rgba(13, 100, 165, 0.4);}.btn {display: inline-block;font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;padding: .375rem 1rem;margin-bottom: 1rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;cursor: pointer;}.btn + .btn {margin-left: 10px;}div > p:last-child {margin-bottom: 0px !important;}p {margin-top: 0;margin-bottom: 1rem;}table td {font-size: .9rem;}table td img {margin-top: 3px;height: 23px;}.bg-secondary p {font-style: italic;font-size: .9rem;}.width-200 {width: 200px;}.text-center {text-align: center;}.text-underline {text-decoration: underline;}img {line-height: 0px;}@media (max-width: 767px) {.wrapper {width: 100%;}}</style></head><body><div class=\"page\"><div class=\"wrapper\"><div style=\"background: #FAFAFA\"><div class=\"bg-primary\" style=\"text-align: center\"><img src=\"http://dev.arbfintech.com/img/logo-firstloan.png\" alt=\"\"/><h2 class=\"m-b-0\">Apply Only in Minutes! Get Your money Fast from FirstLoan!</h2></div><div class=\"underline p-35\"><p>Hello ${firstName},</p><p>You are invited to participate in our newest online program! Now, every step of the loan applicationprocess with FirstLoan can be done completely online!</p><ul><li>Our online loan application is quick and easy;</li><li>24/7 online access to applications;</li><li>The application process only takes a few minutes;</li><li>Instant or prompt decision on your approval from our Underwriting department;</li><li>Have funds directly deposited into your bank account by the next business day;</li><li>Application process is completely online, so no need to speak to anyone over the phone;</li><li>A great credit score is <i class=\"text-underline f-w-700\">not</i> necessary in order to get aloan approval from us;</li><li>This loan application will <i class=\"text-underline f-w-700\">not</i> affect your FICO® creditscore;</li><li>You will have top notch VIP support to help you out every step of the way.</li></ul><div class=\"text-center p-v-10\"><a href=\"${portfolioWebsite}\" target=\"_blank\" class=\"btn bg-primary width-200\">Get Started</a></div><p>We look forward to hearing from you!</p><div><p class=\"f-w-700 m-b-0\">Online Program Support Team,</p><p class=\"f-w-700 m-b-0\">FirstLoan</p></div></div></div><div class=\"p-35 p-v-10 bg-secondary\"><p>To ensure that you continue receiving our emails, please add SUPPORT@FIRSTLOAN.COM to your address bookor safe list.</p><p>FirstLoan is a Native American-owned business operated by the Elem Indian Colony Pomo Tribe, a federallyrecognized Indian tribe and a sovereign nation located in the United States. FirstLoan abides by allapplicable federal laws and regulations as well as those established by the Elem Indian Colony PomoTribe.</p></div></div></div></body></html>";
+
+        Loan loan = loanRepository.findByContractNo(contractNo);
+
+        if (loan != null) {
+            Personal personal = personalRepository.findByLoanId(loan.getId());
+            try {
+                JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
+                String ref = "http://online.arbfintech.com/market/authentication?firstName=" + js.getString("firstName") + "&pId=20" + "&contractNo=" + contractNo;
+                js.put("portfolioWebsite", ref);
+                String email = personal.getEmail();
+                if (email != null) {
+                    String tital = "Apply in minutes! Get your money fast from First Loan!";
+                    String emailStr = FreeMarkerUtil.fillHtmlTemplate(str, js);
+                    SimpleEmailServiceUtil.sendEmail(email, tital, emailStr);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
