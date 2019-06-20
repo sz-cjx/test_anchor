@@ -1960,7 +1960,8 @@ public class LoanService {
         Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
         List<Integer> loanStatusList = new ArrayList<>();
         loanStatusList.add(loanStatus);
-        List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+//        List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
+        List<Loan> lockedLoans=loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusInOrderByLockedAt(operatorNo,portfolioId,loanStatusList);
         sortLoanByLockedTime(lockedLoans);
         List<String> lockedOnlineLoanNos = new ArrayList<>();
 
