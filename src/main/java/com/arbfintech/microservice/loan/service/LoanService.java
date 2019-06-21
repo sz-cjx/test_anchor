@@ -1734,6 +1734,7 @@ public class LoanService {
             bank.setBankAvailableBalance(bankObj.getDouble(JsonKeyConst.BANK_AVAILABLEBALANCE));
             bank.setPayrollFrequency(bankObj.getInteger(JsonKeyConst.PAYROLL_FREQUENCY));
             bank.setBankDeposits(bankObj.getString("bankDeposits"));
+            bank.setFirstPayDate(bankObj.getString("firstPayDate"));
             bankRepository.save(bank);
 
         }else{
@@ -2082,5 +2083,77 @@ public class LoanService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendRfeEmail(String contractNo) {
+        Loan loan = loanRepository.findByContractNo(contractNo);
+
+        if (loan != null) {
+
+            String onlineData = loan.getOnlineData();
+            List<String> requests = new ArrayList<>();
+            String bank = "";
+            String identify = "";
+            String others = "";
+            if (onlineData.indexOf("bank")!=-1){
+                bank = "Bank Statement";
+            }
+            if (onlineData.indexOf("identify")!=-1){
+                identify = "Identify";
+            }
+            if (onlineData.indexOf("others")!=-1){
+                others = "Others";
+            }
+            requests.add(bank);
+            requests.add(identify);
+            requests.add(others);
+            Personal personal = personalRepository.findByLoanId(loan.getId());
+            try {
+                JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
+                String str = "<p>Hello "+personal.getFirstName()+",</p>" +
+                        "<p>After reviewing your documents, we found some required information is missing, incomplete or unclear. Please resubmit the following documents. Please make sure you have all the requested documents ready to upload before you submit, since partial submission of documents may delay the processing of your application.</p>" +
+                        "<ol><li>"+requests.get(0)+".</li>" +
+                        "<li>"+requests.get(1)+".</li>" +
+                        "<li>"+requests.get(2)+"</li></ol>";
+                String ref = "http://online.arbfintech.com/market/authentication?firstName=" + js.getString("firstName") + "&pId=20" + "&contractNo=" + contractNo;
+                js.put("portfolioWebsite", ref);
+                String email = personal.getEmail();
+                if (email != null) {
+                    String tital = "Apply in minutes! Get your money fast from First Loan!";
+                    String emailStr = FreeMarkerUtil.fillHtmlTemplate(str, js);
+                    SimpleEmailServiceUtil.sendEmail(email, tital, emailStr);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public String addRfeOnline(String contractNo,String onlineData){
+        Loan loan = loanRepository.findByContractNo(contractNo);
+        String result = "";
+        if (loan!=null){
+            loan.setOnlineData(onlineData);
+            loan.setLoanStatus(LoanStatusEnum.CORRECTION.getValue());
+            loan.setLoanStatusText(LoanStatusEnum.CORRECTION.getText());
+            loan.setFlags(10);
+            loan.setLockedOperatorName(null);
+            loan.setLockedOperatorName(null);
+            loan.setOperatorNo(null);
+            Loan savedLoan=loanRepository.save(loan);
+
+            JSONObject addtionData = new JSONObject();
+            addtionData.put("contractNo", loan.getContractNo());
+            addtionData.put("appData", JSONObject.toJSONString(savedLoan));
+            timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.CORRECTION.getValue(), JSONObject.toJSONString(addtionData));
+
+            sendRfeEmail(loan.getContractNo());
+            result = JSONObject.toJSONString(savedLoan);
+        }else{
+            logger.error("There is not loan`s contractNo: "+contractNo+" in DB!" );
+            result= "There is not loan`s contractNo: " + contractNo + " in DB!";
+        }
+        return result;
     }
 }
