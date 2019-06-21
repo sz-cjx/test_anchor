@@ -2107,6 +2107,9 @@ public class LoanService {
             requests.add(bank);
             requests.add(identify);
             requests.add(others);
+
+            JSONObject onlineDataObj = JSONObject.parseObject(onlineData);
+            String note = onlineDataObj.getString("note");
             Personal personal = personalRepository.findByLoanId(loan.getId());
             try {
                 JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
@@ -2114,7 +2117,8 @@ public class LoanService {
                         "<p>After reviewing your documents, we found some required information is missing, incomplete or unclear. Please resubmit the following documents. Please make sure you have all the requested documents ready to upload before you submit, since partial submission of documents may delay the processing of your application.</p>" +
                         "<ol><li>"+requests.get(0)+".</li>" +
                         "<li>"+requests.get(1)+".</li>" +
-                        "<li>"+requests.get(2)+"</li></ol>";
+                        "<li>"+requests.get(2)+"</li></ol>"+
+                        "<p>"+note+"</p>";
                 String ref = "http://online.arbfintech.com/market/authentication?firstName=" + js.getString("firstName") + "&pId=20" + "&contractNo=" + contractNo;
                 js.put("portfolioWebsite", ref);
                 String email = personal.getEmail();
