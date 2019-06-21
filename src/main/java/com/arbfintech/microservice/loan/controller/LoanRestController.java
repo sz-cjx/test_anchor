@@ -471,4 +471,11 @@ public class LoanRestController {
                               @RequestParam(value = "flags")Integer flags){
         return loanService.updateFlags(contractNo, flags);
     }
+
+    @PostMapping("/online-rfe")
+    public String rfeOnline(@RequestParam(value = "contractNo")String contractNo,
+                            @RequestParam(value = "onlineData")String onlineData){
+
+        return loanService.addRfeOnline(contractNo,onlineData);
+    }
 }
