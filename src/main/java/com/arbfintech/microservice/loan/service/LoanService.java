@@ -1484,6 +1484,11 @@ public class LoanService {
                 grabInfoObj.put("isToSubordinate", 1);
                 logger.error(JSONObject.toJSONString(grabInfoObj));
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
+                JSONObject object = JSONObject.parseObject(result);
+                object.put("positionName",agentLevelObj.getString("positionName"));
+                object.put("employeeFullName",agentLevelObj.getString("employeeFullName"));
+                result = object.toJSONString();
+
                 DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),1,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
                 timer.schedule(delayTask,20*1000);
             }else if(agentLevel<targetAgentLevel){
@@ -1491,6 +1496,11 @@ public class LoanService {
             }else {
                 grabInfoObj.put("isToSubordinate", 2);
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
+                JSONObject object = JSONObject.parseObject(result);
+                object.put("positionName",agentLevelObj.getString("positionName"));
+                object.put("employeeFullName",agentLevelObj.getString("employeeFullName"));
+                result = object.toJSONString();
+
                 DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),2,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
                 timer.schedule(delayTask,25*1000);
             }
