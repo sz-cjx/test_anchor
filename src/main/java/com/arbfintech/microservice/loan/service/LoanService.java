@@ -1915,7 +1915,8 @@ public class LoanService {
         Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
         operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
         if (LoanStatusEnum.UNDERWRITER_REVIEW.getValue().equals(loanStatus) ||
-                LoanStatusEnum.TRIBE_REVIEW.getValue().equals(loanStatus)) {
+                LoanStatusEnum.TRIBE_REVIEW.getValue().equals(loanStatus) ||
+                LoanStatusEnum.APPROVED.getValue().equals(loanStatus)) {
 
             List<Integer> loanStatusList = new ArrayList<>();
             loanStatusList.add(loanStatus);
