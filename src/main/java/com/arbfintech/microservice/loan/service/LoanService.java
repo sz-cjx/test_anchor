@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -2171,4 +2172,50 @@ public class LoanService {
         }
         return result;
     }
+
+    //update loan in profile
+    public String updateLoanInformationInOnline(String contractNo,String loanStr){
+
+        Loan loan = loanRepository.findByContractNo(contractNo);
+        JSONObject customerObj = JSONObject.parseObject(loanStr);
+        if (loan!=null){
+
+            loan.setUpdateTime(DateUtil.getCurrentTimestamp());
+
+            Personal personal = personalRepository.findByLoanId(loan.getId());
+            personal.setFirstName(customerObj.getString(JsonKeyConst.FIRST_NAME));
+            personal.setMiddleName(customerObj.getString(JsonKeyConst.MIDDLE_NAME));
+            personal.setLastName(customerObj.getString(JsonKeyConst.LAST_NAME));
+            personal.setAddress(customerObj.getString(JsonKeyConst.ADDRESS));
+            personal.setCity(customerObj.getString(JsonKeyConst.CITY));
+            personal.setState(customerObj.getString(JsonKeyConst.STATE));
+            personal.setZip(customerObj.getString(JsonKeyConst.ZIP));
+            personal.setSsn(customerObj.getString(JsonKeyConst.SSN));
+            personal.setBirthday(customerObj.getString(JsonKeyConst.BIRTHDAY));
+            personal.setHomePhone(customerObj.getString(JsonKeyConst.HOME_PHONE));
+            personal.setMobilePhone(customerObj.getString(JsonKeyConst.MOBILE_PHONE));
+            personalRepository.save(personal);
+
+            Employment employment = employmentRepository.findByLoanId(loan.getId());
+            employment.setEmployerPhone(customerObj.getString(JsonKeyConst.EMPLOYER_PHONE));
+            employmentRepository.save(employment);
+
+            Bank bank = bankRepository.findByLoanId(loan.getId());
+            bank.setBankName(customerObj.getString(JsonKeyConst.BANK_NAME));
+            bank.setBankRoutingNo(customerObj.getString(JsonKeyConst.BANK_ROUTING_NO));
+            bank.setBankAccountNo(customerObj.getString(JsonKeyConst.ACCOUNT_NO));
+            bankRepository.save(bank);
+
+            Loan savedLoan=loanRepository.save(loan);
+
+            return JSONObject.toJSONString(savedLoan);
+        }else {
+            logger.error("There is not Loan which contractNo is: " + contractNo);
+            return "There is not Loan which contractNo is: " + contractNo;
+        }
+
+    }
+
+
+
 }
