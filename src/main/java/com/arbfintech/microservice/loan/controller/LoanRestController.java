@@ -475,7 +475,12 @@ public class LoanRestController {
     @PostMapping("/online-rfe")
     public String rfeOnline(@RequestParam(value = "contractNo")String contractNo,
                             @RequestParam(value = "onlineData")String onlineData){
-
         return loanService.addRfeOnline(contractNo,onlineData);
+    }
+
+    @PostMapping("/online-profile")
+    public String updateProfileInformationOnline(@RequestParam(value = "contractNo")String contractNo,
+                                                 @RequestParam(value = "loanStr")String loanStr){
+        return loanService.updateLoanInformationInOnline(contractNo, loanStr);
     }
 }
