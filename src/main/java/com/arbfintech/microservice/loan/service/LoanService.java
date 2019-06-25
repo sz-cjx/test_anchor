@@ -1906,6 +1906,15 @@ public class LoanService {
     }
 
     public String generateOnlineNewLoan(String operatorNo, Integer loanStatus) {
+        if (loanStatus==null || StringUtils.isNotEmpty(Integer.toString(loanStatus))){
+            logger.error("Error loan with loanStatus is null");
+            return "Error loan with loanStatus is null";
+        }
+
+        if (StringUtils.isNotEmpty(operatorNo)){
+            logger.error("There is not operator which Number is null!");
+            return "There is not operator which Number is null!";
+        }
         String contractNo = "";
         String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
         String operatorName = "";
