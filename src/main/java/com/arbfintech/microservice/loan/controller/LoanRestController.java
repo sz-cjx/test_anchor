@@ -483,4 +483,9 @@ public class LoanRestController {
                                                  @RequestParam(value = "loanStr")String loanStr){
         return loanService.updateLoanInformationInOnline(contractNo, loanStr);
     }
+
+    @PostMapping("/addNotes")
+    public String addNotes(@RequestParam(value = "additionalData") String additionalValue){
+        return loanService.addNotes(additionalValue);
+    }
 }

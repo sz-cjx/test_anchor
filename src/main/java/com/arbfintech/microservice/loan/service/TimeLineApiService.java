@@ -387,4 +387,29 @@ public class TimeLineApiService {
 
 		return JSONObject.toJSONString(resultOb);
 	}
+
+	public String addNotes(String additionalValue) {
+		JSONObject resultOb = new JSONObject();
+		String note = "";
+		String operatorNo = "";
+		String operatorName = "";
+		String contractNo = "";
+		if(StringUtils.isNotEmpty(additionalValue)) {
+			JSONObject additionalObj = JSONObject.parseObject(additionalValue);
+			note = additionalObj.getString("note");
+			operatorNo = additionalObj.getString("operatorNo");
+			operatorName = additionalObj.getString("operatorName");
+			contractNo = additionalObj.getString("contractNo");
+		}
+		resultOb.put("eventTime", new Date());
+		resultOb.put("eventType", EventTypeEnum.ADD_NOTE.getValue().toString());
+		resultOb.put("eventDescription", "Add Notes Operation");
+		resultOb.put("relationNo", contractNo);
+		resultOb.put("contractNo", contractNo);
+		resultOb.put("note",note);
+		resultOb.put("operatorName", operatorName);
+		resultOb.put("operatorNo", operatorNo);
+		timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
+		return JSONObject.toJSONString(resultOb);
+	}
 }
