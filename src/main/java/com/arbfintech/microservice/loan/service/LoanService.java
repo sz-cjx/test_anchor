@@ -1653,6 +1653,11 @@ public class LoanService {
     }
 
     public String getLoanInAuto(Integer loanStatus){
+
+        if (loanStatus==null || StringUtils.isEmpty(Integer.toString(loanStatus))){
+            logger.error("Error loan with loanStatus is null");
+            return "Error loan with loanStatus is null";
+        }
         List<Loan> loans = loanRepository.findCustomerInAutoLoan(loanStatus);
 
         String result = "";
@@ -1906,12 +1911,12 @@ public class LoanService {
     }
 
     public String generateOnlineNewLoan(String operatorNo, Integer loanStatus) {
-        if (loanStatus==null || StringUtils.isNotEmpty(Integer.toString(loanStatus))){
+        if (loanStatus==null || StringUtils.isEmpty(Integer.toString(loanStatus))){
             logger.error("Error loan with loanStatus is null");
             return "Error loan with loanStatus is null";
         }
 
-        if (StringUtils.isNotEmpty(operatorNo)){
+        if (StringUtils.isEmpty(operatorNo)){
             logger.error("There is not operator which Number is null!");
             return "There is not operator which Number is null!";
         }
@@ -1974,6 +1979,17 @@ public class LoanService {
     }
 
     public String workOnNewLeadOnline(String operatorNo, Integer loanStatus){
+
+        if (loanStatus==null || StringUtils.isEmpty(Integer.toString(loanStatus))){
+            logger.error("Error loan with loanStatus is null");
+            return "Error loan with loanStatus is null";
+        }
+
+        if (StringUtils.isEmpty(operatorNo)){
+            logger.error("There is not operator which Number is null!");
+            return "There is not operator which Number is null!";
+        }
+
         String operatorName = "";
         String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
         operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
