@@ -2233,6 +2233,11 @@ public class LoanService {
 
     }
 
-
+    public String addNotes(String additionalValue) {
+        if(StringUtils.isNotEmpty(additionalValue)){
+            timeLineApiService.addNotes(additionalValue);
+        }
+        return "";
+    }
 
 }
