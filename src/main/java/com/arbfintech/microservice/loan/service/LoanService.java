@@ -1253,7 +1253,7 @@ public class LoanService {
                 logger.info("Finally, try to find a loan from locked loans.");
                 int lockedLoanSize = lockedLoans.size();
                 if(lockedLoanSize <= 0){
-                logger.error(" lockedLoans is null ");
+                logger.info(" lockedLoans is null ");
                     return "";
                 }else if(lockedLoanSize < 2){
                     contractNo = lockedLoans.get(0).getContractNo();
@@ -1465,7 +1465,6 @@ public class LoanService {
      * @return
      */
     public String grabLoan(String contractNo,String operatorNo,String operatorName){
-
         String result = "";
         Loan loan=loanRepository.findByContractNo(contractNo);
         Timer timer = new Timer();
