@@ -1210,11 +1210,14 @@ public class LoanService {
         int lockedMaxNumber = 2;
 
         if (agentLevelObj!=null){
-            logger.info("get agent information: "+agentLevelObj);
             Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
             Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
             operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
-
+            logger.info("portfolioId value is "+portfolioId+" level value is "+level+" operatorName value is "+operatorName);
+            if(portfolioId == null || level == null || operatorName == null){
+                logger.error(" Incomplete access to information ");
+                return "";
+            }
             List<Loan> lockedLoans;
             if (loanStatus <= 2) {
                 //for agent review
@@ -1250,7 +1253,8 @@ public class LoanService {
                 logger.info("Finally, try to find a loan from locked loans.");
                 int lockedLoanSize = lockedLoans.size();
                 if(lockedLoanSize <= 0){
-                    contractNo = "";
+                logger.info(" lockedLoans is null ");
+                    return "";
                 }else if(lockedLoanSize < 2){
                     contractNo = lockedLoans.get(0).getContractNo();
                 }else {
@@ -1280,7 +1284,8 @@ public class LoanService {
                 }
             }
         }else {
-            return "Get Agent Information Error! Please Check And Make Your Account Correct ";
+            logger.warn("Get Agent Information Error! Please Check And Make Your Account Correct ");
+            return "";
         }
         return contractNo;
 
@@ -1460,7 +1465,6 @@ public class LoanService {
      * @return
      */
     public String grabLoan(String contractNo,String operatorNo,String operatorName){
-
         String result = "";
         Loan loan=loanRepository.findByContractNo(contractNo);
         Timer timer = new Timer();
