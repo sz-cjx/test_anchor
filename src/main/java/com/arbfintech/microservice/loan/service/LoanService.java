@@ -1178,9 +1178,18 @@ public class LoanService {
             int day = cal.get(Calendar.DATE);
             int hour = cal.get(Calendar.HOUR);
             int minute = cal.get(Calendar.MINUTE);
-            cal.set(Calendar.DAY_OF_MONTH,day+dateObj.getInteger("Day"));
-            cal.set(Calendar.HOUR_OF_DAY, hour+dateObj.getInteger("Hour"));
-            cal.set(Calendar.MINUTE,minute+dateObj.getInteger("Minute"));
+            Integer timeDataDay = dateObj.getInteger("Day");
+            Integer timeDataHour = dateObj.getInteger("Hour");
+            Integer timeDataMinute = dateObj.getInteger("Minute");
+            if (timeDataDay != null){
+                cal.set(Calendar.DAY_OF_MONTH, day + timeDataDay);
+            }
+            if (timeDataHour != null){
+                cal.set(Calendar.HOUR_OF_DAY, hour + timeDataHour);
+            }
+            if (timeDataMinute != null){
+                cal.set(Calendar.MINUTE, minute + timeDataMinute);
+            }
             followUpDatetime = cal.getTimeInMillis();
         }else if (("absolute").equals(type)){
             followUpDatetime = dateObj.getLong("absoluteTime");
