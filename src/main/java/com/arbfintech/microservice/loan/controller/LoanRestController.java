@@ -485,7 +485,7 @@ public class LoanRestController {
     }
 
     @PostMapping("/addNotes")
-    public String addNotes(@RequestParam(value = "additionalData", required = false) String additionalValue){
+    public String addNotes(@RequestParam(value = "additionalData") String additionalValue){
         return loanService.addNotes(additionalValue);
     }
 }
