@@ -49,7 +49,7 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     @Query(value = "SELECT * FROM loan WHERE portfolio_id=?1 AND follow_up!=''", nativeQuery = true)
     List<Loan> findAllFollowUpdLoans(Integer portfolioId);
 
-    @Query(value = "SELECT contract_no FROM loan WHERE loan_status=?1",nativeQuery = true)
+    @Query(value = "SELECT contract_no FROM loan WHERE loan_status=?1 AND locked_operator_no IS NULL ",nativeQuery = true)
     List<String> findContractNoByLoanStatus(Integer loanStatus);
 
     @Query(value = "SELECT * FROM loan WHERE category=?1 AND flags is null AND locked_operator_no IS NULL AND loan_status IN (?2) AND ( operator_no!=?3 or operator_no is NULL ) ORDER BY create_time DESC;", nativeQuery = true)
