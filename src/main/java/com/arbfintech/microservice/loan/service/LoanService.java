@@ -1205,6 +1205,7 @@ public class LoanService {
 
         additionObj.put("operatorNo", loan.getLockedOperatorNo());
         additionObj.put("operatorName", loan.getLockedOperatorName());
+        additionObj.put("followUp", followUpDatetime);
 
         timeLineApiService.addFollowUpTimeline(contractNo, JSONObject.toJSONString(additionObj));
         return JSONObject.toJSONString(loan);
