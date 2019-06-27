@@ -5,6 +5,7 @@ import com.arbfintech.microservice.loan.client.GrabLoanFeignClient;
 import com.arbfintech.microservice.loan.entity.Loan;
 import com.arbfintech.microservice.loan.repository.LoanRepository;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 public class DelayTask extends TimerTask {
 
@@ -39,6 +40,14 @@ public class DelayTask extends TimerTask {
             Loan loan = loanRepository.findByContractNo(grabResult);
 
             if (levelFlag==1) {
+                if (loan != null) {
+                    loan.setLockedOperatorName(operatorName);
+                    loan.setOperatorNo(operatorNo);
+                    loan.setLockedOperatorNo(operatorNo);
+                    loan.setLockedAt(DateUtil.getCurrentTimestamp());
+                    loanRepository.save(loan);
+                }
+            }else {
                 if (loan != null) {
                     loan.setLockedOperatorName(operatorName);
                     loan.setOperatorNo(operatorNo);
