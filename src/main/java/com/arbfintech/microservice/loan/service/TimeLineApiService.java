@@ -287,6 +287,9 @@ public class TimeLineApiService {
 			resultOb.put("relationNo", contractNo);
 			resultOb.put("operatorNo", operatorNo);
 			resultOb.put("operatorName", operatorName);
+			JSONObject targetSnapshot = new JSONObject();
+			targetSnapshot.put("followUp", additionalObj.getLong("followUp"));
+			resultOb.put("targetSnapshot", targetSnapshot);
 		}
 
 		resultOb.put("eventTime", new Date());
@@ -406,7 +409,9 @@ public class TimeLineApiService {
 		resultOb.put("eventDescription", "Add Notes Operation");
 		resultOb.put("relationNo", contractNo);
 		resultOb.put("contractNo", contractNo);
-		resultOb.put("note",note);
+		JSONObject targetSnapshot = new JSONObject();
+		targetSnapshot.put("note",note);
+		resultOb.put("targetSnapshot",targetSnapshot);
 		resultOb.put("operatorName", operatorName);
 		resultOb.put("operatorNo", operatorNo);
 		timelineFeignClient.addTimeline(JSONObject.toJSONString(resultOb));
