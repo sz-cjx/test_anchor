@@ -49,7 +49,7 @@ public class TimeLineApiService {
 	}
 
 	public String addLoanStatusChangeTimeline(Integer sourceStatus, Integer targetStatus, String additionData){
-
+		logger.info("Add status update in timeline, sourceStatus:{}, targetStatus:{}", sourceStatus, targetStatus);
 		JSONObject sourceData = new JSONObject();
 		sourceData.put("loanStatus", sourceStatus == null ? "" : sourceStatus);
 
@@ -65,6 +65,24 @@ public class TimeLineApiService {
 
 		if(StringUtils.isNotEmpty(additionData)){
 			JSONObject additionalObj = JSONObject.parseObject(additionData);
+
+			String withdrawReason = additionalObj.getString("withdrawReason");
+			if(StringUtils.isNotEmpty(withdrawReason)){
+				targetData.put("withdrawReason", withdrawReason);
+			}
+
+			String withdrawType = additionalObj.getString("withdrawType");
+			if(StringUtils.isNotEmpty(withdrawType)){
+				targetData.put("withdrawType", withdrawType);
+			}
+
+			String withdrawCode = additionalObj.getString("withdrawCode");
+			if(StringUtils.isNotEmpty(withdrawCode)){
+				targetData.put("withdrawCode", withdrawCode);
+			}
+
+			timelineObj.put("targetData", targetData); // replace the target data if needed
+
 			timelineObj.put("note", additionalObj.getString("note"));
 			timelineObj.put("operatorName", additionalObj.getString("operatorName"));
 			timelineObj.put("operatorNo", additionalObj.getString("operatorNo"));

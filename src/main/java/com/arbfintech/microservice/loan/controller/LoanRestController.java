@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.arbfintech.framework.component.core.enumerate.LoanStatusEnum;
 import com.arbfintech.framework.component.core.type.RabbitMessage;
+import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.framework.component.core.util.FreeMarkerUtil;
 import com.arbfintech.framework.component.core.util.SimpleEmailServiceUtil;
 import com.arbfintech.microservice.loan.client.MaintenanceFeignClient;
@@ -209,39 +210,41 @@ public class LoanRestController {
                                    @RequestParam(value = "status") String status,
                                    @RequestParam(value = "additionalData", required = false) String additionalData) {
 
+        String result = "OK";
         Loan loan = loanService.getLoanByContactNo(contractNo);
 
         if (loan != null) {
-            boolean isStatusFound = false;
+            logger.info("Start to update Loan status to ：{} for loan: {}", status, contractNo);
             Integer sourceStatus = loan.getLoanStatus();
-            for (LoanStatusEnum e : LoanStatusEnum.values()) {
-
-                if (e.getText().equals(status)) {
-                    isStatusFound = true;
-                    loan.setLoanStatus(e.getValue());
-                    loan.setLoanStatusText(status);
-                    loan.setUpdateTime((new Date()).getTime());
-                    loan.setLockedOperatorNo(null);
-                    loan.setLockedOperatorName(null);
-                    if (contractNo.startsWith("OIC")){
-                        loan.setOperatorNo(null);
-                    }
-                    loanService.saveLoanOnly(loan);
-
-                    JSONObject jsonObject = JSON.parseObject(additionalData);
-                    Payment payment = loan.getPayment();
-                    if (payment != null) {
-                        payment.setItems("");
-                        loan.setPayment(payment);
-                    }
-                    jsonObject.put("appData", JSON.toJSONString(loan));
-                    timeLineApiService.addLoanStatusChangeTimeline(sourceStatus, e.getValue(), jsonObject.toJSONString());
+            LoanStatusEnum loanStatusEnum = EnumUtil.getByText(LoanStatusEnum.class, status);
+            if (loanStatusEnum != null) {
+                loan.setLoanStatus(loanStatusEnum.getValue());
+                loan.setLoanStatusText(status);
+                loan.setUpdateTime((new Date()).getTime());
+                loan.setLockedOperatorNo(null);
+                loan.setLockedOperatorName(null);
+                if (contractNo.startsWith("OIC")) {
+                    loan.setOperatorNo(null);
                 }
-            }
-            String email = "";
-            if (isStatusFound) {
-                logger.info("Update Loan status to ：{} for loan: {}", status, contractNo);
 
+                JSONObject jsonObject = JSON.parseObject(additionalData);
+                if (jsonObject != null) {
+                    loan.setWithdrawnCode(jsonObject.getInteger("withdrawCode"));
+                }
+
+                loanService.saveLoanOnly(loan);
+
+                Payment payment = loan.getPayment();
+                if (payment != null) {
+                    payment.setItems("");
+                    loan.setPayment(payment);
+                }
+                jsonObject.put("appData", JSON.toJSONString(loan));
+                timeLineApiService.addLoanStatusChangeTimeline(sourceStatus, loanStatusEnum.getValue(), jsonObject.toJSONString());
+
+                logger.info("Update Loan status success");
+
+                String email = "";
                 if ("Approved Application".equals(status)) {
                     try {
                         String title = "Your loan has been approved";
@@ -281,46 +284,14 @@ public class LoanRestController {
                         e.printStackTrace();
                     }
                 }
-
-                return "OK";
             } else {
                 logger.error("Invalid status ：{}", status);
-                return "NOK";
+                result = "NOK";
             }
-        } else {
-            return "NOK";
         }
+        return result;
     }
-
-
-    @PostMapping("/loan-withdrawn")
-    public String withdrawLoan(
-            @RequestParam(value = "contractNo") String contractNo,
-            @RequestParam(value = "status") String status,
-            @RequestParam("withdrawnCode") Integer withdrawnCode) {
-        Loan loan = loanService.getLoanByContactNo(contractNo);
-        if (loan != null) {
-            boolean isStatusFound = false;
-            for (LoanStatusEnum e : LoanStatusEnum.values()) {
-
-                if (e.getText().equals(status)) {
-                    isStatusFound = true;
-                    loan.setLoanStatus(e.getValue());
-                    loan.setWithdrawnCode(withdrawnCode);
-                    loan.setUpdateTime((new Date()).getTime());
-                    loanService.saveLoanOnly(loan);
-                }
-            }
-            if (isStatusFound) {
-                return "OK";
-            } else {
-                return "NOK";
-            }
-        } else {
-            return "NOK";
-        }
-    }
-
+    
     @GetMapping("/searching")
     public String searchLeads(
             @RequestParam(value = "name") String name,

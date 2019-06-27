@@ -1235,7 +1235,6 @@ public class LoanService {
                 loanStatusList.add(LoanStatusEnum.INITIALIZED.getValue());
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
-                logger.warn("=====lockedLoans====="+lockedLoans);
                 if (lockedLoans.size() < lockedMaxNumber ) {
                     String followupContractNo = getFollowUpLoans(portfolioId, operatorNo);
                     if (("There are no followup loan").equals(followupContractNo)) {
@@ -1303,7 +1302,7 @@ public class LoanService {
 
 
     private List<Loan> getLockedLoans(Integer portfolioId, String operatorNo, List<Integer> loanStatusList){
-        logger.info("start to query the locked loan for portfolioId:{}, operatorNo:{}, loanStatus:{}", portfolioId, operatorNo, JSON.toJSONString(loanStatusList));
+        logger.info("Start to query the locked loan for portfolioId:{}, operatorNo:{}, loanStatus:{}", portfolioId, operatorNo, JSON.toJSONString(loanStatusList));
         List<Loan> lockedLoans = loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(operatorNo, portfolioId, loanStatusList);
         logger.info("Locked loan list size:{}", lockedLoans.size());
         logger.debug("Locked loan list:{}", JSON.toJSONString(lockedLoans));
