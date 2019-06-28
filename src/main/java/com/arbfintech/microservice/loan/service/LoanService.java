@@ -1212,7 +1212,7 @@ public class LoanService {
     }
 
 
-    public String generateNewLoan(String operatorNo, Integer loanStatus) {
+    public String generateNewLoan(String operatorNo, Integer loanStatus, String currentContractNo) {
 
         String contractNo = "";
         String agentLevelObj = employeeFeignClient.getAgentLevel(operatorNo);
@@ -1269,6 +1269,9 @@ public class LoanService {
                 }else {
                     sortLoanByLockedTime(lockedLoans);
                     contractNo = lockedLoans.get(0).getContractNo();
+                    if(contractNo.equals(currentContractNo)){
+                        contractNo = lockedLoans.get(1).getContractNo();
+                    }
                 }
             }
 
