@@ -22,10 +22,6 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <docker.repository>500258131217.dkr.ecr.ap-southeast-1.amazonaws.com</docker.repository>
-        <docker.registry.name>arb-microservice</docker.registry.name>
-        <docker.tag.majorVersion>ALPHA.1</docker.tag.majorVersion>
-        <docker.tag.buildVersion>${timestamp}</docker.tag.buildVersion>
     </properties>
 
     <!-- import spring-cloud -->
@@ -237,35 +233,6 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            <!-- docker maven plugin -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.13</version>
-                <configuration>
-                    <!-- Docker Image setting -->
-                    <pushImage>false</pushImage>
-                    <forceTags>true</forceTags>
-                    <registryUrl>${docker.repository}</registryUrl>
-                    <imageName>${docker.repository}/${docker.registry.name}-${project.artifactId}</imageName>
-                    <imageTags>
-                        <imageTag>latest</imageTag>
-                        <imageTag>${docker.tag.majorVersion}.${docker.tag.buildVersion}</imageTag>
-                    </imageTags>
-
-                    <!-- Dockerfile setting -->
-                    <dockerDirectory>src/main/docker</dockerDirectory>
-
-                    <!-- Resource setting -->
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
                 </configuration>
             </plugin>
             <plugin>
