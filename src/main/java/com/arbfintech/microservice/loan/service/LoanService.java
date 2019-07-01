@@ -2260,4 +2260,41 @@ public class LoanService {
         return "";
     }
 
+    private List<Loan> getLockedLoansByPortfolioIdAndOperatorNo(Integer portfolioId, String operatorNo){
+        logger.info("Start to query the locked loan for portfolioId:{}, operatorNo:{}", portfolioId, operatorNo);
+        List<Loan> lockedLoans = loanRepository.findAllByLockedOperatorNoAndPortfolioId(operatorNo, portfolioId);
+        logger.info("Locked loan list size:{}", lockedLoans.size());
+        logger.debug("Locked loan list:{}", JSON.toJSONString(lockedLoans));
+        return lockedLoans;
+    }
+
+    public String lock(String contractNo, String operatorNo, String operatorName) {
+        String agentLevel = employeeFeignClient.getAgentLevel(operatorNo);
+        if (StringUtils.isNotEmpty(agentLevel)){
+            Integer portfolioId = JSONObject.parseObject(agentLevel).getInteger("portfolioId");
+            if(portfolioId == null){
+                logger.error(" Incomplete access to information ");
+                return "false";
+            }
+            List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
+            if (lockedLoans.size() < 2){
+                Loan byContractNo = loanRepository.findByContractNo(contractNo);
+                byContractNo.setLockedOperatorName(operatorName);
+                byContractNo.setLockedAt(new Date().getTime());
+                byContractNo.setLockedOperatorNo(operatorNo);
+                Integer loanStatus = byContractNo.getLoanStatus();
+                if (loanStatus != null && loanStatus == LoanStatusEnum.INITIALIZED.getValue()){
+                    byContractNo.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
+                    byContractNo.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
+                }
+                loanRepository.save(byContractNo);
+                JSONObject additionObj = new JSONObject();
+                additionObj.put("operatorNo", operatorNo);
+                additionObj.put("operatorName", operatorName);
+                timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+                return contractNo;
+            }
+        }
+        return "false";
+    }
 }

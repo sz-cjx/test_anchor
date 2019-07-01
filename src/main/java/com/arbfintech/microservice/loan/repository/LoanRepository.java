@@ -67,4 +67,6 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     List<Loan> findNewOnlineApplications(List<Integer> loanStatusList ,String operatorNo);
 
     List<Loan> findAllByFollowUpIsNotNull();
+
+    List<Loan> findAllByLockedOperatorNoAndPortfolioId(String operatorNo, Integer portfolioId);
 }
