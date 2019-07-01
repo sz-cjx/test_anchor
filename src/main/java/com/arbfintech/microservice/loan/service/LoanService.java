@@ -1285,6 +1285,10 @@ public class LoanService {
                     newLoan.setOperatorNo(operatorNo);
                     newLoan.setFollowUp(null);
                     newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
+                    if(LoanStatusEnum.INITIALIZED.getValue().equals(newLoan.getLoanStatus())){
+                        newLoan.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
+                        newLoan.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
+                    }
                     loanRepository.save(newLoan);
 
                     if (oldOperatorNo == null ||!operatorNo.equals(oldOperatorNo)){
