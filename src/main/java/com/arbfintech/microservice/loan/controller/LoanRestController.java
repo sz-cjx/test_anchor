@@ -460,4 +460,11 @@ public class LoanRestController {
     public String addNotes(@RequestParam(value = "additionalData") String additionalValue){
         return loanService.addNotes(additionalValue);
     }
+
+    @PostMapping("/lock")
+    String lock(@RequestParam(value = "contractNo") String contractNo,
+                @RequestParam(value = "operatorNo") String operatorNo,
+                @RequestParam(value = "operatorName") String operatorName){
+        return loanService.lock(contractNo, operatorNo, operatorName);
+    }
 }
