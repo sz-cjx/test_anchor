@@ -2149,27 +2149,40 @@ public class LoanService {
             String onlineData = loan.getOnlineData();
 
             JSONObject onlineDataObj = JSONObject.parseObject(onlineData);
-            String note = onlineDataObj.getString("note");
+            String noteStr = onlineDataObj.getString("note");
+            JSONObject note = JSONObject.parseObject(noteStr);
             Personal personal = personalRepository.findByLoanId(loan.getId());
+            String staticNote = "note: ";
             try {
                 JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
-                if (onlineData.indexOf("bank")!=-1){
+                if (onlineData.indexOf("bank") != -1) {
                     String bank = "Bank Statement";
-                    js.put("bank",bank);
+                    if (onlineData.contains("rfeBankNote")) {
+                        js.put("bankNote",staticNote);
+                        js.put("rfeBankNote",note.getString("rfeBankNote"));
+                    }
+                    js.put("bank", bank);
                 }
-                if (onlineData.indexOf("identify")!=-1){
+                if (onlineData.indexOf("identify") != -1) {
                     String identify = "Identify";
-                    js.put("identify",identify);
+                    if (onlineData.contains("rfeIdentifyNote")) {
+                        js.put("identifyNote",staticNote);
+                        js.put("rfeIdentifyNote",note.getString("rfeIdentifyNote"));
+                    }
+                    js.put("identify", identify);
                 }
-                if (onlineData.indexOf("others")!=-1){
+                if (onlineData.indexOf("others") != -1) {
                     String others = "Others";
-                    js.put("other",others);
+                    if (onlineData.contains("rfeOthersNote")) {
+                        js.put("othersNote",staticNote);
+                        js.put("rfeOthersNote",note.getString("rfeOthersNote"));
+                    }
+                    js.put("others", others);
                 }
-                String str = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/><meta name=\"description\" content=\"ARB PANDA LOAN SYSTEM\"/><meta name=\"author\" content=\"ARBFINTECH\"/><style>li {list-style: none}.wrapper {margin: 0 auto;width: 60%;padding: 0px;}.f-w-700 {font-weight: 700;}.underline {border-bottom: 1px solid #e2e7eb !important;}body {margin: 0;}.page {height: 100%;width: 100%;font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.p-35 {padding: 35px;}.p-v-10 {padding-top: 10px !important;padding-bottom: 10px !important;}.m-b-0 {margin-bottom: 0px !important;}.bg-primary {color: #FFF;background: rgb(13, 100, 165);}.bg-secondary {background: rgba(13, 100, 165, 0.4);}.btn {display: inline-block;font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;padding: .375rem 1rem;margin-bottom: 1rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;cursor: pointer;}.btn + .btn {margin-left: 10px;}div > p:last-child {margin-bottom: 0px !important;}p {margin-top: 0;margin-bottom: 1rem;}table td {font-size: .9rem;}table td img {margin-top: 3px;height: 23px;}.bg-secondary p {font-style: italic;font-size: .9rem;}.width-200 {width: 200px;}.text-center {text-align: center;}.text-underline {text-decoration: underline;}img {line-height: 0px;}@media (max-width: 767px) {.wrapper {width: 100%;}}</style></head><body><div class=\"page\"><div class=\"wrapper\"><div style=\"background: #FAFAFA\"><div class=\"bg-primary\" style=\"text-align: center\"><img src=\"http://dev.arbfintech.com/img/logo-firstloan.png\" alt=\"\"/><h2 class=\"m-b-0\">Apply Only in Minutes! Get Your money Fast from FirstLoan!</h2></div><div class=\"underline p-35\"><p>Dear ${firstName},</p><p>After reviewing your documents, we found some required information is missing, incomplete or unclear. Please resubmit the following documents. Please make sure you have all the requested documents ready to upload before you submit, since partial submission of documents may delay the processing of your application.</p><ul><li>${bank?if_exists}</li><li>${identify?if_exists}</li><li>${others?if_exists}</li></ul><div><p class=\"f-w-700 m-b-0\">${note}</div><div class=\"text-center p-v-10\"><a href=\"${portfolioWebsite}\" target=\"_blank\" class=\"btn bg-primary width-200\">Get Started</a></div></div></div><div class=\"p-35 p-v-10 bg-secondary\"></div></div></div></body></html>";
+                String str = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/><meta name=\"description\" content=\"ARB PANDA LOAN SYSTEM\"/><meta name=\"author\" content=\"ARBFINTECH\"/><style>li {list-style: none}.wrapper {margin: 0 auto;width: 60%;padding: 0px;}.f-w-700 {font-weight: 700;}.underline {border-bottom: 1px solid #e2e7eb !important;}body {margin: 0;}.page {height: 100%;width: 100%;font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.p-35 {padding: 35px;}.p-v-10 {padding-top: 10px !important;padding-bottom: 10px !important;}.m-b-0 {margin-bottom: 0px !important;}.bg-primary {color: #FFF;background: rgb(13, 100, 165);}.bg-secondary {background: rgba(13, 100, 165, 0.4);}.btn {display: inline-block;font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;padding: .375rem 1rem;margin-bottom: 1rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;cursor: pointer;}.btn + .btn {margin-left: 10px;}div > p:last-child {margin-bottom: 0px !important;}p {margin-top: 0;margin-bottom: 1rem;}table td {font-size: .9rem;}table td img {margin-top: 3px;height: 23px;}.bg-secondary p {font-style: italic;font-size: .9rem;}.width-200 {width: 200px;}.text-center {text-align: center;}.text-underline {text-decoration: underline;}img {line-height: 0px;}@media (max-width: 767px) {.wrapper {width: 100%;}}</style></head><body><div class=\"page\"><div class=\"wrapper\"><div style=\"background: #FAFAFA\"><div class=\"bg-primary\" style=\"text-align: center\"><img src=\"http://dev.arbfintech.com/img/logo-firstloan.png\" alt=\"\"/><h2 class=\"m-b-0\">Apply Only in Minutes! Get Your money Fast from FirstLoan!</h2></div><div class=\"underline p-35\"><p>Dear ${firstName},</p><p>After reviewing your documents, we found some required information is missing, incomplete or unclear. Please resubmit the following documents. Please make sure you have all the requested documents ready to upload before you submit, since partial submission of documents may delay the processing of your application.</p><ul><li>${bank?if_exists}&nbsp;&nbsp;<span class=\"f-w-700 m-b-0\">${bankNote?if_exists}</span><span>${rfeBankNote?if_exists}</span></li><li>${identify?if_exists}&nbsp;&nbsp;<span class=\"f-w-700 m-b-0\">${identifyNote?if_exists}</span><span>${rfeIdentifyNote?if_exists}</span></li><li>${others?if_exists}&nbsp;&nbsp;<span class=\"f-w-700 m-b-0\">${othersNote?if_exists}</span><span>${rfeOthersNote?if_exists}</span></li></ul><div class=\"text-center p-v-10\"><a href=\"${portfolioWebsite}\" target=\"_blank\" class=\"btn bg-primary width-200\">Get Started</a></div></div></div><div class=\"p-35 p-v-10 bg-secondary\"></div></div></div></body></html>";
                 String ref = "http://online.arbfintech.com/market/authentication?firstName=" + personal.getFirstName() + "&pId=20" + "&contractNo=" + contractNo;
                 js.put("portfolioWebsite", ref);
-                js.put("firstName",personal.getFirstName());
-                js.put("note",note);
+                js.put("firstName", personal.getFirstName());
                 String email = personal.getEmail();
                 if (email != null) {
                     String tital = "Apply in minutes! Get your money fast from First Loan!";
