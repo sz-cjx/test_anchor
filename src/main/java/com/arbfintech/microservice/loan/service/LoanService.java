@@ -1269,8 +1269,11 @@ public class LoanService {
                 }else {
                     sortLoanByLockedTime(lockedLoans);
                     contractNo = lockedLoans.get(0).getContractNo();
+                    String followupContractNo = getFollowUpLoans(portfolioId, operatorNo);
                     if(contractNo.equals(currentContractNo)){
                         contractNo = lockedLoans.get(1).getContractNo();
+                    }else if (!("There are no followup loan").equals(followupContractNo)) {
+                        contractNo = followupContractNo;
                     }
                 }
             }
@@ -1482,11 +1485,22 @@ public class LoanService {
      */
     public String grabLoan(String contractNo,String operatorNo,String operatorName){
         String result = "";
+        String agentLevelStr = employeeFeignClient.getAgentLevel(operatorNo);
+        if (StringUtils.isNotEmpty(agentLevelStr)) {
+            Integer portfolioId = JSONObject.parseObject(agentLevelStr).getInteger("portfolioId");
+            if (portfolioId == null) {
+                logger.error(" Incomplete access to information ");
+                return "fail";
+            }
+            List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
+            if (lockedLoans.size() >= 2){
+                return "fail";
+            }
+        }
         Loan loan=loanRepository.findByContractNo(contractNo);
         Timer timer = new Timer();
         if (loan!=null){
             String grabTargetOperatorNo=loan.getLockedOperatorNo();
-            String agentLevelStr = employeeFeignClient.getAgentLevel(operatorNo);
             String targetAgentLevelStr=employeeFeignClient.getAgentLevel(grabTargetOperatorNo);
 
             JSONObject agentLevelObj = JSONObject.parseObject(agentLevelStr);
