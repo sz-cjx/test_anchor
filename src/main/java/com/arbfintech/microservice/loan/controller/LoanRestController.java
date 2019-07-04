@@ -473,4 +473,9 @@ public class LoanRestController {
                 @RequestParam(value = "bankDeposits") String bankDeposits){
         return loanService.saveBankDepositsInBank(contractNo, bankDeposits);
     }
+    @PostMapping("/savedocument")
+    String saveBankDocument(@RequestParam(value = "contractNo") String contractNo,
+                @RequestParam(value = "documentStr") String documentStr){
+        return loanService.saveBankDocument(contractNo, documentStr);
+    }
 }
