@@ -2324,4 +2324,37 @@ public class LoanService {
         bankRepository.save(bank);
         return "success";
     }
+
+    public String saveBankDocument(String contractNo,String documentStr){
+        Loan loan = loanRepository.findByContractNo(contractNo);
+        if(loan == null){
+            return "Find loan by contractNo failure";
+        }
+        JSONObject documentObject = JSONObject.parseObject(documentStr);
+        Document documentLoan = documentRepository.findByLoanId(loan.getId());
+        if(documentLoan == null){
+            Document document = new Document();
+            document.setLoanId(loan.getId());
+            document.setDocumentImgUrl(documentObject.getString("documentUrl"));
+            document.setCertificateImgUrl(documentObject.getString("certificateUrl"));
+            document.setDocumentCreateTime(Long.parseLong(documentObject.getString("documentCreateTime")));
+            document.setDocumentId(documentObject.getString("documentId"));
+            document.setSignerIpAddress(documentObject.getString("signerIpAddress"));
+            document.setDocumentSignerName(documentObject.getString("signerIpAddress"));
+            document.setDocumentStatus(documentObject.getInteger("documentStatus"));
+            document.setDocumentSignatureTime(documentObject.getLong("documentSignatureTime"));
+            documentRepository.save(document);
+        }else {
+            documentLoan.setDocumentImgUrl(documentObject.getString("documentUrl"));
+            documentLoan.setCertificateImgUrl(documentObject.getString("certificateUrl"));
+            documentLoan.setDocumentCreateTime(Long.parseLong(documentObject.getString("documentCreateTime")));
+            documentLoan.setDocumentId(documentObject.getString("documentId"));
+            documentLoan.setSignerIpAddress(documentObject.getString("signerIpAddress"));
+            documentLoan.setDocumentSignerName(documentObject.getString("signerIpAddress"));
+            documentLoan.setDocumentStatus(documentObject.getInteger("documentStatus"));
+            documentLoan.setDocumentSignatureTime(documentObject.getLong("documentSignatureTime"));
+            documentRepository.save(documentLoan);
+        }
+        return "Save document success";
+    }
 }
