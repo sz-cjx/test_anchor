@@ -2310,4 +2310,18 @@ public class LoanService {
         }
         return "false";
     }
+
+    public String  saveBankDepositsInBank(String contractNo,String depositsStr){
+        if(StringUtils.isEmpty(depositsStr)){
+            return "bankDeposits is empty";
+        }
+        Loan loan = loanRepository.findByContractNo(contractNo);
+        if(loan == null){
+            return "Find loan by contractNo failure";
+        }
+        Bank bank = bankRepository.findByLoanId(loan.getId());
+        bank.setBankDeposits(depositsStr);
+        bankRepository.save(bank);
+        return "success";
+    }
 }
