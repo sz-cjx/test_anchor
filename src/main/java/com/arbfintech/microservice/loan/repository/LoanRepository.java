@@ -44,7 +44,6 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     List<Loan> findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(String operatoorNo,Integer portfolioId,List<Integer> loanStatus);
 
     List<Loan> findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusInOrderByLockedAt(String operatoorNo,Integer portfolioId,List<Integer> loanStatus);
-    List<Loan> findAllByOperatorNoAndPortfolioId(String operatorNo, Integer portfolioId);
 
     @Query(value = "SELECT * FROM loan WHERE portfolio_id=?1 AND follow_up!=''", nativeQuery = true)
     List<Loan> findAllFollowUpdLoans(Integer portfolioId);
@@ -58,13 +57,14 @@ public interface LoanRepository extends JpaRepository<Loan, String>, JpaSpecific
     @Query(value = "SELECT * FROM loan WHERE  category=?1 AND flags is null AND priority<=?2 AND locked_operator_no IS NULL AND loan_status in (?3) AND operator_no!=?4 ORDER BY create_time DESC,priority DESC;", nativeQuery = true)
     List<Loan> findLoansByCategoryAndPriority(Integer category, Integer piority,List<Integer> loanStatus,String operatorNo);
 
-    List<Loan> findByCustomerInAutoIdOrderByUpdateTimeDesc(Integer customerInAutoId);
-
     @Query(value = "SELECT * FROM loan WHERE customer_in_auto_id IS NOT NULL AND contract_no is NOT NULL AND loan_status=?1 ORDER BY receive_time DESC;" ,nativeQuery = true)
     List<Loan> findCustomerInAutoLoan(Integer loanStatus);
 
     @Query(value = "SELECT * FROM loan WHERE  flags IS NOT NULL AND locked_operator_no IS NULL AND loan_status IN (?1) AND ( operator_no!=?2 or operator_no is NULL ) ORDER BY create_time DESC;",nativeQuery = true)
     List<Loan> findNewOnlineApplications(List<Integer> loanStatusList ,String operatorNo);
+
+
+    List<Loan> findAllByLoanStatusAndFlagsIsNotNull(Integer loanStatus);
 
     List<Loan> findAllByFollowUpIsNotNull();
 
