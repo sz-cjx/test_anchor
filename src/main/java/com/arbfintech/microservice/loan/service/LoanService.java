@@ -1804,6 +1804,8 @@ public class LoanService {
             bank.setBankException(bankObj.getString("bankException"));
             bank.setAmountOfOpenLoans(bankObj.getDouble("amountOfOpenLoans"));
             bank.setNumberOfOpenLoans(bankObj.getInteger("amountOfOpenLoans"));
+            bank.setFirstPayDate(DateUtil.date2str(DateUtil.long2date(loanObj.getLong("nextPayday"))));
+            bank.setBankAvailableBalance(loanObj.getDouble("accountBalance"));
             bankRepository.save(bank);
 
             if (payment!=null){
