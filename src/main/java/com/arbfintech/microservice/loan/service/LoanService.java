@@ -74,6 +74,9 @@ public class LoanService {
     @Autowired
     private GrabLoanFeignClient grabLoanFeignClient;
 
+    @Autowired
+    private SendLoanService sendLoanService;
+
 
     public String getContractNoByCategoryAndStatus(Integer catetory, List<Integer> statusList, String operatorNo, String operatorName) {
         String result = "";
@@ -1824,8 +1827,6 @@ public class LoanService {
         if(StringUtils.isEmpty(loanStr)){
             return "Update Loan Failed!";
         }
-
-
         JSONObject loanObj = JSONObject.parseObject(loanStr);
         Loan loan = loanRepository.findById(loanObj.getInteger("id"));
 
@@ -1847,7 +1848,8 @@ public class LoanService {
                 message.setMessageData(contract);
                 message.setOperationName("send loan to loanSchedule");
                 message.setProducer("Contract service");
-
+                sendLoanService.send(message);
+                logger.warn("send online tribe to approved success!");
             }else if (loanObj.getInteger("loanStatus")==4){
                 loan.setReviewData(loanObj.getString("reviewData"));
                 loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
