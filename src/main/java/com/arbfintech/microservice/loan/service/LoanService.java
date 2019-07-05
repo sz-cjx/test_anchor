@@ -2361,4 +2361,19 @@ public class LoanService {
         }
         return "Save document success";
     }
+
+    public String listOnlineLoansByLoanStatus(Integer loanStaus){
+
+        String result = "";
+        List<Loan> loans = loanRepository.findAllByLoanStatusAndFlagsIsNotNull(loanStaus);
+        if (loans!=null && loans.size()!=0){
+            List<Loan> resultLoans = new ArrayList<Loan>();
+            for (Loan loan:loans){
+                Loan filledLoan=fillPropertyForLoan(loan);
+                resultLoans.add(filledLoan);
+            }
+            result = JSONArray.toJSONString(resultLoans);
+        }
+        return result;
+    }
 }

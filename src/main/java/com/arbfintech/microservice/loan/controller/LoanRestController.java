@@ -478,4 +478,9 @@ public class LoanRestController {
                 @RequestParam(value = "documentStr") String documentStr){
         return loanService.saveBankDocument(contractNo, documentStr);
     }
+
+    @GetMapping("/list/online-loan")
+    String listAllOnlineLoansByLoanStatus(@RequestParam(value = "loanStatus")Integer loanStatus){
+        return loanService.listOnlineLoansByLoanStatus(loanStatus);
+    }
 }
