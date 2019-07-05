@@ -2134,7 +2134,7 @@ public class LoanService {
                 if (email != null) {
                     String tital = "Apply in minutes! Get your money fast from First Loan!";
                     String emailStr = FreeMarkerUtil.fillHtmlTemplate(str, js);
-                    SimpleEmailServiceUtil.sendEmail(email, tital, emailStr);
+                    SimpleEmailServiceUtil.sendOnlineEmail(email, tital, emailStr);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2187,7 +2187,7 @@ public class LoanService {
                 if (email != null) {
                     String tital = "Apply in minutes! Get your money fast from First Loan!";
                     String emailStr = FreeMarkerUtil.fillHtmlTemplate(str, js);
-                    SimpleEmailServiceUtil.sendEmail(email, tital, emailStr);
+                    SimpleEmailServiceUtil.sendOnlineEmail(email, tital, emailStr);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
