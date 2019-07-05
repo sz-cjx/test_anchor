@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -1804,7 +1805,7 @@ public class LoanService {
             bank.setBankException(bankObj.getString("bankException"));
             bank.setAmountOfOpenLoans(bankObj.getDouble("amountOfOpenLoans"));
             bank.setNumberOfOpenLoans(bankObj.getInteger("amountOfOpenLoans"));
-            bank.setFirstPayDate(DateUtil.date2str(DateUtil.long2date(loanObj.getLong("nextPayday"))));
+//            bank.setFirstPayDate(DateUtil.date2str(DateUtil.long2date(loanObj.getLong("nextPayday"))));
             bank.setBankAvailableBalance(loanObj.getDouble("accountBalance"));
             bankRepository.save(bank);
 
@@ -1889,7 +1890,8 @@ public class LoanService {
 
             payment.setTotalAmount(paymentObj.getDouble(JsonKeyConst.TOTAL_AMOUNT));
             payment.setTotalInterest(paymentObj.getDouble(JsonKeyConst.TOTAL_INTEREST));
-            payment.setItems(paymentObj.getString("items"));
+            logger.error(JSONObject.toJSONString(paymentObj));
+            payment.setItems(paymentObj.getString("installmentList"));
             payment.setEffectiveDate(paymentObj.getString("effectiveDate"));
             payment.setAnnualPercentageRate(paymentObj.getDouble("annualPercentageRate"));
             payment.setFirstInstallmentDate(paymentObj.getLong("firstInstallmentDate"));
