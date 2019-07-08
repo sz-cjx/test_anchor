@@ -1891,6 +1891,7 @@ public class LoanService {
 
             Payment payment = paymentRepository.findByLoanId(loan.getId());
             Bank bank = bankRepository.findByLoanId(loan.getId());
+            Employment employment = employmentRepository.findByLoanId(loan.getId());
 
             if (payment==null){
                 Payment newPayment = new Payment();
@@ -1921,7 +1922,18 @@ public class LoanService {
             }
 
             bank.setPaydayMoveDirection(loanObj.getInteger("paydayMoveDirection"));
+            bank.setBankAccountType(BankAccountTypeEnum.Checking.getValue());
             bankRepository.save(bank);
+
+            if (employment!=null) {
+                employment.setFirstPayday(paymentObj.getString("firstPayday"));
+                employmentRepository.save(employment);
+            }else {
+                Employment newEmployment = new Employment();
+                newEmployment.setLoanId(loan.getId());
+                newEmployment.setFirstPayday(paymentObj.getString("firstPayday"));
+                employmentRepository.save(newEmployment);
+            }
 
             String contractNo = loan.getContractNo();
             Loan loanDetail=getLoanByLoanId(loan.getId());
