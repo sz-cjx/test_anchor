@@ -1810,12 +1810,12 @@ public class LoanService {
             bankRepository.save(bank);
 
             if (payment!=null){
-                payment.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
-                paymentRepository.save(payment);
+//                payment.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
+//                paymentRepository.save(payment);
             }else{
                 Payment paymentNew = new Payment();
                 paymentNew.setLoanId(loan.getId());
-                paymentNew.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
+//                paymentNew.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
                 paymentRepository.save(paymentNew);
             }
         }else{
@@ -1896,7 +1896,12 @@ public class LoanService {
             payment.setAnnualPercentageRate(paymentObj.getDouble("annualPercentageRate"));
             payment.setFirstInstallmentDate(paymentObj.getLong("firstInstallmentDate"));
             payment.setLastInstallmentDate(paymentObj.getLong("lastInstallmentDate"));
+            payment.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
+            payment.setTotalAmount(paymentObj.getDouble("paymentPlanPrincipal"));
             paymentRepository.save(payment);
+
+            bank.setPaydayMoveDirection(loanObj.getInteger("paydayMoveDirection"));
+            bankRepository.save(bank);
 
             String contractNo = loan.getContractNo();
             Loan loanDetail=getLoanByLoanId(loan.getId());
