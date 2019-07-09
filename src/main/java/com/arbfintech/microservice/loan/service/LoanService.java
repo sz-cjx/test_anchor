@@ -1273,7 +1273,7 @@ public class LoanService {
                 logger.info("Finally, try to find a loan from locked loans.");
                 int lockedLoanSize = lockedLoans.size();
                 if(lockedLoanSize == 0){
-                    logger.error("There are no locked loans");
+                    logger.warn("There are no locked loans");
                 }else if(lockedLoanSize == 1){
                     contractNo = lockedLoans.get(0).getContractNo();
                 }else {
@@ -1525,7 +1525,7 @@ public class LoanService {
 
             if (agentLevel>targetAgentLevel){
                 grabInfoObj.put("isToSubordinate", 1);
-                logger.error(JSONObject.toJSONString(grabInfoObj));
+                logger.debug(JSONObject.toJSONString(grabInfoObj));
                 result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 JSONObject object = JSONObject.parseObject(result);
                 object.put("positionName",agentLevelObj.getString("positionName"));
@@ -1917,7 +1917,7 @@ public class LoanService {
                 newPayment.setLoanId(loan.getId());
                 newPayment.setTotalAmount(paymentObj.getDouble(JsonKeyConst.TOTAL_AMOUNT));
                 newPayment.setTotalInterest(paymentObj.getDouble(JsonKeyConst.TOTAL_INTEREST));
-                logger.error(JSONObject.toJSONString(paymentObj));
+                logger.debug(JSONObject.toJSONString(paymentObj));
                 newPayment.setItems(paymentObj.getString("installmentList"));
                 newPayment.setEffectiveDate(paymentObj.getString("effectiveDate"));
                 newPayment.setAnnualPercentageRate(paymentObj.getDouble("annualPercentageRate"));
@@ -1929,7 +1929,7 @@ public class LoanService {
             }else {
                 payment.setTotalAmount(paymentObj.getDouble(JsonKeyConst.TOTAL_AMOUNT));
                 payment.setTotalInterest(paymentObj.getDouble(JsonKeyConst.TOTAL_INTEREST));
-                logger.error(JSONObject.toJSONString(paymentObj));
+                logger.debug(JSONObject.toJSONString(paymentObj));
                 payment.setItems(paymentObj.getString("installmentList"));
                 payment.setEffectiveDate(paymentObj.getString("effectiveDate"));
                 payment.setAnnualPercentageRate(paymentObj.getDouble("annualPercentageRate"));
