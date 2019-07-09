@@ -1263,7 +1263,7 @@ public class LoanService {
                 loanStatusList.add(loanStatus);
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
                 if (lockedLoans.size() < lockedMaxNumber) {
-                    contractNo = getNewApplication(operatorNo, loanStatusList,level);
+                    contractNo = getNewApplicationWithoutAgent(operatorNo, loanStatusList,currentContractNo);
                 }else {
                     logger.warn("the locked loan number reaches the max:{}", lockedMaxNumber);
                 }
@@ -1407,6 +1407,25 @@ public class LoanService {
             }
         }else {
             logger.error("The agent haven`t permission to get new loan! operatorNo:{}, agentLevel:{}, agentCategory:{}", operatorNo,agentLevel,agentCategory);
+        }
+        logger.info("get new application loan:  " + contractNo);
+        return contractNo;
+    }
+
+    // this is for underwriter and tribe
+    public String getNewApplicationWithoutAgent(String operatorNo,List<Integer> loanStatus, String currentContractNo){
+        logger.info("Start to get new loan for operatorNo:{}, loanStatus:{}", operatorNo, JSON.toJSONString(loanStatus));
+        String contractNo = "";
+        List<Loan> newLoans = loanRepository.findAllByLoanStatusInAndLockedAtIsNullOrderByUpdateTimeDesc(loanStatus);
+        if (newLoans.size()>1){
+            contractNo = newLoans.get(0).getContractNo();
+            if(contractNo.equals(currentContractNo)) {
+                contractNo = newLoans.get(1).getContractNo();
+            }
+        }else if(newLoans.size() == 1) {
+            contractNo = newLoans.get(0).getContractNo();
+        }else {
+            logger.warn("There is no enough loan");
         }
         logger.info("get new application loan:  " + contractNo);
         return contractNo;
