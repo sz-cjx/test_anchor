@@ -1240,10 +1240,12 @@ public class LoanService {
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
                 if (lockedLoans.size() < lockedMaxNumber ) {
-                    String followupContractNo = getFollowUpLoans(portfolioId, operatorNo);
-                    if (("There are no followup loan").equals(followupContractNo)) {
+                    String followupContractNo = getFollowupLoans(portfolioId, operatorNo);
+                    if (StringUtils.isEmpty(followupContractNo)) {
+                        logger.warn("There is no followup loans, try to find one from worked loans");
                         String workedContractNo = getWorkedLoan(operatorNo);
-                        if (("There are not loan in worked").equals(workedContractNo)) {
+                        if (StringUtils.isEmpty(workedContractNo)) {
+                            logger.warn("There is no worked loans, try to find a new loan");
                             contractNo = getNewApplication(operatorNo, loanStatusList,level);
                         } else {
                             contractNo = workedContractNo;
@@ -1251,7 +1253,10 @@ public class LoanService {
                     } else {
                         contractNo = followupContractNo;
                     }
+                }else {
+                    logger.warn("the locked loan number reaches the max:{}", lockedMaxNumber);
                 }
+
             } else {
                 //for underwriter and tribe
                 List<Integer> loanStatusList = new ArrayList<>();
@@ -1259,16 +1264,17 @@ public class LoanService {
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
                 if (lockedLoans.size() < lockedMaxNumber) {
                     contractNo = getNewApplication(operatorNo, loanStatusList,level);
+                }else {
+                    logger.warn("the locked loan number reaches the max:{}", lockedMaxNumber);
                 }
             }
 
             if(StringUtils.isEmpty(contractNo)){
                 logger.info("Finally, try to find a loan from locked loans.");
                 int lockedLoanSize = lockedLoans.size();
-                if(lockedLoanSize <= 0){
-                logger.info(" lockedLoans is null ");
-                    return "";
-                }else if(lockedLoanSize < 2){
+                if(lockedLoanSize == 0){
+                    logger.error("There are no locked loans");
+                }else if(lockedLoanSize == 1){
                     contractNo = lockedLoans.get(0).getContractNo();
                 }else {
                     sortLoanByLockedTime(lockedLoans);
@@ -1304,9 +1310,11 @@ public class LoanService {
                 }
             }
         }else {
-            logger.warn("Get Agent Information Error! Please Check And Make Your Account Correct ");
+            logger.warn("Get agent information failed, operatorNo:{}", operatorNo);
             return "";
         }
+
+        logger.info("The final contractNo found:{}", contractNo);
         return contractNo;
 
     }
@@ -1325,58 +1333,42 @@ public class LoanService {
      * @param portfolioId
      * @return
      */
-    public String getFollowUpLoans(Integer portfolioId, String operatorNo){
-        logger.info("Start to get followup loan for portfolioId:{}, operatorNo:{}", portfolioId, operatorNo);
+    private String getFollowupLoans(Integer portfolioId, String operatorNo){
+        logger.info("Start to get followup loans for portfolioId:{}, operatorNo:{}", portfolioId, operatorNo);
         String contractNo="";
-        long outtime = 5;
-
+        long outTime = 5;
         List<Loan> followUpLoans = loanRepository.findAllFollowUpdLoans(portfolioId);
-        if (followUpLoans!=null && followUpLoans.size()!=0){
-
-            sortLoanByFollowupTime(followUpLoans);
-
-            for (Loan loan:followUpLoans){
-                if (operatorNo.equals(loan.getLockedOperatorNo())){
-                    if (loan.getFollowUp()-(new Date()).getTime()<outtime*60*1000){
-                        contractNo = loan.getContractNo();
-                    }else{
-                        continue;
-                    }
-                }else {
-                    if ((new Date()).getTime()-loan.getFollowUp()>0){
-                        contractNo = loan.getContractNo();
-                    }else {
-                        continue;
-                    }
+        for (Loan loan: followUpLoans){
+            if (operatorNo.equals(loan.getOperatorNo())){
+                if (loan.getFollowUp() > System.currentTimeMillis() && loan.getFollowUp() - System.currentTimeMillis() < outTime*60*1000){
+                    contractNo = loan.getContractNo();
+                    break;
+                }
+            }else {
+                if (System.currentTimeMillis() > loan.getFollowUp()){
+                    contractNo = loan.getContractNo();
+                    break;
                 }
             }
-
-        }
-        if (StringUtils.isEmpty(contractNo)){
-            contractNo = "There are no followup loan";
         }
 
-        logger.info("get followUpd loan!  "+contractNo);
+        logger.info("Followup loan number: " + contractNo);
 
         return contractNo;
     }
 
-
-    public String getWorkedLoan(String operatorNo){
+    private String getWorkedLoan(String operatorNo){
         logger.info("Start to get worked loan for operatorNo:{}", operatorNo);
         String workedContractNo = "";
-        List<String> contractArr=(timeLineApiService.getWorkedConteactNo(operatorNo, EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue())).toJavaList(String.class);
+        List<String> contractArr=(timeLineApiService.getWorkedContractNo(operatorNo, EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue())).toJavaList(String.class);
+        logger.info("Found the worked loans: " + contractArr);
 
         List<String> agentContractNos = loanRepository.findContractNoByLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
-
-        logger.info("contractArr = "+contractArr);
-        logger.info("agentContractNos = "+agentContractNos);
+        logger.info("Found unlocked loans(agent review):  " + agentContractNos);
 
         List<Loan> loans = new ArrayList<>();
-
         agentContractNos.retainAll(contractArr);
-
-        logger.info("agentContractNos = "+agentContractNos);
+        logger.info("Finally, lockable loans: " + agentContractNos);
 
         if (agentContractNos.size()>0){
             for (String contractNo:agentContractNos){
@@ -1386,13 +1378,13 @@ public class LoanService {
                 }
             }
         }
-        if (loans.size()!=0) {
+
+        if (loans.size() > 0) {
             sortLoanByUpdateTime(loans);
             workedContractNo = loans.get(0).getContractNo();
-        }else{
-            workedContractNo = "There are not loan in worked";
         }
-        logger.info("get worked loan!  "+ workedContractNo);
+
+        logger.info("get worked loan: " + workedContractNo);
         return workedContractNo;
     }
 
@@ -1414,7 +1406,7 @@ public class LoanService {
                 contractNo = newloans.get(0).getContractNo();
             }
         }else {
-            logger.error("The agent haven`t permission to get new loan!");
+            logger.error("The agent haven`t permission to get new loan! operatorNo:{}, agentLevel:{}, agentCategory:{}", operatorNo,agentLevel,agentCategory);
         }
         logger.info("get new application loan:  " + contractNo);
         return contractNo;
@@ -1424,7 +1416,15 @@ public class LoanService {
      * sort loans by lockedTime DESC
      * @param loans
      */
-    public void sortLoanByLockedTime(List<Loan> loans) {
+    private void sortLoanByLockedTime(List<Loan> loans) {
+
+        if(loans == null){
+            return;
+        }
+
+        if(loans.size() < 2){
+            return;
+        }
         Collections.sort(loans, new Comparator<Loan>() {
             @Override
             public int compare(Loan loan1, Loan loan2) {
@@ -1440,35 +1440,24 @@ public class LoanService {
     }
 
     /**
-     * sort loans by FollowupTime DESC
-     * @param loans
-     */
-    public void sortLoanByFollowupTime(List<Loan> loans) {
-        Collections.sort(loans, new Comparator<Loan>() {
-            @Override
-            public int compare(Loan loan1, Loan loan2) {
-                if (loan1.getFollowUp() < loan2.getFollowUp()) {
-                    return 1;
-                } else if (loan1.getFollowUp() == loan2.getFollowUp()) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            }
-        });
-    }
-
-    /**
      * sort loans by Update Time DESC
      * @param loans
      */
-    public void sortLoanByUpdateTime(List<Loan> loans) {
+    private void sortLoanByUpdateTime(List<Loan> loans) {
+
+        if(loans == null){
+            return;
+        }
+
+        if(loans.size() < 2){
+            return;
+        }
         Collections.sort(loans, new Comparator<Loan>() {
             @Override
             public int compare(Loan loan1, Loan loan2) {
                 if (loan1.getUpdateTime()< loan2.getUpdateTime()) {
                     return 1;
-                } else if (loan1.getUpdateTime() == loan2.getUpdateTime()) {
+                } else if (loan1.getUpdateTime().equals(loan2.getUpdateTime())) {
                     return 0;
                 } else {
                     return -1;
@@ -1486,11 +1475,22 @@ public class LoanService {
      */
     public String grabLoan(String contractNo,String operatorNo,String operatorName){
         String result = "";
+        String agentLevelStr = employeeFeignClient.getAgentLevel(operatorNo);
+        if (StringUtils.isNotEmpty(agentLevelStr)) {
+            Integer portfolioId = JSONObject.parseObject(agentLevelStr).getInteger("portfolioId");
+            if (portfolioId == null) {
+                logger.error(" Incomplete access to information ");
+                return "fail";
+            }
+            List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
+            if (lockedLoans.size() >= 2){
+                return "fail";
+            }
+        }
         Loan loan=loanRepository.findByContractNo(contractNo);
         Timer timer = new Timer();
         if (loan!=null){
             String grabTargetOperatorNo=loan.getLockedOperatorNo();
-            String agentLevelStr = employeeFeignClient.getAgentLevel(operatorNo);
             String targetAgentLevelStr=employeeFeignClient.getAgentLevel(grabTargetOperatorNo);
 
             JSONObject agentLevelObj = JSONObject.parseObject(agentLevelStr);

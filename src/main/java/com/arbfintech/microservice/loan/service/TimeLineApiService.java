@@ -288,7 +288,7 @@ public class TimeLineApiService {
 		}
 	}
 
-	public JSONArray getWorkedConteactNo(String operatorNo, Integer eventType){
+	public JSONArray getWorkedContractNo(String operatorNo, Integer eventType){
 		String contractNos=timelineFeignClient.getContractNoByEventTypeAndOperatorNo(operatorNo, eventType);
 		return JSONArray.parseArray(contractNos);
 	}
