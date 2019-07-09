@@ -112,6 +112,9 @@ public class Bank {
 	@Column(length = 32)
 	private Integer numberOfOpenLoans;
 
+	@Column
+	private Integer numberOfLoanPaid;
+
 	@Column(length = 6)
 	private Integer paydayMoveDirection;
 
@@ -441,6 +444,14 @@ public class Bank {
 
 	public void setNumberOfOpenLoans(Integer numberOfOpenLoans) {
 		this.numberOfOpenLoans = numberOfOpenLoans;
+	}
+
+	public Integer getNumberOfLoanPaid() {
+		return numberOfLoanPaid;
+	}
+
+	public void setNumberOfLoanPaid(Integer numberOfLoanPaid) {
+		this.numberOfLoanPaid = numberOfLoanPaid;
 	}
 
 	public Integer getPaydayMoveDirection() {
