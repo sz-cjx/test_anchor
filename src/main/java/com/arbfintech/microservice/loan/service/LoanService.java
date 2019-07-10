@@ -1227,7 +1227,7 @@ public class LoanService {
             Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
             Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
             operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
-            logger.info("portfolioId value is "+portfolioId+" level value is "+level+" operatorName value is "+operatorName);
+            logger.info("portfolioId: " + portfolioId + ", level: " + level + ", operatorName: "+operatorName);
             if(portfolioId == null || level == null || operatorName == null){
                 logger.error(" Incomplete access to information ");
                 return "";
@@ -2350,17 +2350,17 @@ public class LoanService {
         if (StringUtils.isNotEmpty(agentLevel)){
             Integer portfolioId = JSONObject.parseObject(agentLevel).getInteger("portfolioId");
             if(portfolioId == null){
-                logger.error(" Incomplete access to information ");
+                logger.error("Incomplete access to information");
                 return "false";
             }
             List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
             if (lockedLoans.size() < 2){
                 Loan byContractNo = loanRepository.findByContractNo(contractNo);
                 byContractNo.setLockedOperatorName(operatorName);
-                byContractNo.setLockedAt(new Date().getTime());
+                byContractNo.setLockedAt(System.currentTimeMillis());
                 byContractNo.setLockedOperatorNo(operatorNo);
                 Integer loanStatus = byContractNo.getLoanStatus();
-                if (loanStatus != null && loanStatus == LoanStatusEnum.INITIALIZED.getValue()){
+                if (loanStatus != null && LoanStatusEnum.INITIALIZED.getValue().equals(loanStatus)){
                     byContractNo.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
                     byContractNo.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
                 }
@@ -2375,7 +2375,7 @@ public class LoanService {
         return "false";
     }
 
-    public String  saveBankDepositsInBank(String contractNo,String depositsStr){
+    public String saveBankDepositsInBank(String contractNo,String depositsStr){
         if(StringUtils.isEmpty(depositsStr)){
             return "bankDeposits is empty";
         }
