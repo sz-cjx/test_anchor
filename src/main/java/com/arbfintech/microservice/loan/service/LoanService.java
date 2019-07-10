@@ -1444,6 +1444,7 @@ public class LoanService {
         if(loans.size() < 2){
             return;
         }
+
         Collections.sort(loans, new Comparator<Loan>() {
             @Override
             public int compare(Loan loan1, Loan loan2) {
@@ -1613,34 +1614,29 @@ public class LoanService {
     }
 
 
-    public String unlockLoan(String contractNo){
-        String result = "";
+    public boolean unlockLoan(String contractNo){
+        logger.info("Start to unlock the loan, contractNo:{}", contractNo);
         Loan loan=loanRepository.findByContractNo(contractNo);
 
-        JSONObject additionObj = new JSONObject();
-        additionObj.put("operatorNo", loan.getLockedOperatorNo());
-        additionObj.put("operatorName", loan.getLockedOperatorName());
+        if (loan != null){
+            JSONObject additionObj = new JSONObject();
+            additionObj.put("operatorNo", loan.getLockedOperatorNo());
+            additionObj.put("operatorName", loan.getLockedOperatorName());
+            logger.info("Unlock the loan, contractNo:{}, operatorNo:{}, operatorName:{}", contractNo, loan.getLockedOperatorNo(), loan.getLockedOperatorName());
 
-        if (loan!=null){
             loan.setLockedOperatorName(null);
             loan.setLockedOperatorNo(null);
             loan.setLockedAt(null);
             loan.setFollowUp(null);
-            Loan resultLoan=loanRepository.save(loan);
-            result = JSONObject.toJSONString(resultLoan);
+            loanRepository.save(loan);
+
+            timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Unlock Operation");
+            logger.info("The loan is unlocked, contractNo:{}", contractNo);
+            return true;
         }else {
-            logger.error("Get Unlocked Loan Failed,Please Check And Make Sure The Loan Number Correct!");
-            result = "false";
+            logger.error("Can't find the loan for contractNo:{}", contractNo);
+            return false;
         }
-
-        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Unlock Operation");
-
-        if (StringUtils.isNotEmpty(result)){
-            return result;
-        }else {
-            return "false";
-        }
-
     }
 
 
@@ -2345,34 +2341,43 @@ public class LoanService {
         return lockedLoans;
     }
 
-    public String lock(String contractNo, String operatorNo, String operatorName) {
-        String agentLevel = employeeFeignClient.getAgentLevel(operatorNo);
-        if (StringUtils.isNotEmpty(agentLevel)){
-            Integer portfolioId = JSONObject.parseObject(agentLevel).getInteger("portfolioId");
-            if(portfolioId == null){
-                logger.error("Incomplete access to information");
-                return "false";
-            }
-            List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
-            if (lockedLoans.size() < 2){
-                Loan byContractNo = loanRepository.findByContractNo(contractNo);
-                byContractNo.setLockedOperatorName(operatorName);
-                byContractNo.setLockedAt(System.currentTimeMillis());
-                byContractNo.setLockedOperatorNo(operatorNo);
-                Integer loanStatus = byContractNo.getLoanStatus();
-                if (loanStatus != null && LoanStatusEnum.INITIALIZED.getValue().equals(loanStatus)){
-                    byContractNo.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
-                    byContractNo.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
-                }
-                loanRepository.save(byContractNo);
-                JSONObject additionObj = new JSONObject();
-                additionObj.put("operatorNo", operatorNo);
-                additionObj.put("operatorName", operatorName);
-                timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
-                return contractNo;
-            }
+    public boolean lockLoan(String contractNo, String operatorNo, String operatorName) {
+        logger.info("Start to lock the loan, contractNo:{}, operatorNo:{}, operatorName:{}", contractNo, operatorNo, operatorName);
+        String agentInfo = employeeFeignClient.getAgentLevel(operatorNo);
+        if(StringUtils.isEmpty(agentInfo)){
+            logger.error("Can't find the agent information for operatorNo:{}", operatorNo);
+            return false;
         }
-        return "false";
+
+        Integer portfolioId = JSONObject.parseObject(agentInfo).getInteger("portfolioId");
+        if(portfolioId == null){
+            logger.error("Can't find the portfolio information for operatorNo:{}");
+            return false;
+        }
+
+        List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
+        int length = lockedLoans.size();
+        if(length >= 2){
+            sortLoanByLockedTime(lockedLoans);
+            unlockLoan(lockedLoans.get(length-1).getContractNo());
+        }
+
+        Loan byContractNo = loanRepository.findByContractNo(contractNo);
+        byContractNo.setLockedOperatorName(operatorName);
+        byContractNo.setLockedAt(System.currentTimeMillis());
+        byContractNo.setLockedOperatorNo(operatorNo);
+        Integer loanStatus = byContractNo.getLoanStatus();
+        if (loanStatus != null && LoanStatusEnum.INITIALIZED.getValue().equals(loanStatus)){
+            byContractNo.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
+            byContractNo.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
+        }
+        loanRepository.save(byContractNo);
+
+        JSONObject additionObj = new JSONObject();
+        additionObj.put("operatorNo", operatorNo);
+        additionObj.put("operatorName", operatorName);
+        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+        return true;
     }
 
     public String saveBankDepositsInBank(String contractNo,String depositsStr){
