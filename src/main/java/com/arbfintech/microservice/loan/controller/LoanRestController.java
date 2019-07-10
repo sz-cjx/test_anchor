@@ -373,7 +373,7 @@ public class LoanRestController {
 
     @PostMapping("/unlock")
     public String unlockLoan(@RequestParam(value = "contractNo") String contractNo) {
-        return loanService.unlockLoan(contractNo);
+        return String.valueOf(loanService.unlockLoan(contractNo));
     }
 
     @PostMapping("/loans-online")
@@ -462,10 +462,11 @@ public class LoanRestController {
     }
 
     @PostMapping("/lock")
-    String lock(@RequestParam(value = "contractNo") String contractNo,
+    String lockLoan(@RequestParam(value = "contractNo") String contractNo,
                 @RequestParam(value = "operatorNo") String operatorNo,
                 @RequestParam(value = "operatorName") String operatorName){
-        return loanService.lock(contractNo, operatorNo, operatorName);
+
+        return String.valueOf(loanService.lockLoan(contractNo, operatorNo, operatorName));
     }
 
     @PostMapping("/savebankdeposits")
