@@ -466,7 +466,7 @@ public class LoanRestController {
                 @RequestParam(value = "operatorNo") String operatorNo,
                 @RequestParam(value = "operatorName") String operatorName){
 
-        return String.valueOf(loanService.lockLoan(contractNo, operatorNo, operatorName));
+      return String.valueOf(StringUtils.isNotEmpty(loanService.lockLoan(contractNo, operatorNo, operatorName)));
     }
 
     @PostMapping("/savebankdeposits")
