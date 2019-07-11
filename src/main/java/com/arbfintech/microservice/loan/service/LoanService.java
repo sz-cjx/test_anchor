@@ -113,7 +113,7 @@ public class LoanService {
                 additionalObj.put("operatorNo", operatorNo);
                 additionalObj.put("operatorName", operatorName);
                 additionalObj.put("contractNo", loan.getContractNo());
-                additionalObj.put("appData",JSON.toJSONString(loan));
+                additionalObj.put("appData", JSON.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(oldStatus, newStatus, additionalObj.toJSONString());
             }
         }
@@ -159,7 +159,7 @@ public class LoanService {
                     newBank.setLoanId(loanId);
 
                     Integer bankAccountType = newBank.getBankAccountType();
-                    if(bankAccountType != null){
+                    if (bankAccountType != null) {
                         newBank.setBankAccountTypeText(EnumUtil.getByValue(BankAccountTypeEnum.class, bankAccountType).getText());
                     }
 
@@ -174,7 +174,7 @@ public class LoanService {
                     newEmployment.setLoanId(loanId);
 
                     Integer payrollType = newEmployment.getPayrollType();
-                    if(payrollType != null){
+                    if (payrollType != null) {
                         newEmployment.setPayrollTypeText(EnumUtil.getByValue(PayrollTypeEnum.class, payrollType).getText());
                     }
 
@@ -205,19 +205,19 @@ public class LoanService {
             }
         }
         String downloadFilesProperties = null;
-        if("5".equals(section)){
+        if ("5".equals(section)) {
             String registerProperties = registerFilter(properties);
             downloadFilesProperties = downloadFilesFilter(properties);
-            if(registerProperties!=null){
+            if (registerProperties != null) {
                 properties = registerProperties;
             }
         }
-        if(StringUtils.isNotEmpty(additionalData)){
+        if (StringUtils.isNotEmpty(additionalData)) {
             JSONObject jsonObject = JSON.parseObject(additionalData);
             Loan loan = getSimpleLoanByLoanId(loanId);
-            jsonObject.put("appData",JSON.toJSONString(loan));
+            jsonObject.put("appData", JSON.toJSONString(loan));
             timeLineApiService.addSaveTimeline(properties, jsonObject.toJSONString());
-            if(StringUtils.isNotEmpty(downloadFilesProperties)){
+            if (StringUtils.isNotEmpty(downloadFilesProperties)) {
                 timeLineApiService.addDownloadFilesTimeline(downloadFilesProperties, jsonObject.toJSONString());
             }
         }
@@ -422,7 +422,7 @@ public class LoanService {
             fillPropertyForLoan(loan);
 
             Payment payment = loan.getPayment();
-            if(payment!=null) {
+            if (payment != null) {
                 payment.setItems("");
                 loan.setPayment(payment);
             }
@@ -637,8 +637,8 @@ public class LoanService {
             jsonBankObj.put(keyBankAccountTypeText, EnumUtil.getByCode(BankAccountTypeEnum.class, bankAccountTypeVal).getText());
 
             String bankAccountNoAfterFormat = combineAccountNo(jsonBankObj.getString("bankAccountNo"));
-            String bankRoutingNo=jsonBankObj.getString("bankRoutingNo");
-            customerIdentifyKey = bankAccountNoAfterFormat +"_"+ bankRoutingNo;
+            String bankRoutingNo = jsonBankObj.getString("bankRoutingNo");
+            customerIdentifyKey = bankAccountNoAfterFormat + "_" + bankRoutingNo;
         }
 
         JSONObject jsonEmpObj = jsonLeadObject.getJSONObject("employment");
@@ -647,7 +647,7 @@ public class LoanService {
             String keyPayrollTypeText = "payrollTypeText";
             String payrollTypeVal = jsonEmpObj.getString(keyPayrollType);
             jsonEmpObj.put(keyPayrollType, EnumUtil.getByCode(PayrollTypeEnum.class, payrollTypeVal).getValue());
-            jsonEmpObj.put(keyPayrollTypeText,EnumUtil.getByCode(PayrollTypeEnum.class, payrollTypeVal).getText());
+            jsonEmpObj.put(keyPayrollTypeText, EnumUtil.getByCode(PayrollTypeEnum.class, payrollTypeVal).getText());
 
             String keyPayrollFrequency = "payrollFrequency";
             String payrollFrequencyVal = jsonEmpObj.getString(keyPayrollFrequency);
@@ -742,7 +742,7 @@ public class LoanService {
 
             logger.info("Loan saved success.");
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("contractNo",contractNo);
+            jsonObject.put("contractNo", contractNo);
             jsonObject.put("appData", JSON.toJSONString(loan));
             timeLineApiService.addLoanStatusChangeTimeline(null, LoanStatusEnum.INITIALIZED.getValue(), jsonObject.toJSONString());
         } else {
@@ -902,7 +902,7 @@ public class LoanService {
     }
 
     public String getTodoListLoanInfo(String operatorNo, String operationNameListStr, String queryStatusList) {
-        HashSet<String> contractNos = timeLineApiService.getTodoContractNo(operatorNo, operationNameListStr,queryStatusList);
+        HashSet<String> contractNos = timeLineApiService.getTodoContractNo(operatorNo, operationNameListStr, queryStatusList);
         JSONArray toDoList = new JSONArray();
 
         if (contractNos != null) {
@@ -1020,7 +1020,6 @@ public class LoanService {
         Integer returncust = countPendingByItems(returnIdArr, status).getInteger("resultCount");
 
 
-
         JSONArray newcustLoanIds = countPendingByItems(newcustIdArr, status).getJSONArray("loanIds");
         JSONArray purchasedLoanIds = countPendingByItems(purcharsedIddArr, status).getJSONArray("loanIds");
         JSONArray returncustLoanIds = countPendingByItems(returnIdArr, status).getJSONArray("loanIds");
@@ -1031,7 +1030,7 @@ public class LoanService {
         newcustLoanIds.addAll(returncustLoanIds);
 
         HashSet<Integer> loanIds = new HashSet<>();
-        if (newcustLoanIds.size() != 0){
+        if (newcustLoanIds.size() != 0) {
             for (Object newcustLoanId : newcustLoanIds) {
                 loanIds.add((int) newcustLoanId);
             }
@@ -1072,33 +1071,32 @@ public class LoanService {
     }
 
 
-
-    public String newPendingSummary(long startTime,long endTime){
+    public String newPendingSummary(long startTime, long endTime) {
 
         JSONObject leadIds = new JSONObject();
-        List<Integer> newLeadIds=loanRepository.listLeadIdByTimeRange(1, startTime, endTime);
-        List<Integer> returnLeadIds=loanRepository.listLeadIdByTimeRange(2, startTime, endTime);
-        if (newLeadIds!=null && returnLeadIds!=null){
+        List<Integer> newLeadIds = loanRepository.listLeadIdByTimeRange(1, startTime, endTime);
+        List<Integer> returnLeadIds = loanRepository.listLeadIdByTimeRange(2, startTime, endTime);
+        if (newLeadIds != null && returnLeadIds != null) {
             leadIds.put("newcustids", newLeadIds);
             leadIds.put("returnIds", returnLeadIds);
         }
 
-        String summaryResut =countPendingSummary(JSONObject.toJSONString(leadIds));
+        String summaryResut = countPendingSummary(JSONObject.toJSONString(leadIds));
 
         return summaryResut;
 
     }
 
-    public String getLoanAndPersonalInfoByIds(String ids){
+    public String getLoanAndPersonalInfoByIds(String ids) {
         JSONArray idsArr = JSONArray.parseArray(ids);
         List<Integer> idsList = new ArrayList<>();
-        if (idsArr!=null && idsArr.size()!=0) {
+        if (idsArr != null && idsArr.size() != 0) {
             for (Object loanId : idsArr) {
                 idsList.add(((int) loanId));
             }
         }
         List<Loan> loans = loanRepository.findAllById(idsList);
-        for (Loan loan:loans){
+        for (Loan loan : loans) {
             loan.setPersonal(personalRepository.findByLoanId(loan.getId()));
         }
 
@@ -1106,7 +1104,7 @@ public class LoanService {
     }
 
 
-    public String combineAccountNo(String accountNo){
+    public String combineAccountNo(String accountNo) {
         String ac1 = removePrefix(accountNo);
         String ac2 = removeSuffix(ac1);
         return ac2;
@@ -1118,17 +1116,17 @@ public class LoanService {
             String temp = target.substring(1);
             return removePrefix(temp);
         } else {
-            return  target;
+            return target;
         }
 
     }
 
     public String removeSuffix(String target) {
         if (target.endsWith("0")) {
-            String temp = target.substring(0,target.length()-1);
+            String temp = target.substring(0, target.length() - 1);
             return removeSuffix(temp);
         } else {
-            return  target;
+            return target;
         }
     }
 
@@ -1169,14 +1167,14 @@ public class LoanService {
         return JSONArray.toJSONString(recentLoanLists);
     }
 
-    public String setFollowUp(String type,String timeData,String contractNo){
+    public String setFollowUp(String type, String timeData, String contractNo) {
 
         JSONObject additionObj = new JSONObject();
 
         long followUpDatetime = 0;
 
         JSONObject dateObj = JSONObject.parseObject(timeData);
-        if (("relative").equals(type)){
+        if (("relative").equals(type)) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             int day = cal.get(Calendar.DATE);
@@ -1185,24 +1183,24 @@ public class LoanService {
             Integer timeDataDay = dateObj.getInteger("Day");
             Integer timeDataHour = dateObj.getInteger("Hour");
             Integer timeDataMinute = dateObj.getInteger("Minute");
-            if (timeDataDay != null){
+            if (timeDataDay != null) {
                 cal.set(Calendar.DAY_OF_MONTH, day + timeDataDay);
             }
-            if (timeDataHour != null){
+            if (timeDataHour != null) {
                 cal.set(Calendar.HOUR_OF_DAY, hour + timeDataHour);
             }
-            if (timeDataMinute != null){
+            if (timeDataMinute != null) {
                 cal.set(Calendar.MINUTE, minute + timeDataMinute);
             }
             followUpDatetime = cal.getTimeInMillis();
-        }else if (("absolute").equals(type)){
+        } else if (("absolute").equals(type)) {
             followUpDatetime = dateObj.getLong("absoluteTime");
-        }else{
+        } else {
             logger.error("Save Follow Up Date Time failed!");
         }
-        Loan loan=loanRepository.findByContractNo(contractNo);
+        Loan loan = loanRepository.findByContractNo(contractNo);
 
-        if (loan!=null){
+        if (loan != null) {
             loan.setFollowUp(followUpDatetime);
             loanRepository.save(loan);
         }
@@ -1223,12 +1221,12 @@ public class LoanService {
         String operatorName = "";
         int lockedMaxNumber = 2;
 
-        if (agentLevelObj!=null){
+        if (agentLevelObj != null) {
             Integer portfolioId = JSONObject.parseObject(agentLevelObj).getInteger("portfolioId");
             Integer level = JSONObject.parseObject(agentLevelObj).getInteger("level");
             operatorName = JSONObject.parseObject(agentLevelObj).getString("employeeFullName");
-            logger.info("portfolioId: " + portfolioId + ", level: " + level + ", operatorName: "+operatorName);
-            if(portfolioId == null || level == null || operatorName == null){
+            logger.info("portfolioId: " + portfolioId + ", level: " + level + ", operatorName: " + operatorName);
+            if (portfolioId == null || level == null || operatorName == null) {
                 logger.error(" Incomplete access to information ");
                 return "";
             }
@@ -1239,21 +1237,21 @@ public class LoanService {
                 loanStatusList.add(LoanStatusEnum.INITIALIZED.getValue());
                 loanStatusList.add(LoanStatusEnum.AGENT_REVIEW.getValue());
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
-                if (lockedLoans.size() < lockedMaxNumber ) {
+                if (lockedLoans.size() < lockedMaxNumber) {
                     String followupContractNo = getFollowupLoans(portfolioId, operatorNo);
                     if (StringUtils.isEmpty(followupContractNo)) {
                         logger.warn("There is no followup loans, try to find one from worked loans");
                         String workedContractNo = getWorkedLoan(operatorNo);
                         if (StringUtils.isEmpty(workedContractNo)) {
                             logger.warn("There is no worked loans, try to find a new loan");
-                            contractNo = getNewApplication(operatorNo, loanStatusList,level);
+                            contractNo = getNewApplication(operatorNo, loanStatusList, level);
                         } else {
                             contractNo = workedContractNo;
                         }
                     } else {
                         contractNo = followupContractNo;
                     }
-                }else {
+                } else {
                     logger.warn("the locked loan number reaches the max:{}", lockedMaxNumber);
                 }
 
@@ -1263,31 +1261,31 @@ public class LoanService {
                 loanStatusList.add(loanStatus);
                 lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
                 if (lockedLoans.size() < lockedMaxNumber) {
-                    contractNo = getNewApplicationWithoutAgent(operatorNo, loanStatusList,currentContractNo);
-                }else {
+                    contractNo = getNewApplicationWithoutAgent(operatorNo, loanStatusList, currentContractNo);
+                } else {
                     logger.warn("the locked loan number reaches the max:{}", lockedMaxNumber);
                 }
             }
 
-            if(StringUtils.isEmpty(contractNo)){
+            if (StringUtils.isEmpty(contractNo)) {
                 logger.info("Finally, try to find a loan from locked loans.");
                 int lockedLoanSize = lockedLoans.size();
-                if(lockedLoanSize == 0){
+                if (lockedLoanSize == 0) {
                     logger.warn("There are no locked loans");
-                }else if(lockedLoanSize == 1){
+                } else if (lockedLoanSize == 1) {
                     contractNo = lockedLoans.get(0).getContractNo();
-                }else {
+                } else {
                     sortLoanByLockedTime(lockedLoans);
                     contractNo = lockedLoans.get(0).getContractNo();
-                    if(contractNo.equals(currentContractNo)){
+                    if (contractNo.equals(currentContractNo)) {
                         contractNo = lockedLoans.get(1).getContractNo();
                     }
                 }
             }
 
-            if(StringUtils.isNotEmpty(contractNo)){
-                Loan newLoan=loanRepository.findByContractNo(contractNo);
-                if (newLoan!=null){
+            if (StringUtils.isNotEmpty(contractNo)) {
+                Loan newLoan = loanRepository.findByContractNo(contractNo);
+                if (newLoan != null) {
                     String oldOperatorNo = newLoan.getLockedOperatorNo();
                     newLoan.setLockedAt(DateUtil.getCurrentTimestamp());
                     newLoan.setLockedOperatorName(operatorName);
@@ -1295,13 +1293,13 @@ public class LoanService {
                     newLoan.setOperatorNo(operatorNo);
                     newLoan.setFollowUp(null);
                     newLoan.setUpdateTime(DateUtil.getCurrentTimestamp());
-                    if(LoanStatusEnum.INITIALIZED.getValue().equals(newLoan.getLoanStatus())){
+                    if (LoanStatusEnum.INITIALIZED.getValue().equals(newLoan.getLoanStatus())) {
                         newLoan.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
                         newLoan.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
                     }
                     loanRepository.save(newLoan);
 
-                    if (oldOperatorNo == null ||!operatorNo.equals(oldOperatorNo)){
+                    if (oldOperatorNo == null || !operatorNo.equals(oldOperatorNo)) {
                         JSONObject additionObj = new JSONObject();
                         additionObj.put("operatorNo", operatorNo);
                         additionObj.put("operatorName", operatorName);
@@ -1309,7 +1307,7 @@ public class LoanService {
                     }
                 }
             }
-        }else {
+        } else {
             logger.warn("Get agent information failed, operatorNo:{}", operatorNo);
             return "";
         }
@@ -1320,7 +1318,7 @@ public class LoanService {
     }
 
 
-    private List<Loan> getLockedLoans(Integer portfolioId, String operatorNo, List<Integer> loanStatusList){
+    private List<Loan> getLockedLoans(Integer portfolioId, String operatorNo, List<Integer> loanStatusList) {
         logger.info("Start to query the locked loan for portfolioId:{}, operatorNo:{}, loanStatus:{}", portfolioId, operatorNo, JSON.toJSONString(loanStatusList));
         List<Loan> lockedLoans = loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusIn(operatorNo, portfolioId, loanStatusList);
         logger.info("Locked loan list size:{}", lockedLoans.size());
@@ -1330,22 +1328,23 @@ public class LoanService {
 
     /**
      * get loans from followped loans
+     *
      * @param portfolioId
      * @return
      */
-    private String getFollowupLoans(Integer portfolioId, String operatorNo){
+    private String getFollowupLoans(Integer portfolioId, String operatorNo) {
         logger.info("Start to get followup loans for portfolioId:{}, operatorNo:{}", portfolioId, operatorNo);
-        String contractNo="";
+        String contractNo = "";
         long outTime = 5;
         List<Loan> followUpLoans = loanRepository.findAllFollowUpdLoans(portfolioId);
-        for (Loan loan: followUpLoans){
-            if (operatorNo.equals(loan.getOperatorNo())){
-                if (loan.getFollowUp() > System.currentTimeMillis() && loan.getFollowUp() - System.currentTimeMillis() < outTime*60*1000){
+        for (Loan loan : followUpLoans) {
+            if (operatorNo.equals(loan.getOperatorNo())) {
+                if (loan.getFollowUp() > System.currentTimeMillis() && loan.getFollowUp() - System.currentTimeMillis() < outTime * 60 * 1000) {
                     contractNo = loan.getContractNo();
                     break;
                 }
-            }else {
-                if (System.currentTimeMillis() > loan.getFollowUp()){
+            } else {
+                if (System.currentTimeMillis() > loan.getFollowUp()) {
                     contractNo = loan.getContractNo();
                     break;
                 }
@@ -1357,10 +1356,10 @@ public class LoanService {
         return contractNo;
     }
 
-    private String getWorkedLoan(String operatorNo){
+    private String getWorkedLoan(String operatorNo) {
         logger.info("Start to get worked loan for operatorNo:{}", operatorNo);
         String workedContractNo = "";
-        List<String> contractArr=(timeLineApiService.getWorkedContractNo(operatorNo, EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue())).toJavaList(String.class);
+        List<String> contractArr = (timeLineApiService.getWorkedContractNo(operatorNo, EventTypeEnum.UPDATE_REGISTER_INFORAMTION.getValue())).toJavaList(String.class);
         logger.info("Found the worked loans: " + contractArr);
 
         List<String> agentContractNos = loanRepository.findContractNoByLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
@@ -1370,10 +1369,10 @@ public class LoanService {
         agentContractNos.retainAll(contractArr);
         logger.info("Finally, lockable loans: " + agentContractNos);
 
-        if (agentContractNos.size()>0){
-            for (String contractNo:agentContractNos){
-                Loan loan=loanRepository.findByContractNo(contractNo);
-                if (loan!=null){
+        if (agentContractNos.size() > 0) {
+            for (String contractNo : agentContractNos) {
+                Loan loan = loanRepository.findByContractNo(contractNo);
+                if (loan != null) {
                     loans.add(loan);
                 }
             }
@@ -1388,43 +1387,43 @@ public class LoanService {
         return workedContractNo;
     }
 
-    public String getNewApplication(String operatorNo,List<Integer> loanStatus,Integer agentLevel){
+    public String getNewApplication(String operatorNo, List<Integer> loanStatus, Integer agentLevel) {
         logger.info("Start to get new loan for operatorNo:{}, loanStatus:{}, agentLevel:{}", operatorNo, JSON.toJSONString(loanStatus), agentLevel);
         String contractNo = "";
-        Integer agentCategory=employeeFeignClient.getCategoryByEmployeeNo(operatorNo);
+        Integer agentCategory = employeeFeignClient.getCategoryByEmployeeNo(operatorNo);
 
-        logger.info("agentCategory:"+agentCategory);
+        logger.info("agentCategory:" + agentCategory);
         List<Loan> newloans = new ArrayList<>();
-        if (agentCategory!=null &&agentLevel!=null){
-            if(agentCategory==2){
-                newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel,loanStatus,operatorNo);
-            }else {
-                newloans = loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory,loanStatus,operatorNo);
+        if (agentCategory != null && agentLevel != null) {
+            if (agentCategory == 2) {
+                newloans = loanRepository.findLoansByCategoryAndPriority(agentCategory, agentLevel, loanStatus, operatorNo);
+            } else {
+                newloans = loanRepository.findAllByCategoryOrderByCreateTimeDesc(agentCategory, loanStatus, operatorNo);
             }
 
-            if (newloans.size()>0){
+            if (newloans.size() > 0) {
                 contractNo = newloans.get(0).getContractNo();
             }
-        }else {
-            logger.error("The agent haven`t permission to get new loan! operatorNo:{}, agentLevel:{}, agentCategory:{}", operatorNo,agentLevel,agentCategory);
+        } else {
+            logger.error("The agent haven`t permission to get new loan! operatorNo:{}, agentLevel:{}, agentCategory:{}", operatorNo, agentLevel, agentCategory);
         }
         logger.info("get new application loan:  " + contractNo);
         return contractNo;
     }
 
     // this is for underwriter and tribe
-    public String getNewApplicationWithoutAgent(String operatorNo,List<Integer> loanStatus, String currentContractNo){
+    public String getNewApplicationWithoutAgent(String operatorNo, List<Integer> loanStatus, String currentContractNo) {
         logger.info("Start to get new loan for operatorNo:{}, loanStatus:{}", operatorNo, JSON.toJSONString(loanStatus));
         String contractNo = "";
         List<Loan> newLoans = loanRepository.findAllByLoanStatusInAndLockedAtIsNullOrderByUpdateTimeDesc(loanStatus);
-        if (newLoans.size()>1){
+        if (newLoans.size() > 1) {
             contractNo = newLoans.get(0).getContractNo();
-            if(contractNo.equals(currentContractNo)) {
+            if (contractNo.equals(currentContractNo)) {
                 contractNo = newLoans.get(1).getContractNo();
             }
-        }else if(newLoans.size() == 1) {
+        } else if (newLoans.size() == 1) {
             contractNo = newLoans.get(0).getContractNo();
-        }else {
+        } else {
             logger.warn("There is no enough loan");
         }
         logger.info("get new application loan:  " + contractNo);
@@ -1433,15 +1432,16 @@ public class LoanService {
 
     /**
      * sort loans by lockedTime DESC
+     *
      * @param loans
      */
     private void sortLoanByLockedTime(List<Loan> loans) {
 
-        if(loans == null){
+        if (loans == null) {
             return;
         }
 
-        if(loans.size() < 2){
+        if (loans.size() < 2) {
             return;
         }
 
@@ -1450,7 +1450,7 @@ public class LoanService {
             public int compare(Loan loan1, Loan loan2) {
                 if (loan1.getLockedAt() < loan2.getLockedAt()) {
                     return 1;
-                } else if (loan1.getLockedAt().equals(loan2.getLockedAt()) ) {
+                } else if (loan1.getLockedAt().equals(loan2.getLockedAt())) {
                     return 0;
                 } else {
                     return -1;
@@ -1461,21 +1461,22 @@ public class LoanService {
 
     /**
      * sort loans by Update Time DESC
+     *
      * @param loans
      */
     private void sortLoanByUpdateTime(List<Loan> loans) {
 
-        if(loans == null){
+        if (loans == null) {
             return;
         }
 
-        if(loans.size() < 2){
+        if (loans.size() < 2) {
             return;
         }
         Collections.sort(loans, new Comparator<Loan>() {
             @Override
             public int compare(Loan loan1, Loan loan2) {
-                if (loan1.getUpdateTime()< loan2.getUpdateTime()) {
+                if (loan1.getUpdateTime() < loan2.getUpdateTime()) {
                     return 1;
                 } else if (loan1.getUpdateTime().equals(loan2.getUpdateTime())) {
                     return 0;
@@ -1489,32 +1490,29 @@ public class LoanService {
 
     /**
      * 提出Grab Loan
+     *
      * @param contractNo
      * @param operatorNo
      * @return
      */
-    public String grabLoan(String contractNo,String operatorNo,String operatorName){
+    public String grabLoan(String contractNo, String operatorNo, String operatorName) {
         String result = "";
         String agentLevelStr = employeeFeignClient.getAgentLevel(operatorNo);
         if (StringUtils.isNotEmpty(agentLevelStr)) {
             Integer portfolioId = JSONObject.parseObject(agentLevelStr).getInteger("portfolioId");
             if (portfolioId == null) {
                 logger.error(" Incomplete access to information ");
-                return "fail";
-            }
-            List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
-            if (lockedLoans.size() >= 2){
-                return "fail";
+                return "false";
             }
         }
-        Loan loan=loanRepository.findByContractNo(contractNo);
+        Loan loan = loanRepository.findByContractNo(contractNo);
         Timer timer = new Timer();
-        if (loan!=null){
-            String grabTargetOperatorNo=loan.getLockedOperatorNo();
-            String targetAgentLevelStr=employeeFeignClient.getAgentLevel(grabTargetOperatorNo);
+        if (loan != null) {
+            String grabTargetOperatorNo = loan.getLockedOperatorNo();
+            String targetAgentLevelStr = employeeFeignClient.getAgentLevel(grabTargetOperatorNo);
 
             JSONObject agentLevelObj = JSONObject.parseObject(agentLevelStr);
-            JSONObject targetAgentLevelObj=JSONObject.parseObject(targetAgentLevelStr);
+            JSONObject targetAgentLevelObj = JSONObject.parseObject(targetAgentLevelStr);
 
             Integer agentLevel = agentLevelObj.getInteger("level");
             Integer targetAgentLevel = targetAgentLevelObj.getInteger("level");
@@ -1524,101 +1522,103 @@ public class LoanService {
             grabInfoObj.put("grabBy", operatorNo);
             grabInfoObj.put("grabTarget", grabTargetOperatorNo);
 
-            if (agentLevel>targetAgentLevel){
+            if (agentLevel > targetAgentLevel) {
                 grabInfoObj.put("isToSubordinate", 1);
                 logger.debug(JSONObject.toJSONString(grabInfoObj));
-                result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
+                result = grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 JSONObject object = JSONObject.parseObject(result);
-                object.put("positionName",agentLevelObj.getString("positionName"));
-                object.put("employeeFullName",agentLevelObj.getString("employeeFullName"));
+                object.put("positionName", agentLevelObj.getString("positionName"));
+                object.put("employeeFullName", agentLevelObj.getString("employeeFullName"));
                 result = object.toJSONString();
 
-                DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),1,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
-                timer.schedule(delayTask,20*1000);
-            }else if(agentLevel<targetAgentLevel){
-                result ="false";
-            }else {
+                DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"), 1, contractNo, operatorNo, operatorName, grabLoanFeignClient, loanRepository);
+                timer.schedule(delayTask, 20 * 1000);
+            } else if (agentLevel < targetAgentLevel) {
+                result = "false";
+            } else {
                 grabInfoObj.put("isToSubordinate", 2);
-                result=grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
+                result = grabLoanFeignClient.addGrabService(JSONObject.toJSONString(grabInfoObj));
                 JSONObject object = JSONObject.parseObject(result);
-                object.put("positionName",agentLevelObj.getString("positionName"));
-                object.put("employeeFullName",agentLevelObj.getString("employeeFullName"));
+                object.put("positionName", agentLevelObj.getString("positionName"));
+                object.put("employeeFullName", agentLevelObj.getString("employeeFullName"));
                 result = object.toJSONString();
 
-                DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"),2,operatorNo,operatorName,grabLoanFeignClient,loanRepository);
-                timer.schedule(delayTask,25*1000);
+                DelayTask delayTask = new DelayTask(JSONObject.parseObject(result).getInteger("id"), 2, contractNo, operatorNo, operatorName, grabLoanFeignClient, loanRepository);
+                timer.schedule(delayTask, 25 * 1000);
             }
         }
 
         JSONObject additionObj = new JSONObject();
         additionObj.put("operatorNo", operatorNo);
         additionObj.put("operatorName", operatorName);
-        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj),"Grab Request Operation");
+        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Grab Request Operation");
 
-        if (StringUtils.isNotEmpty(result)){
+        if (StringUtils.isNotEmpty(result)) {
             return result;
-        }else {
+        } else {
             logger.error("Grab Loan Failed!");
             return "Grab Loan Failed!";
         }
     }
 
 
-    public String acceptGrabLoan(Integer grabId){
+    public String acceptGrabLoan(Integer grabId) {
 
         String grabResultStr = grabLoanFeignClient.acceptGrab(grabId);
 
-        if (StringUtils.isNotEmpty(grabResultStr)){
+        if (StringUtils.isNotEmpty(grabResultStr)) {
             String contractNo = JSONObject.parseObject(grabResultStr).getString("contractNo");
-            Loan loan=loanRepository.findByContractNo(contractNo);
+            Loan loan = loanRepository.findByContractNo(contractNo);
 
             String operatoeNo = JSONObject.parseObject(grabResultStr).getString("grabBy");
             String employeeInfo = employeeFeignClient.getAgentLevel(operatoeNo);
-            String operatorName=JSONObject.parseObject(employeeInfo).getString("employeeFullName");
+            String operatorName = JSONObject.parseObject(employeeInfo).getString("employeeFullName");
 
             String grabTarget = JSONObject.parseObject(grabResultStr).getString("grabTarget");
             String employeeInfoTarget = employeeFeignClient.getAgentLevel(grabTarget);
-            String operatorNameTarget=JSONObject.parseObject(employeeInfoTarget).getString("employeeFullName");
+            String operatorNameTarget = JSONObject.parseObject(employeeInfoTarget).getString("employeeFullName");
 
-            loan.setLockedAt(DateUtil.getCurrentTimestamp());
-            loan.setLockedOperatorNo(operatoeNo);
-            loan.setLockedOperatorName(operatorName);
-            loan.setOperatorNo(operatoeNo);
-            Loan grabbedLoanInfo=loanRepository.save(loan);
+//            loan.setLockedAt(DateUtil.getCurrentTimestamp());
+//            loan.setLockedOperatorNo(operatoeNo);
+//            loan.setLockedOperatorName(operatorName);
+//            loan.setOperatorNo(operatoeNo);
+//            Loan grabbedLoanInfo = loanRepository.save(loan);
+            String newcontractNo = lockLoan(contractNo, operatoeNo, operatorName);
+            Loan grabbedLoanInfo = loanRepository.findByContractNo(newcontractNo);
 
             JSONObject additionObj = new JSONObject();
             additionObj.put("operatorNo", grabTarget);
             additionObj.put("operatorName", operatorNameTarget);
-            timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj),"Grab Accept Operation");
+            timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Grab Accept Operation");
 
             return JSONObject.toJSONString(grabbedLoanInfo);
-        }else {
+        } else {
             return "false";
         }
 
     }
 
-    public String rejectGrabLoan(Integer grabId){
+    public String rejectGrabLoan(Integer grabId) {
         String grabResultStr = grabLoanFeignClient.rejectGrab(grabId);
 
         String contractNo = JSONObject.parseObject(grabResultStr).getString("contractNo");
         String grabTarget = JSONObject.parseObject(grabResultStr).getString("grabTarget");
         String employeeInfoTarget = employeeFeignClient.getAgentLevel(grabTarget);
-        String operatorNameTarget=JSONObject.parseObject(employeeInfoTarget).getString("employeeFullName");
+        String operatorNameTarget = JSONObject.parseObject(employeeInfoTarget).getString("employeeFullName");
         JSONObject additionObj = new JSONObject();
         additionObj.put("operatorNo", grabTarget);
         additionObj.put("operatorName", operatorNameTarget);
-        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj),"Grab Reject Operation");
+        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Grab Reject Operation");
 
         return grabResultStr;
     }
 
 
-    public boolean unlockLoan(String contractNo){
+    public boolean unlockLoan(String contractNo) {
         logger.info("Start to unlock the loan, contractNo:{}", contractNo);
-        Loan loan=loanRepository.findByContractNo(contractNo);
+        Loan loan = loanRepository.findByContractNo(contractNo);
 
-        if (loan != null){
+        if (loan != null) {
             JSONObject additionObj = new JSONObject();
             additionObj.put("operatorNo", loan.getLockedOperatorNo());
             additionObj.put("operatorName", loan.getLockedOperatorName());
@@ -1633,7 +1633,7 @@ public class LoanService {
             timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Unlock Operation");
             logger.info("The loan is unlocked, contractNo:{}", contractNo);
             return true;
-        }else {
+        } else {
             logger.error("Can't find the loan for contractNo:{}", contractNo);
             return false;
         }
@@ -1695,16 +1695,16 @@ public class LoanService {
         return result;
     }
 
-    public String getLoanInAuto(Integer loanStatus){
+    public String getLoanInAuto(Integer loanStatus) {
 
-        if (loanStatus==null || StringUtils.isEmpty(Integer.toString(loanStatus))){
+        if (loanStatus == null || StringUtils.isEmpty(Integer.toString(loanStatus))) {
             logger.error("Error loan with loanStatus is null");
             return "Error loan with loanStatus is null";
         }
         List<Loan> loans = loanRepository.findCustomerInAutoLoan(loanStatus);
 
         String result = "";
-        if (loans!=null) {
+        if (loans != null) {
             Loan loan = loans.get(0);
             if (loan != null) {
                 Loan detailLoan = getLoanByLoanId(loan.getId());
@@ -1712,7 +1712,7 @@ public class LoanService {
             } else {
                 result = "Get Auto Loan Failed!";
             }
-        }else {
+        } else {
             logger.error("Get Auto Loan Error!");
         }
 
@@ -1720,24 +1720,24 @@ public class LoanService {
     }
 
     //Underwrite Online
-    public String updateLoanDetailInAuto(String loanStr){
+    public String updateLoanDetailInAuto(String loanStr) {
 
-        if(StringUtils.isEmpty(loanStr)){
+        if (StringUtils.isEmpty(loanStr)) {
             return "Update Loan Failed!";
         }
 
         JSONObject loanObj = JSONObject.parseObject(loanStr);
         Loan loan = loanRepository.findById(loanObj.getInteger("id"));
-        if (loan!=null) {
+        if (loan != null) {
             Double onlineData = loanObj.getDouble("onlineData");
             loan.setReviewData(loanObj.getString("dataReview"));
-            if (onlineData!=null){
+            if (onlineData != null) {
                 JSONObject jsonData = new JSONObject();
                 jsonData.put("loanSize", onlineData);
                 loan.setOnlineData(JSONObject.toJSONString(jsonData));
                 loan.setFlags(10);
                 loan.setLoanStatus(LoanStatusEnum.CUSTOMER_REVIEW.getValue());
-            }else {
+            } else {
                 loan.setLoanStatus(LoanStatusEnum.TRIBE_REVIEW.getValue());
             }
             loanRepository.save(loan);
@@ -1751,7 +1751,6 @@ public class LoanService {
             Employment employment = employmentRepository.findByLoanId(loan.getId());
 
 
-
             personal.setFirstName(personalObj.getString(JsonKeyConst.FIRST_NAME));
             personal.setMiddleName(personalObj.getString(JsonKeyConst.MIDDLE_NAME));
             personal.setLastName(personalObj.getString(JsonKeyConst.LAST_NAME));
@@ -1762,25 +1761,25 @@ public class LoanService {
             personal.setHomePhone(personalObj.getString(JsonKeyConst.HOME_PHONE));
             personal.setMobilePhone(personalObj.getString(JsonKeyConst.MOBILE_PHONE));
             personal.setEmail(personalObj.getString(JsonKeyConst.EMAIL));
-            Personal savedPersonal= personalRepository.save(personal);
+            Personal savedPersonal = personalRepository.save(personal);
 
             JSONObject addtionData = new JSONObject();
             addtionData.put("contractNo", loan.getContractNo());
             addtionData.put("appData", JSONObject.toJSONString(loan));
-            if (onlineData!=null){
+            if (onlineData != null) {
 
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.CUSTOMER_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
                 sendEmail(loan.getContractNo());
-            }else {
+            } else {
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), LoanStatusEnum.TRIBE_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
             }
-            if (employment==null){
+            if (employment == null) {
                 Employment employmentNew = new Employment();
                 employmentNew.setEmployerName(employmentObj.getString(JsonKeyConst.EMPLOYER_NAME));
                 employmentNew.setLoanId(loan.getId());
 
                 employmentRepository.save(employmentNew);
-            }else {
+            } else {
                 employment.setEmployerName(employmentObj.getString(JsonKeyConst.EMPLOYER_NAME));
                 employmentRepository.save(employment);
             }
@@ -1795,14 +1794,14 @@ public class LoanService {
             bank.setFirstPayDate(bankObj.getString("firstPayDate"));
             bankRepository.save(bank);
 
-        }else{
+        } else {
             logger.error("Catch Loan Failed When Save Loan Info!");
         }
         return JSONObject.toJSONString(loan);
     }
 
-    public String saveLoanInAutoLoanSize(String loanStr){
-        if(StringUtils.isEmpty(loanStr)){
+    public String saveLoanInAutoLoanSize(String loanStr) {
+        if (StringUtils.isEmpty(loanStr)) {
             return "Update Loan Failed!";
         }
         JSONObject loanObj = JSONObject.parseObject(loanStr);
@@ -1810,7 +1809,7 @@ public class LoanService {
 //        Loan loan = loans.get(0);
 
         Loan loan = loanRepository.findByContractNo(loanObj.getString("contractNo"));
-        if (loan!=null){
+        if (loan != null) {
 
 //            loan.setContractNo(loanObj.getString("contractNo"));
 //            loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
@@ -1828,16 +1827,16 @@ public class LoanService {
             bank.setBankAvailableBalance(loanObj.getDouble("accountBalance"));
             bankRepository.save(bank);
 
-            if (payment!=null){
+            if (payment != null) {
 //                payment.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
 //                paymentRepository.save(payment);
-            }else{
+            } else {
                 Payment paymentNew = new Payment();
                 paymentNew.setLoanId(loan.getId());
 //                paymentNew.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
                 paymentRepository.save(paymentNew);
             }
-        }else{
+        } else {
             logger.error("Catch Loan Failed When Save Loan Size! and which customerId=");
         }
         return JSONObject.toJSONString(loan);
@@ -1845,15 +1844,15 @@ public class LoanService {
     }
 
     //online tribe
-    public String updateLoanTribeOnline(String loanStr){
-        if(StringUtils.isEmpty(loanStr)){
+    public String updateLoanTribeOnline(String loanStr) {
+        if (StringUtils.isEmpty(loanStr)) {
             return "Update Loan Failed!";
         }
         JSONObject loanObj = JSONObject.parseObject(loanStr);
         Loan loan = loanRepository.findById(loanObj.getInteger("id"));
 
-        if (loan!=null){
-            if (loanObj.getInteger("loanStatus")==32) {
+        if (loan != null) {
+            if (loanObj.getInteger("loanStatus") == 32) {
                 loan.setReviewData(loanObj.getString("reviewData"));
                 loan.setLoanStatus(LoanStatusEnum.APPROVED.getValue());
                 loanRepository.save(loan);
@@ -1865,14 +1864,14 @@ public class LoanService {
                 JSONObject formatLoan = getFormedLoanDataById(loan.getId());
                 formatLoan.put("bankInterestDue", 0);
                 String contract = JSON.toJSONString(formatLoan);
-                RabbitMessage message=new RabbitMessage();
+                RabbitMessage message = new RabbitMessage();
                 message.setCreateTime(new Date());
                 message.setMessageData(contract);
                 message.setOperationName("send loan to loanSchedule");
                 message.setProducer("Contract service");
                 sendLoanService.send(message);
                 logger.warn("send online tribe to approved success!");
-            }else if (loanObj.getInteger("loanStatus")==4){
+            } else if (loanObj.getInteger("loanStatus") == 4) {
                 loan.setReviewData(loanObj.getString("reviewData"));
                 loan.setLoanStatus(LoanStatusEnum.UNDERWRITER_REVIEW.getValue());
                 loanRepository.save(loan);
@@ -1881,15 +1880,15 @@ public class LoanService {
                 addtionData.put("appData", JSONObject.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.TRIBE_REVIEW.getValue(), LoanStatusEnum.UNDERWRITER_REVIEW.getValue(), JSONObject.toJSONString(addtionData));
             }
-        }else{
+        } else {
             logger.error("Save Online Tribe Loan Failed!");
         }
         return JSONObject.toJSONString(loan);
 
     }
 
-    public String updatePaymentScheduleInAuto(String loanStr){
-        if(StringUtils.isEmpty(loanStr)){
+    public String updatePaymentScheduleInAuto(String loanStr) {
+        if (StringUtils.isEmpty(loanStr)) {
             logger.error("Loan info is Null in Payment!");
             return "Update Loan Failed!";
         }
@@ -1899,7 +1898,7 @@ public class LoanService {
 //        Loan loan = loans.get(0);
 
         Loan loan = loanRepository.findByContractNo(loanObj.getString("contractNo"));
-        if (loan!=null) {
+        if (loan != null) {
 
             JSONObject bankObj = loanObj.getJSONObject("bank");
             JSONObject paymentObj = loanObj.getJSONObject("payment");
@@ -1908,7 +1907,7 @@ public class LoanService {
             Bank bank = bankRepository.findByLoanId(loan.getId());
             Employment employment = employmentRepository.findByLoanId(loan.getId());
 
-            if (payment==null){
+            if (payment == null) {
                 Payment newPayment = new Payment();
                 newPayment.setLoanId(loan.getId());
                 newPayment.setTotalAmount(paymentObj.getDouble(JsonKeyConst.TOTAL_AMOUNT));
@@ -1922,7 +1921,7 @@ public class LoanService {
                 newPayment.setTotalPrincipal(paymentObj.getDouble("totalPrincipal"));
                 newPayment.setTotalAmount(paymentObj.getDouble("paymentPlanPrincipal"));
                 paymentRepository.save(newPayment);
-            }else {
+            } else {
                 payment.setTotalAmount(paymentObj.getDouble(JsonKeyConst.TOTAL_AMOUNT));
                 payment.setTotalInterest(paymentObj.getDouble(JsonKeyConst.TOTAL_INTEREST));
                 logger.debug(JSONObject.toJSONString(paymentObj));
@@ -1940,10 +1939,10 @@ public class LoanService {
             bank.setBankAccountType(BankAccountTypeEnum.Checking.getValue());
             bankRepository.save(bank);
 
-            if (employment!=null) {
+            if (employment != null) {
                 employment.setFirstPayday(paymentObj.getString("firstPayday"));
                 employmentRepository.save(employment);
-            }else {
+            } else {
                 Employment newEmployment = new Employment();
                 newEmployment.setLoanId(loan.getId());
                 newEmployment.setFirstPayday(paymentObj.getString("firstPayday"));
@@ -1951,32 +1950,32 @@ public class LoanService {
             }
 
             String contractNo = loan.getContractNo();
-            Loan loanDetail=getLoanByLoanId(loan.getId());
+            Loan loanDetail = getLoanByLoanId(loan.getId());
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("contractNo",contractNo);
+            jsonObject.put("contractNo", contractNo);
             jsonObject.put("appData", JSON.toJSONString(loanDetail));
             loanRepository.save(loan);
-        }else{
+        } else {
             logger.error("Update Loan Payment Info From Auto Failed");
         }
         return JSONObject.toJSONString(loan);
     }
 
-    public String loanStausIsInitalized(String contractNo){
+    public String loanStausIsInitalized(String contractNo) {
         String result = "";
         Loan loan = loanRepository.findByContractNo(contractNo);
-        if (loan!=null){
-            if ((loan.getLoanStatus() & LoanStatusEnum.INITIALIZED.getValue())==LoanStatusEnum.INITIALIZED.getValue() ||
-                    (loan.getLoanStatus() & LoanStatusEnum.POSITIVE.getValue())==LoanStatusEnum.POSITIVE.getValue()
-            ){
+        if (loan != null) {
+            if ((loan.getLoanStatus() & LoanStatusEnum.INITIALIZED.getValue()) == LoanStatusEnum.INITIALIZED.getValue() ||
+                    (loan.getLoanStatus() & LoanStatusEnum.POSITIVE.getValue()) == LoanStatusEnum.POSITIVE.getValue()
+            ) {
                 result = "true";
-            }else{
+            } else {
                 result = loan.getLoanStatusText();
             }
-        }else {
+        } else {
             logger.error("Loan Status In Online is Unknown!");
         }
-        if (StringUtils.isEmpty(result)){
+        if (StringUtils.isEmpty(result)) {
             result = "false";
         }
 
@@ -1989,12 +1988,12 @@ public class LoanService {
     }
 
     public String generateOnlineNewLoan(String operatorNo, Integer loanStatus) {
-        if (loanStatus==null || StringUtils.isEmpty(Integer.toString(loanStatus))){
+        if (loanStatus == null || StringUtils.isEmpty(Integer.toString(loanStatus))) {
             logger.error("Error loan with loanStatus is null");
             return "Error loan with loanStatus is null";
         }
 
-        if (StringUtils.isEmpty(operatorNo)){
+        if (StringUtils.isEmpty(operatorNo)) {
             logger.error("There is not operator which Number is null!");
             return "There is not operator which Number is null!";
         }
@@ -2056,14 +2055,14 @@ public class LoanService {
         return contractNo;
     }
 
-    public String workOnNewLeadOnline(String operatorNo, Integer loanStatus){
+    public String workOnNewLeadOnline(String operatorNo, Integer loanStatus) {
 
-        if (loanStatus==null || StringUtils.isEmpty(Integer.toString(loanStatus))){
+        if (loanStatus == null || StringUtils.isEmpty(Integer.toString(loanStatus))) {
             logger.error("Error loan with loanStatus is null");
             return "Error loan with loanStatus is null";
         }
 
-        if (StringUtils.isEmpty(operatorNo)){
+        if (StringUtils.isEmpty(operatorNo)) {
             logger.error("There is not operator which Number is null!");
             return "There is not operator which Number is null!";
         }
@@ -2075,21 +2074,21 @@ public class LoanService {
         List<Integer> loanStatusList = new ArrayList<>();
         loanStatusList.add(loanStatus);
 //        List<Loan> lockedLoans = getLockedLoans(portfolioId, operatorNo, loanStatusList);
-        List<Loan> lockedLoans=loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusInOrderByLockedAt(operatorNo,portfolioId,loanStatusList);
+        List<Loan> lockedLoans = loanRepository.findAllByLockedOperatorNoAndPortfolioIdAndLoanStatusInOrderByLockedAt(operatorNo, portfolioId, loanStatusList);
         sortLoanByLockedTime(lockedLoans);
         List<String> lockedOnlineLoanNos = new ArrayList<>();
 
-        for (Loan loan:lockedLoans){
-            if (loan.getFlags()!=null){
+        for (Loan loan : lockedLoans) {
+            if (loan.getFlags() != null) {
                 lockedOnlineLoanNos.add(loan.getContractNo());
             }
         }
-        if(lockedOnlineLoanNos.size()>1){
+        if (lockedOnlineLoanNos.size() > 1) {
             Loan loan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
             loan.setLockedAt(DateUtil.getCurrentTimestamp());
             loanRepository.save(loan);
             return JSONArray.toJSONString(lockedOnlineLoanNos);
-        }else {
+        } else {
             String contractNo = "";
             List<Loan> newOnlineloans = loanRepository.findNewOnlineApplications(loanStatusList, operatorNo);
             if (newOnlineloans.size() > 0) {
@@ -2099,7 +2098,7 @@ public class LoanService {
                 logger.error("there were not enough loan of new online loans!");
             }
 
-            if (lockedOnlineLoanNos.size()>1) {
+            if (lockedOnlineLoanNos.size() > 1) {
                 Loan newLoan = loanRepository.findByContractNo(lockedOnlineLoanNos.get(1));
                 if (newLoan != null) {
                     String oldOperatorNo = newLoan.getLockedOperatorNo();
@@ -2118,13 +2117,14 @@ public class LoanService {
                         timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
                     }
                 }
-            }else {
+            } else {
                 logger.error("there were not enough loan of new online loans those not been locked!");
             }
             return JSONArray.toJSONString(lockedOnlineLoanNos);
         }
 
     }
+
     public String sendEmailTimeline(String additionalValue) {
         return timeLineApiService.sendEmailTimeline(additionalValue);
     }
@@ -2132,7 +2132,7 @@ public class LoanService {
     public String getLoansByFollowUp() {
         String loans = "";
         List<Loan> list = loanRepository.findAllByFollowUpIsNotNull();
-        if (list != null){
+        if (list != null) {
             loans = JSON.toJSONString(list);
         }
         return loans;
@@ -2141,9 +2141,9 @@ public class LoanService {
     private String downloadFilesFilter(String properties) {
         JSONArray propJsonObj = JSON.parseArray(properties);
         JSONArray result = new JSONArray();
-        for (int i = 0;i<propJsonObj.size();i++){
+        for (int i = 0; i < propJsonObj.size(); i++) {
             JSONObject jsonObj = propJsonObj.getJSONObject(i);
-            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
+            if ("documentUrl".equals(jsonObj.getString("fieldKey")) || "certificateUrl".equals(jsonObj.getString("fieldKey"))) {
                 result.add(jsonObj);
             }
         }
@@ -2153,10 +2153,10 @@ public class LoanService {
 
     private String registerFilter(String properties) {
         JSONArray propJsonObj = JSON.parseArray(properties);
-        for (int i = 0 ;i<propJsonObj.size();i++){
+        for (int i = 0; i < propJsonObj.size(); i++) {
             JSONObject jsonObj = propJsonObj.getJSONObject(i);
             String a = jsonObj.getString("fieldKey");
-            if("documentUrl".equals(jsonObj.getString("fieldKey"))||"certificateUrl".equals(jsonObj.getString("fieldKey"))){
+            if ("documentUrl".equals(jsonObj.getString("fieldKey")) || "certificateUrl".equals(jsonObj.getString("fieldKey"))) {
                 propJsonObj.remove(i);
                 i--;
             }
@@ -2164,12 +2164,12 @@ public class LoanService {
         return propJsonObj.toJSONString();
     }
 
-    public String updateFlags(String contractNo,Integer flags){
-        Loan loan=loanRepository.findByContractNo(contractNo);
-        if (loan !=null){
+    public String updateFlags(String contractNo, Integer flags) {
+        Loan loan = loanRepository.findByContractNo(contractNo);
+        if (loan != null) {
             loan.setFlags(flags);
             loanRepository.save(loan);
-        }else{
+        } else {
             logger.error("Uodate flags failed!");
         }
         return JSONObject.toJSONString(loan);
@@ -2183,8 +2183,8 @@ public class LoanService {
             JSONObject onlineDataObj = JSONObject.parseObject(onlineData);
             Double loanSize = onlineDataObj.getDouble("loanSize");
             NumberFormat nf = new DecimalFormat("#,###.00");
-            String loansize=nf.format(loanSize);
-            String str = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/><meta name=\"description\" content=\"ARB PANDA LOAN SYSTEM\"/><meta name=\"author\" content=\"ARBFINTECH\"/><style>.wrapper {margin: 0 auto;width: 60%;padding: 0px;}.f-w-700 {font-weight: 700;}.underline {border-bottom: 1px solid #e2e7eb !important;}body {margin: 0;}.page {height: 100%;width: 100%;font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.p-35 {padding: 35px;}.p-v-10 {padding-top: 10px !important;padding-bottom: 10px !important;}.m-b-0 {margin-bottom: 0px !important;}.bg-primary {color: #aaaaaa ;background: rgb(13, 100, 165);}.bg-secondary {background: rgba(13, 100, 165, 0.4);}.btn {display: inline-block;font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;padding: .375rem 1rem;margin-bottom: 1rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;cursor: pointer;}.btn + .btn {margin-left: 10px;}div > p:last-child {margin-bottom: 0px !important;}p {margin-top: 0;margin-bottom: 1rem;}table td {font-size: .9rem;}table td img {margin-top: 3px;height: 23px;}.bg-secondary p {font-style: italic;font-size: .9rem;}.width-200 {width: 200px;}.text-center {text-align: center;}.text-underline {text-decoration: underline;}img {line-height: 0px;}@media (max-width: 767px) {.wrapper {width: 100%;}}</style></head><body><div class=\"page\"><div class=\"wrapper\"><div style=\"background: #FAFAFA\"><div class=\"bg-primary\" style=\"text-align: center\"><img src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/img/logo-firstloan.png\" alt=\"\"/><h2 class=\"m-b-0\">Apply Only in Minutes! Get Your money Fast from FirstLoan!</h2></div><div class=\"underline p-35\"><p>Dear ${firstName},</p><p>Congratulations! Your application went through underwriting successfully, and we will extend to you the $"+loansize+" loan immediately.</p><p>Please click the button below which will prompt you the next step.</p><div class=\"text-center p-v-10\"><a href=\"${portfolioWebsite}\" target=\"_blank\" class=\"btn bg-primary width-200\">Get Started</a></div><p>We look forward to hearing from you!</p><div><p class=\"f-w-700 m-b-0\">Online Program Support Team,</p><p class=\"f-w-700 m-b-0\">FirstLoan</p></div></div></div><div class=\"p-35 p-v-10 bg-secondary\"><p>To ensure that you continue receiving our emails, please add SUPPORT@FIRSTLOAN.COM to your address bookor safe list.</p><p>FirstLoan is a Native American-owned business operated by the Elem Indian Colony Pomo Tribe, a federallyrecognized Indian tribe and a sovereign nation located in the United States. FirstLoan abides by allapplicable federal laws and regulations as well as those established by the Elem Indian Colony PomoTribe.</p></div></div></div></body></html>";
+            String loansize = nf.format(loanSize);
+            String str = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/><meta name=\"description\" content=\"ARB PANDA LOAN SYSTEM\"/><meta name=\"author\" content=\"ARBFINTECH\"/><style>.wrapper {margin: 0 auto;width: 60%;padding: 0px;}.f-w-700 {font-weight: 700;}.underline {border-bottom: 1px solid #e2e7eb !important;}body {margin: 0;}.page {height: 100%;width: 100%;font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;}.p-35 {padding: 35px;}.p-v-10 {padding-top: 10px !important;padding-bottom: 10px !important;}.m-b-0 {margin-bottom: 0px !important;}.bg-primary {color: #aaaaaa ;background: rgb(13, 100, 165);}.bg-secondary {background: rgba(13, 100, 165, 0.4);}.btn {display: inline-block;font-weight: 400;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;padding: .375rem 1rem;margin-bottom: 1rem;font-size: 1rem;line-height: 1.5;border-radius: .25rem;cursor: pointer;}.btn + .btn {margin-left: 10px;}div > p:last-child {margin-bottom: 0px !important;}p {margin-top: 0;margin-bottom: 1rem;}table td {font-size: .9rem;}table td img {margin-top: 3px;height: 23px;}.bg-secondary p {font-style: italic;font-size: .9rem;}.width-200 {width: 200px;}.text-center {text-align: center;}.text-underline {text-decoration: underline;}img {line-height: 0px;}@media (max-width: 767px) {.wrapper {width: 100%;}}</style></head><body><div class=\"page\"><div class=\"wrapper\"><div style=\"background: #FAFAFA\"><div class=\"bg-primary\" style=\"text-align: center\"><img src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/img/logo-firstloan.png\" alt=\"\"/><h2 class=\"m-b-0\">Apply Only in Minutes! Get Your money Fast from FirstLoan!</h2></div><div class=\"underline p-35\"><p>Dear ${firstName},</p><p>Congratulations! Your application went through underwriting successfully, and we will extend to you the $" + loansize + " loan immediately.</p><p>Please click the button below which will prompt you the next step.</p><div class=\"text-center p-v-10\"><a href=\"${portfolioWebsite}\" target=\"_blank\" class=\"btn bg-primary width-200\">Get Started</a></div><p>We look forward to hearing from you!</p><div><p class=\"f-w-700 m-b-0\">Online Program Support Team,</p><p class=\"f-w-700 m-b-0\">FirstLoan</p></div></div></div><div class=\"p-35 p-v-10 bg-secondary\"><p>To ensure that you continue receiving our emails, please add SUPPORT@FIRSTLOAN.COM to your address bookor safe list.</p><p>FirstLoan is a Native American-owned business operated by the Elem Indian Colony Pomo Tribe, a federallyrecognized Indian tribe and a sovereign nation located in the United States. FirstLoan abides by allapplicable federal laws and regulations as well as those established by the Elem Indian Colony PomoTribe.</p></div></div></div></body></html>";
             Personal personal = personalRepository.findByLoanId(loan.getId());
             try {
                 JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
@@ -2218,24 +2218,24 @@ public class LoanService {
                 if (onlineData.indexOf("bank") != -1) {
                     String bank = "Bank Statement";
                     if (onlineData.contains("rfeBankNote")) {
-                        js.put("bankNote",staticNote);
-                        js.put("rfeBankNote",note.getString("rfeBankNote"));
+                        js.put("bankNote", staticNote);
+                        js.put("rfeBankNote", note.getString("rfeBankNote"));
                     }
                     js.put("bank", bank);
                 }
                 if (onlineData.indexOf("identify") != -1) {
                     String identify = "Identify";
                     if (onlineData.contains("rfeIdentifyNote")) {
-                        js.put("identifyNote",staticNote);
-                        js.put("rfeIdentifyNote",note.getString("rfeIdentifyNote"));
+                        js.put("identifyNote", staticNote);
+                        js.put("rfeIdentifyNote", note.getString("rfeIdentifyNote"));
                     }
                     js.put("identify", identify);
                 }
                 if (onlineData.indexOf("others") != -1) {
                     String others = "Others";
                     if (onlineData.contains("rfeOthersNote")) {
-                        js.put("othersNote",staticNote);
-                        js.put("rfeOthersNote",note.getString("rfeOthersNote"));
+                        js.put("othersNote", staticNote);
+                        js.put("rfeOthersNote", note.getString("rfeOthersNote"));
                     }
                     js.put("others", others);
                 }
@@ -2256,10 +2256,10 @@ public class LoanService {
     }
 
 
-    public String addRfeOnline(String contractNo,String onlineData){
+    public String addRfeOnline(String contractNo, String onlineData) {
         Loan loan = loanRepository.findByContractNo(contractNo);
         String result = "";
-        if (loan!=null){
+        if (loan != null) {
             loan.setOnlineData(onlineData);
             loan.setLoanStatus(LoanStatusEnum.CORRECTION.getValue());
             loan.setLoanStatusText(LoanStatusEnum.CORRECTION.getText());
@@ -2267,7 +2267,7 @@ public class LoanService {
             loan.setLockedOperatorName(null);
             loan.setLockedOperatorName(null);
             loan.setOperatorNo(null);
-            Loan savedLoan=loanRepository.save(loan);
+            Loan savedLoan = loanRepository.save(loan);
 
             JSONObject addtionData = new JSONObject();
             addtionData.put("contractNo", loan.getContractNo());
@@ -2276,19 +2276,19 @@ public class LoanService {
 
             sendRfeEmail(loan.getContractNo());
             result = JSONObject.toJSONString(savedLoan);
-        }else{
-            logger.error("There is not loan`s contractNo: "+contractNo+" in DB!" );
-            result= "There is not loan`s contractNo: " + contractNo + " in DB!";
+        } else {
+            logger.error("There is not loan`s contractNo: " + contractNo + " in DB!");
+            result = "There is not loan`s contractNo: " + contractNo + " in DB!";
         }
         return result;
     }
 
     //update loan in profile
-    public String updateLoanInformationInOnline(String contractNo,String loanStr){
+    public String updateLoanInformationInOnline(String contractNo, String loanStr) {
 
         Loan loan = loanRepository.findByContractNo(contractNo);
         JSONObject customerObj = JSONObject.parseObject(loanStr);
-        if (loan!=null){
+        if (loan != null) {
 
             loan.setUpdateTime(DateUtil.getCurrentTimestamp());
 
@@ -2316,10 +2316,10 @@ public class LoanService {
             bank.setBankAccountNo(customerObj.getString(JsonKeyConst.ACCOUNT_NO));
             bankRepository.save(bank);
 
-            Loan savedLoan=loanRepository.save(loan);
+            Loan savedLoan = loanRepository.save(loan);
 
             return JSONObject.toJSONString(savedLoan);
-        }else {
+        } else {
             logger.error("There is not Loan which contractNo is: " + contractNo);
             return "There is not Loan which contractNo is: " + contractNo;
         }
@@ -2327,13 +2327,13 @@ public class LoanService {
     }
 
     public String addNotes(String additionalValue) {
-        if(StringUtils.isNotEmpty(additionalValue)){
+        if (StringUtils.isNotEmpty(additionalValue)) {
             timeLineApiService.addNotes(additionalValue);
         }
         return "";
     }
 
-    private List<Loan> getLockedLoansByPortfolioIdAndOperatorNo(Integer portfolioId, String operatorNo){
+    private List<Loan> getLockedLoansByPortfolioIdAndOperatorNo(Integer portfolioId, String operatorNo) {
         logger.info("Start to query the locked loan for portfolioId:{}, operatorNo:{}", portfolioId, operatorNo);
         List<Loan> lockedLoans = loanRepository.findAllByLockedOperatorNoAndPortfolioId(operatorNo, portfolioId);
         logger.info("Locked loan list size:{}", lockedLoans.size());
@@ -2341,51 +2341,55 @@ public class LoanService {
         return lockedLoans;
     }
 
-    public boolean lockLoan(String contractNo, String operatorNo, String operatorName) {
+    public String lockLoan(String contractNo, String operatorNo, String operatorName) {
         logger.info("Start to lock the loan, contractNo:{}, operatorNo:{}, operatorName:{}", contractNo, operatorNo, operatorName);
         String agentInfo = employeeFeignClient.getAgentLevel(operatorNo);
-        if(StringUtils.isEmpty(agentInfo)){
+        if (StringUtils.isEmpty(agentInfo)) {
             logger.error("Can't find the agent information for operatorNo:{}", operatorNo);
-            return false;
+            return "";
         }
 
         Integer portfolioId = JSONObject.parseObject(agentInfo).getInteger("portfolioId");
-        if(portfolioId == null){
+        if (portfolioId == null) {
             logger.error("Can't find the portfolio information for operatorNo:{}");
-            return false;
+            return "";
         }
 
         List<Loan> lockedLoans = getLockedLoansByPortfolioIdAndOperatorNo(portfolioId, operatorNo);
         int length = lockedLoans.size();
-        if(length >= 2){
+        if (length >= 2) {
             sortLoanByLockedTime(lockedLoans);
-            unlockLoan(lockedLoans.get(length-1).getContractNo());
+            unlockLoan(lockedLoans.get(length - 1).getContractNo());
         }
 
         Loan byContractNo = loanRepository.findByContractNo(contractNo);
-        byContractNo.setLockedOperatorName(operatorName);
-        byContractNo.setLockedAt(System.currentTimeMillis());
-        byContractNo.setLockedOperatorNo(operatorNo);
-        Integer loanStatus = byContractNo.getLoanStatus();
-        if (loanStatus != null && LoanStatusEnum.INITIALIZED.getValue().equals(loanStatus)){
-            byContractNo.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
-            byContractNo.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
-        }
-        loanRepository.save(byContractNo);
+        if (byContractNo != null) {
+            byContractNo.setLockedOperatorName(operatorName);
+            byContractNo.setLockedAt(System.currentTimeMillis());
+            byContractNo.setLockedOperatorNo(operatorNo);
+            Integer loanStatus = byContractNo.getLoanStatus();
+            if (loanStatus != null && LoanStatusEnum.INITIALIZED.getValue().equals(loanStatus)) {
+                byContractNo.setLoanStatus(LoanStatusEnum.AGENT_REVIEW.getValue());
+                byContractNo.setLoanStatusText(LoanStatusEnum.AGENT_REVIEW.getText());
+            }
+            loanRepository.save(byContractNo);
 
-        JSONObject additionObj = new JSONObject();
-        additionObj.put("operatorNo", operatorNo);
-        additionObj.put("operatorName", operatorName);
-        timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
-        return true;
+            JSONObject additionObj = new JSONObject();
+            additionObj.put("operatorNo", operatorNo);
+            additionObj.put("operatorName", operatorName);
+            timeLineApiService.addLockOrUnlockOrGrabLockTimeLine(contractNo, JSONObject.toJSONString(additionObj), "Lock Operation");
+            return contractNo;
+        } else {
+            return "";
+        }
     }
 
-    public String saveBankDepositsInBank(String contractNo,String depositsStr){
-        if(StringUtils.isEmpty(depositsStr)){
+    public String saveBankDepositsInBank(String contractNo, String depositsStr) {
+        if (StringUtils.isEmpty(depositsStr)) {
             return "bankDeposits is empty";
         }
         Loan loan = loanRepository.findByContractNo(contractNo);
-        if(loan == null){
+        if (loan == null) {
             return "Find loan by contractNo failure";
         }
         Bank bank = bankRepository.findByLoanId(loan.getId());
@@ -2394,14 +2398,14 @@ public class LoanService {
         return "success";
     }
 
-    public String saveBankDocument(String contractNo,String documentStr){
+    public String saveBankDocument(String contractNo, String documentStr) {
         Loan loan = loanRepository.findByContractNo(contractNo);
-        if(loan == null){
+        if (loan == null) {
             return "Find loan by contractNo failure";
         }
         JSONObject documentObject = JSONObject.parseObject(documentStr);
         Document documentLoan = documentRepository.findByLoanId(loan.getId());
-        if(documentLoan == null){
+        if (documentLoan == null) {
             Document document = new Document();
             document.setLoanId(loan.getId());
             document.setDocumentImgUrl(documentObject.getString("documentUrl"));
@@ -2415,7 +2419,7 @@ public class LoanService {
             document.setDocumentStatus(documentObject.getInteger("documentStatus"));
             document.setDocumentSignatureTime(documentObject.getLong("documentSignatureTime"));
             documentRepository.save(document);
-        }else {
+        } else {
             documentLoan.setDocumentUrl(documentObject.getString("documentUrl"));
             documentLoan.setDocumentImgUrl(documentObject.getString("documentUrl"));
             documentLoan.setCertificateImgUrl(documentObject.getString("certificateUrl"));
@@ -2431,14 +2435,14 @@ public class LoanService {
         return "Save document success";
     }
 
-    public String listOnlineLoansByLoanStatus(Integer loanStaus){
+    public String listOnlineLoansByLoanStatus(Integer loanStaus) {
 
         String result = "";
         List<Loan> loans = loanRepository.findAllByLoanStatusAndFlagsIsNotNull(loanStaus);
-        if (loans!=null && loans.size()!=0){
+        if (loans != null && loans.size() != 0) {
             List<Loan> resultLoans = new ArrayList<Loan>();
-            for (Loan loan:loans){
-                Loan filledLoan=fillPropertyForLoan(loan);
+            for (Loan loan : loans) {
+                Loan filledLoan = fillPropertyForLoan(loan);
                 resultLoans.add(filledLoan);
             }
             result = JSONArray.toJSONString(resultLoans);
