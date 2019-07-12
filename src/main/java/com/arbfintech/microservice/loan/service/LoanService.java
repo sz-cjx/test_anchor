@@ -2313,6 +2313,11 @@ public class LoanService {
             personal.setBirthday(customerObj.getString(JsonKeyConst.BIRTHDAY));
             personal.setHomePhone(customerObj.getString(JsonKeyConst.HOME_PHONE));
             personal.setMobilePhone(customerObj.getString(JsonKeyConst.MOBILE_PHONE));
+            if(customerObj.get(JsonKeyConst.MIDDLE_NAME)==null){
+                personal.setFullName(customerObj.getString(JsonKeyConst.FIRST_NAME) + " " + customerObj.getString(JsonKeyConst.LAST_NAME));
+            }else {
+                personal.setFullName(customerObj.getString(JsonKeyConst.FIRST_NAME) +" "+customerObj.get(JsonKeyConst.MIDDLE_NAME)+" " + customerObj.getString(JsonKeyConst.LAST_NAME));
+            }
             personalRepository.save(personal);
 
             Employment employment = employmentRepository.findByLoanId(loan.getId());
