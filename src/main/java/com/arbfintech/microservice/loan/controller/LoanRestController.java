@@ -284,7 +284,7 @@ public class LoanRestController {
                         e.printStackTrace();
                     }
                 }else if("Positive Withdraw".equals(status) || "Negative Withdraw".equals(status)){
-                    String title = "Sorry, we can not help you";
+                    String title = "Adverse Action";
 
                     String tempaltes = maintenanceFeignClient.listEmailTemplateByPortfolioId(1);
                     JSONArray jsonArray = JSON.parseArray(tempaltes);
