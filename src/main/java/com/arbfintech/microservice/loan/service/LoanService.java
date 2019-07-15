@@ -1871,8 +1871,8 @@ public class LoanService {
                         String template = jsObject.getString("template");
                         JSONObject dataObject = getPortfolioParamters(loan.getPortfolioId());
 
-                        Personal personal = loan.getPersonal();
-                        Payment payment = loan.getPayment();
+                        Personal personal = personalRepository.findByLoanId(loan.getId());
+                        Payment payment = paymentRepository.findByLoanId(loan.getId());
 
                         if (personal != null) {
                             String firstName = personal.getFirstName();
@@ -1891,7 +1891,7 @@ public class LoanService {
                         }
                         if (payment!=null){
                             if (payment.getTotalPrincipal()!=null){
-                                dataObject.put("totalPrinciple", payment.getTotalPrincipal());
+                                dataObject.put("totalPrincipal", payment.getTotalPrincipal());
                             }
                         }
                         String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
