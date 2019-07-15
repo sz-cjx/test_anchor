@@ -283,6 +283,39 @@ public class LoanRestController {
                         logger.info("Mail sent Failed to :" + email);
                         e.printStackTrace();
                     }
+                }else if("Positive Withdraw".equals(status) || "Negative Withdraw".equals(status)){
+                    String title = "Sorry, we can not help you";
+
+                    String tempaltes = maintenanceFeignClient.listEmailTemplateByPortfolioId(1);
+                    JSONArray jsonArray = JSON.parseArray(tempaltes);
+                    for (Object o : jsonArray) {
+                        JSONObject jsObject = (JSONObject) o;
+                        if ("LFS-002".equals(jsObject.getString("code"))) {
+                            String template = jsObject.getString("template");
+                            JSONObject dataObject = loanService.getPortfolioParamters(loan.getPortfolioId());
+
+                            Personal personal = loan.getPersonal();
+                            if (personal != null) {
+                                String firstName = personal.getFirstName();
+                                if (StringUtils.isEmpty(firstName)) {
+                                    firstName = "";
+                                }
+                                dataObject.put("firstName", firstName);
+
+                                String lastName = personal.getLastName();
+                                if (StringUtils.isEmpty(lastName)) {
+                                    lastName = "";
+                                }
+                                dataObject.put("lastName", lastName);
+
+                                email = personal.getEmail();
+                            }
+
+                            String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+                            SimpleEmailServiceUtil.sendEmail(email, title, content);
+                        }
+                    }
+                    logger.info("Mail has been sent to :" + email);
                 }
             } else {
                 logger.error("Invalid status ：{}", status);

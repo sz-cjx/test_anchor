@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @FeignClient("cache-server")
 @RequestMapping("/runtime")
 public interface RuntimeFeignClient {
+
 	@GetMapping("/portfolio-parameters/{portfolioId}")
 	public String getPortfolioParameter(@PathVariable("portfolioId") Integer portfolioId);
 }

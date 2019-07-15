@@ -2463,4 +2463,8 @@ public class LoanService {
         }
         return result;
     }
+
+    public JSONObject getPortfolioParamters(Integer portfolioId) {
+        return JSONObject.parseObject(runtimeFeignClient.getPortfolioParameter(portfolioId));
+    }
 }
