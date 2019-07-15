@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient("microservice-maintenance")
-@RequestMapping("/maintenance")
 public interface MaintenanceFeignClient {
 
     @GetMapping("/holidays/{begin}/{end}")
