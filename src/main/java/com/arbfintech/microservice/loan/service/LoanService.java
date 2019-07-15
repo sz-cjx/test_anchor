@@ -8,10 +8,7 @@ import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.enumerate.*;
 import com.arbfintech.framework.component.core.type.RabbitMessage;
 import com.arbfintech.framework.component.core.util.*;
-import com.arbfintech.microservice.loan.client.BusinessFeignClient;
-import com.arbfintech.microservice.loan.client.EmployeeFeignClient;
-import com.arbfintech.microservice.loan.client.GrabLoanFeignClient;
-import com.arbfintech.microservice.loan.client.RuntimeFeignClient;
+import com.arbfintech.microservice.loan.client.*;
 import com.arbfintech.microservice.loan.entity.*;
 import com.arbfintech.microservice.loan.repository.*;
 import org.apache.commons.lang.StringUtils;
@@ -77,6 +74,9 @@ public class LoanService {
 
     @Autowired
     private SendLoanService sendLoanService;
+
+    @Autowired
+    private MaintenanceFeignClient maintenanceFeignClient;
 
 
     public String getContractNoByCategoryAndStatus(Integer catetory, List<Integer> statusList, String operatorNo, String operatorName) {
@@ -1861,6 +1861,43 @@ public class LoanService {
                 addtionData.put("appData", JSONObject.toJSONString(loan));
                 timeLineApiService.addLoanStatusChangeTimeline(LoanStatusEnum.TRIBE_REVIEW.getValue(), LoanStatusEnum.APPROVED.getValue(), JSONObject.toJSONString(addtionData));
 
+                String title = "Your loan has been approved";
+                String email = "";
+                String tempaltes = maintenanceFeignClient.listEmailTemplateByPortfolioId(1);
+                JSONArray jsonArray = JSON.parseArray(tempaltes);
+                for (Object o : jsonArray) {
+                    JSONObject jsObject = (JSONObject) o;
+                    if ("LOS-003".equals(jsObject.getString("code"))) {
+                        String template = jsObject.getString("template");
+                        JSONObject dataObject = getPortfolioParamters(loan.getPortfolioId());
+
+                        Personal personal = loan.getPersonal();
+                        Payment payment = loan.getPayment();
+
+                        if (personal != null) {
+                            String firstName = personal.getFirstName();
+                            if (StringUtils.isEmpty(firstName)) {
+                                firstName = "";
+                            }
+                            dataObject.put("firstName", firstName);
+
+                            String lastName = personal.getLastName();
+                            if (StringUtils.isEmpty(lastName)) {
+                                lastName = "";
+                            }
+                            dataObject.put("lastName", lastName);
+
+                            email = personal.getEmail();
+                        }
+                        if (payment!=null){
+                            if (payment.getTotalPrincipal()!=null){
+                                dataObject.put("totalPrinciple", payment.getTotalPrincipal());
+                            }
+                        }
+                        String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+                        SimpleEmailServiceUtil.sendEmail(email, title, content);
+                    }
+                }
                 JSONObject formatLoan = getFormedLoanDataById(loan.getId());
                 formatLoan.put("bankInterestDue", 0);
                 String contract = JSON.toJSONString(formatLoan);
