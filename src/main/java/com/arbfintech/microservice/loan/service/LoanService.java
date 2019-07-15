@@ -2204,9 +2204,9 @@ public class LoanService {
 
     public void sendRfeEmail(String contractNo) {
         Loan loan = loanRepository.findByContractNo(contractNo);
-        String bankLi="<li>${bank?if_exists}&nbsp;&nbsp;<b>${bankNote?if_exists}</b><span style=\"#4169E1\">${rfeBankNote?if_exists}</span></li>";
-        String identifyLi="<li>${identify?if_exists}&nbsp;&nbsp;<b>${identifyNote?if_exists}</b><span style=\"#4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
-        String otherLi="<li>${others?if_exists}&nbsp;&nbsp;<b>${othersNote?if_exists}</b><span style=\"#4169E1\">${rfeOthersNote?if_exists}</span></li>";
+        String bankLi="<li>${bank?if_exists}<br/><b>${bankNote?if_exists}</b><span style=\"#4169E1\">${rfeBankNote?if_exists}</span></li>";
+        String identifyLi="<li>${identify?if_exists}<br/><b>${identifyNote?if_exists}</b><span style=\"#4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
+        String otherLi="<li>${others?if_exists}<br/><b>${othersNote?if_exists}</b><span style=\"#4169E1\">${rfeOthersNote?if_exists}</span></li>";
         if (loan != null) {
 
             String onlineData = loan.getOnlineData();
