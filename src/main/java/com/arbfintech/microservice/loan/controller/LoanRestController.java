@@ -310,9 +310,9 @@ public class LoanRestController {
 
                                 email = personal.getEmail();
                             }
-
+                            dataObject.put("email",dataObject.getString("onlineEmail"));
                             String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
-                            SimpleEmailServiceUtil.sendEmail(email, title, content);
+                            SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
                         }
                     }
                     logger.info("Mail has been sent to :" + email);
