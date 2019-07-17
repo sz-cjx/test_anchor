@@ -312,7 +312,7 @@ public class LoanRestController {
                             }
                             if(loan.getFlags()==null){
                                 String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
-                                SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                                SimpleEmailServiceUtil.sendEmail(email, title, content);
                             }else {
                                 dataObject.put("email", dataObject.getString("onlineEmail"));
                                 String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
