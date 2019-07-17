@@ -1894,9 +1894,14 @@ public class LoanService {
                                 dataObject.put("totalPrincipal", payment.getTotalPrincipal());
                             }
                         }
-                        dataObject.put("email",dataObject.getString("onlineEmail"));
-                        String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
-                        SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                        if(loan.getFlags()==null){
+                            String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+                            SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                        }else {
+                            dataObject.put("email", dataObject.getString("onlineEmail"));
+                            String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+                            SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                        }
                     }
                 }
                 JSONObject formatLoan = getFormedLoanDataById(loan.getId());
