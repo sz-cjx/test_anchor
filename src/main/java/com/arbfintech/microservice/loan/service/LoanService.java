@@ -1896,7 +1896,7 @@ public class LoanService {
                         }
                         if(loan.getFlags()==null){
                             String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
-                            SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                            SimpleEmailServiceUtil.sendEmail(email, title, content);
                         }else {
                             dataObject.put("email", dataObject.getString("onlineEmail"));
                             String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
@@ -2221,26 +2221,48 @@ public class LoanService {
 
     public void sendEmail(String contractNo) {
         Loan loan = loanRepository.findByContractNo(contractNo);
+        System.out.println(loan);
         if (loan != null) {
-            String onlineData = loan.getOnlineData();
-            JSONObject onlineDataObj = JSONObject.parseObject(onlineData);
-            Double loanSize = onlineDataObj.getDouble("loanSize");
-            NumberFormat nf = new DecimalFormat("#,###.00");
-            String loansize = nf.format(loanSize);
-            int pId = loan.getPortfolioId();
-            String str = "<table style=\"width: 700px; font-family: Calibri; margin: 0 auto;\"><tr><td><table><tr><td>Hello ${firstName},</td></tr></table></td></tr><tr><td><table><tr><td style=\"line-height: 1.5;\">Congratulations! Your application went through underwriting successfully, and we will extend to you the $" + loansize + " loan immediately.</td></tr></table></td></tr><tr><td><table style=\"width: 100%;\"><tr><td style=\"line-height: 1.5;\">Please click the button below which will prompt you the next step.</td></tr><tr><td style=\"text-align: center; line-height: 1.5;\"><a href=\"${portfolioWebsite}\"target=\"_blank\"><img src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/btn-go.png\"/></a></td></tr><tr><td style=\"line-height: 1.5;\">If you have any issues you can also copy and paste this URL into your browser:</td></tr><tr><td style=\"line-height: 1.5;\">${portfolioWebsite}</td></tr><tr><td style=\"line-height: 1.5;\">We look forward to hearing from you!</td></tr></table></td></tr><tr><td style=\"padding-top: 1em; padding-bottom: 1em;\"><table><tr><td style=\"line-height: 1.5;\"><b>Online Program Support Team,</b></td></tr><tr><td style=\"line-height: 1.5;\"><b>First Loan</b></td></tr></table></td></tr><tr><td><hr style=\"border: 1px solid #E0E0E0;\"/><table style=\"font-size: 13px;\"><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-global-20.png\"/></td><td><a href=\"https://www.firstloan.com\"><b>www.firstloan.com</b></a></td></tr><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-at-20.png\"/></td><td><a href=\"mailto:online@firstloan.com\"><b>online@firstloan.com</b></a></td></tr><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-phone-20.png\"/></td><td><a href=\"tel:1-888-340-2911\"><b>1-888-340-2911</b></a></td></tr><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-location-20.png\"/></td><td><b>First Loan, PO Box 1536, Lower Lake, CA 95457</b></td></tr></table></td></tr><tr><td><table style=\"font-size: 13px; background: #9EC1DB;\"><tr style=\"font-style: italic;\"><td style=\"line-height: 1.5; padding: 1em;\"><p>To ensure that you continue receiving our emails, please add ONLINE@FIRSTLOAN.COM to your address bookor safe list.</p><p>First Loan is a Native American-owned business operated by the Elem Indian Colony Pomo Tribe, a federally recognized Indian tribe and a sovereign nation located in the United States. First Loan abides by all applicable federal laws and regulations as well as those established by the Elem Indian Colony Pomo Tribe.</p></td></tr></table></td></tr></table>";
-            Personal personal = personalRepository.findByLoanId(loan.getId());
             try {
-                JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
-                String ref = "http://online.firstloan.com/view/withdraw/login?firstName=" + js.getString("firstName") + "&pId="+ pId + "&contractNo=" + contractNo;
-                js.put("portfolioWebsite", ref);
-                String email = personal.getEmail();
-                if (email != null) {
-                    String tital = "Congratulations! Your Loan Has Been Pre-Approved!";
-                    String emailStr = FreeMarkerUtil.fillHtmlTemplate(str, js);
-                    SimpleEmailServiceUtil.sendOnlineEmail(email, tital, emailStr);
+                String onlineData = loan.getOnlineData();
+                JSONObject onlineDataObj = JSONObject.parseObject(onlineData);
+                Double loanSize = onlineDataObj.getDouble("loanSize");
+                NumberFormat nf = new DecimalFormat("#,###.00");
+                String loansize = nf.format(loanSize);
+                int pId = loan.getPortfolioId();
+                String tempaltes = maintenanceFeignClient.listEmailTemplateByPortfolioId(1);
+                JSONArray jsonArray = JSON.parseArray(tempaltes);
+                for (Object o : jsonArray) {
+                    JSONObject jsObject = (JSONObject) o;
+                    if ("ONLINE-002".equals(jsObject.getString("code"))) {
+                        String template = jsObject.getString("template");
+                        JSONObject dataObject = getPortfolioParamters(pId);
+                        Personal personal = personalRepository.findByLoanId(loan.getId());
+                        if (personal != null) {
+                            String firstName = personal.getFirstName();
+                            if (StringUtils.isEmpty(firstName)) {
+                                firstName = "";
+                            }
+                            dataObject.put("firstName", firstName);
+
+                            String lastName = personal.getLastName();
+                            if (StringUtils.isEmpty(lastName)) {
+                                lastName = "";
+                            }
+                            String ref = "http://online.firstloan.com/view/withdraw/login?firstName=" + firstName + "&pId=" + pId + "&contractNo=" + contractNo;
+                            dataObject.put("applicationUrl", ref);
+                            dataObject.put("loanSize", "$" + loansize);
+                            String title = "Congratulations! Your Loan Has Been Pre-Approved!";
+                            dataObject.put("lastName", lastName);
+                            dataObject.put("firstName", firstName);
+                            String email = personal.getEmail();
+                            dataObject.put("email", dataObject.getString("onlineEmail"));
+                            String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+                            SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                        }
+                    }
                 }
-            } catch (Exception e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
         }
@@ -2248,62 +2270,65 @@ public class LoanService {
 
     public void sendRfeEmail(String contractNo) {
         Loan loan = loanRepository.findByContractNo(contractNo);
-        String bankLi="<li>${bank?if_exists}<br/><b>${bankNote?if_exists}</b><span style=\"color: #4169E1\">${rfeBankNote?if_exists}</span></li>";
-        String identifyLi="<li>${identify?if_exists}<br/><b>${identifyNote?if_exists}</b><span style=\"color: #4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
-        String otherLi="<li>${others?if_exists}<br/><b>${othersNote?if_exists}</b><span style=\"color: #4169E1\">${rfeOthersNote?if_exists}</span></li>";
-        if (loan != null) {
 
+
+        if (loan != null) {
             String onlineData = loan.getOnlineData();
-            int pId = loan.getPortfolioId();
             JSONObject onlineDataObj = JSONObject.parseObject(onlineData);
             String noteStr = onlineDataObj.getString("note");
             JSONObject note = JSONObject.parseObject(noteStr);
             Personal personal = personalRepository.findByLoanId(loan.getId());
-            String staticNote = "note: ";
-            try {
-                JSONObject js = JSON.parseObject(JSONObject.toJSONString(personal));
-                if (onlineData.indexOf("bank") != -1) {
-                    String bank = "Bank Statement";
-                    if (onlineData.contains("rfeBankNote")) {
-                        js.put("bankNote", staticNote);
-                        js.put("rfeBankNote", note.getString("rfeBankNote"));
+            int pId = loan.getPortfolioId();
+            String tempaltes = maintenanceFeignClient.listEmailTemplateByPortfolioId(1);
+            JSONArray jsonArray = JSON.parseArray(tempaltes);
+            for (Object o : jsonArray) {
+                JSONObject jsObject = (JSONObject) o;
+                if ("ONLINE-003".equals(jsObject.getString("code"))) {
+                    JSONObject dataObject = getPortfolioParamters(pId);
+                    String template = jsObject.getString("template");
+                    if (onlineData.indexOf("bank") != -1) {
+                        String bankLi="<li>Bank Statement<br/><b>${bankNote?if_exists}</b><span style=\"color: #4169E1\">${rfeBankNote?if_exists}</span></li>";
+                        if (onlineData.contains("rfeBankNote")) {
+                            bankLi="<li>Bank Statement<br/><span><b>note: </b><span style=\"color: #4169E1\">"+note.getString("rfeBankNote")+"</span></span></li>";
+                        }
+                        dataObject.put("bankLi", bankLi);
                     }
-                    js.put("bank", bank);
-                }else {
-                    bankLi="";
-                }
-                if (onlineData.indexOf("identify") != -1) {
-                    String identify = "Identify";
-                    if (onlineData.contains("rfeIdentifyNote")) {
-                        js.put("identifyNote", staticNote);
-                        js.put("rfeIdentifyNote", note.getString("rfeIdentifyNote"));
+                    if (onlineData.indexOf("identify") != -1) {
+                        String identifyLi="<li>Identify<br/><b>${identifyNote?if_exists}</b><span style=\"color: #4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
+                        if (onlineData.contains("rfeIdentifyNote")) {
+                            identifyLi="<li>Identify<br/><span><b>note: </b><span style=\"color: #4169E1\">"+note.getString("rfeIdentifyNote")+"</span></span></li>";
+                        }
+                        dataObject.put("identifyLi", identifyLi);
                     }
-                    js.put("identify", identify);
-                }else {
-                    identifyLi="";
-                }
-                if (onlineData.indexOf("others") != -1) {
-                    String others = "Others";
-                    if (onlineData.contains("rfeOthersNote")) {
-                        js.put("othersNote", staticNote);
-                        js.put("rfeOthersNote", note.getString("rfeOthersNote"));
+                    if (onlineData.indexOf("others") != -1) {
+                        String otherLi="<li>Others<br/><b>${othersNote?if_exists}</b><span style=\"color: #4169E1\">${rfeOthersNote?if_exists}</span></li>";
+                        if (onlineData.contains("rfeOthersNote")) {
+                            otherLi="<li>Others<br/><span><b>note: </b><span style=\"color: #4169E1\">"+note.getString("rfeOthersNote")+"</span></span></li>";
+                        }
+                        dataObject.put("otherLi", otherLi);
                     }
-                    js.put("others", others);
-                }else {
-                    otherLi="";
+                    if (personal != null) {
+                        String firstName = personal.getFirstName();
+                        if (StringUtils.isEmpty(firstName)) {
+                            firstName = "";
+                        }
+                        dataObject.put("firstName", firstName);
+
+                        String lastName = personal.getLastName();
+                        if (StringUtils.isEmpty(lastName)) {
+                            lastName = "";
+                        }
+                        String ref = "http://online.firstloan.com/view/withdraw/login?firstName=" + firstName + "&pId=" + pId + "&contractNo=" + contractNo;
+                        String title = "Additional Documents Needed For Your Loan Application!";
+                        dataObject.put("lastName", lastName);
+                        dataObject.put("firstName", firstName);
+                        dataObject.put("applicationUrl", ref);
+                        String email = personal.getEmail();
+                        dataObject.put("email", dataObject.getString("onlineEmail"));
+                        String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
+                        SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
+                    }
                 }
-                String str = "<table style=\"width: 700px; font-family: Calibri; margin: 0 auto;\"><tr><td><table><tr><td>Hello ${firstName},</td></tr></table></td></tr><tr><td><table><tr><td style=\"line-height: 1.5;\">After reviewing your documents, we found some required information is missing, incomplete or unclear. Please resubmit the following documents. Please make sure you have all the requested documents ready to upload before you submit, since partial submission of documents may delay the processing of your application."+bankLi+identifyLi+otherLi+"</td></tr></table></td></tr><tr><td><table style=\"width: 100%;\"><tr><td style=\"text-align: center; line-height: 1.5;\"><a href=\"${portfolioWebsite}\"target=\"_blank\"><img src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/btn-go.png\"/></a></td></tr><tr><td style=\"line-height: 1.5;\">If you have any issues you can also copy and paste this URL into your browser:</td></tr><tr><td style=\"line-height: 1.5;\">${portfolioWebsite}</td></tr><tr><td style=\"line-height: 1.5;\">Thanks for your corporation!</td></tr><tr><td><h3><b>Tips:</b></h3></td></tr><tr><td style=\"line-height: 1.5;\"><ul><li>We strongly recommend you uploading the documents in PDF format downloaded directly from your provider's websites such as bank, utility, etc.</li><li>We also accept high-quality scans or photos. They must be clear and have no information cut off. You may consider downloading a scanner mobile app(optional)like CamScanner or ScannerPro. They can help you take the best possible images, as well as convert your documents to PDF format.</li><li>Find a well-lit area. Good ambient lighting will prevent shadows and improve image clarity and sharpness.</li><li>Turn off automatic flash. A flash can cause glare that affects the legibility of your image.</li><li>Use a dark background, such as a wood table, to provide better contrast.</li><li>Center and align your document. Help us save time by keeping your photos facing right-side up, centered and aligned in your photo.Avoid cutting off the corners of your document, otherwise your document may not be accepted.</li><li>Take multiple photos and review. For your safety,we take extra care when reviewing your documents. Shaky or illegible documents may not be accepted. When in doubt, take multiple photos, review them on your computer and then pick the best ones to submit.</li></ul></td></tr></table></td></tr><tr><td style=\"padding-top: 1em; padding-bottom: 1em;\"><table><tr><td style=\"line-height: 1.5;\"><b>Online Program Support Team,</b></td></tr><tr><td style=\"line-height: 1.5;\"><b>First Loan</b></td></tr></table></td></tr><tr><td><hr style=\"border: 1px solid #E0E0E0;\"/><table style=\"font-size: 13px;\"><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-global-20.png\"/></td><td><a href=\"https://www.firstloan.com\"><b>www.firstloan.com</b></a></td></tr><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-at-20.png\"/></td><td><a href=\"mailto:online@firstloan.com\"><b>online@firstloan.com</b></a></td></tr><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-phone-20.png\"/></td><td><a href=\"tel:1-888-340-2911\"><b>1-888-340-2911</b></a></td></tr><tr><td><img style=\"line-height: 0; height: 20px; width: 20px;\"src=\"https://arbfintech-panda.s3-ap-southeast-1.amazonaws.com/resource/images/icon-square-location-20.png\"/></td><td><b>First Loan, PO Box 1536, Lower Lake, CA 95457</b></td></tr></table></td></tr><tr><td><table style=\"font-size: 13px; background: #9EC1DB;\"><tr style=\"font-style: italic;\"><td style=\"line-height: 1.5; padding: 1em;\"><p>To ensure that you continue receiving our emails, please add ONLINE@FIRSTLOAN.COM to your address bookor safe list.</p><p>First Loan is a Native American-owned business operated by the Elem Indian Colony Pomo Tribe, a federallyrecognized Indian tribe and a sovereign nation located in the United States. First Loan abides by all applicable federal laws and regulations as well as those established by the Elem Indian Colony Pomo Tribe.</p></td></tr></table></td></tr></table>";
-                String ref = "http://online.firstloan.com/view/withdraw/login?firstName=" + personal.getFirstName() + "&pId=" + pId + "&contractNo=" + contractNo;
-                js.put("portfolioWebsite", ref);
-                js.put("firstName", personal.getFirstName());
-                String email = personal.getEmail();
-                if (email != null) {
-                    String tital = "Additional Documents Needed For Your Loan Application!";
-                    String emailStr = FreeMarkerUtil.fillHtmlTemplate(str, js);
-                    SimpleEmailServiceUtil.sendOnlineEmail(email, tital, emailStr);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
