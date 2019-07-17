@@ -1891,7 +1891,9 @@ public class LoanService {
                         }
                         if (payment!=null){
                             if (payment.getTotalPrincipal()!=null){
-                                dataObject.put("totalPrincipal", payment.getTotalPrincipal());
+                                NumberFormat nf = new DecimalFormat("#,###.00");
+                                String totalPrincipal = nf.format(payment.getTotalPrincipal());
+                                dataObject.put("totalPrincipal","$"+totalPrincipal);
                             }
                         }
                         if(loan.getFlags()==null){
