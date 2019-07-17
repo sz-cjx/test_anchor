@@ -1894,8 +1894,9 @@ public class LoanService {
                                 dataObject.put("totalPrincipal", payment.getTotalPrincipal());
                             }
                         }
+                        dataObject.put("email",dataObject.getString("onlineEmail"));
                         String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
-                        SimpleEmailServiceUtil.sendEmail(email, title, content);
+                        SimpleEmailServiceUtil.sendOnlineEmail(email, title, content);
                     }
                 }
                 JSONObject formatLoan = getFormedLoanDataById(loan.getId());
@@ -2242,9 +2243,9 @@ public class LoanService {
 
     public void sendRfeEmail(String contractNo) {
         Loan loan = loanRepository.findByContractNo(contractNo);
-        String bankLi="<li>${bank?if_exists}<br/><b>${bankNote?if_exists}</b><span style=\"#4169E1\">${rfeBankNote?if_exists}</span></li>";
-        String identifyLi="<li>${identify?if_exists}<br/><b>${identifyNote?if_exists}</b><span style=\"#4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
-        String otherLi="<li>${others?if_exists}<br/><b>${othersNote?if_exists}</b><span style=\"#4169E1\">${rfeOthersNote?if_exists}</span></li>";
+        String bankLi="<li>${bank?if_exists}<br/><b>${bankNote?if_exists}</b><span style=\"color: #4169E1\">${rfeBankNote?if_exists}</span></li>";
+        String identifyLi="<li>${identify?if_exists}<br/><b>${identifyNote?if_exists}</b><span style=\"color: #4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
+        String otherLi="<li>${others?if_exists}<br/><b>${othersNote?if_exists}</b><span style=\"color: #4169E1\">${rfeOthersNote?if_exists}</span></li>";
         if (loan != null) {
 
             String onlineData = loan.getOnlineData();
