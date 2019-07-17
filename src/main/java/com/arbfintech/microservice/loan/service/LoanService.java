@@ -2296,9 +2296,9 @@ public class LoanService {
                         dataObject.put("bankLi", bankLi);
                     }
                     if (onlineData.indexOf("identify") != -1) {
-                        String identifyLi="<li>Identify<br/><b>${identifyNote?if_exists}</b><span style=\"color: #4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
+                        String identifyLi="<li>Identification<br/><b>${identifyNote?if_exists}</b><span style=\"color: #4169E1\">${rfeIdentifyNote?if_exists}</span></li>";
                         if (onlineData.contains("rfeIdentifyNote")) {
-                            identifyLi="<li>Identify<br/><span><b>note: </b><span style=\"color: #4169E1\">"+note.getString("rfeIdentifyNote")+"</span></span></li>";
+                            identifyLi="<li>Identification<br/><span><b>note: </b><span style=\"color: #4169E1\">"+note.getString("rfeIdentifyNote")+"</span></span></li>";
                         }
                         dataObject.put("identifyLi", identifyLi);
                     }
