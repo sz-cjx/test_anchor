@@ -2257,6 +2257,7 @@ public class LoanService {
                             String title = "Congratulations! Your Loan Has Been Pre-Approved!";
                             dataObject.put("lastName", lastName);
                             dataObject.put("firstName", firstName);
+                            dataObject.put("mixCode", String.format("%s-%s-%s", UuidUtil.getUuid(true), UuidUtil.getUuid(true), UuidUtil.getUuid(true)));
                             String email = personal.getEmail();
                             dataObject.put("email", dataObject.getString("onlineEmail"));
                             String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
@@ -2325,6 +2326,7 @@ public class LoanService {
                         dataObject.put("lastName", lastName);
                         dataObject.put("firstName", firstName);
                         dataObject.put("applicationUrl", ref);
+                        dataObject.put("mixCode", String.format("%s-%s-%s", UuidUtil.getUuid(true), UuidUtil.getUuid(true), UuidUtil.getUuid(true)));
                         String email = personal.getEmail();
                         dataObject.put("email", dataObject.getString("onlineEmail"));
                         String content = FreeMarkerUtil.fillHtmlTemplate(template, dataObject);
