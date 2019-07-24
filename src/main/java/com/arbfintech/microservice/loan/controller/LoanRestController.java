@@ -223,7 +223,8 @@ public class LoanRestController {
                 loan.setUpdateTime((new Date()).getTime());
                 loan.setLockedOperatorNo(null);
                 loan.setLockedOperatorName(null);
-                if (contractNo.startsWith("OIC")) {
+                if (contractNo.startsWith("OIC")&&loanStatusEnum.getValue()==128) {
+                    loan.setOnlineData(null);
                     loan.setOperatorNo(null);
                 }
 
