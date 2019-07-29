@@ -2251,7 +2251,7 @@ public class LoanService {
                             if (StringUtils.isEmpty(lastName)) {
                                 lastName = "";
                             }
-                            String ref = "http://online.firstloan.com/view/withdraw/login?firstName=" + firstName + "&pId=" + pId + "&contractNo=" + contractNo;
+                            String ref = "https://online.firstloan.com/view/withdraw/login?firstName=" + firstName + "&pId=" + pId + "&contractNo=" + contractNo;
                             dataObject.put("applicationUrl", ref);
                             dataObject.put("loanSize", "$" + loansize);
                             String title = "Congratulations! Your Loan Has Been Pre-Approved!";
@@ -2321,7 +2321,7 @@ public class LoanService {
                         if (StringUtils.isEmpty(lastName)) {
                             lastName = "";
                         }
-                        String ref = "http://online.firstloan.com/view/withdraw/login?firstName=" + firstName + "&pId=" + pId + "&contractNo=" + contractNo;
+                        String ref = "https://online.firstloan.com/view/withdraw/login?firstName=" + firstName + "&pId=" + pId + "&contractNo=" + contractNo;
                         String title = "Additional Documents Needed For Your Loan Application!";
                         dataObject.put("lastName", lastName);
                         dataObject.put("firstName", firstName);
