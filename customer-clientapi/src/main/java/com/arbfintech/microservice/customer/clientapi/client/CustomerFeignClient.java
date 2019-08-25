@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 public interface CustomerFeignClient {
 
     @PostMapping("/customers")
-    Long addCustomer(String customerStr);
+    Long addCustomer(@RequestBody String customerStr);
 
     @GetMapping("/customers/{id}")
     String getCustomerById(@PathVariable("id") Long id);
