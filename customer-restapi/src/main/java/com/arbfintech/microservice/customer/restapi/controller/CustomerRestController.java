@@ -12,8 +12,8 @@ public class CustomerRestController {
     private CustomerRestService customerRestService;
 
     @PostMapping("/customers")
-    Long addCustomer(@RequestBody String dataStr){
-        return customerRestService.addCustomer(dataStr);
+    Long addCustomer(@RequestBody String customerStr){
+        return customerRestService.addCustomer(customerStr);
     }
 
     @GetMapping("/customers/{id}")
