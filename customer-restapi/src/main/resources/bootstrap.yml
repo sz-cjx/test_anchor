@@ -79,17 +79,25 @@ arb:
     url: localhost
 ---
 spring:
+  profiles: panda-develop
+arb:
+  eureka:
+    url: 18.136.106.145
+  service:
+    url: 3.1.81.61
+---
+spring:
   profiles: panda-release
 arb:
   eureka:
     url: 18.139.107.142
   service:
-    url: 3.1.81.61
+    url: 52.77.229.101
 ---
 spring:
-  profiles: panda-develop
+  profiles: panda-release-2
 arb:
   eureka:
-    url: 13.229.249.38
+    url: 18.139.107.142
   service:
     url: 54.255.235.134
