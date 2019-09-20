@@ -84,7 +84,7 @@ arb:
   eureka:
     url: 18.136.106.145
   service:
-    url: 3.1.81.61
+    url: 3.0.127.85
 ---
 spring:
   profiles: panda-release
