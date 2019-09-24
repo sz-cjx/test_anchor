@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.domain.service;
+package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,9 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author CAVALIERS
+ * 2019/9/23 12:36
+ */
+
 @Service
 public class CustomerRestService extends JpaService<Customer> {
-
     private Logger logger = LoggerFactory.getLogger(CustomerRestService.class);
 
     @Autowired
@@ -55,8 +59,8 @@ public class CustomerRestService extends JpaService<Customer> {
     }
 
 
-    public int setCustomerById(Long id, String dataStr) {
-        int code = CodeConst.DEFAULT;
+    public Integer setCustomerById(Long id, String dataStr) {
+        Integer code = CodeConst.DEFAULT;
         logger.info("Start to update customer data By id : " + id + "  dataStr : " + dataStr);
         try {
             if (customerRepository.exists(id)) {
@@ -88,7 +92,4 @@ public class CustomerRestService extends JpaService<Customer> {
 
         return JSON.toJSONString(customerList);
     }
-
 }
-
-

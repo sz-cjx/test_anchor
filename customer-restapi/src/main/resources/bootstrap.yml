@@ -38,7 +38,7 @@ spring:
         max-attempts: 2
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${arb.database.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+    url: jdbc:mysql://192.168.0.100/lfs_test_daniel?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
     username: ${arb.database.username}
     password: ${arb.database.password}
     test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
