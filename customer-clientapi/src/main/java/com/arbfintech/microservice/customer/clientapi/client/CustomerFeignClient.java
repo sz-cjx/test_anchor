@@ -20,4 +20,10 @@ public interface CustomerFeignClient {
     @PostMapping("/customer/query")
     String listCustomerByConditions( @RequestParam("conditionStr") String conditionStr,
                                      @RequestParam("conditionType") String conditionType);
+
+    @GetMapping("/customers/ssn")
+    String listCustomerBySSN(@RequestParam("ssn")Long ssn);
+
+    @PostMapping("/customers/jdbc")
+    Long saveCustomerByJDBC(@RequestBody String customerStr);
 }

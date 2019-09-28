@@ -35,7 +35,7 @@ public class Customer {
 
     @Column
     @CreatedDate
-    private Long creatTime;
+    private Long createTime;
 
     @Column
     private Integer status;
@@ -48,12 +48,12 @@ public class Customer {
         this.updateTime = updateTime;
     }
 
-    public Long getCreatTime() {
-        return creatTime;
+    public Long getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTime(Long creatTime) {
-        this.creatTime = creatTime;
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
     public Long getId() {
