@@ -52,27 +52,27 @@ public class PandaV2Repository extends BaseJdbcRepository {
         });
     }
 
-    public Long saveCustomerByJDBC(JSONObject customerJson) {
-        try {
-            final String sql = "insert into customer(cell_phone,home_phone,ssn,email,create_time,update_time) "
-                    + "values (?,?,?,?,?,?)";
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(con -> {
-                PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                ps.setString(1, customerJson.getString(JsonKeyConst.CELL_PHONE));
-                ps.setString(2,  customerJson.getString(JsonKeyConst.HOME_PHONE));
-                ps.setLong(3, customerJson.getLong(JsonKeyConst.SSN));
-                ps.setString(4,  customerJson.getString(JsonKeyConst.EMAIL));
-                ps.setLong(5,System.currentTimeMillis());
-                ps.setLong(6,System.currentTimeMillis());
-                return ps;
-            }, keyHolder);
-
-            return keyHolder.getKey().longValue();
-        } catch (Exception e) {
-            return 0L;
-        }
-
-
-    }
+//    public Long saveCustomerByJDBC(JSONObject customerJson) {
+//        try {
+//            final String sql = "insert into customer(cell_phone,home_phone,ssn,email,create_time,update_time) "
+//                    + "values (?,?,?,?,?,?)";
+//            KeyHolder keyHolder = new GeneratedKeyHolder();
+//            jdbcTemplate.update(con -> {
+//                PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+//                ps.setString(1, customerJson.getString(JsonKeyConst.CELL_PHONE));
+//                ps.setString(2,  customerJson.getString(JsonKeyConst.HOME_PHONE));
+//                ps.setLong(3, customerJson.getLong(JsonKeyConst.SSN));
+//                ps.setString(4,  customerJson.getString(JsonKeyConst.EMAIL));
+//                ps.setLong(5,System.currentTimeMillis());
+//                ps.setLong(6,System.currentTimeMillis());
+//                return ps;
+//            }, keyHolder);
+//
+//            return keyHolder.getKey().longValue();
+//        } catch (Exception e) {
+//            return 0L;
+//        }
+//
+//
+//    }
 }

@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.domain.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

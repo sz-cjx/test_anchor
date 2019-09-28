@@ -18,10 +18,6 @@ public class CustomerClientService {
         return customerFeignClient.addCustomer(customerStr);
     }
 
-    public Long saveCustomerByJDBC(JSONObject customerJson){
-        String customerStr = customerJson.toJSONString();
-        return customerFeignClient.saveCustomerByJDBC(customerStr);
-    }
 
     public JSONObject getCustomerById(Long id) {
         String customerStr = customerFeignClient.getCustomerById(id);
@@ -43,5 +39,11 @@ public class CustomerClientService {
         String customerStr = customerFeignClient.listCustomerBySSN(ssn);
         return JSON.parseArray(customerStr);
     }
+
+    //    public Long saveCustomerByJDBC(JSONObject customerJson){
+//        String customerStr = customerJson.toJSONString();
+//        return customerFeignClient.saveCustomerByJDBC(customerStr);
+//    }
+
 
 }

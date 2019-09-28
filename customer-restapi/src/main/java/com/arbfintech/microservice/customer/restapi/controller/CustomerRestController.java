@@ -55,10 +55,10 @@ public class CustomerRestController {
     }
 
 
-    @PostMapping("/customers/jdbc")
-    public CompletableFuture<Long> saveCustomerByJDBC(@RequestBody String customerStr){
-        return CompletableFuture.supplyAsync(
-                () -> customerRestService.saveCustomerByJDBC(customerStr)
-        );
-    }
+//    @PostMapping("/customers/jdbc")
+//    public CompletableFuture<Long> saveCustomerByJDBC(@RequestBody String customerStr){
+//        return CompletableFuture.supplyAsync(
+//                () -> customerRestService.saveCustomerByJDBC(customerStr)
+//        );
+//    }
 }

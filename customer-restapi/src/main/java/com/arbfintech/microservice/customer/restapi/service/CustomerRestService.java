@@ -104,8 +104,8 @@ public class CustomerRestService extends JpaService<Customer> {
     }
 
 
-    public Long  saveCustomerByJDBC(String customerStr) {
-        JSONObject customerInfo = JSONObject.parseObject(customerStr);
-        return  pandaV2Repository.saveCustomerByJDBC(customerInfo);
-    }
+//    public Long  saveCustomerByJDBC(String customerStr) {
+//        JSONObject customerInfo = JSONObject.parseObject(customerStr);
+//        return  pandaV2Repository.saveCustomerByJDBC(customerInfo);
+//    }
 }
