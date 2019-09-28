@@ -47,4 +47,18 @@ public class CustomerRestController {
         );
     }
 
+    @GetMapping("/customers/ssn")
+    public CompletableFuture<String> listCustomerBySSN(@RequestParam("ssn")Long ssn){
+        return CompletableFuture.supplyAsync(
+                () -> customerRestService.listCustomerBySSN(ssn)
+        );
+    }
+
+
+//    @PostMapping("/customers/jdbc")
+//    public CompletableFuture<Long> saveCustomerByJDBC(@RequestBody String customerStr){
+//        return CompletableFuture.supplyAsync(
+//                () -> customerRestService.saveCustomerByJDBC(customerStr)
+//        );
+//    }
 }

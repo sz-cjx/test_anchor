@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.domain.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,7 +36,7 @@ public class Customer {
 
     @Column
     @CreatedDate
-    private Long creatTime;
+    private Long createTime;
 
     @Column
     private Integer status;
@@ -48,12 +49,12 @@ public class Customer {
         this.updateTime = updateTime;
     }
 
-    public Long getCreatTime() {
-        return creatTime;
+    public Long getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTime(Long creatTime) {
-        this.creatTime = creatTime;
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
     public Long getId() {
