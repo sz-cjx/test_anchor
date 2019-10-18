@@ -15,6 +15,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +48,23 @@ public class PandaV2Repository extends BaseJdbcRepository {
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
     public JSONArray listCustomerBySSN(Long ssn) {
-        String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC LIMIT 1; ", ssn.toString());
+        String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC ; ", ssn.toString());
         return namedJdbcTemplate.query(sql, resultSet -> {
             return extractArray(resultSet);
         });
+    }
+
+    public Long getTheLatestCustomerIdBySSN(Long ssn) {
+        String sql = String.format("SELECT id FROM customer WHERE ssn = '%s' ORDER BY create_time DESC LIMIT 1; ", ssn.toString());
+        return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
+    }
+
+    private Long getResultSet(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            return resultSet.getLong(1);
+        } else {
+            return null;
+        }
     }
 
 //    public Long saveCustomerByJDBC(JSONObject customerJson) {

@@ -35,9 +35,13 @@ public class CustomerClientService {
         return JSON.parseArray(customerStr);
     }
 
-    public JSONArray listCustomerBySSN(Long ssn){
+    public JSONArray listCustomerBySSN(Long ssn) {
         String customerStr = customerFeignClient.listCustomerBySSN(ssn);
         return JSON.parseArray(customerStr);
+    }
+
+    public Long getTheLatestCustomerIdBySSN(Long ssn) {
+        return customerFeignClient.getTheLatestCustomerIdBySSN(ssn);
     }
 
     //    public Long saveCustomerByJDBC(JSONObject customerJson){

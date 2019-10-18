@@ -54,6 +54,13 @@ public class CustomerRestController {
         );
     }
 
+    @GetMapping("/customers/ssn/latest")
+    public CompletableFuture<Long> getTheLatestCustomerIdBySSN(@RequestParam("ssn")Long ssn){
+        return CompletableFuture.supplyAsync(
+                () -> customerRestService.getTheLatestCustomerIdBySSN(ssn)
+        );
+    }
+
 
 //    @PostMapping("/customers/jdbc")
 //    public CompletableFuture<Long> saveCustomerByJDBC(@RequestBody String customerStr){
