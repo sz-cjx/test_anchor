@@ -103,6 +103,10 @@ public class CustomerRestService extends JpaService<Customer> {
         return customerJsonStr.toJSONString();
     }
 
+    public Long getTheLatestCustomerIdBySSN(Long ssn) {
+        return pandaV2Repository.getTheLatestCustomerIdBySSN(ssn);
+    }
+
 
 //    public Long  saveCustomerByJDBC(String customerStr) {
 //        JSONObject customerInfo = JSONObject.parseObject(customerStr);
