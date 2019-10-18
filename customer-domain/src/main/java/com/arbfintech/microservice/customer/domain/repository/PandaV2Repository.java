@@ -46,7 +46,7 @@ public class PandaV2Repository extends BaseJdbcRepository {
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
     public JSONArray listCustomerBySSN(Long ssn) {
-        String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC ; ", ssn.toString());
+        String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC LIMIT 1; ", ssn.toString());
         return namedJdbcTemplate.query(sql, resultSet -> {
             return extractArray(resultSet);
         });
