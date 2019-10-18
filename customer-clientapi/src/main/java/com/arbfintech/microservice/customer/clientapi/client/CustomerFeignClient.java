@@ -24,7 +24,7 @@ public interface CustomerFeignClient {
     @GetMapping("/customers/ssn")
     String listCustomerBySSN(@RequestParam("ssn")Long ssn);
 
-    @GetMapping("/customers/ssn/latest")
+    @GetMapping("/customers/latest/ssn")
     Long getTheLatestCustomerIdBySSN(@RequestParam("ssn")Long ssn);
 
 //    @PostMapping("/customers/jdbc")
