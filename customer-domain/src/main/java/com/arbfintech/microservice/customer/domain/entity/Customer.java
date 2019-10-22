@@ -41,6 +41,12 @@ public class Customer {
     @Column
     private Integer status;
 
+    @Column(length = 128)
+    private String password;
+
+    @Column(length = 16)
+    private String salt;
+
     public Long getUpdateTime() {
         return updateTime;
     }
@@ -111,6 +117,22 @@ public class Customer {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override
