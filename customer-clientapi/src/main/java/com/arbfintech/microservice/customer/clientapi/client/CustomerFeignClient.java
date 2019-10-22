@@ -27,6 +27,9 @@ public interface CustomerFeignClient {
     @GetMapping("/customers/latest/ssn")
     Long getTheLatestCustomerIdBySSN(@RequestParam("ssn")Long ssn);
 
+    @PostMapping("/customers/verify")
+    String verifyCustomerLoginData(@RequestBody String loginData);
+
 //    @PostMapping("/customers/jdbc")
 //    Long saveCustomerByJDBC(@RequestBody String customerStr);
 }

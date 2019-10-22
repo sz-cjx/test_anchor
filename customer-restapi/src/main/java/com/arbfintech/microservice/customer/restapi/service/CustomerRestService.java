@@ -4,10 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
+import com.arbfintech.framework.component.core.constant.JsonKeyConst;
+import com.arbfintech.framework.component.core.enumerate.CodeEnum;
+import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.JpaService;
+import com.arbfintech.framework.component.core.util.CryptUtil;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
 import com.arbfintech.microservice.customer.domain.repository.PandaV2Repository;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +110,39 @@ public class CustomerRestService extends JpaService<Customer> {
 
     public Long getTheLatestCustomerIdBySSN(Long ssn) {
         return pandaV2Repository.getTheLatestCustomerIdBySSN(ssn);
+    }
+
+    public String verifyCustomerLoginData(String loginData) {
+        JSONObject loginDataObj = JSON.parseObject(loginData);
+        String email = loginDataObj.getString(JsonKeyConst.EMAIL);
+
+        Customer customerInDB = customerRepository.findByEmail(email);
+        if(customerInDB == null) {
+            logger.warn("Failure: Don't query customer by email. Email:{}", email);
+            return AjaxResult.failure(CodeEnum.ERROR_EMAIL_OR_PASSWORD);
+        }
+
+        String password = loginDataObj.getString(JsonKeyConst.PASSWORD);
+        String salt = customerInDB.getSalt();
+        String passwordInDB = customerInDB.getPassword();
+        /**
+         * Note: Password encrypted using this method will be all uppercase if it contains letters.
+         * In Panda system, login password is encrypted with javaScript firstly, so the first encrypted
+         * password is will be lowercase. When the second encryption is done with Java, it will be all
+         * uppercase.
+         */
+        if(!passwordInDB.equals(encryptLoginPassword(password, salt))) {
+            logger.info("Failure: The login password is not correct. Email:{}, Password:{}", email, password);
+            return AjaxResult.failure(CodeEnum.ERROR_EMAIL_OR_PASSWORD);
+        }
+
+        JSONObject resultDataObj = new JSONObject();
+        resultDataObj.put(JsonKeyConst.ID, customerInDB.getId());
+        return AjaxResult.success(resultDataObj);
+    }
+
+    private String encryptLoginPassword (String password, String salt) {
+        return CryptUtil.md5(CryptUtil.md5(password) + salt);
     }
 
 
