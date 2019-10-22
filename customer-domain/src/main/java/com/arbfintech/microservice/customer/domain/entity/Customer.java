@@ -41,11 +41,35 @@ public class Customer {
     @Column
     private Integer status;
 
+    @Column(length = 32)
+    private String firstName;
+
+    @Column(length = 32)
+    private String middleName;
+
+    @Column(length = 32)
+    private String lastName;
+
     @Column(length = 128)
     private String password;
 
     @Column(length = 16)
     private String salt;
+
+    @Column
+    private Integer emailMarketingStatus;
+
+    @Column
+    private Integer emailOperationStatus;
+
+    @Column
+    private Integer smsMarketingStatus;
+
+    @Column
+    private Integer smsOperationStatus;
+
+    @Column
+    private Integer isSignUp;
 
     public Long getUpdateTime() {
         return updateTime;
@@ -119,6 +143,30 @@ public class Customer {
         this.status = status;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -133,6 +181,46 @@ public class Customer {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public Integer getEmailMarketingStatus() {
+        return emailMarketingStatus;
+    }
+
+    public void setEmailMarketingStatus(Integer emailMarketingStatus) {
+        this.emailMarketingStatus = emailMarketingStatus;
+    }
+
+    public Integer getEmailOperationStatus() {
+        return emailOperationStatus;
+    }
+
+    public void setEmailOperationStatus(Integer emailOperationStatus) {
+        this.emailOperationStatus = emailOperationStatus;
+    }
+
+    public Integer getSmsMarketingStatus() {
+        return smsMarketingStatus;
+    }
+
+    public void setSmsMarketingStatus(Integer smsMarketingStatus) {
+        this.smsMarketingStatus = smsMarketingStatus;
+    }
+
+    public Integer getSmsOperationStatus() {
+        return smsOperationStatus;
+    }
+
+    public void setSmsOperationStatus(Integer smsOperationStatus) {
+        this.smsOperationStatus = smsOperationStatus;
+    }
+
+    public Integer getIsSignUp() {
+        return isSignUp;
+    }
+
+    public void setIsSignUp(Integer isSignUp) {
+        this.isSignUp = isSignUp;
     }
 
     @Override

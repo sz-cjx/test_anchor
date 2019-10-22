@@ -30,6 +30,9 @@ public interface CustomerFeignClient {
     @PostMapping("/customers/verify")
     String verifyCustomerLoginData(@RequestBody String loginData);
 
+    @PostMapping("/customers/sign-up")
+    String doCustomerSignUp(@RequestBody String signUpData);
+
 //    @PostMapping("/customers/jdbc")
 //    Long saveCustomerByJDBC(@RequestBody String customerStr);
 }

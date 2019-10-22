@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
+import com.arbfintech.framework.component.core.constant.CustomerStatusConst;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.enumerate.CodeEnum;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.JpaService;
 import com.arbfintech.framework.component.core.util.CryptUtil;
+import com.arbfintech.framework.component.core.util.RandomUtil;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
 import com.arbfintech.microservice.customer.domain.repository.PandaV2Repository;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import sun.security.util.Password;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +146,45 @@ public class CustomerRestService extends JpaService<Customer> {
 
     private String encryptLoginPassword (String password, String salt) {
         return CryptUtil.md5(CryptUtil.md5(password) + salt);
+    }
+
+    public String doCustomerSignUp(String signUpData) {
+
+        JSONObject customerSignUpDataMap = JSON.parseObject(signUpData);
+        String ssn = customerSignUpDataMap.getString(JsonKeyConst.SSN);
+        String email = customerSignUpDataMap.getString(JsonKeyConst.EMAIL);
+        Customer customerInDB = customerRepository.findBySsnAndEmail(ssn, email);
+
+        //Make the judgment temporarily.
+        if(customerInDB == null) {
+            logger.warn("Failure: Don't query customer. SSN:{}, Email:{}", ssn, email);
+            return AjaxResult.failure(CodeConst.FAILURE, "Don't query customer and need to create.");
+        }
+        if(customerInDB.getIsSignUp() != null && customerInDB.getIsSignUp() == CustomerStatusConst.ALREADY_SIGN_UP) {
+            logger.warn("Success: The customer was already sign-up. SSN:{}, Email:{}", ssn, email);
+            customerInDB.setSalt(null);
+            customerInDB.setPassword(null);
+            return AjaxResult.result(CodeEnum.CUSTOMER_ALREADY_SIGN_UP.getValue(), CodeEnum.CUSTOMER_ALREADY_SIGN_UP.getText(), customerInDB);
+        }
+        //This key is not field in Customer, so it must be removed if you do a data update operation like the following code
+        customerSignUpDataMap.remove(JsonKeyConst.CONFIRM_PASSWORD);
+
+        JSONObject customerInDbObj = (JSONObject)JSONObject.toJSON(customerInDB);
+        for (Map.Entry<String, Object> customerDataEntry : customerSignUpDataMap.entrySet()) {
+            customerInDbObj.put(customerDataEntry.getKey(), customerDataEntry.getValue());
+        }
+        String salt = RandomUtil.getAlphabet();
+        String encryptPassword = encryptLoginPassword(customerSignUpDataMap.getString(JsonKeyConst.PASSWORD), salt);
+        customerInDbObj.put(JsonKeyConst.PASSWORD, encryptPassword);
+        customerInDbObj.put(JsonKeyConst.SALT, salt);
+
+        customerInDbObj.put(JsonKeyConst.IS_SIGN_UP, CustomerStatusConst.ALREADY_SIGN_UP);
+        Customer completeCustomerData = JSON.parseObject(customerInDbObj.toJSONString(), Customer.class);
+        customerInDB = customerRepository.save(completeCustomerData);
+        customerInDB.setSalt(null);
+        customerInDB.setPassword(null);
+        logger.info("Success to create customer(complete customer info). Email:{},SSN:{}", email, ssn);
+        return AjaxResult.success(customerInDB);
     }
 
 
