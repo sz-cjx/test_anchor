@@ -50,6 +50,10 @@ public class CustomerClientService {
         return customerFeignClient.verifyCustomerLoginData(loginData);
     }
 
+    public String doCustomerSignUp(String signUpData) {
+        return customerFeignClient.doCustomerSignUp(signUpData);
+    }
+
     //    public Long saveCustomerByJDBC(JSONObject customerJson){
 //        String customerStr = customerJson.toJSONString();
 //        return customerFeignClient.saveCustomerByJDBC(customerStr);
