@@ -158,7 +158,7 @@ public class CustomerRestService extends JpaService<Customer> {
         //Make the judgment temporarily.
         if(customerInDB == null) {
             logger.warn("Failure: Don't query customer. SSN:{}, Email:{}", ssn, email);
-            return AjaxResult.failure(CodeConst.FAILURE, "Don't query customer and need to create.");
+            return AjaxResult.failure(CodeEnum.CUSTOMER_NOT_EXIST);
         }
         if(customerInDB.getIsSignUp() != null && customerInDB.getIsSignUp() == CustomerStatusConst.ALREADY_SIGN_UP) {
             logger.warn("Success: The customer was already sign-up. SSN:{}, Email:{}", ssn, email);
