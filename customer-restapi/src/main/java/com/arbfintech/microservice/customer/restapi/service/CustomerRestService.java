@@ -106,12 +106,12 @@ public class CustomerRestService extends JpaService<Customer> {
         return JSON.toJSONString(customerList);
     }
 
-    public String listCustomerBySSN(Long ssn) {
+    public String listCustomerBySSN(String ssn) {
         JSONArray customerJsonStr = pandaV2Repository.listCustomerBySSN(ssn);
         return customerJsonStr.toJSONString();
     }
 
-    public Long getTheLatestCustomerIdBySSN(Long ssn) {
+    public Long getTheLatestCustomerIdBySSN(String ssn) {
         return pandaV2Repository.getTheLatestCustomerIdBySSN(ssn);
     }
 

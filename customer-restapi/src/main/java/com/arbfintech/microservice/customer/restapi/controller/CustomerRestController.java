@@ -48,14 +48,14 @@ public class CustomerRestController {
     }
 
     @GetMapping("/customers/ssn")
-    public CompletableFuture<String> listCustomerBySSN(@RequestParam("ssn")Long ssn){
+    public CompletableFuture<String> listCustomerBySSN(@RequestParam("ssn") String ssn){
         return CompletableFuture.supplyAsync(
                 () -> customerRestService.listCustomerBySSN(ssn)
         );
     }
 
     @GetMapping("/customers/latest/ssn")
-    public CompletableFuture<Long> getTheLatestCustomerIdBySSN(@RequestParam("ssn")Long ssn){
+    public CompletableFuture<Long> getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn){
         return CompletableFuture.supplyAsync(
                 () -> customerRestService.getTheLatestCustomerIdBySSN(ssn)
         );

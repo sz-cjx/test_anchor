@@ -22,10 +22,10 @@ public interface CustomerFeignClient {
                                      @RequestParam("conditionType") String conditionType);
 
     @GetMapping("/customers/ssn")
-    String listCustomerBySSN(@RequestParam("ssn")Long ssn);
+    String listCustomerBySSN(@RequestParam("ssn") String ssn);
 
     @GetMapping("/customers/latest/ssn")
-    Long getTheLatestCustomerIdBySSN(@RequestParam("ssn")Long ssn);
+    Long getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn);
 
     @PostMapping("/customers/verify")
     String verifyCustomerLoginData(@RequestBody String loginData);
