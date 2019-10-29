@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.constant.CustomerStatusConst;
+import com.arbfintech.framework.component.core.constant.GlobalConst;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.enumerate.CodeEnum;
 import com.arbfintech.framework.component.core.type.AjaxResult;
@@ -14,6 +15,7 @@ import com.arbfintech.framework.component.core.util.RandomUtil;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
 import com.arbfintech.microservice.customer.domain.repository.PandaV2Repository;
+import jdk.nashorn.internal.runtime.GlobalConstants;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +122,18 @@ public class CustomerRestService extends JpaService<Customer> {
         String email = loginDataObj.getString(JsonKeyConst.EMAIL);
 
         Customer customerInDB = customerRepository.findByEmail(email);
+        if(customerInDB != null && customerInDB.getIsSignUp() != CustomerStatusConst.ALREADY_SIGN_UP) {
+            logger.warn("Failure: Customer don't sign up");
+            customerInDB.setSalt(null);
+            customerInDB.setPassword(null);
+            return AjaxResult.failure(CodeConst.FAILURE, GlobalConst.STR_EMPTY, customerInDB);
+        }
+        if(customerInDB != null && customerInDB.getStatus() != CodeConst.SUCCESS) {
+            logger.warn("Failure: Customer is rejected or not reviewed");
+            customerInDB.setSalt(null);
+            customerInDB.setPassword(null);
+            return AjaxResult.failure(CodeConst.FAILURE, GlobalConst.STR_EMPTY, customerInDB);
+        }
         if(customerInDB == null) {
             logger.warn("Failure: Don't query customer by email. Email:{}", email);
             return AjaxResult.failure(CodeEnum.ERROR_EMAIL_OR_PASSWORD);
@@ -141,6 +155,7 @@ public class CustomerRestService extends JpaService<Customer> {
 
         JSONObject resultDataObj = new JSONObject();
         resultDataObj.put(JsonKeyConst.ID, customerInDB.getId());
+
         return AjaxResult.success(resultDataObj);
     }
 
