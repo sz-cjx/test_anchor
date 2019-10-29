@@ -55,10 +55,12 @@ public class CustomerRestController {
     }
 
     @GetMapping("/customers/latest/ssn")
-    public CompletableFuture<Long> getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn){
-        return CompletableFuture.supplyAsync(
-                () -> customerRestService.getTheLatestCustomerIdBySSN(ssn)
-        );
+    //public CompletableFuture<Long> getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn){
+    public Long getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn){
+        return customerRestService.getTheLatestCustomerIdBySSN(ssn);
+//        return CompletableFuture.supplyAsync(
+//                () -> customerRestService.getTheLatestCustomerIdBySSN(ssn)
+//        );
     }
 
     @PostMapping("/customers/verify")
