@@ -4,8 +4,6 @@ package com.arbfintech.microservice.customer.clientapi.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.constant.CodeConst;
-import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.microservice.customer.clientapi.client.CustomerFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,12 +35,12 @@ public class CustomerClientService {
         return JSON.parseArray(customerStr);
     }
 
-    public JSONArray listCustomerBySSN(Long ssn) {
+    public JSONArray listCustomerBySSN(String ssn) {
         String customerStr = customerFeignClient.listCustomerBySSN(ssn);
         return JSON.parseArray(customerStr);
     }
 
-    public Long getTheLatestCustomerIdBySSN(Long ssn) {
+    public Long getTheLatestCustomerIdBySSN(String ssn) {
         return customerFeignClient.getTheLatestCustomerIdBySSN(ssn);
     }
 

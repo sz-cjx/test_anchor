@@ -47,15 +47,15 @@ public class PandaV2Repository extends BaseJdbcRepository {
     @Qualifier("panda-v2NamedJdbcTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    public JSONArray listCustomerBySSN(Long ssn) {
-        String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC ; ", ssn.toString());
+    public JSONArray listCustomerBySSN(String ssn) {
+        String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC ; ", ssn);
         return namedJdbcTemplate.query(sql, resultSet -> {
             return extractArray(resultSet);
         });
     }
 
-    public Long getTheLatestCustomerIdBySSN(Long ssn) {
-        String sql = String.format("SELECT id FROM customer WHERE ssn = '%s' ORDER BY create_time DESC LIMIT 1; ", ssn.toString());
+    public Long getTheLatestCustomerIdBySSN(String ssn) {
+        String sql = String.format("SELECT id FROM customer WHERE ssn = '%s' ORDER BY create_time DESC LIMIT 1; ", ssn);
         return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
     }
 
