@@ -95,6 +95,22 @@ arb:
     url: 18.136.105.87
 ---
 spring:
+  profiles: panda-develop-3
+arb:
+  eureka:
+    url: 18.136.106.145
+  service:
+    url: 54.251.136.239
+---
+spring:
+  profiles: panda-develop-4
+arb:
+  eureka:
+    url: 18.136.106.145
+  service:
+    url: 54.169.240.186
+---
+spring:
   profiles: panda-release
 arb:
   eureka:
