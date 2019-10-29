@@ -15,14 +15,12 @@ import com.arbfintech.framework.component.core.util.RandomUtil;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
 import com.arbfintech.microservice.customer.domain.repository.PandaV2Repository;
-import jdk.nashorn.internal.runtime.GlobalConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import sun.security.util.Password;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +120,7 @@ public class CustomerRestService extends JpaService<Customer> {
         String email = loginDataObj.getString(JsonKeyConst.EMAIL);
 
         Customer customerInDB = customerRepository.findByEmail(email);
-        if(customerInDB != null && customerInDB.getIsSignUp() != CustomerStatusConst.ALREADY_SIGN_UP) {
+        if(customerInDB != null && !Integer.valueOf(CustomerStatusConst.ALREADY_SIGN_UP).equals(customerInDB.getIsSignUp())) {
             logger.warn("Failure: Customer don't sign up");
             customerInDB.setSalt(null);
             customerInDB.setPassword(null);
@@ -132,7 +130,7 @@ public class CustomerRestService extends JpaService<Customer> {
          * Status:
          *      -1 : reject, 0 : not review, 1 : pass
          */
-        if(customerInDB != null && customerInDB.getStatus() != CodeConst.SUCCESS) {
+        if(customerInDB != null &&  !Integer.valueOf(CodeConst.SUCCESS).equals(customerInDB.getStatus())) {
             logger.warn("Failure: Customer is rejected or not reviewed. Status:{}", customerInDB.getStatus());
             customerInDB.setSalt(null);
             customerInDB.setPassword(null);
