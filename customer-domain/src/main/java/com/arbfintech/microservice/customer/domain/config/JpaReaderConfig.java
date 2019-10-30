@@ -1,23 +1,21 @@
 package com.arbfintech.microservice.customer.domain.config;
 
 
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManager;
+import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * @author Wade He
@@ -27,32 +25,30 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef="entityManagerFactoryWriter",
-        transactionManagerRef="transactionManagerWriter",
-        basePackages= { "com.arbfintech.microservice.customer.domain.repository" }) //set repo location
-public class RepositoryWriterConfig {
+        entityManagerFactoryRef="entityManagerFactoryReader",
+        transactionManagerRef="transactionManagerReader",
+        basePackages= { "com.arbfintech.microservice.customer.domain.repositoryReader" }) //set repo location
+public class JpaReaderConfig {
 
     @Autowired
     private JpaProperties jpaProperties;
 
     @Autowired
-    @Qualifier("pandaWriterDataSource")
-    private DataSource writerDataSource;
+    @Qualifier("pandaReaderDataSource")
+    private DataSource readerDataSource;
 
-    @Bean(name = "entityManagerWriter")
-    @Primary
+    @Bean(name = "entityManagerReader")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
-        return entityManagerFactoryWriter(builder).getObject().createEntityManager();
+        return entityManagerFactoryReader(builder).getObject().createEntityManager();
     }
 
-    @Bean(name = "entityManagerFactoryWriter")
-    @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryWriter (EntityManagerFactoryBuilder builder) {
+    @Bean(name = "entityManagerFactoryReader")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryReader(EntityManagerFactoryBuilder builder) {
         return builder
-                .dataSource(writerDataSource)
-                .properties(getVendorProperties(writerDataSource))
+                .dataSource(readerDataSource)
+                .properties(getVendorProperties(readerDataSource))
                 .packages("com.arbfintech.microservice.customer.domain.entity") //entity location
-                .persistenceUnit("WriterPersistenceUnit")
+                .persistenceUnit("ReaderPersistenceUnit")
                 .build();
     }
 
@@ -60,10 +56,9 @@ public class RepositoryWriterConfig {
         return jpaProperties.getHibernateProperties(dataSource);
     }
 
-    @Bean(name = "transactionManagerWriter")
-    @Primary
-    PlatformTransactionManager transactionManagerWriter(EntityManagerFactoryBuilder builder) {
-        return new JpaTransactionManager(entityManagerFactoryWriter(builder).getObject());
+    @Bean(name = "transactionManagerReader")
+    PlatformTransactionManager transactionManagerReader(EntityManagerFactoryBuilder builder) {
+        return new JpaTransactionManager(entityManagerFactoryReader(builder).getObject());
     }
 
 }
