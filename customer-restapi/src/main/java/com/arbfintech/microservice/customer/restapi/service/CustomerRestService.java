@@ -14,7 +14,8 @@ import com.arbfintech.framework.component.core.util.CryptUtil;
 import com.arbfintech.framework.component.core.util.RandomUtil;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
-import com.arbfintech.microservice.customer.domain.repository.PandaV2Repository;
+import com.arbfintech.microservice.customer.domain.repositoryReader.CustomerReaderRepository;
+import com.arbfintech.microservice.customer.domain.repositoryReader.PandaReaderRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,10 @@ public class CustomerRestService extends JpaService<Customer> {
     private CustomerRepository customerRepository;
 
     @Autowired
-    private PandaV2Repository pandaV2Repository;
+    private CustomerReaderRepository customerReaderRepository;
+
+    @Autowired
+    private PandaReaderRepository pandaReaderRepository;
 
     public Long addCustomer(String dataStr) {
         Long restCode;
@@ -60,7 +64,7 @@ public class CustomerRestService extends JpaService<Customer> {
         String result = "";
         logger.info("Start to query the customer by Id:{}", id);
         if (id != null) {
-            Customer customerInDb  = customerRepository.findOne(id);
+            Customer customerInDb  = customerReaderRepository.findOne(id);
             if (customerInDb != null) {
                 result = JSONObject.toJSONString(customerInDb);
                 logger.info("Found the customer:" + result);
@@ -77,7 +81,7 @@ public class CustomerRestService extends JpaService<Customer> {
         logger.info("Start to update customer data By id : " + id + "  dataStr : " + dataStr);
         try {
             if (customerRepository.exists(id)) {
-                Customer customerInDb  = customerRepository.findOne(id);
+                Customer customerInDb  = customerReaderRepository.findOne(id);
                 JSONObject oldCustomerJson = JSONObject.parseObject(customerInDb.toString());
                 Map<String, Object> customerJsonMap = JSONObject.parseObject(dataStr);
                 for (Map.Entry<String, Object> entry : customerJsonMap.entrySet()) {
@@ -100,26 +104,26 @@ public class CustomerRestService extends JpaService<Customer> {
         List<Customer> customerList = new ArrayList<>();
         Specification<Customer> specification = createConditions(conditionStr, conditionType);
         if (specification != null) {
-            customerList = customerRepository.findAll(specification);
+            customerList = customerReaderRepository.findAll(specification);
         }
 
         return JSON.toJSONString(customerList);
     }
 
     public String listCustomerBySSN(String ssn) {
-        JSONArray customerJsonStr = pandaV2Repository.listCustomerBySSN(ssn);
+        JSONArray customerJsonStr = pandaReaderRepository.listCustomerBySSN(ssn);
         return customerJsonStr.toJSONString();
     }
 
     public Long getTheLatestCustomerIdBySSN(String ssn) {
-        return pandaV2Repository.getTheLatestCustomerIdBySSN(ssn);
+        return pandaReaderRepository.getTheLatestCustomerIdBySSN(ssn);
     }
 
     public String verifyCustomerLoginData(String loginData) {
         JSONObject loginDataObj = JSON.parseObject(loginData);
         String email = loginDataObj.getString(JsonKeyConst.EMAIL);
 
-        Customer customerInDB = customerRepository.findByEmail(email);
+        Customer customerInDB = customerReaderRepository.findByEmail(email);
         if(customerInDB != null && !Integer.valueOf(CustomerStatusConst.ALREADY_SIGN_UP).equals(customerInDB.getIsSignUp())) {
             logger.warn("Failure: Customer don't sign up");
             customerInDB.setSalt(null);
@@ -170,7 +174,7 @@ public class CustomerRestService extends JpaService<Customer> {
         JSONObject customerSignUpDataMap = JSON.parseObject(signUpData);
         String ssn = customerSignUpDataMap.getString(JsonKeyConst.SSN);
         String email = customerSignUpDataMap.getString(JsonKeyConst.EMAIL);
-        Customer customerInDB = customerRepository.findBySsnAndEmail(ssn, email);
+        Customer customerInDB = customerReaderRepository.findBySsnAndEmail(ssn, email);
 
         //Make the judgment temporarily.
         if(customerInDB == null) {
