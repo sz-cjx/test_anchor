@@ -174,7 +174,7 @@ public class CustomerRestService extends JpaService<Customer> {
         JSONObject customerSignUpDataMap = JSON.parseObject(signUpData);
         String email = customerSignUpDataMap.getString(JsonKeyConst.EMAIL);
 
-        Customer customerInDB = customerRepository.findByEmail(email);
+        Customer customerInDB = customerReaderRepository.findByEmail(email);
 
         //Make the judgment temporarily.
         if(customerInDB == null) {
