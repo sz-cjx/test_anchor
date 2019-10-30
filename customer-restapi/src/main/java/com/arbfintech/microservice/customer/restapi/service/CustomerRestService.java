@@ -172,21 +172,23 @@ public class CustomerRestService extends JpaService<Customer> {
     public String doCustomerSignUp(String signUpData) {
 
         JSONObject customerSignUpDataMap = JSON.parseObject(signUpData);
-        String ssn = customerSignUpDataMap.getString(JsonKeyConst.SSN);
         String email = customerSignUpDataMap.getString(JsonKeyConst.EMAIL);
-        Customer customerInDB = customerReaderRepository.findBySsnAndEmail(ssn, email);
+
+        Customer customerInDB = customerRepository.findByEmail(email);
 
         //Make the judgment temporarily.
         if(customerInDB == null) {
-            logger.warn("Failure: Don't query customer. SSN:{}, Email:{}", ssn, email);
+            logger.warn("Failure: Don't query customer. Email:{}", email);
             return AjaxResult.failure(CodeEnum.CUSTOMER_NOT_EXIST);
         }
+
         if(customerInDB.getIsSignUp() != null && customerInDB.getIsSignUp() == CustomerStatusConst.ALREADY_SIGN_UP) {
-            logger.warn("Success: The customer was already sign-up. SSN:{}, Email:{}", ssn, email);
+            logger.warn("Warn: The customer was already sign-up. Email:{}", email);
             customerInDB.setSalt(null);
             customerInDB.setPassword(null);
             return AjaxResult.result(CodeEnum.CUSTOMER_ALREADY_SIGN_UP.getValue(), CodeEnum.CUSTOMER_ALREADY_SIGN_UP.getText(), customerInDB);
         }
+
         //This key is not field in Customer, so it must be removed if you do a data update operation like the following code
         customerSignUpDataMap.remove(JsonKeyConst.CONFIRM_PASSWORD);
 
@@ -204,7 +206,7 @@ public class CustomerRestService extends JpaService<Customer> {
         customerInDB = customerRepository.save(completeCustomerData);
         customerInDB.setSalt(null);
         customerInDB.setPassword(null);
-        logger.info("Success to create customer(complete customer info). Email:{},SSN:{}", email, ssn);
+        logger.info("Success to create customer(complete customer info). Email:{}", email);
         return AjaxResult.success(customerInDB);
     }
 
