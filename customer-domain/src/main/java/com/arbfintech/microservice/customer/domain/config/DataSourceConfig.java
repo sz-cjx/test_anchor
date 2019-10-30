@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.domain.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +15,19 @@ import javax.sql.DataSource;
  */
 @Configuration
 public class DataSourceConfig {
+
     @Primary
-    @Bean(name = "panda-v2DataSource")
-    @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource getPandaDataSource() {
+    @Bean(name = "pandaWriterDataSource")
+    @Qualifier("pandaWriterDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.writer")
+    public DataSource getPandaWriterDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "pandaReaderDataSource")
+    @Qualifier("pandaReaderDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.reader")
+    public DataSource getPandaReaderDataSource() {
         return DataSourceBuilder.create().build();
     }
 }

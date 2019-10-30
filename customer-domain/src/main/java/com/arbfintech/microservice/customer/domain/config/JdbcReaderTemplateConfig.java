@@ -13,17 +13,17 @@ import javax.sql.DataSource;
  * 2019/9/28 2:56
  */
 @Configuration
-public class JdbcTemplateConfig {
+public class JdbcReaderTemplateConfig {
     //  panda
-    @Bean(name = "panda-v2JdbcTemplate")
-    public JdbcTemplate pandaJdbcTemplate(
-            @Qualifier("panda-v2DataSource") DataSource dataSource) {
+    @Bean(name = "pandaReaderJdbcTemplate")
+    public JdbcTemplate pandaReaderJdbcTemplate(
+            @Qualifier("pandaReaderDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
-    @Bean(name = "panda-v2NamedJdbcTemplate")
-    public NamedParameterJdbcTemplate pandaNamedJdbcTemplate(
-            @Qualifier("panda-v2DataSource") DataSource dataSource) {
+    @Bean(name = "pandaReaderNamedJdbcTemplate")
+    public NamedParameterJdbcTemplate pandaReaderNamedJdbcTemplate(
+            @Qualifier("pandaReaderDataSource") DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
 }

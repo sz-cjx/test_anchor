@@ -1,33 +1,25 @@
-package com.arbfintech.microservice.customer.domain.repository;
+package com.arbfintech.microservice.customer.domain.repositoryReader;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseJdbcRepository;
-import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author CAVALIERS
  * 2019/9/28 2:57
  */
 @Repository
-public class PandaV2Repository extends BaseJdbcRepository {
-    private Logger logger = LoggerFactory.getLogger(PandaV2Repository.class);
+public class PandaReaderRepository extends BaseJdbcRepository {
+    private Logger logger = LoggerFactory.getLogger(PandaReaderRepository.class);
 
     @Override
     protected JdbcTemplate jdbcTemplate() {
@@ -40,11 +32,11 @@ public class PandaV2Repository extends BaseJdbcRepository {
     }
 
     @Autowired
-    @Qualifier("panda-v2JdbcTemplate")
+    @Qualifier("pandaReaderJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    @Qualifier("panda-v2NamedJdbcTemplate")
+    @Qualifier("pandaReaderNamedJdbcTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
     public JSONArray listCustomerBySSN(String ssn) {
