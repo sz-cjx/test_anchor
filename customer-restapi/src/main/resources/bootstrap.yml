@@ -16,8 +16,6 @@ eureka:
     healthcheck: enabled
     service-url:
       defaultZone: http://${arb.eureka.url}:8901/eureka/
-logging:
-  config: classpath:log4j2.yml
 server:
   max-http-header-size: 10240000
   port: ${arb.service.port}
@@ -77,6 +75,8 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+#logging:
+#  config: classpath:log4j2.yml
 ---
 spring:
   profiles: panda-local
@@ -93,6 +93,8 @@ arb:
     url: 18.136.106.145
   service:
     url: 3.0.127.85
+logging:
+  config: classpath:log4j2-develop.yml
 ---
 spring:
   profiles: panda-develop-2
@@ -101,6 +103,8 @@ arb:
     url: 18.136.106.145
   service:
     url: 18.136.105.87
+logging:
+  config: classpath:log4j2-develop.yml
 ---
 spring:
   profiles: panda-develop-3
@@ -109,6 +113,8 @@ arb:
     url: 18.136.106.145
   service:
     url: 54.251.136.239
+logging:
+  config: classpath:log4j2-develop.yml
 ---
 spring:
   profiles: panda-develop-4
@@ -117,6 +123,8 @@ arb:
     url: 18.136.106.145
   service:
     url: 54.169.240.186
+logging:
+  config: classpath:log4j2-develop.yml
 ---
 spring:
   profiles: panda-release
@@ -125,6 +133,8 @@ arb:
     url: 18.139.107.142
   service:
     url: 18.140.12.120
+logging:
+  config: classpath:log4j2-release.ymls
 ---
 spring:
   profiles: panda-release-2
@@ -133,3 +143,5 @@ arb:
     url: 18.139.107.142
   service:
     url: 18.140.125.205
+logging:
+  config: classpath:log4j2-release.yml

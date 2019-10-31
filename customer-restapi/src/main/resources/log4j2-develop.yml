@@ -1,0 +1,44 @@
+Configuration:
+  status: warn
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: INFO
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd-'T'HH:mm:ss.SSSZ} | %green{%sn} | %blue{%T} | %white{%-15t} | %cyan{%c} | %highlight{%-5p | %m%n}{info=light-white, warn=yellow, error=red, debug=white, trace=white, fatal=red}"
+
+    Gelf:
+      name: logstash-gelf
+      host: "tcp:panda.elk.arbfintech.com"
+      port: 9202
+      Field:
+        -
+          name: timestamp
+          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS}"
+        -
+          name: application-name
+          literal: microservice-customer
+        -
+          name: message
+          pattern: "%message %n %ex{100}"
+        -
+          name: logger
+          pattern: "%logger"
+        -
+          name: level
+          pattern: "%level"
+        -
+          name: calssName
+          pattern: "%C"
+
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: logstash-gelf
