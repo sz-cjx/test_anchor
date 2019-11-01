@@ -44,6 +44,10 @@ public class CustomerClientService {
         return customerFeignClient.getTheLatestCustomerIdBySSN(ssn);
     }
 
+    public Long getLatestCustomerIdByEmailOrSSN(String email, String ssn) {
+        return customerFeignClient.getLatestCustomerIdByEmailOrSSN(email, ssn);
+    }
+
     public String verifyCustomerLoginData(String loginData) {
         return customerFeignClient.verifyCustomerLoginData(loginData);
     }

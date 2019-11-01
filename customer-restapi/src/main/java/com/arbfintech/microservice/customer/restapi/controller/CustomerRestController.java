@@ -61,6 +61,14 @@ public class CustomerRestController {
         );
     }
 
+    @GetMapping("/customers/latest/email/ssn")
+    public CompletableFuture<Long> getLatestCustomerIdByEmailOrSSN(@RequestParam("email") String email,
+                                                                   @RequestParam("ssn") String ssn){
+        return CompletableFuture.supplyAsync(
+                () -> customerRestService.getLatestCustomerIdByEmailOrSsn(email, ssn)
+        );
+    }
+
     @PostMapping("/customers/verify")
     public CompletableFuture<String> verifyCustomerLoginData(@RequestBody String loginData) {
         return CompletableFuture.supplyAsync(() -> customerRestService.verifyCustomerLoginData(loginData));

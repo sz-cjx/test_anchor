@@ -119,6 +119,10 @@ public class CustomerRestService extends JpaService<Customer> {
         return pandaReaderRepository.getTheLatestCustomerIdBySSN(ssn);
     }
 
+    public Long getLatestCustomerIdByEmailOrSsn(String email, String ssn) {
+        return pandaReaderRepository.getLatestCustomerIdByEmailOrSsn(email, ssn);
+    }
+
     public String verifyCustomerLoginData(String loginData) {
         JSONObject loginDataObj = JSON.parseObject(loginData);
         String email = loginDataObj.getString(JsonKeyConst.EMAIL);

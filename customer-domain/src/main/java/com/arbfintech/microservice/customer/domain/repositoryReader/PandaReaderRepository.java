@@ -51,6 +51,11 @@ public class PandaReaderRepository extends BaseJdbcRepository {
         return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
     }
 
+    public Long getLatestCustomerIdByEmailOrSsn(String email, String ssn) {
+        String sql = String.format("SELECT id FROM customer WHERE email = '%s' OR ssn = '%s'  ORDER BY create_time DESC LIMIT 1; ", email, ssn);
+        return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
+    }
+
     private Long getResultSet(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return resultSet.getLong(1);
