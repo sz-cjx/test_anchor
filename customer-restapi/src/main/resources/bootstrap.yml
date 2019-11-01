@@ -16,8 +16,6 @@ eureka:
     healthcheck: enabled
     service-url:
       defaultZone: http://${arb.eureka.url}:8901/eureka/
-logging:
-  config: classpath:log4j2.yml
 server:
   max-http-header-size: 10240000
   port: ${arb.service.port}
@@ -77,6 +75,8 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+#logging:
+#  config: classpath:log4j2.yml
 ---
 spring:
   profiles: panda-local
