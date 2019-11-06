@@ -3,10 +3,7 @@ package com.arbfintech.microservice.customer.restapi.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.constant.CodeConst;
-import com.arbfintech.framework.component.core.constant.CustomerStatusConst;
-import com.arbfintech.framework.component.core.constant.GlobalConst;
-import com.arbfintech.framework.component.core.constant.JsonKeyConst;
+import com.arbfintech.framework.component.core.constant.*;
 import com.arbfintech.framework.component.core.enumerate.CodeEnum;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.JpaService;
@@ -174,44 +171,42 @@ public class CustomerRestService extends JpaService<Customer> {
     }
 
     public String doCustomerSignUp(String signUpData) {
-
-        JSONObject customerSignUpDataMap = JSON.parseObject(signUpData);
-        String email = customerSignUpDataMap.getString(JsonKeyConst.EMAIL);
+        CodeEnum codeEnum = CodeEnum.DEFAULT;
+        JSONObject customerSignUpDataJSON = JSON.parseObject(signUpData);
+        String email = customerSignUpDataJSON.getString(JsonKeyConst.EMAIL);
 
         Customer customerInDB = customerReaderRepository.findByEmail(email);
-
-        //Make the judgment temporarily.
         if(customerInDB == null) {
-            logger.warn("Failure: Don't query customer. Email:{}", email);
-            return AjaxResult.failure(CodeEnum.CUSTOMER_NOT_EXIST);
+            //This key is not field in Customer, so it must be removed if you do a data update operation like the following code.
+            customerSignUpDataJSON.remove(JsonKeyConst.CONFIRM_PASSWORD);
+            String salt = RandomUtil.getAlphabet();
+            String encryptPassword = encryptLoginPassword(customerSignUpDataJSON.getString(JsonKeyConst.PASSWORD), salt);
+            customerSignUpDataJSON.put(JsonKeyConst.PASSWORD, encryptPassword);
+            customerSignUpDataJSON.put(JsonKeyConst.SALT, salt);
+            Customer customer = JSON.parseObject(customerSignUpDataJSON.toJSONString(), Customer.class);
+            customerInDB = customerRepository.save(customer);
+            logger.info("Success to create a new customer. Customer email:{}", email);
+            codeEnum = CodeEnum.SUCCESS;
+        }
+
+        if(customerInDB.getIsSignUp() == null || customerInDB.getIsSignUp() == CustomerStatusConst.NOT_SIGN_UP) {
+            logger.info("Customer already exist and will init password for customer. Email:{}", email);
+            String salt = RandomUtil.getAlphabet();
+            String encryptPassword = encryptLoginPassword(customerSignUpDataJSON.getString(JsonKeyConst.PASSWORD), salt);
+            customerInDB.setPassword(encryptPassword);
+            customerInDB.setSalt(salt);
+            customerInDB = customerRepository.save(customerInDB);
+            logger.info("Success to init customer for exist customer. Email:{}", email);
+            codeEnum = CodeEnum.SUCCESS;
         }
 
         if(customerInDB.getIsSignUp() != null && customerInDB.getIsSignUp() == CustomerStatusConst.ALREADY_SIGN_UP) {
-            logger.warn("Warn: The customer was already sign-up. Email:{}", email);
-            customerInDB.setSalt(null);
-            customerInDB.setPassword(null);
-            return AjaxResult.result(CodeEnum.CUSTOMER_ALREADY_SIGN_UP.getValue(), CodeEnum.CUSTOMER_ALREADY_SIGN_UP.getText(), customerInDB);
+            codeEnum = CodeEnum.CUSTOMER_ALREADY_SIGN_UP;
+            logger.warn("Customer already sign up. Email:{}", email);
         }
-
-        //This key is not field in Customer, so it must be removed if you do a data update operation like the following code
-        customerSignUpDataMap.remove(JsonKeyConst.CONFIRM_PASSWORD);
-
-        JSONObject customerInDbObj = (JSONObject)JSONObject.toJSON(customerInDB);
-        for (Map.Entry<String, Object> customerDataEntry : customerSignUpDataMap.entrySet()) {
-            customerInDbObj.put(customerDataEntry.getKey(), customerDataEntry.getValue());
-        }
-        String salt = RandomUtil.getAlphabet();
-        String encryptPassword = encryptLoginPassword(customerSignUpDataMap.getString(JsonKeyConst.PASSWORD), salt);
-        customerInDbObj.put(JsonKeyConst.PASSWORD, encryptPassword);
-        customerInDbObj.put(JsonKeyConst.SALT, salt);
-
-        customerInDbObj.put(JsonKeyConst.IS_SIGN_UP, CustomerStatusConst.ALREADY_SIGN_UP);
-        Customer completeCustomerData = JSON.parseObject(customerInDbObj.toJSONString(), Customer.class);
-        customerInDB = customerRepository.save(completeCustomerData);
         customerInDB.setSalt(null);
         customerInDB.setPassword(null);
-        logger.info("Success to create customer(complete customer info). Email:{}", email);
-        return AjaxResult.success(customerInDB);
+        return AjaxResult.result(codeEnum.getValue(), codeEnum.getText(), customerInDB);
     }
 
 
