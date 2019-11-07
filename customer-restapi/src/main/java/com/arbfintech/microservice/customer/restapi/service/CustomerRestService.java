@@ -196,6 +196,7 @@ public class CustomerRestService extends JpaService<Customer> {
                 customerInDB.setPassword(encryptPassword);
                 customerInDB.setSalt(salt);
                 customerInDB.setIsSignUp(CustomerStatusConst.ALREADY_SIGN_UP);
+                customerInDB.setStatus(StatusConst.ENABLED);
                 customerInDB = customerRepository.save(customerInDB);
                 logger.info("Success to init customer for exist customer. Email:{}", email);
                 codeEnum = CodeEnum.SUCCESS;
