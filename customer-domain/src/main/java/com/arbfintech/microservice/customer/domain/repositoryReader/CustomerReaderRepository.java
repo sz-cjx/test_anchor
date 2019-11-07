@@ -10,4 +10,7 @@ public interface CustomerReaderRepository extends JpaRepository<Customer,Long>, 
     Customer findByEmail(String email);
 
     Customer findBySsnAndEmail(String ssn, String email);
+
+    Customer findByEmailAndId(String email, Long customerId);
+
 }
