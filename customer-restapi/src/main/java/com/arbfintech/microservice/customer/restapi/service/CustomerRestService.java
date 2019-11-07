@@ -123,8 +123,16 @@ public class CustomerRestService extends JpaService<Customer> {
     public String verifyCustomerLoginData(String loginData) {
         JSONObject loginDataObj = JSON.parseObject(loginData);
         String email = loginDataObj.getString(JsonKeyConst.EMAIL);
+        Long customerId = loginDataObj.getLong(JsonKeyConst.CUSTOMER_ID);
 
-        Customer customerInDB = customerReaderRepository.findByEmail(email);
+        Customer customerInDB;
+        if(customerId != null) {
+            customerInDB = customerReaderRepository.findByEmailAndId(email, customerId);
+        } else {
+            logger.info("Customer From LOS: Customer sign in. Email:{}", email);
+            customerInDB = customerReaderRepository.findByEmail(email);
+        }
+
         if (customerInDB != null && !Integer.valueOf(CustomerStatusConst.ALREADY_SIGN_UP).equals(customerInDB.getIsSignUp())) {
             logger.warn("Failure: Customer don't sign up");
             customerInDB.setSalt(null);
@@ -174,8 +182,15 @@ public class CustomerRestService extends JpaService<Customer> {
         CodeEnum codeEnum = CodeEnum.DEFAULT;
         JSONObject customerSignUpDataJSON = JSON.parseObject(signUpData);
         String email = customerSignUpDataJSON.getString(JsonKeyConst.EMAIL);
+        Long customerId = customerSignUpDataJSON.getLong(JsonKeyConst.CUSTOMER_ID);
+        Customer customerInDB;
+        if (customerId != null) {
+            logger.info("Customer From LOS: Customer sign up. CustomerId:{}, email:{}", customerId, email);
+            customerInDB = customerReaderRepository.findByEmailAndId(email, customerId);
+        } else {
+            customerInDB = customerReaderRepository.findByEmail(email);
+        }
 
-        Customer customerInDB = customerReaderRepository.findByEmail(email);
         if (customerInDB == null) {
             //This key is not field in Customer, so it must be removed if you do a data update operation like the following code.
             customerSignUpDataJSON.remove(JsonKeyConst.CONFIRM_PASSWORD);
