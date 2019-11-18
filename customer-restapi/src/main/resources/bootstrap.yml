@@ -15,7 +15,7 @@ eureka:
   client:
     healthcheck: enabled
     service-url:
-      defaultZone: http://${arb.eureka.url}:8901/eureka/
+      defaultZone: http://panda_admin:Arb!8888@${arb.eureka.url}:8901/eureka/
 server:
   max-http-header-size: 10240000
   port: ${arb.service.port}
