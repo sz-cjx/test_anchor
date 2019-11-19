@@ -34,6 +34,8 @@ spring:
         multiplier: 1.1
         max-interval: 2000
         max-attempts: 2
+      username: panda_admin
+      password: Arb!8888
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     writer:
