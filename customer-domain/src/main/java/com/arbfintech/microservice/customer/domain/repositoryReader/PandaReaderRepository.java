@@ -64,6 +64,11 @@ public class PandaReaderRepository extends BaseJdbcRepository {
         }
     }
 
+    public Long getLatestCustomerIdByUniqueKey(String uniqueKey) {
+        String sql = String.format("SELECT id FROM customer WHERE unique_key = '%s'  ORDER BY create_time DESC LIMIT 1; ", uniqueKey);
+        return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
+    }
+
 //    public Long saveCustomerByJDBC(JSONObject customerJson) {
 //        try {
 //            final String sql = "insert into customer(cell_phone,home_phone,ssn,email,create_time,update_time) "

@@ -1,7 +1,6 @@
 package com.arbfintech.microservice.customer.domain.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -70,6 +69,15 @@ public class Customer {
 
     @Column
     private Integer isSignUp;
+
+    @Column
+    private String bankRoutingNo;
+
+    @Column
+    private String bankAccountNo;
+
+    @Column
+    private String uniqueKey;
 
     public Long getUpdateTime() {
         return updateTime;
@@ -221,6 +229,30 @@ public class Customer {
 
     public void setIsSignUp(Integer isSignUp) {
         this.isSignUp = isSignUp;
+    }
+
+    public String getBankRoutingNo() {
+        return bankRoutingNo;
+    }
+
+    public void setBankRoutingNo(String bankRoutingNo) {
+        this.bankRoutingNo = bankRoutingNo;
+    }
+
+    public String getBankAccountNo() {
+        return bankAccountNo;
+    }
+
+    public void setBankAccountNo(String bankAccountNo) {
+        this.bankAccountNo = bankAccountNo;
+    }
+
+    public String getUniqueKey() {
+        return uniqueKey;
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        this.uniqueKey = uniqueKey;
     }
 
     @Override

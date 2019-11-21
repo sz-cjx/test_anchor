@@ -61,6 +61,13 @@ public class CustomerRestController {
         );
     }
 
+    @GetMapping("/customers/latest/account/routing")
+    public CompletableFuture<Long> getLatestCustomerIdByUniqueKey(@RequestParam("unique") String uniqueKey){
+        return CompletableFuture.supplyAsync(
+                () -> customerRestService.getLatestCustomerIdByUniqueKey(uniqueKey)
+        );
+    }
+
     @GetMapping("/customers/latest/email/ssn")
     public CompletableFuture<Long> getLatestCustomerIdByEmailOrSSN(@RequestParam("email") String email,
                                                                    @RequestParam("ssn") String ssn){
