@@ -227,6 +227,12 @@ public class CustomerRestService extends JpaService<Customer> {
         return AjaxResult.result(codeEnum.getValue(), codeEnum.getText(), customerInDB);
     }
 
+    public Long getLatestCustomerIdByUniqueKey(String uniqueKey) {
+        return pandaReaderRepository.getLatestCustomerIdByUniqueKey(uniqueKey);
+
+    }
+
+
 //    public Long  saveCustomerByJDBC(String customerStr) {
 //        JSONObject customerInfo = JSONObject.parseObject(customerStr);
 //        return  pandaV2Repository.saveCustomerByJDBC(customerInfo);

@@ -56,6 +56,10 @@ public class CustomerClientService {
         return customerFeignClient.doCustomerSignUp(signUpData);
     }
 
+    public Long getLatestCustomerIdByUniqueKey(String cryptAccountAndRouting) {
+        return customerFeignClient.getLatestCustomerIdByUniqueKey(cryptAccountAndRouting);
+    }
+
     //    public Long saveCustomerByJDBC(JSONObject customerJson){
 //        String customerStr = customerJson.toJSONString();
 //        return customerFeignClient.saveCustomerByJDBC(customerStr);

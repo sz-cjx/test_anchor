@@ -31,6 +31,9 @@ public interface CustomerFeignClient {
     Long getLatestCustomerIdByEmailOrSSN(@RequestParam("email") String email,
                                             @RequestParam("ssn") String ssn);
 
+    @GetMapping("/customers/latest/account/routing")
+    Long getLatestCustomerIdByUniqueKey(@RequestParam("unique") String unique);
+
     @PostMapping("/customers/verify")
     String verifyCustomerLoginData(@RequestBody String loginData);
 
