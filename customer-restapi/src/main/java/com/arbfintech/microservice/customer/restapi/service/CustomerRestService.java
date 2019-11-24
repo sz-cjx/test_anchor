@@ -133,7 +133,11 @@ public class CustomerRestService extends JpaService<Customer> {
             customerInDB = customerReaderRepository.findByEmail(email);
         }
 
-        if (customerInDB != null && !Integer.valueOf(CustomerStatusConst.ALREADY_SIGN_UP).equals(customerInDB.getIsSignUp())) {
+        if (customerInDB == null) {
+            logger.warn("Failure: Don't query customer by email. Email:{}", email);
+            return AjaxResult.failure(CodeEnum.ERROR_EMAIL_OR_PASSWORD);
+        }
+        if (!Integer.valueOf(CustomerStatusConst.ALREADY_SIGN_UP).equals(customerInDB.getIsSignUp())) {
             logger.warn("Failure: Customer don't sign up");
             customerInDB.setSalt(null);
             customerInDB.setPassword(null);
@@ -143,15 +147,11 @@ public class CustomerRestService extends JpaService<Customer> {
          * Status:
          *      -1 : reject, 0 : not review, 1 : pass
          */
-        if (customerInDB != null && !Integer.valueOf(CodeConst.SUCCESS).equals(customerInDB.getStatus())) {
+        if (!Integer.valueOf(StatusConst.ENABLED).equals(customerInDB.getStatus())) {
             logger.warn("Failure: Customer is rejected or not reviewed. Status:{}", customerInDB.getStatus());
             customerInDB.setSalt(null);
             customerInDB.setPassword(null);
             return AjaxResult.failure(CodeConst.FAILURE, GlobalConst.STR_EMPTY, customerInDB);
-        }
-        if (customerInDB == null) {
-            logger.warn("Failure: Don't query customer by email. Email:{}", email);
-            return AjaxResult.failure(CodeEnum.ERROR_EMAIL_OR_PASSWORD);
         }
 
         String password = loginDataObj.getString(JsonKeyConst.PASSWORD);
@@ -200,6 +200,7 @@ public class CustomerRestService extends JpaService<Customer> {
             customerSignUpDataJSON.put(JsonKeyConst.SALT, salt);
             Customer customer = JSON.parseObject(customerSignUpDataJSON.toJSONString(), Customer.class);
             customer.setIsSignUp(CustomerStatusConst.ALREADY_SIGN_UP);
+            customer.setStatus(StatusConst.DISABLED);
             customerInDB = customerRepository.save(customer);
             logger.info("Success to create a new customer. Customer email:{}", email);
             codeEnum = CodeEnum.SUCCESS;
