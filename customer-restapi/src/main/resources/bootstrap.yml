@@ -15,7 +15,7 @@ eureka:
   client:
     healthcheck: enabled
     service-url:
-      defaultZone: http://panda_admin:Arb!8888@${arb.eureka.url}:8901/eureka/
+      defaultZone: http://${arb.eureka.username}:${arb.eureka.password}@${arb.eureka.url}:8901/eureka/
 server:
   max-http-header-size: 10240000
   port: ${arb.service.port}
@@ -34,8 +34,8 @@ spring:
         multiplier: 1.1
         max-interval: 2000
         max-attempts: 2
-      username: panda_admin
-      password: Arb!8888
+      username: ${arb.security.name}
+      password: ${arb.security.password}
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     writer:
@@ -77,14 +77,21 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+encrypt:
+  key: Rj0O9LgL^4@S2gMI
 #logging:
 #  config: classpath:log4j2.yml
 ---
 spring:
   profiles: panda-local
 arb:
+  security:
+    username: panda_admin
+    password: Arb!8888
   eureka:
     url: localhost
+    username: panda_admin
+    password: Arb!8888
   service:
     url: localhost
 ---
@@ -93,6 +100,11 @@ spring:
 arb:
   eureka:
     url: 18.136.106.145
+    username: panda_admin
+    password: Arb!8888
+  security:
+    username: panda_admin
+    password: Arb!8888
   service:
     url: 3.0.127.85
 ---
