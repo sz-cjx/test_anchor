@@ -3,6 +3,12 @@ arb:
   service:
     name: customer-restapi
     port: 8401
+  eureka:
+    username: panda_admin
+    password: Arb!8888
+  security:
+    username: panda_admin
+    password: Arb!8888
 
 eureka:
   instance:
@@ -85,13 +91,8 @@ encrypt:
 spring:
   profiles: panda-local
 arb:
-  security:
-    username: panda_admin
-    password: Arb!8888
   eureka:
     url: localhost
-    username: panda_admin
-    password: Arb!8888
   service:
     url: localhost
 ---
@@ -100,11 +101,6 @@ spring:
 arb:
   eureka:
     url: 18.136.106.145
-    username: panda_admin
-    password: Arb!8888
-  security:
-    username: panda_admin
-    password: Arb!8888
   service:
     url: 3.0.127.85
 ---
@@ -113,11 +109,6 @@ spring:
 arb:
   eureka:
     url: 18.136.106.145
-    username: panda_admin
-    password: Arb!8888
-  security:
-    username: panda_admin
-    password: Arb!8888
   service:
     url: 18.136.105.87
 ---
