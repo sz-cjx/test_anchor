@@ -113,6 +113,11 @@ spring:
 arb:
   eureka:
     url: 18.136.106.145
+    username: panda_admin
+    password: Arb!8888
+  security:
+    username: panda_admin
+    password: Arb!8888
   service:
     url: 18.136.105.87
 ---
