@@ -40,7 +40,7 @@ spring:
         multiplier: 1.1
         max-interval: 2000
         max-attempts: 2
-      username: ${arb.security.name}
+      username: ${arb.security.username}
       password: ${arb.security.password}
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
