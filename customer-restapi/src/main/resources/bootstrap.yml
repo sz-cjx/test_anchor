@@ -105,6 +105,14 @@ arb:
     url: 3.0.127.85
 ---
 spring:
+  profiles: pandaria-develop
+arb:
+  eureka:
+    url: eureka-dev.ap-southeast-1.elasticbeanstalk.com
+  service:
+    url: microservice-customer-dev.ap-southeast-1.elasticbeanstalk.com
+---
+spring:
   profiles: panda-develop-2
 arb:
   eureka:
