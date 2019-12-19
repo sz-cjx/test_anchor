@@ -113,14 +113,6 @@ arb:
     url: microservice-customer-dev.ap-southeast-1.elasticbeanstalk.com
 ---
 spring:
-  profiles: panda-develop-2
-arb:
-  eureka:
-    url: 18.136.106.145
-  service:
-    url: 18.136.105.87
----
-spring:
   profiles: panda-develop-3
 arb:
   eureka:
