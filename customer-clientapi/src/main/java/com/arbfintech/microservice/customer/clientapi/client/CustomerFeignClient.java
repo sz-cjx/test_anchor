@@ -40,6 +40,9 @@ public interface CustomerFeignClient {
     @PostMapping("/customers/sign-up")
     String doCustomerSignUp(@RequestBody String signUpData);
 
+    @PostMapping("/customers/update")
+    String updateCustomer(@RequestBody String customers);
+
 //    @PostMapping("/customers/jdbc")
 //    Long saveCustomerByJDBC(@RequestBody String customerStr);
 }
