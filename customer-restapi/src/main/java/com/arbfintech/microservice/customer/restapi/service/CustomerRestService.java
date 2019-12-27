@@ -233,6 +233,17 @@ public class CustomerRestService extends JpaService<Customer> {
 
     }
 
+    public String doCustomerUpdate(String customers) {
+        try {
+            List<Customer> customers1 = JSON.parseArray(customers, Customer.class);
+            customerRepository.save(customers1);
+            return AjaxResult.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return AjaxResult.failure();
+        }
+    }
+
 
 //    public Long  saveCustomerByJDBC(String customerStr) {
 //        JSONObject customerInfo = JSONObject.parseObject(customerStr);

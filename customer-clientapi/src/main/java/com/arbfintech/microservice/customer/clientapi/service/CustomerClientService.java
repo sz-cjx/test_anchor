@@ -60,6 +60,10 @@ public class CustomerClientService {
         return customerFeignClient.getLatestCustomerIdByUniqueKey(cryptAccountAndRouting);
     }
 
+    public String updateCustomer(String customers) {
+        return customerFeignClient.updateCustomer(customers);
+    }
+
     //    public Long saveCustomerByJDBC(JSONObject customerJson){
 //        String customerStr = customerJson.toJSONString();
 //        return customerFeignClient.saveCustomerByJDBC(customerStr);

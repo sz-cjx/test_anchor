@@ -86,6 +86,10 @@ public class CustomerRestController {
         return CompletableFuture.supplyAsync(() -> customerRestService.doCustomerSignUp(signUpData));
     }
 
+    @PostMapping("/customers/update")
+    public CompletableFuture<String> doCustomerUpdate(@RequestBody String customers) {
+        return CompletableFuture.supplyAsync(() -> customerRestService.doCustomerUpdate(customers));
+    }
 
 //    @PostMapping("/customers/jdbc")
 //    public CompletableFuture<Long> saveCustomerByJDBC(@RequestBody String customerStr){
