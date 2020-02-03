@@ -12,7 +12,7 @@ import com.arbfintech.framework.component.core.util.RandomUtil;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
 import com.arbfintech.microservice.customer.domain.repositoryReader.CustomerReaderRepository;
-import com.arbfintech.microservice.customer.domain.repositoryReader.PandaReaderRepository;
+import com.arbfintech.microservice.customer.domain.repositoryReader.JdbcReaderRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class CustomerRestService extends JpaService<Customer> {
     private CustomerReaderRepository customerReaderRepository;
 
     @Autowired
-    private PandaReaderRepository pandaReaderRepository;
+    private JdbcReaderRepository jdbcReaderRepository;
 
     public Long addCustomer(String dataStr) {
         Long restCode;
@@ -108,16 +108,22 @@ public class CustomerRestService extends JpaService<Customer> {
     }
 
     public String listCustomerBySSN(String ssn) {
-        JSONArray customerJsonStr = pandaReaderRepository.listCustomerBySSN(ssn);
+        JSONArray customerJsonStr = jdbcReaderRepository.listCustomerBySSN(ssn);
         return customerJsonStr.toJSONString();
     }
 
+    public Long getLatestCustomerId(String ssn, String email, String bankUniqueKey) {
+        Long customerId = jdbcReaderRepository.getLatestCustomerId(ssn,email, bankUniqueKey);
+        logger.info("Get the latest customer Id:{} by ssn:{}, email:{}, bankUniqueKey:{}",customerId, ssn, email, bankUniqueKey);
+        return customerId;
+    }
+
     public Long getTheLatestCustomerIdBySSN(String ssn) {
-        return pandaReaderRepository.getTheLatestCustomerIdBySSN(ssn);
+        return jdbcReaderRepository.getTheLatestCustomerIdBySSN(ssn);
     }
 
     public Long getLatestCustomerIdByEmailOrSsn(String email, String ssn) {
-        return pandaReaderRepository.getLatestCustomerIdByEmailOrSsn(email, ssn);
+        return jdbcReaderRepository.getLatestCustomerIdByEmailOrSsn(email, ssn);
     }
 
     public String verifyCustomerLoginData(String loginData) {
@@ -229,8 +235,7 @@ public class CustomerRestService extends JpaService<Customer> {
     }
 
     public Long getLatestCustomerIdByUniqueKey(String uniqueKey) {
-        return pandaReaderRepository.getLatestCustomerIdByUniqueKey(uniqueKey);
-
+        return jdbcReaderRepository.getLatestCustomerIdByUniqueKey(uniqueKey);
     }
 
     public String doCustomerUpdate(String customers) {

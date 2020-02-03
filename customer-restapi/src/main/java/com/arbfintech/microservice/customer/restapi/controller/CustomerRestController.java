@@ -54,6 +54,15 @@ public class CustomerRestController {
         );
     }
 
+    @GetMapping("/customers/latest")
+    public CompletableFuture<Long> getLatestCustomerId(@RequestParam("ssn") String ssn,
+                                                          @RequestParam("email") String email,
+                                                          @RequestParam("bankUniqueKey") String bankUniqueKey){
+        return CompletableFuture.supplyAsync(
+                () -> customerRestService.getLatestCustomerId(ssn, email, bankUniqueKey)
+        );
+    }
+
     @GetMapping("/customers/latest/ssn")
     public CompletableFuture<Long> getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn){
         return CompletableFuture.supplyAsync(

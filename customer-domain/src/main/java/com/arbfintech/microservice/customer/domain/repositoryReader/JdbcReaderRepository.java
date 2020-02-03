@@ -12,14 +12,15 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author CAVALIERS
  * 2019/9/28 2:57
  */
 @Repository
-public class PandaReaderRepository extends BaseJdbcRepository {
-    private Logger logger = LoggerFactory.getLogger(PandaReaderRepository.class);
+public class JdbcReaderRepository extends BaseJdbcRepository {
 
     @Override
     protected JdbcTemplate jdbcTemplate() {
@@ -28,7 +29,7 @@ public class PandaReaderRepository extends BaseJdbcRepository {
 
     @Override
     protected NamedParameterJdbcTemplate namedJdbcTemplate() {
-        return namedJdbcTemplate;
+        return jdbcReader;
     }
 
     @Autowired
@@ -37,23 +38,23 @@ public class PandaReaderRepository extends BaseJdbcRepository {
 
     @Autowired
     @Qualifier("pandaReaderNamedJdbcTemplate")
-    private NamedParameterJdbcTemplate namedJdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcReader;
 
     public JSONArray listCustomerBySSN(String ssn) {
         String sql = String.format("SELECT * FROM customer WHERE ssn = '%s' ORDER BY create_time DESC ; ", ssn);
-        return namedJdbcTemplate.query(sql, resultSet -> {
+        return jdbcReader.query(sql, resultSet -> {
             return extractArray(resultSet);
         });
     }
 
     public Long getTheLatestCustomerIdBySSN(String ssn) {
         String sql = String.format("SELECT id FROM customer WHERE ssn = '%s' ORDER BY create_time DESC LIMIT 1; ", ssn);
-        return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
+        return jdbcReader.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
     }
 
     public Long getLatestCustomerIdByEmailOrSsn(String email, String ssn) {
         String sql = String.format("SELECT id FROM customer WHERE email = '%s' OR ssn = '%s'  ORDER BY create_time DESC LIMIT 1; ", email, ssn);
-        return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
+        return jdbcReader.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
     }
 
     private Long getResultSet(ResultSet resultSet) throws SQLException {
@@ -66,9 +67,31 @@ public class PandaReaderRepository extends BaseJdbcRepository {
 
     public Long getLatestCustomerIdByUniqueKey(String uniqueKey) {
         String sql = String.format("SELECT id FROM customer WHERE unique_key = '%s'  ORDER BY create_time DESC LIMIT 1; ", uniqueKey);
-        return namedJdbcTemplate.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
+        return jdbcReader.query(sql, (ResultSet resultSet) -> getResultSet(resultSet));
     }
 
+    public Long getLatestCustomerId(String ssn, String email, String bankUniqueKey) {
+
+        Map<String, Object> paramMap = new HashMap<>();
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT id FROM customer ");
+        sb.append("WHERE ");
+        sb.append("ssn=:ssn OR ");
+        sb.append("email=:email OR ");
+        sb.append("unique_key=:uniqueKey ");
+        sb.append("ORDER BY create_time DESC ");
+        sb.append("LIMIT 1");
+
+        paramMap.put("ssn", ssn);
+        paramMap.put("email", email);
+        paramMap.put("uniqueKey", bankUniqueKey);
+
+        String sql = sb.toString();
+        System.out.println(sql);
+
+        return jdbcReader.query(sb.toString(), paramMap, (ResultSet resultSet) -> getResultSet(resultSet));
+    }
 //    public Long saveCustomerByJDBC(JSONObject customerJson) {
 //        try {
 //            final String sql = "insert into customer(cell_phone,home_phone,ssn,email,create_time,update_time) "

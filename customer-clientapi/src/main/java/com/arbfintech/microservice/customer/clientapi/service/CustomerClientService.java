@@ -56,6 +56,10 @@ public class CustomerClientService {
         return customerFeignClient.doCustomerSignUp(signUpData);
     }
 
+    public Long getLatestCustomerId(String ssn, String email, String bankUniqueKey) {
+        return customerFeignClient.getLatestCustomerId(ssn, email, bankUniqueKey);
+    }
+
     public Long getLatestCustomerIdByUniqueKey(String cryptAccountAndRouting) {
         return customerFeignClient.getLatestCustomerIdByUniqueKey(cryptAccountAndRouting);
     }
