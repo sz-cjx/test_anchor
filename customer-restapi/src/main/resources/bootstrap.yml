@@ -111,9 +111,9 @@ spring:
   profiles: pandaria-develop
 arb:
   eureka:
-    url: eureka-dev.ap-southeast-1.elasticbeanstalk.com
+    url: FRAMEWORK-EUREKA-SERVER.us-west-1.elasticbeanstalk.com
   service:
-    url: microservice-customer-dev.ap-southeast-1.elasticbeanstalk.com
+    url: MICROSERVICE-CUSTOMER-RESTAPI.us-west-1.elasticbeanstalk.com
 ---
 spring:
   profiles: panda-develop-3
