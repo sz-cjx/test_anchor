@@ -2,7 +2,7 @@
 arb:
   service:
     name: customer-restapi
-    port: 8401
+    port: 8102
   eureka:
     username: panda_admin
     password: Arb!8888
@@ -58,9 +58,6 @@ spring:
       test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
       test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
       time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
-  mvc:
-    async:
-      request-timeout: -1
   http:
     multipart:
       enabled: true
@@ -111,9 +108,9 @@ spring:
   profiles: pandaria-develop
 arb:
   eureka:
-    url: FRAMEWORK-EUREKA-SERVER.us-west-1.elasticbeanstalk.com
+    url: eureka-dev.ap-southeast-1.elasticbeanstalk.com
   service:
-    url: MICROSERVICE-CUSTOMER-RESTAPI.us-west-1.elasticbeanstalk.com
+    url: microservice-customer-dev.ap-southeast-1.elasticbeanstalk.com
 ---
 spring:
   profiles: panda-develop-3
@@ -146,3 +143,11 @@ arb:
     url: 18.139.107.142
   service:
     url: 18.140.125.205
+---
+spring:
+  profiles: pandaria-release
+arb:
+  eureka:
+    url: eureka-rel.ap-southeast-1.elasticbeanstalk.com
+  service:
+    url: microservice-customer-rel.ap-southeast-1.elasticbeanstalk.com
