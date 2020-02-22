@@ -17,17 +17,18 @@ import javax.sql.DataSource;
 public class DataSourceConfig {
 
     @Primary
-    @Bean(name = "pandaWriterDataSource")
-    @Qualifier("pandaWriterDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.writer")
-    public DataSource getPandaWriterDataSource() {
+    @Bean(name = "readerDataSource")
+    @Qualifier("readerDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.reader")
+    public DataSource readerDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "pandaReaderDataSource")
-    @Qualifier("pandaReaderDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.reader")
-    public DataSource getPandaReaderDataSource() {
+    @Bean(name = "writerDataSource")
+    @Qualifier("writerDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.writer")
+    public DataSource writerDataSource() {
         return DataSourceBuilder.create().build();
     }
+
 }

@@ -43,8 +43,8 @@ spring:
       username: ${arb.security.username}
       password: ${arb.security.password}
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
     writer:
+      driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://${arb.database.writer.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
       username: ${arb.database.username}
       password: ${arb.database.password}
@@ -52,6 +52,7 @@ spring:
       test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
       time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
     reader:
+      driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://${arb.database.reader.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
       username: ${arb.database.username}
       password: ${arb.database.password}
@@ -67,15 +68,6 @@ spring:
       file-size-threshold: 0
       max-file-size: 256Mb
       max-request-size: 256Mb
-  jpa:
-    database: mysql  #only worked for mysql
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect #only worked for mysql
-    show-sql: false
   rabbitmq:
     host: ${arb.rabbitmq.url}
     port: 5672
@@ -88,8 +80,14 @@ spring:
         acknowledge-mode: manual
 encrypt:
   key: Rj0O9LgL^4@S2gMI
-#logging:
-#  config: classpath:log4j2.yml
+---
+spring:
+  profiles: local
+arb:
+  eureka:
+    url: localhost
+  service:
+    url: localhost
 ---
 spring:
   profiles: panda-local

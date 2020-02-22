@@ -10,68 +10,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomerClientService {
+
     @Autowired
     CustomerFeignClient customerFeignClient;
 
-    public Long addCustomer(JSONObject customerJson) {
+    public Long replaceCustomer(JSONObject customerJson) {
         String customerStr = customerJson.toJSONString();
-        return customerFeignClient.addCustomer(customerStr);
+        return customerFeignClient.replaceCustomer(customerStr);
     }
-
 
     public JSONObject getCustomerById(Long id) {
         String customerStr = customerFeignClient.getCustomerById(id);
         return JSONObject.parseObject(customerStr);
     }
 
-    public Integer setCustomerById(Long id, JSONObject json) {
-        String customerStr = json.toJSONString();
-        return customerFeignClient.setCustomerById(id, customerStr);
-
-    }
-
-    public JSONArray listCustomerByConditions(String conditionStr, String conditionType) {
-        String customerStr = customerFeignClient.listCustomerByConditions(conditionStr, conditionType);
+    public JSONArray listCustomerByOptions(String optionStr) {
+        String customerStr = customerFeignClient.listCustomerByOptions(optionStr);
         return JSON.parseArray(customerStr);
     }
-
-    public JSONArray listCustomerBySSN(String ssn) {
-        String customerStr = customerFeignClient.listCustomerBySSN(ssn);
-        return JSON.parseArray(customerStr);
-    }
-
-    public Long getTheLatestCustomerIdBySSN(String ssn) {
-        return customerFeignClient.getTheLatestCustomerIdBySSN(ssn);
-    }
-
-    public Long getLatestCustomerIdByEmailOrSSN(String email, String ssn) {
-        return customerFeignClient.getLatestCustomerIdByEmailOrSSN(email, ssn);
-    }
-
-    public String verifyCustomerLoginData(String loginData) {
-        return customerFeignClient.verifyCustomerLoginData(loginData);
-    }
-
-    public String doCustomerSignUp(String signUpData) {
-        return customerFeignClient.doCustomerSignUp(signUpData);
-    }
-
-    public Long getLatestCustomerId(String ssn, String email, String bankUniqueKey) {
-        return customerFeignClient.getLatestCustomerId(ssn, email, bankUniqueKey);
-    }
-
-    public Long getLatestCustomerIdByUniqueKey(String cryptAccountAndRouting) {
-        return customerFeignClient.getLatestCustomerIdByUniqueKey(cryptAccountAndRouting);
-    }
-
-    public String updateCustomer(String customers) {
-        return customerFeignClient.updateCustomer(customers);
-    }
-
-    //    public Long saveCustomerByJDBC(JSONObject customerJson){
-//        String customerStr = customerJson.toJSONString();
-//        return customerFeignClient.saveCustomerByJDBC(customerStr);
-//    }
-
 
 }
