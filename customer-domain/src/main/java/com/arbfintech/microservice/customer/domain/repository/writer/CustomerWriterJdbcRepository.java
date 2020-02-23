@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.domain.repository.reader;
+package com.arbfintech.microservice.customer.domain.repository.writer;
 
 import com.arbfintech.framework.component.core.base.BaseJdbcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * general JDBC reader
  */
 @Repository
-public class GeneralReaderJdbcRepository extends BaseJdbcRepository {
+public class CustomerWriterJdbcRepository extends BaseJdbcRepository {
 
     @Override
     protected JdbcTemplate jdbcTemplate() {
@@ -24,11 +24,11 @@ public class GeneralReaderJdbcRepository extends BaseJdbcRepository {
     }
 
     @Autowired
-    @Qualifier("readerJdbcTemplate")
+    @Qualifier("writerJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    @Qualifier("readerNamedJdbcTemplate")
+    @Qualifier("writerNamedJdbcTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
 }
