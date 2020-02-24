@@ -46,10 +46,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-web</artifactId>-->
-<!--        </dependency>-->
 
         <!-- spring-cloud components -->
         <dependency>
@@ -60,10 +56,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-feign</artifactId>-->
-<!--        </dependency>-->
 
         <!-- swagger2  -->
         <!--swagger本身不支持spring mvc的，springfox把swagger包装了一下，让他可以支持springmvc-->
