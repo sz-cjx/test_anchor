@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.arbfintech.framework.component.database.core.GeneralFuture;
+import com.arbfintech.framework.component.database.kit.SqlOption;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,14 @@ public class CustomerRestController {
             @RequestParam("options") String optionStr
     ) {
         return generalFuture.findAllByOptions(Customer.class, optionStr);
+    }
+
+    @GetMapping("/test")
+    public CompletableFuture<String> test() {
+        SqlOption option = SqlOption.getInstance();
+        option.addWhereFormat("email LIKE '%s'", "%gmail%");
+        option.addPage("LIMIT 100");
+        return generalFuture.findAllByOptions(Customer.class, option.toString());
     }
 
     @Autowired
