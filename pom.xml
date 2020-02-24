@@ -60,6 +60,7 @@
             <groupId>com.arbfintech.framework</groupId>
             <artifactId>component.core</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

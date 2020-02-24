@@ -77,11 +77,6 @@
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.arbfintech.framework</groupId>
-            <artifactId>component.database</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
