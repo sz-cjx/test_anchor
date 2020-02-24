@@ -43,22 +43,23 @@ spring:
       username: ${arb.security.username}
       password: ${arb.security.password}
   datasource:
-    writer:
-      driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://${arb.database.writer.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
-      username: ${arb.database.username}
-      password: ${arb.database.password}
-      test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
-      test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
-      time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
-    reader:
-      driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://${arb.database.reader.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
-      username: ${arb.database.username}
-      password: ${arb.database.password}
-      test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
-      test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
-      time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+    general:
+      writer:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${arb.database.writer.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+        username: ${arb.database.username}
+        password: ${arb.database.password}
+        test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
+        test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
+        time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+      reader:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${arb.database.reader.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+        username: ${arb.database.username}
+        password: ${arb.database.password}
+        test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
+        test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
+        time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
   mvc:
     async:
       request-timeout: -1
