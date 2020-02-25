@@ -14,9 +14,8 @@ public class CustomerClientService {
     @Autowired
     CustomerFeignClient customerFeignClient;
 
-    public Long replaceCustomer(JSONObject customerJson) {
-        String customerStr = customerJson.toJSONString();
-        return customerFeignClient.replaceCustomer(customerStr);
+    public Long replaceCustomer(String dataStr) {
+        return customerFeignClient.replaceCustomer(dataStr);
     }
 
     public JSONObject getCustomerById(Long id) {
