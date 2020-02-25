@@ -37,6 +37,13 @@ public class CustomerRestController {
         return generalFuture.findAllByOptions(Customer.class, optionStr);
     }
 
+    @GetMapping("/customer")
+    public CompletableFuture<String> findCustomerByOptions(
+            @RequestParam("options") String optionStr
+    ) {
+        return generalFuture.findByOptions(Customer.class, optionStr);
+    }
+
     @GetMapping("/test")
     public CompletableFuture<String> test() {
         SqlOption option = SqlOption.getInstance();

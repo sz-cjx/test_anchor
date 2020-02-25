@@ -29,4 +29,7 @@ public class CustomerClientService {
         return JSON.parseArray(customerStr);
     }
 
+    public JSONObject findCustomerByOptions(String optionStr) {
+        return JSONObject.parseObject(customerFeignClient.findCustomerByOptions(optionStr));
+    }
 }

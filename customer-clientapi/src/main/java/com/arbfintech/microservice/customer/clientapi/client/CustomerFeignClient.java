@@ -24,4 +24,8 @@ public interface CustomerFeignClient {
             @RequestParam("options") String optionStr
     );
 
+    @GetMapping("/customer")
+    String findCustomerByOptions(
+            @RequestParam("options") String optionStr
+    );
 }
