@@ -1,7 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
+import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.GeneralFuture;
-import com.arbfintech.framework.component.database.kit.SqlOption;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
