@@ -3,51 +3,29 @@ package com.arbfintech.microservice.customer.clientapi.client;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @FeignClient("customer-restapi")
-@RequestMapping("/api")
+@RequestMapping("/customer")
 public interface CustomerFeignClient {
 
     @PostMapping("/customers")
-    Long addCustomer(@RequestBody String customerStr);
+    Long replaceCustomer(
+            @RequestBody String dataStr
+    );
 
     @GetMapping("/customers/{id}")
-    String getCustomerById(@PathVariable("id") Long id);
+    String getCustomerById(
+            @PathVariable("id") Long id
+    );
 
-    @PutMapping("/customers/{id}")
-    Integer setCustomerById(@PathVariable("id") Long id,
-                            @RequestBody String customerStr);
+    @GetMapping("/customers")
+    String listCustomerByOptions(
+            @RequestParam("options") String optionStr
+    );
 
-    @PostMapping("/customer/query")
-    String listCustomerByConditions( @RequestParam("conditionStr") String conditionStr,
-                                     @RequestParam("conditionType") String conditionType);
-
-    @GetMapping("/customers/ssn")
-    String listCustomerBySSN(@RequestParam("ssn") String ssn);
-
-    @GetMapping("/customers/latest")
-    Long getLatestCustomerId(@RequestParam("ssn") String ssn,
-                                  @RequestParam("email") String email,
-                                  @RequestParam("bankUniqueKey") String bankUniqueKey);
-
-    @GetMapping("/customers/latest/ssn")
-    Long getTheLatestCustomerIdBySSN(@RequestParam("ssn") String ssn);
-
-    @GetMapping("/customers/latest/email/ssn")
-    Long getLatestCustomerIdByEmailOrSSN(@RequestParam("email") String email,
-                                            @RequestParam("ssn") String ssn);
-
-    @GetMapping("/customers/latest/account/routing")
-    Long getLatestCustomerIdByUniqueKey(@RequestParam("unique") String unique);
-
-    @PostMapping("/customers/verify")
-    String verifyCustomerLoginData(@RequestBody String loginData);
-
-    @PostMapping("/customers/sign-up")
-    String doCustomerSignUp(@RequestBody String signUpData);
-
-    @PostMapping("/customers/update")
-    String updateCustomer(@RequestBody String customers);
-
-//    @PostMapping("/customers/jdbc")
-//    Long saveCustomerByJDBC(@RequestBody String customerStr);
+    @GetMapping("/customer")
+    String findCustomerByOptions(
+            @RequestParam("options") String optionStr
+    );
 }

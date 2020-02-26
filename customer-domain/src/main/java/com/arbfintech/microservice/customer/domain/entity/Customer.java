@@ -11,6 +11,7 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 public class Customer {
     @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
