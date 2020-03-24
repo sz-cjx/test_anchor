@@ -115,6 +115,14 @@ arb:
     url: MICROSERVICE-CUSTOMER-RESTAPI.us-west-1.elasticbeanstalk.com
 ---
 spring:
+  profiles: pandaria-bamboo
+arb:
+  eureka:
+    url: FRAMEWORK-EUREKA-SERVER.us-west-1.elasticbeanstalk.com
+  service:
+    url: MICROSERVICE-CUSTOMER-RESTAPI.us-west-1.elasticbeanstalk.com
+---
+spring:
   profiles: panda-develop-3
 arb:
   eureka:
