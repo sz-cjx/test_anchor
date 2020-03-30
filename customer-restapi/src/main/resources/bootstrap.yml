@@ -16,8 +16,8 @@ eureka:
     hostname: ${arb.service.url}
     ip-address: ${arb.service.url}
     prefer-ip-address: true
-  #    lease-renewal-interval-in-seconds: 10
-  #    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
   client:
     healthcheck: enabled
     service-url:
