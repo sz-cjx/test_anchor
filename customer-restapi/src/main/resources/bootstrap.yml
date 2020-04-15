@@ -45,21 +45,43 @@ spring:
   datasource:
     master:
       writer:
+        type: com.alibaba.druid.pool.DruidDataSource # Druid数据库连接池
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://${arb.database.writer.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
         username: ${arb.database.username}
         password: ${arb.database.password}
-        test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
-        test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
-        time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+        testOnBorrow: true                          # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
+        testOnReturn: true                          # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
+        testWhileIdle: true
+        timeBetweenEvictionRunsMillis: 60000        # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+        initialSize: 20
+        minIdle: 20
+        maxActive: 256
+        maxWait: 60000                              # 配置获取连接等待超时的时间
+        minEvictableIdleTimeMillis: 300000          # 配置一个连接在池中最小生存的时间，单位是毫秒
+        validationQuery: SELECT'x'
+        poolPreparedStatements: true                # 打开PSCache，并且指定每个连接上PSCache的大小
+        maxPoolPreparedStatementPerConnectionSize: 20
+        filters: stat,wall,slf4j                    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙，此处是filter修改的地方
       reader:
+        type: com.alibaba.druid.pool.DruidDataSource # Druid数据库连接池
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://${arb.database.reader.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
         username: ${arb.database.username}
         password: ${arb.database.password}
-        test-on-borrow: true                      # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
-        test-while-idle: true                     # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
-        time-between-eviction-runs-millis: 60000  # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+        testOnBorrow: true                          # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
+        testOnReturn: true                          # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
+        testWhileIdle: true
+        timeBetweenEvictionRunsMillis: 60000        # 在空闲连接回收器线程运行期间休眠的时间值，姨毫秒为单位。如果设置为非整数，则不运行空闲连接回收器线程
+        initialSize: 20
+        minIdle: 20
+        maxActive: 256
+        maxWait: 60000                              # 配置获取连接等待超时的时间
+        minEvictableIdleTimeMillis: 300000          # 配置一个连接在池中最小生存的时间，单位是毫秒
+        validationQuery: SELECT'x'
+        poolPreparedStatements: true                # 打开PSCache，并且指定每个连接上PSCache的大小
+        maxPoolPreparedStatementPerConnectionSize: 20
+        filters: stat,wall,slf4j                    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙，此处是filter修改的地方
   mvc:
     async:
       request-timeout: -1
