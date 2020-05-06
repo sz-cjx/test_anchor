@@ -1,24 +1,20 @@
 package com.arbfintech.microservice.customer.domain.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
+import com.arbfintech.framework.component.core.annotation.Column;
+import com.arbfintech.framework.component.core.annotation.Entity;
+import com.arbfintech.framework.component.core.annotation.Id;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class Customer {
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
     private String ssn;
 
-    @Column(length = 64)
+    @Column
     private String email;
 
     @Column
@@ -31,11 +27,9 @@ public class Customer {
     private Long flags;
 
     @Column
-    @LastModifiedDate
     private Long updateTime;
 
     @Column
-    @CreatedDate
     private Long createTime;
 
     @Column
