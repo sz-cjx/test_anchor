@@ -1,6 +1,6 @@
 package com.arbfintech.microservice.customer.clientapi.client;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
