@@ -6,7 +6,6 @@
     <version>0.0.3</version>
 
     <modules>
-        <module>customer-clientapi</module>
         <module>customer-domain</module>
         <module>customer-restapi</module>
         <module>customer-object</module>
