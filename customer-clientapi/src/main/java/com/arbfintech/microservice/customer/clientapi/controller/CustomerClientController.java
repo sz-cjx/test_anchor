@@ -29,15 +29,15 @@ public class CustomerClientController {
 
     @GetMapping("/list-customer-ssn-email-num")
     public CompletableFuture<String> listCustomerBySsnOrEmailOrNo(
-            @RequestParam("options") String optionStr
+            @RequestParam("conditions") String conditionStr
     ) {
-        return customerClientFuture.listCustomerBySsnOrEmailOrNo(optionStr);
+        return customerClientFuture.listCustomerBySsnOrEmailOrNo(conditionStr);
     }
 
     @GetMapping("/get-customer")
     public CompletableFuture<String> findCustomerByOptions(
-            @RequestParam("options") String optionStr
+            @RequestParam("conditions") String conditionStr
     ) {
-        return customerClientFuture.findCustomerByCondition(optionStr);
+        return customerClientFuture.findCustomerByCondition(conditionStr);
     }
 }
