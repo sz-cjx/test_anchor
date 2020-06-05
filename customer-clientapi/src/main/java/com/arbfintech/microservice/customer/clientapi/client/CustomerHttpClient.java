@@ -43,7 +43,7 @@ public class CustomerHttpClient {
     }
 
     public JSONObject getCustomerById(Long id) {
-        LOGGER.info("Start to replace customer");
+        LOGGER.info("Start to get customer");
         JSONObject resultJson = restTemplate.getForObject(String.format(gatewayUrl + customerUrl + "/customers/%s", id), JSONObject.class);
         if (!CollectionUtils.isEmpty(resultJson)) {
             LOGGER.info("Success ->>> get customer, customer id: {}", resultJson.getLong(JsonKeyConst.ID));
@@ -55,7 +55,7 @@ public class CustomerHttpClient {
     }
 
     public JSONArray listCustomerByOptions(String optionStr) {
-        LOGGER.info("Start to replace customer");
+        LOGGER.info("Start to list customer");
         JSONArray resultArray = restTemplate.getForObject(gatewayUrl + customerUrl + "/customers", JSONArray.class, new HashMap<String, String>() {{
             put(JsonKeyConst.OPTIONS, optionStr);
         }});
@@ -69,7 +69,7 @@ public class CustomerHttpClient {
     }
 
     public JSONObject findCustomerByOptions(String optionStr) {
-        LOGGER.info("Start to replace customer");
+        LOGGER.info("Start to find customer");
         JSONObject resultJson = restTemplate.getForObject(gatewayUrl + customerUrl + "/customer/single?{options}", JSONObject.class, new HashMap<String, String>() {{
             put(JsonKeyConst.OPTIONS, optionStr);
         }});
