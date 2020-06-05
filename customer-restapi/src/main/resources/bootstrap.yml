@@ -3,12 +3,6 @@ arb:
   service:
     name: customer-restapi
     port: 8102
-  eureka:
-    username: panda_admin
-    password: Arb!8888
-  security:
-    username: panda_admin
-    password: Arb!8888
 
 eureka:
   instance:
@@ -21,9 +15,9 @@ eureka:
   client:
     healthcheck: enabled
     service-url:
-      defaultZone: http://${arb.eureka.username}:${arb.eureka.password}@${arb.eureka.url}:8901/eureka/
+      defaultZone: http://${arb.eureka.url}:8901/eureka/
 server:
-  max-http-header-size: 10240000
+  max-http-header-size: 10240
   port: ${arb.service.port}
 spring:
   application:
@@ -40,8 +34,6 @@ spring:
         multiplier: 1.1
         max-interval: 2000
         max-attempts: 2
-      username: ${arb.security.username}
-      password: ${arb.security.password}
   datasource:
     master:
       writer:
@@ -85,96 +77,24 @@ spring:
   mvc:
     async:
       request-timeout: -1
-  http:
-    multipart:
-      enabled: true
-      file-size-threshold: 0
-      max-file-size: 256Mb
-      max-request-size: 256Mb
-  rabbitmq:
-    host: ${arb.rabbitmq.url}
-    port: 5672
-    username: ${arb.rabbitmq.username}
-    password: ${arb.rabbitmq.password}
-    publisher-confirms: true
-    publisher-returns: true
-    listener:
-      simple:
-        acknowledge-mode: manual
-encrypt:
-  key: Rj0O9LgL^4@S2gMI
 ---
 spring:
-  profiles: local
+  profiles: local-v3
 arb:
   eureka:
     url: localhost
   service:
     url: localhost
+
 ---
 spring:
-  profiles: panda-local
+  profiles: develop-v3
 arb:
   eureka:
-    url: localhost
+    url: v3.1.eureka.sztcu.com
   service:
-    url: localhost
----
-spring:
-  profiles: panda-develop
-arb:
-  eureka:
-    url: 18.136.106.145
-  service:
-    url: 3.0.127.85
----
-spring:
-  profiles: pandaria-develop
-arb:
-  eureka:
-    url: FRAMEWORK-EUREKA-SERVER.us-west-1.elasticbeanstalk.com
-  service:
-    url: MICROSERVICE-CUSTOMER-RESTAPI.us-west-1.elasticbeanstalk.com
----
-spring:
-  profiles: pandaria-bamboo
-arb:
-  eureka:
-    url: FRAMEWORK-EUREKA-SERVER.us-west-1.elasticbeanstalk.com
-  service:
-    url: MICROSERVICE-CUSTOMER-RESTAPI.us-west-1.elasticbeanstalk.com
----
-spring:
-  profiles: panda-develop-3
-arb:
-  eureka:
-    url: 18.136.106.145
-  service:
-    url: 54.251.136.239
----
-spring:
-  profiles: panda-develop-4
-arb:
-  eureka:
-    url: 18.136.106.145
-  service:
-    url: 54.169.240.186
----
-spring:
-  profiles: panda-release
-arb:
-  eureka:
-    url: 18.139.107.142
-  service:
-    url: 18.140.12.120
----
-spring:
-  profiles: panda-release-2
-arb:
-  eureka:
-    url: 18.139.107.142
-  service:
-    url: 18.140.125.205
+    url: v3.1.customer-restapi.sztcu.com
+
 ---
 spring:
   profiles: pandaria-release
