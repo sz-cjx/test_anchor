@@ -1,0 +1,45 @@
+#自定义配置
+arb:
+  service:
+    name: customer-clientapi
+    port: 9102
+eureka:
+  instance:
+    instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}
+    hostname: ${arb.service.url}
+    ip-address: ${arb.service.url}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+  client:
+    healthcheck: enabled
+    service-url:
+      defaultZone: http://${arb.eureka.url}:8901/eureka/
+
+server:
+  max-http-header-size: 10240000
+  port: ${arb.service.port}
+spring:
+  application:
+    name: ${arb.service.name}
+  cloud:
+    config:
+      label: master
+      discovery:
+        enabled: true
+        service-id: config-server
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        multiplier: 1.1
+        max-interval: 2000
+        max-attempts: 2
+
+---
+spring:
+  profiles: local-v3
+arb:
+  eureka:
+    url: localhost
+  service:
+    url: localhost
