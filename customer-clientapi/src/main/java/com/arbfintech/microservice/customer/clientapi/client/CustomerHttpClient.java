@@ -1,11 +1,8 @@
 package com.arbfintech.microservice.customer.clientapi.client;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
-import com.arbfintech.framework.component.core.type.SqlOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,24 +52,6 @@ public class CustomerHttpClient {
             LOGGER.info("Failed ->>> get customer, param id: {}", id);
         }
         return resultJson;
-    }
-
-    public JSONArray listCustomerBySsnOrEmailOrNo(String conditionStr) {
-        JSONObject paramJson = JSON.parseObject(conditionStr);
-        String ssn = paramJson.getString(JsonKeyConst.SSN);
-        String email = paramJson.getString(JsonKeyConst.EMAIL);
-        String accountNo = paramJson.getString(JsonKeyConst.ACCOUNT_NO);
-        String routingNo = paramJson.getString(JsonKeyConst.ROUTING_NO);
-
-        SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.addWhereFormat(ConditionTypeConst.OR, "ssn = '%s'", ssn);
-        sqlOption.addWhereFormat(ConditionTypeConst.OR, "email = '%s'", email);
-        sqlOption.addWhereFormat(ConditionTypeConst.OR, "(bank_account_no = '%s' AND bank_routing_no = '%s')", accountNo, routingNo);
-        sqlOption.addField(JsonKeyConst.ID);
-        sqlOption.addOrder("create_time DESC");
-        sqlOption.addPage("LIMIT 1");
-
-        return this.listCustomerByOptions(sqlOption.toString());
     }
 
     public JSONArray listCustomerByOptions(String optionStr) {

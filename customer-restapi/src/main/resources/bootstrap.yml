@@ -17,7 +17,7 @@ eureka:
     service-url:
       defaultZone: http://${arb.eureka.url}:8901/eureka/
 server:
-  max-http-header-size: 10240000
+  max-http-header-size: 10240
   port: ${arb.service.port}
 spring:
   application:
@@ -85,3 +85,21 @@ arb:
     url: localhost
   service:
     url: localhost
+
+---
+spring:
+  profiles: develop-v3
+arb:
+  eureka:
+    url: v3.1.eureka.sztcu.com
+  service:
+    url: v3.1.customer-restapi.sztcu.com
+
+---
+spring:
+  profiles: pandaria-release
+arb:
+  eureka:
+    url: eureka-rel.ap-southeast-1.elasticbeanstalk.com
+  service:
+    url: microservice-customer-rel.ap-southeast-1.elasticbeanstalk.com

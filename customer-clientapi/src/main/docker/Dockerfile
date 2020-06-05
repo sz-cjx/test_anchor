@@ -2,7 +2,7 @@ FROM java:8
 
 VOLUME /tmp
 
-ADD customer.restapi-0.0.3.jar customer-clientapi.jar
+ADD customer.clientapi-0.0.3.jar customer-clientapi.jar
 
 RUN bash -c 'touch /customer-clientapi.jar'
 RUN ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
