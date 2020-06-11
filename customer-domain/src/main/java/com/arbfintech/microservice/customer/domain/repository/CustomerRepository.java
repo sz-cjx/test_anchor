@@ -3,6 +3,7 @@ package com.arbfintech.microservice.customer.domain.repository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
+import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.framework.component.database.core.GeneralJdbcReader;

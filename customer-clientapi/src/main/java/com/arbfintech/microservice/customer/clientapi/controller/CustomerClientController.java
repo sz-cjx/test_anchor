@@ -1,7 +1,6 @@
 package com.arbfintech.microservice.customer.clientapi.controller;
 
 import com.arbfintech.microservice.customer.clientapi.future.CustomerClientFuture;
-import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.object.constant.ClientApiUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping(ClientApiUrl.API_CUSTOMER)
 public class CustomerClientController {
 
     @Autowired

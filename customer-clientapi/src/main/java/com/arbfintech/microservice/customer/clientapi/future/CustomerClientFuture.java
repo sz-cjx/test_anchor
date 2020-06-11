@@ -50,20 +50,7 @@ public class CustomerClientFuture {
     }
 
     private String findCustomerListBySsnOrEmailOrNo(String conditionStr) {
-        JSONObject paramJson = JSON.parseObject(conditionStr);
-        String ssn = paramJson.getString(JsonKeyConst.SSN);
-        String email = paramJson.getString(JsonKeyConst.EMAIL);
-        String accountNo = paramJson.getString(JsonKeyConst.ACCOUNT_NO);
-        String routingNo = paramJson.getString(JsonKeyConst.ROUTING_NO);
-
-        SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.addWhereFormat(ConditionTypeConst.OR, "ssn = '%s'", ssn);
-        sqlOption.addWhereFormat(ConditionTypeConst.OR, "email = '%s'", email);
-        sqlOption.addWhereFormat(ConditionTypeConst.OR, "(bank_account_no = '%s' AND bank_routing_no = '%s')", accountNo, routingNo);
-        sqlOption.addField(JsonKeyConst.ID);
-        sqlOption.addOrder("create_time DESC");
-        sqlOption.addPage("LIMIT 1");
-        return customerRepository.listCustomerByOptions(sqlOption.toString());
+        return customerRepository.listCustomerByOptions(conditionStr);
     }
 
     private String findCustomerByCondition(String conditionStr) {
