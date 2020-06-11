@@ -7,6 +7,7 @@
 
     <modules>
         <module>customer-domain</module>
+        <module>customer-clientapi</module>
         <module>customer-restapi</module>
         <module>customer-object</module>
     </modules>

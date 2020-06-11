@@ -13,6 +13,20 @@
     <!-- 打包方式 -->
     <packaging>jar</packaging>
     <dependencies>
+
+        <dependency>
+            <groupId>com.arbfintech.microservice</groupId>
+            <artifactId>customer.object</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.arbfintech.microservice</groupId>
+            <artifactId>customer.domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
