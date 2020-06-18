@@ -71,9 +71,6 @@ public class Customer {
     @Column
     private String bankAccountNo;
 
-    @Column
-    private String uniqueKey;
-
     public Long getUpdateTime() {
         return updateTime;
     }
@@ -240,14 +237,6 @@ public class Customer {
 
     public void setBankAccountNo(String bankAccountNo) {
         this.bankAccountNo = bankAccountNo;
-    }
-
-    public String getUniqueKey() {
-        return uniqueKey;
-    }
-
-    public void setUniqueKey(String uniqueKey) {
-        this.uniqueKey = uniqueKey;
     }
 
     @Override
