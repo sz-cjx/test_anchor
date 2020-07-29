@@ -57,7 +57,7 @@ public class CustomerHttpClient {
     public JSONArray listCustomerByOptions(String optionStr) {
         LOGGER.info("Start to list customer");
         JSONArray resultArray = restTemplate.getForObject(gatewayUrl + customerUrl + "/customers", JSONArray.class, new HashMap<String, String>() {{
-            put(JsonKeyConst.OPTIONS, optionStr);
+            put("options", optionStr);
         }});
         if (!CollectionUtils.isEmpty(resultArray)) {
             LOGGER.info("Success ->>> find customers, size: {}", resultArray.size());
@@ -71,7 +71,7 @@ public class CustomerHttpClient {
     public JSONObject findCustomerByOptions(String optionStr) {
         LOGGER.info("Start to find customer");
         JSONObject resultJson = restTemplate.getForObject(gatewayUrl + customerUrl + "/customer/single?{options}", JSONObject.class, new HashMap<String, String>() {{
-            put(JsonKeyConst.OPTIONS, optionStr);
+            put("options", optionStr);
         }});
 
         if (!CollectionUtils.isEmpty(resultJson)) {
