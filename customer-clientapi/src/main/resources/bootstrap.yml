@@ -94,18 +94,9 @@ arb:
     password: Arb@8888
 ---
 spring:
-  profiles: develop-v3
+  profiles: test-v3
 arb:
   eureka:
-    url: v3.1.eureka.sztcu.com
+    url: FRAMEWORK-EUREKA-SERVER-TEST.us-west-1.elasticbeanstalk.com
   service:
-    url: v3.1.customer-clientapi.sztcu.com
-
----
-spring:
-  profiles: pandaria-release
-arb:
-  eureka:
-    url: eureka-rel.ap-southeast-1.elasticbeanstalk.com
-  service:
-    url: microservice-customer-rel.ap-southeast-1.elasticbeanstalk.com
+    url: MICROSERVICE-CUSTOMER-CLIENTAPI-TEST.us-west-1.elasticbeanstalk.com
