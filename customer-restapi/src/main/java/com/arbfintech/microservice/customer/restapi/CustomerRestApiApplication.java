@@ -7,8 +7,8 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import java.util.TimeZone;
 
-@SpringBootApplication(scanBasePackages = GlobalConst.SCAN_BASE_PACKAGE)
-@EnableEurekaClient
+//@SpringBootApplication(scanBasePackages = GlobalConst.SCAN_BASE_PACKAGE)
+//@EnableEurekaClient
 public class CustomerRestApiApplication {
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
