@@ -76,7 +76,7 @@ spring:
         filters: stat,wall,slf4j                    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙，此处是filter修改的地方
 ---
 spring:
-  profiles: local-v3
+  profiles: local-v3.1
 arb:
   eureka:
     url: localhost
@@ -94,7 +94,7 @@ arb:
     password: Arb@8888
 ---
 spring:
-  profiles: test-v3
+  profiles: develop-v3.1
 arb:
   eureka:
     url: FRAMEWORK-EUREKA-SERVER-TEST.us-west-1.elasticbeanstalk.com
