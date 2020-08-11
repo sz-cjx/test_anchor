@@ -14,31 +14,68 @@ public class CustomerClientController {
     @Autowired
     private CustomerClientFuture customerClientFuture;
 
-    @PostMapping(ClientApiUrl.REPLACE_CUSTOMER)
-    public CompletableFuture<Long> replaceCustomer(
+    @PostMapping("/replace-customer")
+    public CompletableFuture<String> replaceCustomer(
             @RequestBody String dataStr
     ) {
-        return customerClientFuture.replaceCustomer(dataStr);
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.replaceCustomer(dataStr)
+        );
     }
 
-    @GetMapping(ClientApiUrl.GET_CUSTOMER_BY_ID)
+    @GetMapping("/get-customer/{id}")
     public CompletableFuture<String> getCustomerById(
             @PathVariable("id") Long id
     ) {
-        return customerClientFuture.getCustomerById(id);
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.getCustomerById(id)
+        );
     }
 
-    @GetMapping(ClientApiUrl.LIST_CUSTOMER_BY_SSN_OR_EMAIL_OR_NUM)
+    @GetMapping("/list-customer-ssn-email-num")
     public CompletableFuture<String> listCustomerBySsnOrEmailOrNo(
             @RequestParam("conditions") String conditionStr
     ) {
-        return customerClientFuture.listCustomerBySsnOrEmailOrNo(conditionStr);
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.listCustomerBySsnOrEmailOrNo(conditionStr)
+        );
     }
 
-    @GetMapping(ClientApiUrl.GET_CUSTOMER_BY_CONDITIONS)
+    @GetMapping("/get-customer")
     public CompletableFuture<String> getCustomerByCondition(
             @RequestParam("conditions") String conditionStr
     ) {
-        return customerClientFuture.getCustomerByCondition(conditionStr);
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.getCustomerByCondition(conditionStr)
+        );
+    }
+
+    @GetMapping("/opt-in/{customerId}")
+    public CompletableFuture<String> getCustomerOptInData(
+            @PathVariable("customerId") Long customerId
+    ) {
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.getCustomerOptInDataByCustomerId(customerId)
+        );
+    }
+
+    @PostMapping("/opt-in/{customerId}")
+    public CompletableFuture<String> addCustomerOptInData(
+            @PathVariable("customerId") Long customerId,
+            @RequestBody String dataStr
+    ) {
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.addCustomerOptInData(customerId, dataStr)
+        );
+    }
+
+    @PutMapping("/opt-in/{customerId}")
+    public CompletableFuture<String> updateCustomerOptInData(
+            @PathVariable("customerId") Long customerId,
+            @RequestBody String dataStr
+    ) {
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.updateCustomerOptInData(customerId, dataStr)
+        );
     }
 }

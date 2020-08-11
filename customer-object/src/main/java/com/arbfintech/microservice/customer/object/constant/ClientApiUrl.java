@@ -6,5 +6,6 @@ public interface ClientApiUrl {
     String GET_CUSTOMER_BY_ID = "/get-customer/{id}";
     String LIST_CUSTOMER_BY_SSN_OR_EMAIL_OR_NUM = "/list-customer-ssn-email-num";
     String GET_CUSTOMER_BY_CONDITIONS = "/get-customer";
+    String ADD_CUSTOMER_OPT_IN_DATA = "/opt-in/add/{applicationId}";
 
 }
