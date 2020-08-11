@@ -82,16 +82,6 @@ arb:
     url: localhost
   service:
     url: localhost
-  gateway:
-    url: http://localhost:8910
-  database:
-    writer:
-      url: 172.18.1.245
-    reader:
-      url: 172.18.1.245
-    schema: lead
-    username: root
-    password: Arb@8888
 ---
 spring:
   profiles: develop-v3.1

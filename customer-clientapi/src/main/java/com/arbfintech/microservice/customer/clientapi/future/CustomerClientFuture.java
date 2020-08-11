@@ -1,16 +1,20 @@
 package com.arbfintech.microservice.customer.clientapi.future;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.annotation.AsyncTimed;
-import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
-import com.arbfintech.framework.component.core.constant.JsonKeyConst;
-import com.arbfintech.framework.component.core.type.SqlOption;
-import com.arbfintech.microservice.customer.domain.repository.CustomerRepository;
+import com.arbfintech.framework.component.core.type.AjaxResult;
+import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.microservice.customer.domain.entity.Customer;
+import com.arbfintech.microservice.customer.domain.entity.CustomerOptInData;
+import com.arbfintech.microservice.customer.clientapi.procedure.CustomerProcedure;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Baron
@@ -18,42 +22,92 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class CustomerClientFuture {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerClientFuture.class);
+
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerProcedure customerProcedure;
 
-    @AsyncTimed
-    public CompletableFuture<Long> replaceCustomer(String dataStr) {
-        return CompletableFuture.supplyAsync(() -> replaceCustomers(dataStr));
+    public String replaceCustomer(String dataStr) {
+        Long resultCode = customerProcedure.replaceCustomer(dataStr);
+        if (resultCode < CustomerErrorCode.SUCCESS.getCode()) {
+            return AjaxResult.failure();
+        }
+        return AjaxResult.success();
     }
 
-    @AsyncTimed
-    public CompletableFuture<String> getCustomerById(Long id) {
-        return CompletableFuture.supplyAsync(() -> findCustomerById(id));
+    public String getCustomerById(Long id) {
+        Customer customer = customerProcedure.getCustomerById(id);
+        if(Objects.isNull(customer)) {
+            LOGGER.warn("[Get Customer]Customer is not found. CustomerId:{}", id);
+            return AjaxResult.result(CustomerErrorCode.UNKNOWN);
+        }
+        return AjaxResult.success(customer);
     }
 
-    @AsyncTimed
-    public CompletableFuture<String> listCustomerBySsnOrEmailOrNo(String conditionStr) {
-        return CompletableFuture.supplyAsync(() -> findCustomerListBySsnOrEmailOrNo(conditionStr));
+    public String listCustomerBySsnOrEmailOrNo(String conditionStr) {
+        List<Customer> customerList = customerProcedure.listCustomerByOptions(conditionStr);
+        if(CollectionUtils.isEmpty(customerList)) {
+            return AjaxResult.result(CustomerErrorCode.UNKNOWN);
+        }
+        return AjaxResult.success(customerList);
     }
 
-    @AsyncTimed
-    public CompletableFuture<String> getCustomerByCondition(String conditionStr) {
-        return CompletableFuture.supplyAsync(() -> findCustomerByCondition(conditionStr));
+    public String getCustomerByCondition(String conditionStr) {
+        Customer customer = customerProcedure.getCustomerByOptions(conditionStr);
+        if (Objects.isNull(customer)) {
+            return AjaxResult.result(CustomerErrorCode.UNKNOWN);
+        }
+        return AjaxResult.success(customer);
     }
 
-    private Long replaceCustomers(String dataStr) {
-        return customerRepository.replaceCustomer(dataStr);
+    public String getCustomerOptInDataByCustomerId(Long customerId) {
+        CustomerOptInData customerOptInData = customerProcedure.getCustomerOptInDataByCustomerId(customerId);
+        if (Objects.isNull(customerOptInData)) {
+            LOGGER.warn("[Get Opt In Data]Customer Opt-In Data is not found. CustomerId:{}", customerId);
+            return AjaxResult.result(CustomerErrorCode.UNKNOWN);
+        }
+        return AjaxResult.success(customerOptInData);
     }
 
-    private String findCustomerById(Long id) {
-        return customerRepository.getCustomerById(id);
+    public String addCustomerOptInData(Long customerId, String dataStr) {
+        try {
+            CustomerOptInData optInData = JSON.parseObject(dataStr, CustomerOptInData.class);
+            if(Objects.isNull(optInData)) {
+                LOGGER.warn("[Add Opt In Data]Failure: Lack of input data. CustomerId:{}", customerId);
+                throw new ProcedureException(CustomerErrorCode.FAILURE_LACK_OF_INPUT_DATA);
+            }
+            optInData.setCustomerId(customerId);
+
+            Long primaryKey = customerProcedure.addCustomerOptInData(optInData);
+            if(primaryKey < CustomerErrorCode.SUCCESS.getCode()) {
+                LOGGER.warn("[Add Opt In Data]Failed to update opt in data. CustomerId:{}", customerId);
+                throw new ProcedureException(CustomerErrorCode.OPT_IN_DATA_FAILED_TO_SAVE_DATA);
+            }
+
+            return AjaxResult.success(primaryKey);
+        } catch (ProcedureException e) {
+            return AjaxResult.failure(e);
+        }
     }
 
-    private String findCustomerListBySsnOrEmailOrNo(String conditionStr) {
-        return customerRepository.listCustomerByOptions(conditionStr);
-    }
+    public String updateCustomerOptInData(Long customerId, String dataStr) {
+        try {
+            CustomerOptInData optInData = JSON.parseObject(dataStr, CustomerOptInData.class);
+            if(Objects.isNull(optInData)) {
+                LOGGER.warn("[Update Opt In Data]Failure: Lack of input data. CustomerId:{}", customerId);
+                throw new ProcedureException(CustomerErrorCode.FAILURE_LACK_OF_INPUT_DATA);
+            }
+            optInData.setCustomerId(customerId);
 
-    private String findCustomerByCondition(String conditionStr) {
-        return customerRepository.findCustomerByOptions(conditionStr);
+            Long affectedCount = customerProcedure.updateCustomerOptInData(optInData);
+            if(affectedCount < CustomerErrorCode.SUCCESS.getCode()) {
+                LOGGER.warn("[Update Opt In Data]Failed to update opt in data. CustomerId:{}", customerId);
+                throw new ProcedureException(CustomerErrorCode.OPT_IN_DATA_FAILED_TO_UPDATE_DATA);
+            }
+
+            return AjaxResult.success();
+        } catch (ProcedureException e) {
+            return AjaxResult.failure(e);
+        }
     }
 }

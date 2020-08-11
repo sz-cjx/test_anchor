@@ -1,12 +1,12 @@
 package com.arbfintech.microservice.customer.domain.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;
 import com.arbfintech.framework.component.core.annotation.Id;
 
 @Entity
 public class Customer {
+
     @Id
     @Column
     private Long id;
@@ -15,7 +15,31 @@ public class Customer {
     private String ssn;
 
     @Column
-    private String email;
+    private String firstName;
+
+    @Column
+    private String middleName;
+
+    @Column
+    private String lastName;
+
+    @Column
+    private Integer gender;
+
+    @Column
+    private Long birthday;
+
+    @Column
+    private String address;
+
+    @Column
+    private String city;
+
+    @Column
+    private Integer state;
+
+    @Column
+    private String zip;
 
     @Column
     private String homePhone;
@@ -24,68 +48,13 @@ public class Customer {
     private String cellPhone;
 
     @Column
-    private Long flags;
+    private String email;
 
     @Column
-    private Long updateTime;
+    private Long createdAt;
 
     @Column
-    private Long createTime;
-
-    @Column
-    private Integer status;
-
-    @Column(length = 32)
-    private String firstName;
-
-    @Column(length = 32)
-    private String middleName;
-
-    @Column(length = 32)
-    private String lastName;
-
-    @Column(length = 128)
-    private String password;
-
-    @Column(length = 16)
-    private String salt;
-
-    @Column
-    private Integer emailMarketingStatus;
-
-    @Column
-    private Integer emailOperationStatus;
-
-    @Column
-    private Integer smsMarketingStatus;
-
-    @Column
-    private Integer smsOperationStatus;
-
-    @Column
-    private Integer isSignUp;
-
-    @Column
-    private String bankRoutingNo;
-
-    @Column
-    private String bankAccountNo;
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
+    private Long updatedAt;
 
     public Long getId() {
         return id;
@@ -101,46 +70,6 @@ public class Customer {
 
     public void setSsn(String ssn) {
         this.ssn = ssn;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getHomePhone() {
-        return homePhone;
-    }
-
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
-
-    public String getCellPhone() {
-        return cellPhone;
-    }
-
-    public void setCellPhone(String cellPhone) {
-        this.cellPhone = cellPhone;
-    }
-
-    public Long getFlags() {
-        return flags;
-    }
-
-    public void setFlags(Long flags) {
-        this.flags = flags;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public String getFirstName() {
@@ -167,80 +96,91 @@ public class Customer {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
-        return password;
+    public Integer getGender() {
+        return gender;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setGender(Integer gender) {
+        this.gender = gender;
     }
 
-    public String getSalt() {
-        return salt;
+    public Long getBirthday() {
+        return birthday;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
+    public void setBirthday(Long birthday) {
+        this.birthday = birthday;
     }
 
-    public Integer getEmailMarketingStatus() {
-        return emailMarketingStatus;
+    public String getAddress() {
+        return address;
     }
 
-    public void setEmailMarketingStatus(Integer emailMarketingStatus) {
-        this.emailMarketingStatus = emailMarketingStatus;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public Integer getEmailOperationStatus() {
-        return emailOperationStatus;
+    public String getCity() {
+        return city;
     }
 
-    public void setEmailOperationStatus(Integer emailOperationStatus) {
-        this.emailOperationStatus = emailOperationStatus;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public Integer getSmsMarketingStatus() {
-        return smsMarketingStatus;
+    public Integer getState() {
+        return state;
     }
 
-    public void setSmsMarketingStatus(Integer smsMarketingStatus) {
-        this.smsMarketingStatus = smsMarketingStatus;
+    public void setState(Integer state) {
+        this.state = state;
     }
 
-    public Integer getSmsOperationStatus() {
-        return smsOperationStatus;
+    public String getZip() {
+        return zip;
     }
 
-    public void setSmsOperationStatus(Integer smsOperationStatus) {
-        this.smsOperationStatus = smsOperationStatus;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 
-    public Integer getIsSignUp() {
-        return isSignUp;
+    public String getHomePhone() {
+        return homePhone;
     }
 
-    public void setIsSignUp(Integer isSignUp) {
-        this.isSignUp = isSignUp;
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
     }
 
-    public String getBankRoutingNo() {
-        return bankRoutingNo;
+    public String getCellPhone() {
+        return cellPhone;
     }
 
-    public void setBankRoutingNo(String bankRoutingNo) {
-        this.bankRoutingNo = bankRoutingNo;
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
     }
 
-    public String getBankAccountNo() {
-        return bankAccountNo;
+    public String getEmail() {
+        return email;
     }
 
-    public void setBankAccountNo(String bankAccountNo) {
-        this.bankAccountNo = bankAccountNo;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
