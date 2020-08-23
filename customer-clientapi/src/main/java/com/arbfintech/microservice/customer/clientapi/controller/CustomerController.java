@@ -1,16 +1,12 @@
 package com.arbfintech.microservice.customer.clientapi.controller;
 
-import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
-import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.framework.component.core.type.SqlOption;
-import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.framework.component.database.core.SimpleFuture;
-import com.arbfintech.microservice.customer.clientapi.future.CustomerFuture;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -18,10 +14,9 @@ import java.util.concurrent.CompletableFuture;
 public class CustomerController {
 
     @Autowired
-    private CustomerFuture customerFuture;
-
-    @Autowired
     private SimpleFuture simpleFuture;
+
+    private static final List<String> CUSTOMER_CONDITION_KEY_SET = Arrays.asList("ssn", "email");
 
     @PostMapping("/add")
     public CompletableFuture<String> addCustomer(
@@ -49,7 +44,7 @@ public class CustomerController {
             @RequestParam(name = "ssn", required = false) String ssn,
             @RequestParam(name = "email", required = false) String email
     ) {
-        return customerFuture.getCustomerByConditions(ssn, email);
+        return simpleFuture.findByConditions(Customer.class, CUSTOMER_CONDITION_KEY_SET, ssn, email);
     }
 
     @GetMapping("/list")
@@ -57,6 +52,6 @@ public class CustomerController {
             @RequestParam(name = "ssn", required = false) String ssn,
             @RequestParam(name = "email", required = false) String email
     ) {
-        return customerFuture.listCustomerByConditions(ssn, email);
+        return simpleFuture.findAllByConditions(Customer.class, CUSTOMER_CONDITION_KEY_SET, ssn, email);
     }
 }
