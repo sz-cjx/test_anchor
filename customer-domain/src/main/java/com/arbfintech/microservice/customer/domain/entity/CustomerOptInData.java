@@ -9,20 +9,30 @@ public class CustomerOptInData {
 
     @Id
     @Column
+    private Long id;
+
+    @Column
     private Long customerId;
 
     @Column
-    private Integer emailOptIn;
+    private Integer optInType;
 
     @Column
-    private Integer homePhoneOptIn;
+    private Integer optInValue;
 
     @Column
-    private Integer cellPhoneOptIn;
+    private Long createdAt;
 
     @Column
     private Long updatedAt;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getCustomerId() {
         return customerId;
@@ -32,28 +42,28 @@ public class CustomerOptInData {
         this.customerId = customerId;
     }
 
-    public Integer getEmailOptIn() {
-        return emailOptIn;
+    public Integer getOptInType() {
+        return optInType;
     }
 
-    public void setEmailOptIn(Integer emailOptIn) {
-        this.emailOptIn = emailOptIn;
+    public void setOptInType(Integer optInType) {
+        this.optInType = optInType;
     }
 
-    public Integer getHomePhoneOptIn() {
-        return homePhoneOptIn;
+    public Integer getOptInValue() {
+        return optInValue;
     }
 
-    public void setHomePhoneOptIn(Integer homePhoneOptIn) {
-        this.homePhoneOptIn = homePhoneOptIn;
+    public void setOptInValue(Integer optInValue) {
+        this.optInValue = optInValue;
     }
 
-    public Integer getCellPhoneOptIn() {
-        return cellPhoneOptIn;
+    public Long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCellPhoneOptIn(Integer cellPhoneOptIn) {
-        this.cellPhoneOptIn = cellPhoneOptIn;
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getUpdatedAt() {

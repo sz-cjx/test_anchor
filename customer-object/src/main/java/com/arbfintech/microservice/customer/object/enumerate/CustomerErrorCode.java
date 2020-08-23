@@ -8,13 +8,9 @@ public enum CustomerErrorCode implements BaseError {
     UNKNOWN(0, "Unknown"),
     FAILURE(-1, "Failure"),
 
-    FAILURE_LACK_OF_INPUT_DATA(-81020001, "Lack of input data"),
-    FAILURE_FAILED_TO_UPDATE_DATA(-81020002, "Failed to update data"),
-
-    OPT_IN_DATA_FAILED_TO_SAVE_DATA(-81020020, "Failed to save opt-in data"),
-    OPT_IN_DATA_FAILED_TO_UPDATE_DATA(-81020021, "Failed to update opt-in data"),
-
-    CUSTOMER_IS_NOT_EXISTED(-81020031, "The assigned customer is not existed.");
+    CUSTOMER_IS_NOT_EXISTED(-81020031, "The assigned customer is not existed."),
+    QUERY_FAILURE_NO_CONDITION(-1, "Query failure, at least set one condition."),
+    ;
 
     private Integer code;
     private String message;
