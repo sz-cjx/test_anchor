@@ -12,7 +12,9 @@ public enum CustomerErrorCode implements BaseError {
     FAILURE_FAILED_TO_UPDATE_DATA(-81020002, "Failed to update data"),
 
     OPT_IN_DATA_FAILED_TO_SAVE_DATA(-81020020, "Failed to save opt-in data"),
-    OPT_IN_DATA_FAILED_TO_UPDATE_DATA(-81020021, "Failed to update opt-in data");
+    OPT_IN_DATA_FAILED_TO_UPDATE_DATA(-81020021, "Failed to update opt-in data"),
+
+    CUSTOMER_IS_NOT_EXISTED(-81020031, "The assigned customer is not existed.");
 
     private Integer code;
     private String message;

@@ -19,6 +19,8 @@ eureka:
 server:
   max-http-header-size: 10240
   port: ${arb.service.port}
+  servlet:
+    context-path: /v3
 spring:
   application:
     name: ${arb.service.name}

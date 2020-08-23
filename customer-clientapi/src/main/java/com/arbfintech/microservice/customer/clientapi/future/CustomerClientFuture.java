@@ -1,8 +1,10 @@
 package com.arbfintech.microservice.customer.clientapi.future;
 
 import com.alibaba.fastjson.JSON;
+import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.domain.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.clientapi.procedure.CustomerProcedure;
@@ -26,6 +28,19 @@ public class CustomerClientFuture {
 
     @Autowired
     private CustomerProcedure customerProcedure;
+
+    public String getCustomerByEmail(String email) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.addWhere("email = :email", ConditionTypeConst.AND, "email", email);
+
+        Customer customer = customerProcedure.getCustomerByOptions(sqlOption.toString());
+
+        if (customer != null) {
+            return AjaxResult.success(customer);
+        } else {
+            return AjaxResult.failure(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
+        }
+    }
 
     public String replaceCustomer(String dataStr) {
         Long resultCode = customerProcedure.replaceCustomer(dataStr);

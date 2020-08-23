@@ -1,18 +1,26 @@
 package com.arbfintech.microservice.customer.clientapi.controller;
 
 import com.arbfintech.microservice.customer.clientapi.future.CustomerClientFuture;
-import com.arbfintech.microservice.customer.object.constant.ClientApiUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping(ClientApiUrl.API_CUSTOMER)
+@RequestMapping("/customer")
 public class CustomerClientController {
 
     @Autowired
     private CustomerClientFuture customerClientFuture;
+
+    @GetMapping("/get")
+    public CompletableFuture<String> getCustomerByEmail(
+            @RequestParam("email") String email
+    ) {
+        return CompletableFuture.supplyAsync(
+                () -> customerClientFuture.getCustomerByEmail(email)
+        );
+    }
 
     @PostMapping("/replace-customer")
     public CompletableFuture<String> replaceCustomer(
