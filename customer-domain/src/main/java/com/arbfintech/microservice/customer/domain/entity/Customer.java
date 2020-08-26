@@ -56,6 +56,9 @@ public class Customer {
     @Column
     private Long updatedAt;
 
+    @Column
+    private String openId;
+
     public Long getId() {
         return id;
     }
@@ -182,5 +185,13 @@ public class Customer {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }
