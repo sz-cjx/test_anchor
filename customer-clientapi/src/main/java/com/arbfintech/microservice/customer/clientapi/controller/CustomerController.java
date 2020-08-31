@@ -1,10 +1,10 @@
 package com.arbfintech.microservice.customer.clientapi.controller;
 
+import com.arbfintech.framework.component.core.type.KeyValuePair;
 import com.arbfintech.framework.component.database.core.SimpleFuture;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.util.function.Tuples;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,10 +49,10 @@ public class CustomerController {
     ) {
         return simpleFuture.findByConditions(
                 Customer.class,
-                Tuples.of("id", id),
-                Tuples.of("ssn", ssn),
-                Tuples.of("email", email),
-                Tuples.of("openId", openId)
+                new KeyValuePair("id", id),
+                new KeyValuePair("ssn", ssn),
+                new KeyValuePair("email", email),
+                new KeyValuePair("openId", openId)
         );
     }
 
@@ -63,8 +63,8 @@ public class CustomerController {
     ) {
         return simpleFuture.findAllByConditions(
                 Customer.class,
-                Tuples.of("ssn", ssn),
-                Tuples.of("email", email)
+                new KeyValuePair("ssn", ssn),
+                new KeyValuePair("email", email)
         );
     }
 }
