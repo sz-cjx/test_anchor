@@ -1,5 +1,5 @@
 FROM java:8
-
+ENV APPLICATION='customer-server'
 VOLUME /tmp
 
 ADD customer.clientapi-0.0.3.jar customer-clientapi.jar
