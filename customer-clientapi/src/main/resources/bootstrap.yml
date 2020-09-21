@@ -92,3 +92,11 @@ arb:
     url: FRAMEWORK-EUREKA-SERVER-TEST.us-west-1.elasticbeanstalk.com
   service:
     url: MICROSERVICE-CUSTOMER-CLIENTAPI-TEST.us-west-1.elasticbeanstalk.com
+---
+spring:
+  profiles: release-v3.1
+arb:
+  eureka:
+    url: framework-eureka-server-rel-v3-1.ap-southeast-1.elasticbeanstalk.com
+  service:
+    url: microservice-customer-capi-rel-v3-1.ap-southeast-1.elasticbeanstalk.com
