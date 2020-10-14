@@ -43,7 +43,7 @@ public class CustomerFuture {
             email="";
         }
 
-        String whereFormatStr = "(ssn like '%s' OR email like '%s')";
+        String whereFormatStr = "(email like '%s' OR ssn like '%s')";
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.addOrder("id DESC");
         sqlOption.addPage("LIMIT 1");
