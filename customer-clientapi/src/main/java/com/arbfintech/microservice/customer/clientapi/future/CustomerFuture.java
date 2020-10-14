@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * @author Wade He
  * @version 1.0
@@ -31,24 +33,27 @@ public class CustomerFuture {
         JSONObject dataJson = JSON.parseObject(dataStr);
         String ssn = dataJson.getString(CustomerJsonConst.SSN);
         String email = dataJson.getString(CustomerJsonConst.EMAIL);
-        if(StringUtils.isEmpty(ssn) && StringUtils.isEmpty(email)){
-            return null;
+        if (StringUtils.isEmpty(ssn) && StringUtils.isEmpty(email)) {
+            return new JSONObject().toJSONString();
         }
 
-        if(StringUtils.isBlank(ssn)){
-            ssn="";
+        if (StringUtils.isBlank(ssn)) {
+            ssn = "";
         }
 
-        if(StringUtils.isBlank(email)){
-            email="";
+        if (StringUtils.isBlank(email)) {
+            email = "";
         }
 
-        String whereFormatStr = "(email like '%s' OR ssn like '%s')";
+        String whereFormatStr = "(email = '%s' OR ssn = '%s')";
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.addOrder("id DESC");
         sqlOption.addPage("LIMIT 1");
-        sqlOption.addWhereFormat(ConditionTypeConst.AND, whereFormatStr, ssn, email);
+        sqlOption.addWhereFormat(ConditionTypeConst.AND, whereFormatStr, email, ssn);
         Customer customer = simpleProcedure.findByOptions(Customer.class, sqlOption.toString());
+        if (Objects.isNull(customer)) {
+            return new JSONObject().toJSONString();
+        }
         logger.info("Found the customer info:{}", customer.getId());
         return JSON.toJSONString(customer);
     }
