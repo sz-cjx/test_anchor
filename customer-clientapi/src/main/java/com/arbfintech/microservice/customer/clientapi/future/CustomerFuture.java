@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
+import com.arbfintech.framework.component.database.core.GeneralJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleProcedure;
 import com.arbfintech.microservice.customer.domain.entity.Customer;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonConst;
@@ -26,7 +27,7 @@ public class CustomerFuture {
     private static final Logger logger = LoggerFactory.getLogger(CustomerFuture.class);
 
     @Autowired
-    private SimpleProcedure simpleProcedure;
+    private GeneralJdbcReader generalJdbcReader;
 
     public String getLatestCustomer(String dataStr) {
         logger.info("Start to find the latest customer :{}", dataStr);
@@ -50,11 +51,11 @@ public class CustomerFuture {
         sqlOption.addOrder("id DESC");
         sqlOption.addPage("LIMIT 1");
         sqlOption.addWhereFormat(ConditionTypeConst.AND, whereFormatStr, email, ssn);
-        Customer customer = simpleProcedure.findByOptions(Customer.class, sqlOption.toString());
-        if (Objects.isNull(customer)) {
+        String customerStr = generalJdbcReader.findByOptions(Customer.class, sqlOption.toString());
+        if (Objects.isNull(customerStr)) {
             return new JSONObject().toJSONString();
         }
-        logger.info("Found the customer info:{}", customer.getId());
-        return JSON.toJSONString(customer);
+        logger.info("Found the customer");
+        return customerStr;
     }
 }
