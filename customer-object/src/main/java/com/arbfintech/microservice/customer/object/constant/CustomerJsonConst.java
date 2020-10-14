@@ -10,4 +10,7 @@ public interface CustomerJsonConst {
     String ID = "id";
 
     String UPDATED_AT = "updatedAt";
+
+    String SSN = "ssn";
+    String EMAIL = "email";
 }
