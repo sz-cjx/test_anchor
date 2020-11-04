@@ -10,7 +10,7 @@ public enum CustomerOptInTypeEnum implements BaseEnum {
     EMAIL(1, "Email"),
 
     /**
-     * cell phone
+     * telephone
      */
     CELL_PHONE(2, "Telephone");
 
