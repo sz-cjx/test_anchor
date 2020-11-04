@@ -39,6 +39,9 @@ public class Customer {
     private Integer state;
 
     @Column
+    private Integer status;
+
+    @Column
     private String zip;
 
     @Column
@@ -193,5 +196,13 @@ public class Customer {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
