@@ -12,7 +12,7 @@ public enum CustomerOptInTypeEnum implements BaseEnum {
     /**
      * telephone
      */
-    CELL_PHONE(2, "Telephone");
+    TELEPHONE(2, "Telephone");
 
     CustomerOptInTypeEnum(Integer value, String text) {
         this.value = value;
