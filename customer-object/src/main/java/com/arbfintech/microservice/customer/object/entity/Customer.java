@@ -1,10 +1,12 @@
-package com.arbfintech.microservice.customer.domain.entity;
+package com.arbfintech.microservice.customer.object.entity;
 
 import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;
 import com.arbfintech.framework.component.core.annotation.GeneratedValue;
 import com.arbfintech.framework.component.core.annotation.Id;
 import com.arbfintech.framework.component.core.enumerate.GenerationType;
+
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Customer {
@@ -14,6 +16,7 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotEmpty(message = "Required ssn")
     @Column
     private String ssn;
 
@@ -53,6 +56,7 @@ public class Customer {
     @Column
     private String cellPhone;
 
+    @NotEmpty(message = "Required email")
     @Column
     private String email;
 
@@ -145,6 +149,14 @@ public class Customer {
         this.state = state;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public String getZip() {
         return zip;
     }
@@ -199,13 +211,5 @@ public class Customer {
 
     public void setOpenId(String openId) {
         this.openId = openId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

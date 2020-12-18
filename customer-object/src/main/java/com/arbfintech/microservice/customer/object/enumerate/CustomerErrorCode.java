@@ -4,12 +4,9 @@ import com.arbfintech.framework.component.core.base.BaseError;
 
 public enum CustomerErrorCode implements BaseError {
 
-    SUCCESS(1, "Success"),
-    UNKNOWN(0, "Unknown"),
-    FAILURE(-1, "Failure"),
-
-    CUSTOMER_IS_NOT_EXISTED(-81020031, "The assigned customer is not existed."),
-    QUERY_FAILURE_NO_CONDITION(-1, "Query failure, at least set one condition."),
+    QUERY_FAILURE_CUSTOMER_IS_EXISTED(-81010101, "Customer is existed."),
+    QUERY_FAILURE_CUSTOMER_NOT_EXISTED(-81010102, "Customer is not existed."),
+    QUERY_FAILURE_SEARCH_FAILED(-81010103, "Search failed, please enter at least one condition."),
     ;
 
     private Integer code;
@@ -20,12 +17,14 @@ public enum CustomerErrorCode implements BaseError {
         this.message = message;
     }
 
+
+    @Override
     public Integer getCode() {
         return code;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
-
 }

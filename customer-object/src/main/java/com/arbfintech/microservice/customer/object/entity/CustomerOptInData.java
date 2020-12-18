@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.domain.entity;
+package com.arbfintech.microservice.customer.object.entity;
 
 import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;
@@ -25,6 +25,18 @@ public class CustomerOptInData {
 
     @Column
     private Long updatedAt;
+
+    public CustomerOptInData() {
+
+    }
+
+    public CustomerOptInData(Long customerId, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
+        this.customerId = customerId;
+        this.optInType = optInType;
+        this.optInValue = optInValue;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     public Long getId() {
         return id;

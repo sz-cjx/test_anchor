@@ -1,6 +1,4 @@
 *.class
-*.log
-*.logs
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -13,7 +11,6 @@
 # Eclipse Forlders
 Servers/
 target/
-.apt_generated/
 .metadata/
 .recommenders/
 .settings/
@@ -27,8 +24,10 @@ target/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-
-
-# idea file
+# Idea
 *.iml
 .idea/
+
+# Personal
+.lst
+.properties
