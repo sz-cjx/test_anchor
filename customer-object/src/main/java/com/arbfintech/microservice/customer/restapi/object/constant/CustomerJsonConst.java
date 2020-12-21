@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.object.constant;
+package com.arbfintech.microservice.customer.restapi.object.constant;
 
 /**
  * Customer Json key definition

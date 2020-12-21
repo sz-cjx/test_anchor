@@ -4,7 +4,7 @@ import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.microservice.customer.object.entity.Customer;
+import com.arbfintech.microservice.customer.restapi.object.entity.Customer;
 import org.springframework.stereotype.Component;
 
 /**

@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.object.enumerate;
+package com.arbfintech.microservice.customer.restapi.object.enumerate;
 
 public enum CustomerOptInTypeEnum implements CustomerBaseEnum {
 

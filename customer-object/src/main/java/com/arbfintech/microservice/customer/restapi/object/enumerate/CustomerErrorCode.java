@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.object.enumerate;
+package com.arbfintech.microservice.customer.restapi.object.enumerate;
 
 import com.arbfintech.framework.component.core.base.BaseError;
 
