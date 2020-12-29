@@ -2,7 +2,7 @@ FROM java:8
 ENV APPLICATION='customer-restapi'
 VOLUME /tmp
 
-ADD customer-restapi-3.2.0.jar customer.jar
+ADD customer.restapi-3.2.0.jar customer.jar
 
 RUN bash -c 'touch /customer.jar'
 RUN ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime

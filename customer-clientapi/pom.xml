@@ -8,19 +8,19 @@
         <version>3.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>customer-clientapi</artifactId>
+    <artifactId>customer.clientapi</artifactId>
 
     <!-- 打包方式 -->
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>com.arbfintech.microservice</groupId>
-            <artifactId>customer-object</artifactId>
+            <artifactId>customer.object</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.arbfintech.microservice</groupId>
-            <artifactId>customer-restapi</artifactId>
+            <artifactId>customer.restapi</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

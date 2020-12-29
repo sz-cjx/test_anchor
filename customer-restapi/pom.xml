@@ -10,7 +10,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>customer-restapi</artifactId>
+    <artifactId>customer.restapi</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -58,7 +58,7 @@
 
         <dependency>
             <groupId>com.arbfintech.microservice</groupId>
-            <artifactId>customer-object</artifactId>
+            <artifactId>customer.object</artifactId>
             <version>${parent.version}</version>
         </dependency>
         <dependency>
