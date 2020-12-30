@@ -1,7 +1,7 @@
-package com.arbfintech.microservice.customer.restapi.controller.business;
+package com.arbfintech.microservice.customer.restapi.controller;
 
-import com.arbfintech.microservice.customer.restapi.future.business.CustomerFuture;
-import com.arbfintech.microservice.customer.restapi.object.entity.Customer;
+import com.arbfintech.microservice.customer.object.entity.Customer;
+import com.arbfintech.microservice.customer.restapi.future.CustomerFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
  */
 @Validated
 @RestController
-@RequestMapping("/business")
 public class CustomerController {
 
     @Autowired

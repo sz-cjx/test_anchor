@@ -1,6 +1,8 @@
-package com.arbfintech.microservice.customer.restapi.object.enumerate;
+package com.arbfintech.microservice.customer.object.enumerate;
 
-public enum CustomerOptInTypeEnum implements CustomerBaseEnum {
+import com.arbfintech.framework.component.core.base.BaseEnum;
+
+public enum CustomerOptInTypeEnum implements BaseEnum {
 
     /**
      * email
@@ -28,7 +30,6 @@ public enum CustomerOptInTypeEnum implements CustomerBaseEnum {
         return this.text;
     }
 
-    @Override
     public String getCode() {
         return code;
     }

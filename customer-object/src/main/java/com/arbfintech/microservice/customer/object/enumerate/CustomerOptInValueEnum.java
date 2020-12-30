@@ -1,10 +1,12 @@
-package com.arbfintech.microservice.customer.restapi.object.enumerate;
+package com.arbfintech.microservice.customer.object.enumerate;
+
+import com.arbfintech.framework.component.core.base.BaseEnum;
 
 /**
  * @author Fly_Roushan
  * @date 2020/11/30
  */
-public enum CustomerOptInValueEnum implements CustomerBaseEnum {
+public enum CustomerOptInValueEnum implements BaseEnum {
 
     /**
      * Do Not Call
@@ -42,7 +44,6 @@ public enum CustomerOptInValueEnum implements CustomerBaseEnum {
         return this.text;
     }
 
-    @Override
     public String getCode() {
         return this.code;
     }

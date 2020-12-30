@@ -1,9 +1,9 @@
-package com.arbfintech.microservice.customer.restapi.future.business;
+package com.arbfintech.microservice.customer.restapi.future;
 
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.microservice.customer.restapi.object.entity.Customer;
-import com.arbfintech.microservice.customer.restapi.object.enumerate.CustomerErrorCode;
+import com.arbfintech.microservice.customer.object.entity.Customer;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerService;
 import org.apache.commons.lang3.StringUtils;

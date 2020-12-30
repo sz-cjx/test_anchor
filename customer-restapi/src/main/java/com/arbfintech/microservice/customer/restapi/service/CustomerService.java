@@ -4,7 +4,7 @@ import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
-import com.arbfintech.microservice.customer.restapi.object.entity.Customer;
+import com.arbfintech.microservice.customer.object.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.restapi.object.entity;
+package com.arbfintech.microservice.customer.object.entity;
 
 import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;

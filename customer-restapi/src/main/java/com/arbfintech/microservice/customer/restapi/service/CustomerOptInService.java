@@ -3,9 +3,9 @@ package com.arbfintech.microservice.customer.restapi.service;
 import com.alibaba.fastjson.JSON;
 import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
-import com.arbfintech.microservice.customer.restapi.object.entity.CustomerOptInData;
-import com.arbfintech.microservice.customer.restapi.object.enumerate.CustomerOptInTypeEnum;
-import com.arbfintech.microservice.customer.restapi.object.enumerate.CustomerOptInValueEnum;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInTypeEnum;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValueEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
