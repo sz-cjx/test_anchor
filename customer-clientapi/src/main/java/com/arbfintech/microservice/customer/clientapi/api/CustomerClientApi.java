@@ -4,7 +4,7 @@ import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.microservice.customer.restapi.object.entity.Customer;
+import com.arbfintech.microservice.customer.object.entity.Customer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +18,7 @@ public class CustomerClientApi extends BaseClientApi {
 
     public Long createCustomer(Customer customer) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestTemplate.postByRequestBody(
-                generateUrl(CUSTOMER_REST_API, "/business/operation/create-customer"),
+                generateUrl(CUSTOMER_REST_API, "/customer/create"),
                 customer,
                 AjaxResult.class
         );
@@ -27,7 +27,7 @@ public class CustomerClientApi extends BaseClientApi {
 
     public Long searchCustomer(String email) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestTemplate.getByQuery(
-                generateUrl(CUSTOMER_REST_API, "/business/operation/search-customer"),
+                generateUrl(CUSTOMER_REST_API, "/customer/search"),
                 new MultiValueManager().add("email", email).getMap(),
                 AjaxResult.class
         );

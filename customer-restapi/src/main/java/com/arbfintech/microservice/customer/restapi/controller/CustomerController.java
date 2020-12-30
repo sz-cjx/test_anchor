@@ -17,14 +17,14 @@ public class CustomerController {
     @Autowired
     private CustomerFuture customerFuture;
 
-    @PostMapping("/operation/create-customer")
+    @PostMapping("/customer/create")
     public CompletableFuture<String> createCustomer(
             @RequestBody Customer customer
     ) {
         return customerFuture.createCustomer(customer);
     }
 
-    @GetMapping("/operation/search-customer")
+    @GetMapping("/customer/search")
     public CompletableFuture<String> searchCustomer(
             @RequestParam(required = false) String email
     ) {
