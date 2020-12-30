@@ -6,6 +6,7 @@ import com.arbfintech.microservice.customer.object.entity.Customer;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerService;
+import com.arbfintech.microservice.customer.restapi.util.ResultUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,24 +34,18 @@ public class CustomerFuture {
     public CompletableFuture<String> createCustomer(Customer customer) {
         return CompletableFuture.supplyAsync(() -> {
             try {
+                if (StringUtils.isAnyBlank(customer.getSsn(), customer.getEmail())) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
+                }
+
                 Customer customerDb = customerService.checkCustomer(customer.getEmail(), customer.getSsn());
                 if (Objects.nonNull(customerDb)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
                 }
                 customer.setStatus(-1);
                 Long id = customerService.addCustomer(customer);
-
-                if (id > 0) {
-                    LOGGER.info("[Create Customer] Create customer success");
-                } else {
-                    LOGGER.warn("[Create Customer] Create customer failed");
-                }
-                Long row = customerOptInService.initCustomerOptIn(id);
-                if (row > 0) {
-                    LOGGER.info("[Create Customer] Init customer opt in success");
-                } else {
-                    LOGGER.warn("[Create Customer] Init customer opt in failed");
-                }
+                ResultUtil.checkResult(id, CustomerErrorCode.CREATE_FAILURE_CUSTOMER_SAVE);
+                ResultUtil.checkResult(customerOptInService.initCustomerOptIn(id), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
 
                 return AjaxResult.success(id);
             } catch (ProcedureException e) {
