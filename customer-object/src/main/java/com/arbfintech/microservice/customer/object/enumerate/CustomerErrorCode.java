@@ -10,7 +10,8 @@ public enum CustomerErrorCode implements BaseError {
     QUERY_FAILURE_MISS_REQUIRED_PARAM(-81010104, "Miss required param"),
 
     CREATE_FAILURE_CUSTOMER_SAVE(-81010201, "Create failed, save customer"),
-    CREATE_FAILURE_OPT_IN_SAVE(-81010202, "Create failed, save opt in");
+    CREATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010202, "Create failed, save customer profile"),
+    CREATE_FAILURE_OPT_IN_SAVE(-81010203, "Create failed, save opt in");
 
     private Integer code;
     private String message;

@@ -2,7 +2,7 @@
 arb:
   service:
     name: customer-restapi
-    port: 9102
+    port: 8101
 eureka:
   instance:
     instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}

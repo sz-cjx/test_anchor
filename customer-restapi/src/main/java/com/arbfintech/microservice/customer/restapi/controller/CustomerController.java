@@ -1,10 +1,11 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
-import com.arbfintech.microservice.customer.object.entity.Customer;
+import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.microservice.customer.restapi.future.CustomerFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -19,15 +20,17 @@ public class CustomerController {
 
     @PostMapping("/customer/create")
     public CompletableFuture<String> createCustomer(
-            @RequestBody Customer customer
+            @RequestBody JSONObject dataJson
     ) {
-        return customerFuture.createCustomer(customer);
+        return customerFuture.createCustomer(dataJson);
     }
 
     @GetMapping("/customer/search")
     public CompletableFuture<String> searchCustomer(
-            @RequestParam(required = false) String email
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String email,
+            @RequestParam List<String> features
     ) {
-        return customerFuture.searchCustomer(email);
+        return customerFuture.searchCustomer(id, email, features);
     }
 }

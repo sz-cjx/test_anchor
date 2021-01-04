@@ -4,15 +4,16 @@ import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;
 import com.arbfintech.framework.component.core.annotation.Id;
 
+/**
+ * @author Fly_Roushan
+ * @date 2021/1/4
+ */
 @Entity
-public class CustomerOptInData {
+public class CustomerOptIn {
 
     @Id
     @Column
     private Long id;
-
-    @Column
-    private Long customerId;
 
     @Column
     private Integer optInType;
@@ -26,12 +27,12 @@ public class CustomerOptInData {
     @Column
     private Long updatedAt;
 
-    public CustomerOptInData() {
+    public CustomerOptIn() {
 
     }
 
-    public CustomerOptInData(Long customerId, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
-        this.customerId = customerId;
+    public CustomerOptIn(Long id, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
+        this.id = id;
         this.optInType = optInType;
         this.optInValue = optInValue;
         this.createdAt = createdAt;
@@ -44,14 +45,6 @@ public class CustomerOptInData {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
     }
 
     public Integer getOptInType() {
