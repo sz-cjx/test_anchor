@@ -6,8 +6,8 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.SimpleService;
-import com.arbfintech.microservice.customer.object.constant.CustomerFeatureConst;
-import com.arbfintech.microservice.customer.object.constant.JsonKeyConst;
+import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.Customer;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,10 +54,10 @@ public class CustomerFuture {
                 }
 
                 String uniqueCode = CustomerUtil.generateUniqueCode(
-                        dataJson.getString(JsonKeyConst.SSN),
-                        dataJson.getString(JsonKeyConst.EMAIL),
-                        dataJson.getString(JsonKeyConst.BANK_ROUTING_NO),
-                        dataJson.getString(JsonKeyConst.BANK_ACCOUNT_NO)
+                        dataJson.getString(CustomerJsonKey.SSN),
+                        dataJson.getString(CustomerJsonKey.EMAIL),
+                        dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
+                        dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
                 );
 
                 Customer customerDb = simpleService.findByOptions(Customer.class,
@@ -92,12 +93,11 @@ public class CustomerFuture {
                 if (StringUtils.isAllBlank(String.valueOf(id), email)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
                 }
-                JSONObject resultJson = new JSONObject();
-                CustomerProfile customerProfile = customerProfileService.searchCustomerProfile(id, email);
-                if (Objects.isNull(customerProfile)) {
+                JSONObject resultJson = customerProfileService.searchCustomerProfile(id, email);
+                if (CollectionUtils.isEmpty(resultJson)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
                 }
-                cascadeFeatureByCustomerId(customerProfile.getId(), features, resultJson);
+                cascadeFeatureByCustomerId(resultJson.getLong(CustomerJsonKey.ID), features, resultJson);
                 return AjaxResult.success(resultJson);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
@@ -107,19 +107,22 @@ public class CustomerFuture {
     }
 
     private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
+        if (featureArray == null) {
+            return;
+        }
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual("id", customerId, null);
         for (String feature : featureArray) {
             switch (feature) {
-                case CustomerFeatureConst.CUSTOMER:
+                case CustomerFeatureKey.CUSTOMER:
                     Customer customer = simpleService.findByOptions(Customer.class, sqlOption.toString());
                     dataJson.putAll(JSON.parseObject(JSON.toJSONString(customer)));
                     break;
-                case CustomerFeatureConst.OPT_IN:
+                case CustomerFeatureKey.OPT_IN:
                     CustomerOptIn customerOptIn = simpleService.findByOptions(CustomerOptIn.class, sqlOption.toString());
                     dataJson.putAll(JSON.parseObject(JSON.toJSONString(customerOptIn)));
                     break;
-                case CustomerFeatureConst.PROFILE:
+                case CustomerFeatureKey.PROFILE:
                     CustomerProfile customerProfile = simpleService.findByOptions(CustomerProfile.class, sqlOption.toString());
                     dataJson.putAll(JSON.parseObject(JSON.toJSONString(customerProfile)));
                     break;

@@ -6,7 +6,7 @@ import com.arbfintech.framework.component.core.base.BaseEnum;
  * @author Fly_Roushan
  * @date 2020/11/30
  */
-public enum CustomerOptInValueEnum implements BaseEnum {
+public enum CustomerOptInValue implements BaseEnum {
 
     /**
      * Do Not Call
@@ -28,7 +28,7 @@ public enum CustomerOptInValueEnum implements BaseEnum {
      */
     IS_OPERATION(16, "Is Operation", "isOperation");
 
-    CustomerOptInValueEnum(Integer value, String text, String code) {
+    CustomerOptInValue(Integer value, String text, String code) {
         this.value = value;
         this.text = text;
         this.code = code;

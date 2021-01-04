@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInTypeEnum;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValueEnum;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +27,10 @@ public class CustomerOptInService {
 
     public Long initCustomerOptIn(Long id) {
         Long time = System.currentTimeMillis();
-        Integer defaultValue = CustomerOptInValueEnum.IS_MARKETING.getValue() + CustomerOptInValueEnum.IS_OPERATION.getValue();
+        Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
         List<CustomerOptIn> customerOptInList = new ArrayList<>();
-        customerOptInList.add(new CustomerOptIn(id, CustomerOptInTypeEnum.EMAIL.getValue(), defaultValue, time, time));
-        customerOptInList.add(new CustomerOptIn(id, CustomerOptInTypeEnum.TELEPHONE.getValue(), defaultValue, time, time));
+        customerOptInList.add(new CustomerOptIn(id, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
+        customerOptInList.add(new CustomerOptIn(id, CustomerOptInType.TELEPHONE.getValue(), defaultValue, time, time));
         return simpleJdbcWriter.save(CustomerOptIn.class, JSON.toJSONString(customerOptInList));
     }
 }

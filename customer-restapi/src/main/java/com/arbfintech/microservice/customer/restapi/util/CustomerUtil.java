@@ -3,7 +3,7 @@ package com.arbfintech.microservice.customer.restapi.util;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.GlobalConst;
 import com.arbfintech.framework.component.core.util.CryptUtil;
-import com.arbfintech.microservice.customer.object.constant.JsonKeyConst;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -20,7 +20,7 @@ public class CustomerUtil {
         if (CollectionUtils.isEmpty(dataJson)) {
             return false;
         }
-        List<String> keyList = Lists.newArrayList(JsonKeyConst.SSN, JsonKeyConst.EMAIL, JsonKeyConst.BANK_ROUTING_NO, JsonKeyConst.BANK_ACCOUNT_NO);
+        List<String> keyList = Lists.newArrayList(CustomerJsonKey.SSN, CustomerJsonKey.EMAIL, CustomerJsonKey.BANK_ROUTING_NO, CustomerJsonKey.BANK_ACCOUNT_NO);
         for (String key : keyList) {
             if (StringUtils.isBlank(dataJson.getString(key))) {
                 return false;

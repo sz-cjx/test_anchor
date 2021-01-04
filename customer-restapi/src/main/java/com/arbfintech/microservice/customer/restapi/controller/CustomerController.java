@@ -29,7 +29,7 @@ public class CustomerController {
     public CompletableFuture<String> searchCustomer(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String email,
-            @RequestParam List<String> features
+            @RequestParam(required = false) List<String> features
     ) {
         return customerFuture.searchCustomer(id, email, features);
     }

@@ -2,7 +2,7 @@ package com.arbfintech.microservice.customer.object.enumerate;
 
 import com.arbfintech.framework.component.core.base.BaseEnum;
 
-public enum CustomerOptInTypeEnum implements BaseEnum {
+public enum CustomerOptInType implements BaseEnum {
 
     /**
      * email
@@ -14,7 +14,7 @@ public enum CustomerOptInTypeEnum implements BaseEnum {
      */
     TELEPHONE(2, "Telephone", "telephone");
 
-    CustomerOptInTypeEnum(Integer value, String text, String code) {
+    CustomerOptInType(Integer value, String text, String code) {
         this.value = value;
         this.text = text;
         this.code = code;
