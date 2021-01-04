@@ -1,21 +1,19 @@
-package com.arbfintech.microservice.customer.domain.entity;
+package com.arbfintech.microservice.customer.object.entity;
 
 import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;
-import com.arbfintech.framework.component.core.annotation.GeneratedValue;
 import com.arbfintech.framework.component.core.annotation.Id;
-import com.arbfintech.framework.component.core.enumerate.GenerationType;
 
+/**
+ * @author Fly_Roushan
+ * @date 2021/1/4
+ */
 @Entity
-public class Customer {
+public class CustomerProfile {
 
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column
-    private String ssn;
 
     @Column
     private String firstName;
@@ -27,10 +25,13 @@ public class Customer {
     private String lastName;
 
     @Column
+    private String ssn;
+
+    @Column
     private Integer gender;
 
     @Column
-    private Long birthday;
+    private String birthday;
 
     @Column
     private String address;
@@ -40,9 +41,6 @@ public class Customer {
 
     @Column
     private Integer state;
-
-    @Column
-    private Integer status;
 
     @Column
     private String zip;
@@ -62,23 +60,12 @@ public class Customer {
     @Column
     private Long updatedAt;
 
-    @Column
-    private String openId;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getSsn() {
-        return ssn;
-    }
-
-    public void setSsn(String ssn) {
-        this.ssn = ssn;
     }
 
     public String getFirstName() {
@@ -105,6 +92,14 @@ public class Customer {
         this.lastName = lastName;
     }
 
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
+
     public Integer getGender() {
         return gender;
     }
@@ -113,11 +108,11 @@ public class Customer {
         this.gender = gender;
     }
 
-    public Long getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Long birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -191,21 +186,5 @@ public class Customer {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

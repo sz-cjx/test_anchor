@@ -1,8 +1,8 @@
 #自定义配置
 arb:
   service:
-    name: customer-clientapi
-    port: 9102
+    name: customer-restapi
+    port: 8101
 eureka:
   instance:
     instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}
@@ -78,7 +78,7 @@ spring:
         filters: stat,wall,slf4j                    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙，此处是filter修改的地方
 ---
 spring:
-  profiles: local-v3.1
+  profiles: local-v3.2
 arb:
   eureka:
     url: localhost
@@ -86,17 +86,9 @@ arb:
     url: localhost
 ---
 spring:
-  profiles: develop-v3.1
+  profiles: develop-v3.2
 arb:
   eureka:
     url: FRAMEWORK-EUREKA-SERVER-TEST.us-west-1.elasticbeanstalk.com
   service:
-    url: MICROSERVICE-CUSTOMER-CLIENTAPI-TEST.us-west-1.elasticbeanstalk.com
----
-spring:
-  profiles: release-v3.1
-arb:
-  eureka:
-    url: framework-eureka-server-rel-v3-1.ap-southeast-1.elasticbeanstalk.com
-  service:
-    url: microservice-customer-capi-rel-v3-1.ap-southeast-1.elasticbeanstalk.com
+    url: MICROSERVICE-CUSTOMER-DEV-V3-2.us-west-1.elasticbeanstalk.com

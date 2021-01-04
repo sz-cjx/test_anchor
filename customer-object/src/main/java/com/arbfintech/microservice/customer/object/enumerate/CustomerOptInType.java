@@ -2,21 +2,22 @@ package com.arbfintech.microservice.customer.object.enumerate;
 
 import com.arbfintech.framework.component.core.base.BaseEnum;
 
-public enum CustomerOptInTypeEnum implements BaseEnum {
+public enum CustomerOptInType implements BaseEnum {
 
     /**
      * email
      */
-    EMAIL(1, "Email"),
+    EMAIL(1, "Email", "email"),
 
     /**
      * telephone
      */
-    TELEPHONE(2, "Telephone");
+    TELEPHONE(2, "Telephone", "telephone");
 
-    CustomerOptInTypeEnum(Integer value, String text) {
+    CustomerOptInType(Integer value, String text, String code) {
         this.value = value;
         this.text = text;
+        this.code = code;
     }
 
     @Override
@@ -29,7 +30,12 @@ public enum CustomerOptInTypeEnum implements BaseEnum {
         return this.text;
     }
 
+    public String getCode() {
+        return code;
+    }
+
     private Integer value;
     private String text;
+    private String code;
 
 }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>customer</artifactId>
         <groupId>com.arbfintech.microservice</groupId>
-        <version>0.0.3</version>
+        <version>3.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>customer.clientapi</artifactId>
@@ -20,55 +20,8 @@
         </dependency>
         <dependency>
             <groupId>com.arbfintech.microservice</groupId>
-            <artifactId>customer.domain</artifactId>
+            <artifactId>customer.restapi</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <!--排除默认日志依赖-->
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- spring-boot hot deployment -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- spring-boot maven plugin -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
