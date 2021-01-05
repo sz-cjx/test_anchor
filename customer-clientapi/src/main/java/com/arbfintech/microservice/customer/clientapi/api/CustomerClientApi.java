@@ -47,4 +47,12 @@ public class CustomerClientApi extends BaseClientApi {
                 String.class
         );
     }
+
+    public String updateCustomerOptInData(String dataStr) {
+        return simpleRestTemplate.postByRequestBody(
+                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/update"),
+                dataStr,
+                String.class
+        );
+    }
 }

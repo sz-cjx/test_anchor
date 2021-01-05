@@ -22,4 +22,11 @@ public class CustomerOptInController {
     ) {
         return customerOptInFuture.getCustomerOptInByCondition(condition);
     }
+
+    @PostMapping("/update")
+    public CompletableFuture<String> updateCustomerOptInData(
+            @RequestBody String dataStr
+    ) {
+        return customerOptInFuture.updateCustomerOptInData(dataStr);
+    }
 }

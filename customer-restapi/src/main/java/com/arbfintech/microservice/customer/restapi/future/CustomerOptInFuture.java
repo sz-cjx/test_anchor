@@ -34,4 +34,18 @@ public class CustomerOptInFuture {
         });
     }
 
+    public CompletableFuture<String> updateCustomerOptInData(String dataStr) {
+        return CompletableFuture.supplyAsync(() -> {
+            String ajaxResultStr;
+            try {
+                customerOptInService.updateCustomerOptInData(dataStr);
+                ajaxResultStr = AjaxResult.success();
+            } catch (Exception e) {
+                LOGGER.warn("[Replace Customer Opt-In Data]Failed to replace customer opt-in data. Request Parameters:{}", dataStr, e);
+                ajaxResultStr = AjaxResult.failure();
+            }
+            return ajaxResultStr;
+        });
+    }
+
 }

@@ -2,6 +2,7 @@ package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
@@ -10,6 +11,9 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
+import com.arbfintech.microservice.customer.restapi.repository.CustomerWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +37,11 @@ public class CustomerOptInService {
 
     @Autowired
     private CustomerReader customerReader;
+
+    @Autowired
+    private CustomerWriter customerWriter;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerOptInService.class);
 
     public Long initCustomerOptIn(Long id) {
         Long time = System.currentTimeMillis();
@@ -60,5 +69,13 @@ public class CustomerOptInService {
         }
         return customerOptIn;
     }
+
+    public void updateCustomerOptInData(String dataStr) {
+        Long resultCode = customerWriter.updateCustomerOptInData(dataStr);
+        if (resultCode < CodeConst.SUCCESS) {
+            LOGGER.warn("[Replace Customer Opt-In Data]Failed to replace customer opt-in data. Request Parameters:{}", dataStr);
+        }
+    }
+
 
 }
