@@ -39,4 +39,12 @@ public class CustomerClientApi extends BaseClientApi {
         );
         return fetchResultDataObject(ajaxResult, JSONObject.class);
     }
+
+    public String getCustomerOptInByCondition(String condition) {
+        return simpleRestTemplate.postByRequestBody(
+                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/get"),
+                condition,
+                String.class
+        );
+    }
 }

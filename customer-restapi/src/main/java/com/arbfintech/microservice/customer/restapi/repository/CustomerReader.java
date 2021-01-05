@@ -1,9 +1,11 @@
 package com.arbfintech.microservice.customer.restapi.repository;
 
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
+import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
-import org.apache.commons.lang.StringUtils;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -37,4 +39,12 @@ public class CustomerReader extends BaseJdbcReader {
 
         return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnJson);
     }
+
+    public CustomerOptIn getCustomerOptInByCondition(Long customerId, Long optInType) {
+        SqlOption optInOption = SqlOption.getInstance();
+        optInOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
+        optInOption.whereFormat(ConditionTypeConst.AND, "opt_in_type = '%d'", optInType);
+        return findByOptions(CustomerOptIn.class, optInOption.toString());
+    }
+
 }
