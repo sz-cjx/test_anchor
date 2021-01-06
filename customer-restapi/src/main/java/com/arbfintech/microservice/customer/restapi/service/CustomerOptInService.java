@@ -73,7 +73,7 @@ public class CustomerOptInService {
         return customerOptIn;
     }
 
-    public void updateCustomerOptInData(String dataStr) throws ProcedureException {
+    public void updateCustomerOptInData(String dataStr){
         JSONArray dataArray = JSON.parseArray(dataStr);
         dataArray.forEach(dataObject -> {
             JSONObject dataJson = (JSONObject) dataObject;
@@ -83,12 +83,8 @@ public class CustomerOptInService {
                 dataJson.put(CustomerJsonConst.CREATED_AT, currentTimestamp);
             }
             dataJson.put(CustomerJsonConst.UPDATED_AT, currentTimestamp);
+            customerWriter.save(CustomerOptIn.class,dataJson.toJSONString());
         });
-        Long resultCode = customerWriter.updateCustomerOptInData(dataArray);
-        if (resultCode < CodeConst.SUCCESS) {
-            LOGGER.warn("[Replace Customer Opt-In Data]Failed to update customer opt-in data. Request Parameters:{}", dataStr);
-            throw new ProcedureException(CustomerErrorCode.DEFAULT);
-        }
     }
 
     public List<CustomerOptIn> listCustomerOptInData(Long customerId) {
