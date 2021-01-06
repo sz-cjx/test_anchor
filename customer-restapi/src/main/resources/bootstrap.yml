@@ -14,7 +14,7 @@ eureka:
   client:
     healthcheck: enabled
     service-url:
-      defaultZone: http://${arb.eureka.url}:8901/eureka/
+      defaultZone: http://${arb.eureka.url}/eureka/
 
 server:
   max-http-header-size: 10240
