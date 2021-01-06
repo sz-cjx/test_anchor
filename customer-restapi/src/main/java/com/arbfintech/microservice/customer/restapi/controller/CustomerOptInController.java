@@ -20,6 +20,13 @@ public class CustomerOptInController {
         return customerOptInFuture.getCustomerOptInByCondition(condition);
     }
 
+    @GetMapping("/list")
+    public CompletableFuture<String> listCustomerOptInData(
+            @RequestParam("customerId") Long customerId
+    ) {
+        return customerOptInFuture.listCustomerOptInData(customerId);
+    }
+
     @PutMapping("/update")
     public CompletableFuture<String> updateCustomerOptInData(
             @RequestBody String dataStr

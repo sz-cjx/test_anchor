@@ -1,13 +1,16 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonConst;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
@@ -70,12 +73,26 @@ public class CustomerOptInService {
         return customerOptIn;
     }
 
-    public void updateCustomerOptInData(String dataStr) {
-        Long resultCode = customerWriter.updateCustomerOptInData(dataStr);
+    public void updateCustomerOptInData(String dataStr) throws ProcedureException {
+        JSONArray dataArray = JSON.parseArray(dataStr);
+        dataArray.forEach(dataObject -> {
+            JSONObject dataJson = (JSONObject) dataObject;
+            Long id = dataJson.getLong(CustomerJsonConst.ID);
+            Long currentTimestamp = DateUtil.getCurrentTimestamp();
+            if (Objects.isNull(id)) {
+                dataJson.put(CustomerJsonConst.CREATED_AT, currentTimestamp);
+            }
+            dataJson.put(CustomerJsonConst.UPDATED_AT, currentTimestamp);
+        });
+        Long resultCode = customerWriter.updateCustomerOptInData(dataArray);
         if (resultCode < CodeConst.SUCCESS) {
-            LOGGER.warn("[Replace Customer Opt-In Data]Failed to replace customer opt-in data. Request Parameters:{}", dataStr);
+            LOGGER.warn("[Replace Customer Opt-In Data]Failed to update customer opt-in data. Request Parameters:{}", dataStr);
+            throw new ProcedureException(CustomerErrorCode.DEFAULT);
         }
     }
 
+    public List<CustomerOptIn> listCustomerOptInData(Long customerId) {
+        return customerReader.listCustomerOptInData(customerId);
+    }
 
 }

@@ -4,6 +4,10 @@ import com.arbfintech.framework.component.core.base.BaseError;
 
 public enum CustomerErrorCode implements BaseError {
 
+    SUCCESS(1, "Success"),
+    DEFAULT(0, "Default"),
+    FAILURE(-1, "Failure"),
+
     QUERY_FAILURE_CUSTOMER_IS_EXISTED(-81010101, "Customer is existed."),
     QUERY_FAILURE_CUSTOMER_NOT_EXISTED(-81010102, "Customer is not existed."),
     QUERY_FAILURE_SEARCH_FAILED(-81010103, "Search failed, please enter at least one condition."),

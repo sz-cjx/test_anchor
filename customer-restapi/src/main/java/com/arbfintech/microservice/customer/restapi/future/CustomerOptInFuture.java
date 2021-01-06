@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -34,15 +35,28 @@ public class CustomerOptInFuture {
         });
     }
 
+    public CompletableFuture<String> listCustomerOptInData(Long customerId) {
+        return CompletableFuture.supplyAsync(() -> {
+            String ajaxResultStr;
+            try {
+                List<CustomerOptIn> customerOptInList = customerOptInService.listCustomerOptInData(customerId);
+                ajaxResultStr = AjaxResult.success(customerOptInList);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+                ajaxResultStr = AjaxResult.failure(CustomerErrorCode.QUERY_FAILURE_NO_DATA_WAS_QUERIED);
+            }
+            return ajaxResultStr;
+        });
+    }
+
     public CompletableFuture<String> updateCustomerOptInData(String dataStr) {
         return CompletableFuture.supplyAsync(() -> {
             String ajaxResultStr;
             try {
                 customerOptInService.updateCustomerOptInData(dataStr);
                 ajaxResultStr = AjaxResult.success();
-            } catch (Exception e) {
-                LOGGER.warn("[Replace Customer Opt-In Data]Failed to replace customer opt-in data. Request Parameters:{}", dataStr, e);
-                ajaxResultStr = AjaxResult.failure();
+            } catch (ProcedureException e) {
+                ajaxResultStr = AjaxResult.failure(e);
             }
             return ajaxResultStr;
         });

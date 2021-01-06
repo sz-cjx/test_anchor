@@ -9,6 +9,7 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,9 +43,15 @@ public class CustomerReader extends BaseJdbcReader {
 
     public CustomerOptIn getCustomerOptInByCondition(Long customerId, Long optInType) {
         SqlOption optInOption = SqlOption.getInstance();
-        optInOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
+        optInOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);
         optInOption.whereFormat(ConditionTypeConst.AND, "opt_in_type = '%d'", optInType);
         return findByOptions(CustomerOptIn.class, optInOption.toString());
+    }
+
+    public List<CustomerOptIn> listCustomerOptInData(Long customerId) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);
+        return findAllByOptions(CustomerOptIn.class, sqlOption.toString());
     }
 
 }
