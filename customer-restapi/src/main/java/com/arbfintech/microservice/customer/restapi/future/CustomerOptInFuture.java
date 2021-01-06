@@ -55,8 +55,9 @@ public class CustomerOptInFuture {
             try {
                 customerOptInService.updateCustomerOptInData(dataStr);
                 ajaxResultStr = AjaxResult.success();
-            } catch (ProcedureException e) {
-                ajaxResultStr = AjaxResult.failure(e);
+            } catch (Exception e) {
+                LOGGER.warn("[Replace Customer Opt-In Data]Failed to update customer opt-in data. Request Parameters:{}", dataStr, e);
+                ajaxResultStr = AjaxResult.failure();
             }
             return ajaxResultStr;
         });

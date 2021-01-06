@@ -15,6 +15,7 @@ public class CustomerOptIn {
     @Column
     private Long id;
 
+    @Id
     @Column
     private Integer optInType;
 
