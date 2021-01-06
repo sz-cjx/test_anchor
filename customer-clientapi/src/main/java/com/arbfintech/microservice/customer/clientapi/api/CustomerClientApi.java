@@ -3,6 +3,7 @@ package com.arbfintech.microservice.customer.clientapi.api;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
+import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import org.springframework.stereotype.Component;
@@ -38,5 +39,31 @@ public class CustomerClientApi extends BaseClientApi {
                 AjaxResult.class
         );
         return fetchResultDataObject(ajaxResult, JSONObject.class);
+    }
+
+    public String getCustomerOptInByCondition(String condition) {
+        return simpleRestTemplate.postByRequestBody(
+                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/get"),
+                condition,
+                String.class
+        );
+    }
+
+    public String updateCustomerOptInData(String dataStr) {
+        return simpleRestTemplate.putByRequestBody(
+                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/update"),
+                dataStr,
+                String.class
+        );
+    }
+
+    public String listCustomerOptInData(Long customerId) {
+        return simpleRestTemplate.getByQuery(
+                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/list"),
+                HttpParamVariable.getInstance()
+                        .addParam("customerId", customerId)
+                        .getParamMap(),
+                String.class
+        );
     }
 }

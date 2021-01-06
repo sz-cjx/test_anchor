@@ -18,10 +18,5 @@
             <artifactId>customer.object</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.arbfintech.microservice</groupId>
-            <artifactId>customer.restapi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>
