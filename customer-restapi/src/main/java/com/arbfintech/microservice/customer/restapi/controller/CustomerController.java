@@ -27,10 +27,26 @@ public class CustomerController {
 
     @GetMapping("/customer/search")
     public CompletableFuture<String> searchCustomer(
-            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) List<String> features
+            @RequestParam(required = false) String openId
     ) {
-        return customerFuture.searchCustomer(id, email, features);
+        return customerFuture.searchCustomer(email, openId);
+    }
+
+    @GetMapping("/customer/load-features")
+    public CompletableFuture<String> loadFeatures(
+            @RequestParam Long customerId,
+            @RequestParam List<String> features
+    ) {
+        return customerFuture.loadFeatures(customerId, features);
+    }
+
+    @PutMapping("/customer/update-features")
+    public CompletableFuture<String> updateFeatures(
+            @RequestParam(required = false) String openId,
+            @RequestParam List<String> features,
+            @RequestBody String dataJson
+    ) {
+        return customerFuture.updateFeatures(openId, features,dataJson);
     }
 }

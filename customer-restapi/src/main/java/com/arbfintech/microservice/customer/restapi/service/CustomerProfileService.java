@@ -19,7 +19,7 @@ public class CustomerProfileService {
     @Autowired
     private CustomerReader customerReader;
 
-    public JSONObject searchCustomerProfile(Long id, String email) {
-        return customerReader.findByIdOrEmail(id, email);
+    public JSONObject searchCustomerProfile(String openId, String email) {
+        return customerReader.findByEmailOrOpenId(openId, email);
     }
 }

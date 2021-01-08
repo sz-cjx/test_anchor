@@ -10,9 +10,14 @@ public enum CustomerOptInType implements BaseEnum {
     EMAIL(1, "Email", "email"),
 
     /**
-     * telephone
+     * homephone
      */
-    TELEPHONE(2, "Telephone", "telephone");
+    HOME_PHONE(2, "Home Phone", "HOME_PHONE"),
+
+    /**
+     * cellphone
+     */
+    CELL_PHONE (3, "Cell Phone", "CELL_PHONE");
 
     CustomerOptInType(Integer value, String text, String code) {
         this.value = value;

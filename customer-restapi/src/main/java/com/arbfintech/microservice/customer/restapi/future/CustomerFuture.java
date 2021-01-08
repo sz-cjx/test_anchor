@@ -12,6 +12,8 @@ import com.arbfintech.microservice.customer.object.entity.Customer;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
+import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
@@ -23,9 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -45,6 +45,9 @@ public class CustomerFuture {
 
     @Autowired
     private SimpleService simpleService;
+
+    @Autowired
+    private CustomerReader customerReader;
 
     public CompletableFuture<String> createCustomer(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
@@ -87,25 +90,6 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> searchCustomer(Long id, String email, List<String> features) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                if (StringUtils.isAllBlank(String.valueOf(id), email)) {
-                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
-                }
-                JSONObject resultJson = customerProfileService.searchCustomerProfile(id, email);
-                if (CollectionUtils.isEmpty(resultJson)) {
-                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
-                }
-                cascadeFeatureByCustomerId(resultJson.getLong(CustomerJsonKey.ID), features, resultJson);
-                return AjaxResult.success(resultJson);
-            } catch (ProcedureException e) {
-                LOGGER.warn(e.getMessage());
-                return AjaxResult.failure(e);
-            }
-        });
-    }
-
     private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
         if (featureArray == null) {
             return;
@@ -132,4 +116,86 @@ public class CustomerFuture {
             }
         }
     }
+
+    public CompletableFuture<String> searchCustomer(String email, String openId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (StringUtils.isAllBlank(email, openId)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
+                }
+                JSONObject resultJson = customerProfileService.searchCustomerProfile(openId, email);
+                if (CollectionUtils.isEmpty(resultJson)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+                }
+                return AjaxResult.success(resultJson);
+            } catch (ProcedureException e) {
+                LOGGER.warn(e.getMessage());
+                return AjaxResult.failure(e);
+            }
+        });
+    }
+
+    public CompletableFuture<String> loadFeatures(Long id, List<String> features) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (StringUtils.isBlank(String.valueOf(id))) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
+                }
+                JSONObject featureJson = new JSONObject();
+                cascadeFeatureByCustomerId(id, features, featureJson);
+                return AjaxResult.success(featureJson);
+            } catch (ProcedureException e) {
+                LOGGER.warn(e.getMessage());
+                return AjaxResult.failure(e);
+            }
+        });
+    }
+
+    public CompletableFuture<String> updateFeatures(String openId, List<String> features, String dataStr) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (StringUtils.isBlank(openId)) {
+                LOGGER.warn("Open id can't be null");
+                return AjaxResult.failure();
+            }
+            Customer customerDb = simpleService.findByOptions(Customer.class,
+                    SqlOption.getInstance().whereEqual("open_id", openId, null).toString()
+            );
+            if (Objects.isNull(customerDb)) {
+                LOGGER.warn("Customer is not existed Open id:{}", openId);
+                return AjaxResult.failure();
+            }
+            Long id = customerDb.getId();
+            JSONObject rawJson = JSON.parseObject(dataStr);
+            if (Objects.isNull(rawJson)) {
+                LOGGER.warn("DataStr is invalid");
+                return AjaxResult.failure();
+            }
+            JSONObject optIn = rawJson.getJSONObject(CustomerFeatureKey.OPT_IN);
+            if (Objects.nonNull(optIn)) {
+                Integer emailOptInValue = optIn.getInteger(CustomerJsonKey.EMAIL);
+                Integer cellPhoneOptInValue = optIn.getInteger(CustomerJsonKey.CELL_PHONE);
+                Integer homePhoneOptInValue = optIn.getInteger(CustomerJsonKey.HOME_PHONE);
+                if (Objects.nonNull(emailOptInValue)) {
+                    CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.EMAIL.getValue().longValue());
+                    customerOptInDb.setOptInValue(emailOptInValue);
+                    customerOptInService.updateCustomerOptInData(customerOptInDb.toString());
+                }
+                if (Objects.nonNull(cellPhoneOptInValue)) {
+                    CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.HOME_PHONE.getValue().longValue());
+                    customerOptInDb.setOptInValue(cellPhoneOptInValue);
+                    customerOptInService.updateCustomerOptInData(customerOptInDb.toString());
+                }
+                if (Objects.nonNull(homePhoneOptInValue)) {
+                    CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.CELL_PHONE.getValue().longValue());
+                    customerOptInDb.setOptInValue(cellPhoneOptInValue);
+                    customerOptInService.updateCustomerOptInData(customerOptInDb.toString());
+                }
+                return AjaxResult.success();
+            } else {
+                LOGGER.warn("DataStr is invalid");
+                return AjaxResult.failure();
+            }
+        });
+    }
+
 }

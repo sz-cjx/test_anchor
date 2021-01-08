@@ -51,7 +51,7 @@ public class CustomerOptInService {
         Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
         List<CustomerOptIn> customerOptInList = new ArrayList<>();
         customerOptInList.add(new CustomerOptIn(id, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
-        customerOptInList.add(new CustomerOptIn(id, CustomerOptInType.TELEPHONE.getValue(), defaultValue, time, time));
+        customerOptInList.add(new CustomerOptIn(id, CustomerOptInType.CELL_PHONE.getValue(), defaultValue, time, time));
         return simpleJdbcWriter.save(CustomerOptIn.class, JSON.toJSONString(customerOptInList));
     }
 
@@ -90,5 +90,4 @@ public class CustomerOptInService {
     public List<CustomerOptIn> listCustomerOptInData(Long customerId) {
         return customerReader.listCustomerOptInData(customerId);
     }
-
 }
