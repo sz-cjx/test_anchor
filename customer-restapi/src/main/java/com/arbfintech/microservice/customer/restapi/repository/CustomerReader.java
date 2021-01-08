@@ -54,4 +54,26 @@ public class CustomerReader extends BaseJdbcReader {
         return findAllByOptions(CustomerOptIn.class, sqlOption.toString());
     }
 
+    public JSONObject findByEmailOrOpenId(String email, String openId) {
+        Map<String, Object> paramMap = new HashMap<>(2);
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * ");
+        sb.append("FROM ");
+        sb.append("customer c ");
+        sb.append("LEFT JOIN ");
+        sb.append("customer_profile cp ");
+        sb.append("ON ");
+        sb.append("c.id = cp.id ");
+        sb.append("WHERE ");
+        if (openId != null) {
+            sb.append("c.openId =:openId");
+        } else {
+            sb.append("cp.email =:email");
+        }
+
+        paramMap.put(CustomerJsonKey.OPEN_ID, openId);
+        paramMap.put(CustomerJsonKey.EMAIL, email);
+
+        return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnJson);
+    }
 }
