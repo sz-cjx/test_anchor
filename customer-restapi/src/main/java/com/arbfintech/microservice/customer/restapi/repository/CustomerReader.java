@@ -3,6 +3,7 @@ package com.arbfintech.microservice.customer.restapi.repository;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
+import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
@@ -54,8 +55,7 @@ public class CustomerReader extends BaseJdbcReader {
         return findAllByOptions(CustomerOptIn.class, sqlOption.toString());
     }
 
-    public JSONObject findByEmailOrOpenId(String openId, String email) {
-        Map<String, Object> paramMap = new HashMap<>(2);
+    public JSONObject findByEmailOrOpenId(JSONObject requestPram) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * ");
         sb.append("FROM ");
@@ -64,15 +64,15 @@ public class CustomerReader extends BaseJdbcReader {
         sb.append("customer_profile cp ");
         sb.append("ON ");
         sb.append("c.id = cp.id ");
-        sb.append("WHERE ");
-        if (openId != null) {
-            sb.append("c.open_id =:openId");
-        } else {
-            sb.append("cp.email =:email");
+        sb.append("WHERE 1=1 ");
+
+        for (String key : requestPram.keySet()) {
+            sb.append(" AND cp.");
+            sb.append(StringUtil.humpToLine(key));
+            sb.append(" = ");
+            sb.append(requestPram.getString(key));
         }
 
-        paramMap.put(CustomerJsonKey.OPEN_ID, openId);
-        paramMap.put(CustomerJsonKey.EMAIL, email);
-        return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnJson);
+        return namedJdbcTemplate().query(sb.toString(), new HashMap<>(), this::returnJson);
     }
 }

@@ -120,13 +120,16 @@ public class CustomerFuture {
         }
     }
 
-    public CompletableFuture<String> searchCustomer(String email, String openId) {
+    public CompletableFuture<String> searchCustomer(CustomerProfile customerProfile) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (StringUtils.isAllBlank(email, openId)) {
+                JSONObject requestParam = JSON.parseObject(JSON.toJSONString(customerProfile));
+
+                if (CollectionUtils.isEmpty(requestParam)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
                 }
-                JSONObject resultJson = customerProfileService.searchCustomerProfile(openId, email);
+
+                JSONObject resultJson = customerProfileService.searchCustomerProfile(requestParam);
                 if (CollectionUtils.isEmpty(resultJson)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
                 }

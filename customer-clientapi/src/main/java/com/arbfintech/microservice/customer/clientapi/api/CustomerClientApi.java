@@ -38,6 +38,30 @@ public class CustomerClientApi extends BaseClientApi {
         return fetchResultDataObject(ajaxResult, JSONObject.class);
     }
 
+    public String loadFeatures(Long customerId, List<String> features) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
+                new MultiValueManager()
+                        .add("customerId", customerId)
+                        .add("features", features)
+                        .getMap()
+        );
+        checkAjaxResult(ajaxResult);
+        return ajaxResult.getDataString();
+    }
+
+    public Integer updateFeatures(JSONObject dataJson) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.put(
+                generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
+                dataJson
+        );
+        return checkAjaxResult(ajaxResult);
+    }
+
+    /**
+     * customerOptIn
+     */
+
     public String getCustomerOptInByCondition(String condition) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/customer/opt-in/get"),
@@ -66,23 +90,4 @@ public class CustomerClientApi extends BaseClientApi {
         return ajaxResult.getDataString();
     }
 
-    public String loadFeatures(Long customerId, List<String> features) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.get(
-                generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
-                new MultiValueManager()
-                        .add("customerId", customerId)
-                        .add("features", features)
-                        .getMap()
-        );
-        checkAjaxResult(ajaxResult);
-        return ajaxResult.getDataString();
-    }
-
-    public Integer updateFeatures(JSONObject dataJson) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.put(
-                generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
-                dataJson
-        );
-        return checkAjaxResult(ajaxResult);
-    }
 }
