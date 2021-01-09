@@ -48,7 +48,7 @@ public class CustomerClientApi extends BaseClientApi {
     }
 
     public Integer updateCustomerOptInData(String dataStr) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.post(
+        AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/opt-in/update"),
                 dataStr
         );
@@ -78,14 +78,10 @@ public class CustomerClientApi extends BaseClientApi {
         return ajaxResult.getDataString();
     }
 
-    public Integer updateFeatures(String openId, List<String> features, String dataJson) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.get(
+    public Integer updateFeatures(JSONObject dataJson) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
-                new MultiValueManager()
-                        .add("openId", openId)
-                        .add("features", features)
-                        .add("dataJson", dataJson)
-                        .getMap()
+                dataJson
         );
         return checkAjaxResult(ajaxResult);
     }

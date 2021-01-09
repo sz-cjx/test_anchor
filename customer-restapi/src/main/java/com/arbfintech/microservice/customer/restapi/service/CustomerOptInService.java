@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
-import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonConst;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
@@ -86,16 +85,14 @@ public class CustomerOptInService {
         CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.EMAIL.getValue().longValue());
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(customerOptInDb)) {
+            customerOptInDb = new CustomerOptIn();
             customerOptInDb.setId(id);
             customerOptInDb.setOptInType(optInType);
-            customerOptInDb.setOptInValue(optInValue);
             customerOptInDb.setCreatedAt(currentTimestamp);
-            customerWriter.save(CustomerOptIn.class, customerOptInDb.toString());
-        } else {
-            customerOptInDb.setOptInValue(optInValue);
-            customerOptInDb.setUpdatedAt(currentTimestamp);
-            customerWriter.save(CustomerOptIn.class, customerOptInDb.toString());
         }
+        customerOptInDb.setOptInValue(optInValue);
+        customerOptInDb.setUpdatedAt(currentTimestamp);
+        customerWriter.save(customerOptInDb);
     }
 
     public List<CustomerOptIn> listCustomerOptInData(Long customerId) {
