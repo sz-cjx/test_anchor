@@ -47,5 +47,5 @@ public interface CustomerJsonKey {
 
     String UPDATE_AT = "updateAt";
 
-
+    String DATA = "data";
 }
