@@ -47,6 +47,6 @@ public class CustomerController {
             @RequestParam List<String> features,
             @RequestBody String dataJson
     ) {
-        return customerFuture.updateFeatures(openId, features,dataJson);
+        return customerFuture.updateFeatures(openId, features, dataJson);
     }
 }
