@@ -28,10 +28,14 @@ public class CustomerClientApi extends BaseClientApi {
         return fetchResultDataObject(ajaxResult, Long.class);
     }
 
-    public JSONObject searchCustomer(CustomerProfile customerProfile) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.post(
+
+    public JSONObject searchCustomer(String openId, String email) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
-                customerProfile
+               new MultiValueManager()
+                        .add("email", email)
+                        .add("openId", openId)
+                        .getMap()
         );
         return fetchResultDataObject(ajaxResult, JSONObject.class);
     }
@@ -86,6 +90,14 @@ public class CustomerClientApi extends BaseClientApi {
         );
         checkAjaxResult(ajaxResult);
         return ajaxResult.getDataString();
+    }
+  
+    public Integer update(JSONObject dataJson) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.put(
+                generateUrl(CUSTOMER_REST_API, "/customer/update"),
+                dataJson
+        );
+        return checkAjaxResult(ajaxResult);
     }
 
 }

@@ -22,4 +22,30 @@ public interface CustomerJsonKey {
     String SSN = "ssn";
 
     String OPT_IN = "optIn";
+
+    String STATUS = "status";
+
+    String FIRST_NAME = "firstName";
+
+    String MIDDLE_NAME = "middleName";
+
+    String LAST_NAME = "lastName";
+
+    String GENDER = "gender";
+
+    String BIRTHDAY = "birthday";
+
+    String ADDRESS = "address";
+
+    String CITY = "city";
+
+    String STATE = "state";
+
+    String ZIP = "zip";
+
+    String CREATE_AT = "createAt";
+
+    String UPDATE_AT = "updateAt";
+
+
 }
