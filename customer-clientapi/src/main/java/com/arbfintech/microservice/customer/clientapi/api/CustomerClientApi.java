@@ -6,7 +6,6 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class CustomerClientApi extends BaseClientApi {
     public JSONObject searchCustomer(String openId, String email) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
-               new MultiValueManager()
+                new MultiValueManager()
                         .add("email", email)
                         .add("openId", openId)
                         .getMap()
@@ -52,10 +51,13 @@ public class CustomerClientApi extends BaseClientApi {
         return ajaxResult.getDataString();
     }
 
-    public Integer updateFeatures(JSONObject dataJson) throws ProcedureException {
+    public Integer updateFeatures(Long customerId, List<String> features, String data) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
-                dataJson
+                MultiValueManager.getBean()
+                        .add("customerId", customerId)
+                        .add("features", features)
+                        .add("data", data)
         );
         return checkAjaxResult(ajaxResult);
     }
@@ -91,7 +93,7 @@ public class CustomerClientApi extends BaseClientApi {
         checkAjaxResult(ajaxResult);
         return ajaxResult.getDataString();
     }
-  
+
     public Integer update(JSONObject dataJson) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update"),
