@@ -47,4 +47,11 @@ public class CustomerController {
     ) {
         return customerFuture.updateFeatures(dataJson);
     }
+
+    @PutMapping("/customer/update")
+    public CompletableFuture<String> updateCustomerProfile(
+            @RequestBody JSONObject dataJson
+    ) {
+        return customerFuture.updateCustomerProfile(dataJson);
+    }
 }

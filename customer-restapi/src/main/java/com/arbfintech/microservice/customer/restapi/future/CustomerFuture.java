@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.type.SqlOption;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.SimpleService;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
@@ -19,6 +20,7 @@ import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
 import com.arbfintech.microservice.customer.restapi.util.ResultUtil;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,15 +163,15 @@ public class CustomerFuture {
                 return AjaxResult.failure();
             }
 
-            String openId = dataJson.getString(CustomerJsonKey.OPEN_ID);
-            if (StringUtils.isBlank(openId)) {
-                LOGGER.warn("Open id can't be null");
+            String id = dataJson.getString(CustomerJsonKey.ID);
+            if (StringUtils.isBlank(id)) {
+                LOGGER.warn("Id can't be null");
                 return AjaxResult.failure();
             }
 
-            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("open_id", openId, null).toString());
+            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("id", Integer.parseInt(id), null).toString());
             if (Objects.isNull(customerDb)) {
-                LOGGER.warn("Customer is not existed Open id:{}", openId);
+                LOGGER.warn("Customer is not existed id:{}", id);
                 return AjaxResult.failure();
             }
 
@@ -183,7 +185,6 @@ public class CustomerFuture {
                     case CustomerFeatureKey.OPT_IN:
                         JSONObject optIn = dataJson.getJSONObject(CustomerJsonKey.OPT_IN);
                         if (Objects.nonNull(optIn)) {
-                            Long id = customerDb.getId();
                             Integer optInValue;
                             Integer optInType;
                             Integer emailOptInValue = optIn.getInteger(CustomerJsonKey.EMAIL);
@@ -201,7 +202,7 @@ public class CustomerFuture {
                                 optInType = CustomerOptInType.HOME_PHONE.getValue();
                             }
 
-                            customerOptInService.updateCustomerOptInData(id, optInType, optInValue);
+                            customerOptInService.updateCustomerOptInData(Long.valueOf(id).longValue(), optInType, optInValue);
                             return AjaxResult.success();
                         } else {
                             LOGGER.warn("DataStr is invalid");
@@ -212,6 +213,97 @@ public class CustomerFuture {
                         break;
                 }
             }
+            return AjaxResult.success();
+        });
+    }
+
+    public CompletableFuture<String> updateCustomerProfile(JSONObject dataJson) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (Objects.isNull(dataJson)) {
+                LOGGER.warn("DataJson is invalid");
+                return AjaxResult.failure();
+            }
+
+            String id = dataJson.getString(CustomerJsonKey.ID);
+            if (StringUtils.isBlank(id)) {
+                LOGGER.warn("Customer id can't be null");
+                return AjaxResult.failure();
+            }
+
+            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("id", Integer.parseInt(id), null).toString());
+            if (Objects.isNull(customerDb)) {
+                LOGGER.warn("Customer is not existed id:{}", id);
+                return AjaxResult.failure();
+            }
+
+            Integer status = dataJson.getInteger(CustomerJsonKey.STATUS);
+            if (Objects.nonNull(status)) {
+                customerDb.setUpdatedAt(DateUtil.getCurrentTimestamp());
+                customerDb.setStatus(status);
+                simpleService.save(customerDb);
+            }
+            CustomerProfile customerProfileDb = simpleService.findByOptions(CustomerProfile.class, SqlOption.getInstance().whereEqual("id", Integer.parseInt(id), null).toString());
+            if (Objects.isNull(customerProfileDb)) {
+                LOGGER.warn("CustomerOptIn is not existed id:{}", id);
+                return AjaxResult.failure();
+            }
+
+
+            String firstName = dataJson.getString(CustomerJsonKey.FIRST_NAME);
+            if (StringUtils.isNotBlank(firstName)) {
+                customerProfileDb.setFirstName(firstName);
+            }
+            String middleName = dataJson.getString(CustomerJsonKey.MIDDLE_NAME);
+            if (StringUtils.isNotBlank(middleName)) {
+                customerProfileDb.setMiddleName(middleName);
+            }
+            String lastName = dataJson.getString(CustomerJsonKey.LAST_NAME);
+            if (StringUtils.isNotBlank(lastName)) {
+                customerProfileDb.setMiddleName(lastName);
+            }
+            String SSN = dataJson.getString(CustomerJsonKey.SSN);
+            if (StringUtils.isNotBlank(SSN)) {
+                customerProfileDb.setLastName(SSN);
+            }
+            Integer gender = dataJson.getInteger(CustomerJsonKey.GENDER);
+            if (Objects.nonNull(gender)) {
+                customerProfileDb.setGender(gender);
+            }
+            String address = dataJson.getString(CustomerJsonKey.ADDRESS);
+            if (StringUtils.isNotBlank(address)) {
+                customerProfileDb.setAddress(address);
+            }
+            String city = dataJson.getString(CustomerJsonKey.CITY);
+            if (StringUtils.isNotBlank(city)) {
+                customerProfileDb.setFirstName(city);
+            }
+            Integer state = dataJson.getInteger(CustomerJsonKey.STATE);
+            if (Objects.nonNull(state)) {
+                customerProfileDb.setState(state);
+            }
+            String zip = dataJson.getString(CustomerJsonKey.ZIP);
+            if (StringUtils.isNotBlank(zip)) {
+                customerProfileDb.setZip(zip);
+            }
+            String homePhone = dataJson.getString(CustomerJsonKey.HOME_PHONE);
+            if (StringUtils.isNotBlank(homePhone)) {
+                customerProfileDb.setHomePhone(homePhone);
+            }
+            String cellPhone = dataJson.getString(CustomerJsonKey.CELL_PHONE);
+            if (StringUtils.isNotBlank(cellPhone)) {
+                customerProfileDb.setCellPhone(cellPhone);
+            }
+            String email = dataJson.getString(CustomerJsonKey.EMAIL);
+            if (StringUtils.isNotBlank(email)) {
+                customerProfileDb.setEmail(email);
+            }
+            String birthday = dataJson.getString(CustomerJsonKey.BIRTHDAY);
+            if (StringUtils.isNotBlank(birthday)) {
+                customerProfileDb.setBirthday(birthday);
+            }
+
+            customerDb.setUpdatedAt(DateUtil.getCurrentTimestamp());
+            simpleService.save(customerProfileDb);
             return AjaxResult.success();
         });
     }
