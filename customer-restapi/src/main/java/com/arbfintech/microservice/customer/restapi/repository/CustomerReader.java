@@ -66,14 +66,13 @@ public class CustomerReader extends BaseJdbcReader {
         sb.append("c.id = cp.id ");
         sb.append("WHERE ");
         if (openId != null) {
-            sb.append("c.openId =:openId");
+            sb.append("c.open_id =:openId");
         } else {
             sb.append("cp.email =:email");
         }
 
         paramMap.put(CustomerJsonKey.OPEN_ID, openId);
         paramMap.put(CustomerJsonKey.EMAIL, email);
-
         return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnJson);
     }
 }
