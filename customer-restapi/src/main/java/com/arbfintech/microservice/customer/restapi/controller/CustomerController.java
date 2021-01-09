@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.restapi.future.CustomerFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,27 +14,27 @@ import java.util.concurrent.CompletableFuture;
  * @date 2020/12/17
  */
 @RestController
+@RequestMapping("/customer")
 public class CustomerController {
 
     @Autowired
     private CustomerFuture customerFuture;
 
-    @PostMapping("/customer/create")
+    @PostMapping("/create")
     public CompletableFuture<String> createCustomer(
             @RequestBody JSONObject dataJson
     ) {
         return customerFuture.createCustomer(dataJson);
     }
 
-    @GetMapping("/customer/search")
+    @PostMapping("/search")
     public CompletableFuture<String> searchCustomer(
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String openId
+            @RequestBody CustomerProfile customerProfile
     ) {
-        return customerFuture.searchCustomer(email, openId);
+        return customerFuture.searchCustomer(customerProfile);
     }
 
-    @GetMapping("/customer/load-features")
+    @GetMapping("/load-features")
     public CompletableFuture<String> loadFeatures(
             @RequestParam Long customerId,
             @RequestParam List<String> features
@@ -41,7 +42,7 @@ public class CustomerController {
         return customerFuture.loadFeatures(customerId, features);
     }
 
-    @PutMapping("/customer/update-features")
+    @PutMapping("/update-features")
     public CompletableFuture<String> updateFeatures(
             @RequestBody JSONObject dataJson
     ) {
