@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.type.SqlOption;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.SimpleService;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
@@ -157,9 +158,7 @@ public class CustomerFuture {
                 LOGGER.warn("Open id can't be null");
                 return AjaxResult.failure();
             }
-            Customer customerDb = simpleService.findByOptions(Customer.class,
-                    SqlOption.getInstance().whereEqual("open_id", openId, null).toString()
-            );
+            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("open_id", openId, null).toString());
             if (Objects.isNull(customerDb)) {
                 LOGGER.warn("Customer is not existed Open id:{}", openId);
                 return AjaxResult.failure();
@@ -170,32 +169,37 @@ public class CustomerFuture {
                 LOGGER.warn("DataStr is invalid");
                 return AjaxResult.failure();
             }
-            JSONObject optIn = rawJson.getJSONObject(CustomerFeatureKey.OPT_IN);
-            if (Objects.nonNull(optIn)) {
-                Integer emailOptInValue = optIn.getInteger(CustomerJsonKey.EMAIL);
-                Integer cellPhoneOptInValue = optIn.getInteger(CustomerJsonKey.CELL_PHONE);
-                Integer homePhoneOptInValue = optIn.getInteger(CustomerJsonKey.HOME_PHONE);
-                if (Objects.nonNull(emailOptInValue)) {
-                    CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.EMAIL.getValue().longValue());
-                    customerOptInDb.setOptInValue(emailOptInValue);
-                    customerOptInService.updateCustomerOptInData(customerOptInDb.toString());
-                }
-                if (Objects.nonNull(cellPhoneOptInValue)) {
-                    CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.HOME_PHONE.getValue().longValue());
-                    customerOptInDb.setOptInValue(cellPhoneOptInValue);
-                    customerOptInService.updateCustomerOptInData(customerOptInDb.toString());
-                }
-                if (Objects.nonNull(homePhoneOptInValue)) {
-                    CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.CELL_PHONE.getValue().longValue());
-                    customerOptInDb.setOptInValue(cellPhoneOptInValue);
-                    customerOptInService.updateCustomerOptInData(customerOptInDb.toString());
-                }
-                return AjaxResult.success();
-            } else {
-                LOGGER.warn("DataStr is invalid");
+            if (features == null) {
                 return AjaxResult.failure();
             }
+            for (String feature : features) {
+                switch (feature) {
+                    case CustomerFeatureKey.OPT_IN:
+                        JSONObject optIn = rawJson.getJSONObject(CustomerFeatureKey.OPT_IN);
+                        if (Objects.nonNull(optIn)) {
+                            Integer emailOptInValue = optIn.getInteger(CustomerJsonKey.EMAIL);
+                            Integer cellPhoneOptInValue = optIn.getInteger(CustomerJsonKey.CELL_PHONE);
+                            Integer homePhoneOptInValue = optIn.getInteger(CustomerJsonKey.HOME_PHONE);
+                            if (Objects.nonNull(emailOptInValue)) {
+                                customerOptInService.updateCustomerOptInData(id, Integer.parseInt(CustomerJsonKey.EMAIL), emailOptInValue);
+                            }
+                            if (Objects.nonNull(cellPhoneOptInValue)) {
+                                customerOptInService.updateCustomerOptInData(id, Integer.parseInt(CustomerJsonKey.CELL_PHONE), cellPhoneOptInValue);
+                            }
+                            if (Objects.nonNull(homePhoneOptInValue)) {
+                                customerOptInService.updateCustomerOptInData(id, Integer.parseInt(CustomerJsonKey.HOME_PHONE), homePhoneOptInValue);
+                            }
+                            return AjaxResult.success();
+                        } else {
+                            LOGGER.warn("DataStr is invalid");
+                            return AjaxResult.failure();
+                        }
+                    default:
+                        LOGGER.warn("No such feature: {}", feature);
+                        break;
+                }
+            }
+            return AjaxResult.success();
         });
     }
-
 }
