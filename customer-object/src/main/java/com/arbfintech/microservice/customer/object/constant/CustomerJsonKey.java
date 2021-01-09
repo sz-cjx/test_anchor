@@ -35,11 +35,11 @@ public interface CustomerJsonKey {
 
     String BIRTHDAY = "birthday";
 
-    String ADDRESS="address";
+    String ADDRESS = "address";
 
     String CITY = "city";
 
-    String STATE ="state";
+    String STATE = "state";
 
     String ZIP = "zip";
 
