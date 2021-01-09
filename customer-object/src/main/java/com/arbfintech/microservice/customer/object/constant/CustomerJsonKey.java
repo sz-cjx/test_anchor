@@ -20,4 +20,6 @@ public interface CustomerJsonKey {
     String ID = "id";
 
     String SSN = "ssn";
+
+    String OPT_IN = "optIn";
 }

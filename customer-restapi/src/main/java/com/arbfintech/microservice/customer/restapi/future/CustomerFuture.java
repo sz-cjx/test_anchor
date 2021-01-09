@@ -1,11 +1,11 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.type.SqlOption;
-import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.SimpleService;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
@@ -26,7 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -152,43 +154,54 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> updateFeatures(String openId, List<String> features, String dataStr) {
+    public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
+            if (Objects.isNull(dataJson)) {
+                LOGGER.warn("DataStr is invalid");
+                return AjaxResult.failure();
+            }
+
+            String openId = dataJson.getString(CustomerJsonKey.OPEN_ID);
             if (StringUtils.isBlank(openId)) {
                 LOGGER.warn("Open id can't be null");
                 return AjaxResult.failure();
             }
+
             Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("open_id", openId, null).toString());
             if (Objects.isNull(customerDb)) {
                 LOGGER.warn("Customer is not existed Open id:{}", openId);
                 return AjaxResult.failure();
             }
-            Long id = customerDb.getId();
-            JSONObject rawJson = JSON.parseObject(dataStr);
-            if (Objects.isNull(rawJson)) {
-                LOGGER.warn("DataStr is invalid");
-                return AjaxResult.failure();
-            }
+
+            JSONArray featureArray = dataJson.getJSONArray("features");
+            List<String> features = featureArray.toJavaList(String.class);
             if (features == null) {
                 return AjaxResult.failure();
             }
             for (String feature : features) {
                 switch (feature) {
                     case CustomerFeatureKey.OPT_IN:
-                        JSONObject optIn = rawJson.getJSONObject(CustomerFeatureKey.OPT_IN);
+                        JSONObject optIn = dataJson.getJSONObject(CustomerJsonKey.OPT_IN);
                         if (Objects.nonNull(optIn)) {
+                            Long id = customerDb.getId();
+                            Integer optInValue;
+                            Integer optInType;
                             Integer emailOptInValue = optIn.getInteger(CustomerJsonKey.EMAIL);
                             Integer cellPhoneOptInValue = optIn.getInteger(CustomerJsonKey.CELL_PHONE);
                             Integer homePhoneOptInValue = optIn.getInteger(CustomerJsonKey.HOME_PHONE);
+
                             if (Objects.nonNull(emailOptInValue)) {
-                                customerOptInService.updateCustomerOptInData(id, Integer.parseInt(CustomerJsonKey.EMAIL), emailOptInValue);
+                                optInValue = emailOptInValue;
+                                optInType = CustomerOptInType.EMAIL.getValue();
+                            } else if (Objects.nonNull(cellPhoneOptInValue)) {
+                                optInValue = cellPhoneOptInValue;
+                                optInType = CustomerOptInType.CELL_PHONE.getValue();
+                            } else {
+                                optInValue = homePhoneOptInValue;
+                                optInType = CustomerOptInType.HOME_PHONE.getValue();
                             }
-                            if (Objects.nonNull(cellPhoneOptInValue)) {
-                                customerOptInService.updateCustomerOptInData(id, Integer.parseInt(CustomerJsonKey.CELL_PHONE), cellPhoneOptInValue);
-                            }
-                            if (Objects.nonNull(homePhoneOptInValue)) {
-                                customerOptInService.updateCustomerOptInData(id, Integer.parseInt(CustomerJsonKey.HOME_PHONE), homePhoneOptInValue);
-                            }
+
+                            customerOptInService.updateCustomerOptInData(id, optInType, optInValue);
                             return AjaxResult.success();
                         } else {
                             LOGGER.warn("DataStr is invalid");

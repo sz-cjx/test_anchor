@@ -43,10 +43,8 @@ public class CustomerController {
 
     @PutMapping("/customer/update-features")
     public CompletableFuture<String> updateFeatures(
-            @RequestParam(required = false) String openId,
-            @RequestParam List<String> features,
-            @RequestBody String dataJson
+            @RequestBody JSONObject dataJson
     ) {
-        return customerFuture.updateFeatures(openId, features, dataJson);
+        return customerFuture.updateFeatures(dataJson);
     }
 }
