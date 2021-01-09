@@ -3,14 +3,12 @@ package com.arbfintech.microservice.customer.restapi.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.SimpleJdbcReader;
 import com.arbfintech.framework.component.database.core.SimpleJdbcWriter;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonConst;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
@@ -31,9 +29,6 @@ import java.util.Optional;
  */
 @Service
 public class CustomerOptInService {
-
-    @Autowired
-    private SimpleJdbcReader simpleJdbcReader;
 
     @Autowired
     private SimpleJdbcWriter simpleJdbcWriter;
@@ -73,7 +68,7 @@ public class CustomerOptInService {
         return customerOptIn;
     }
 
-    public void updateCustomerOptInData(String dataStr){
+    public void updateCustomerOptInData(String dataStr) {
         JSONArray dataArray = JSON.parseArray(dataStr);
         dataArray.forEach(dataObject -> {
             JSONObject dataJson = (JSONObject) dataObject;
@@ -83,8 +78,24 @@ public class CustomerOptInService {
                 dataJson.put(CustomerJsonConst.CREATED_AT, currentTimestamp);
             }
             dataJson.put(CustomerJsonConst.UPDATED_AT, currentTimestamp);
-            customerWriter.save(CustomerOptIn.class,dataJson.toJSONString());
+            customerWriter.save(CustomerOptIn.class, dataJson.toJSONString());
         });
+    }
+
+    public void updateCustomerOptInData(Long id, Integer optInType, Integer optInValue) {
+        CustomerOptIn customerOptInDb = customerReader.getCustomerOptInByCondition(id, CustomerOptInType.EMAIL.getValue().longValue());
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        if (Objects.isNull(customerOptInDb)) {
+            customerOptInDb.setId(id);
+            customerOptInDb.setOptInType(optInType);
+            customerOptInDb.setOptInValue(optInValue);
+            customerOptInDb.setCreatedAt(currentTimestamp);
+            customerWriter.save(CustomerOptIn.class, customerOptInDb.toString());
+        } else {
+            customerOptInDb.setOptInValue(optInValue);
+            customerOptInDb.setUpdatedAt(currentTimestamp);
+            customerWriter.save(CustomerOptIn.class, customerOptInDb.toString());
+        }
     }
 
     public List<CustomerOptIn> listCustomerOptInData(Long customerId) {

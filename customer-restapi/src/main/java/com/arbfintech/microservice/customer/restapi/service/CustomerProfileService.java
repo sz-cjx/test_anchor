@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 public class CustomerProfileService {
 
     @Autowired
-    private SimpleJdbcReader simpleJdbcReader;
-
-    @Autowired
     private CustomerReader customerReader;
 
     public JSONObject searchCustomerProfile(String openId, String email) {
