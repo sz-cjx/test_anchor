@@ -20,7 +20,6 @@ import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
 import com.arbfintech.microservice.customer.restapi.util.ResultUtil;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,13 +165,13 @@ public class CustomerFuture {
                 return AjaxResult.failure();
             }
 
-            String id = dataJson.getString(CustomerJsonKey.ID);
-            if (StringUtils.isBlank(id)) {
+            Long id = dataJson.getLong(CustomerJsonKey.ID);
+            if (Objects.isNull(id)) {
                 LOGGER.warn("Id can't be null");
                 return AjaxResult.failure();
             }
 
-            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("id", Integer.parseInt(id), null).toString());
+            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("id", id, null).toString());
             if (Objects.isNull(customerDb)) {
                 LOGGER.warn("Customer is not existed id:{}", id);
                 return AjaxResult.failure();
@@ -186,7 +185,8 @@ public class CustomerFuture {
             for (String feature : features) {
                 switch (feature) {
                     case CustomerFeatureKey.OPT_IN:
-                        JSONObject optIn = dataJson.getJSONObject(CustomerJsonKey.OPT_IN);
+                        JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
+                        JSONObject optIn = data.getJSONObject(CustomerJsonKey.OPT_IN);
                         if (Objects.nonNull(optIn)) {
                             Integer optInValue;
                             Integer optInType;
@@ -205,7 +205,7 @@ public class CustomerFuture {
                                 optInType = CustomerOptInType.HOME_PHONE.getValue();
                             }
 
-                            customerOptInService.updateCustomerOptInData(Long.valueOf(id).longValue(), optInType, optInValue);
+                            customerOptInService.updateCustomerOptInData(id, optInType, optInValue);
                             return AjaxResult.success();
                         } else {
                             LOGGER.warn("DataStr is invalid");

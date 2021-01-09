@@ -51,11 +51,11 @@ public class CustomerClientApi extends BaseClientApi {
         return ajaxResult.getDataString();
     }
 
-    public Integer updateFeatures(Long customerId, List<String> features, String data) throws ProcedureException {
+    public Integer updateFeatures(Long id, List<String> features, String data) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
                 MultiValueManager.getBean()
-                        .add("customerId", customerId)
+                        .add("id", id)
                         .add("features", features)
                         .add("data", data)
         );
