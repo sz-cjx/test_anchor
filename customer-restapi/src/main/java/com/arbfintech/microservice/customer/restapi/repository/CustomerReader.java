@@ -54,7 +54,7 @@ public class CustomerReader extends BaseJdbcReader {
         return findAllByOptions(CustomerOptIn.class, sqlOption.toString());
     }
 
-    public JSONObject findByEmailOrOpenId(String email, String openId) {
+    public JSONObject findByEmailOrOpenId(String openId, String email) {
         Map<String, Object> paramMap = new HashMap<>(2);
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * ");
