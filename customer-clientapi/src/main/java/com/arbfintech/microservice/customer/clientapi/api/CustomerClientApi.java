@@ -27,12 +27,12 @@ public class CustomerClientApi extends BaseClientApi {
         return fetchResultDataObject(ajaxResult, Long.class);
     }
 
-    public JSONObject searchCustomer(Long id, String email, List<String> features) throws ProcedureException {
+    public JSONObject searchCustomer(String email, String openId) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
                 new MultiValueManager()
-                        .add("id", id)
                         .add("email", email)
+                        .add("openId", openId)
                         .getMap()
         );
         return fetchResultDataObject(ajaxResult, JSONObject.class);
