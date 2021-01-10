@@ -1,21 +1,22 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.core.util.DateUtil;
+import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.framework.component.core.util.UuidUtil;
 import com.arbfintech.framework.component.database.core.SimpleService;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.Customer;
-import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
-import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -50,11 +52,9 @@ public class CustomerFuture {
     @Autowired
     private SimpleService simpleService;
 
-    @Autowired
-    private CustomerReader customerReader;
-
     public CompletableFuture<String> createCustomer(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
+            Long now = DateUtil.getCurrentTimestamp();
             try {
                 if (!CustomerUtil.isValid(dataJson)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
@@ -62,9 +62,7 @@ public class CustomerFuture {
 
                 String uniqueCode = CustomerUtil.generateUniqueCode(
                         dataJson.getString(CustomerJsonKey.SSN),
-                        dataJson.getString(CustomerJsonKey.EMAIL),
-                        dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
-                        dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
+                        dataJson.getString(CustomerJsonKey.EMAIL)
                 );
 
                 Customer customerDb = simpleService.findByOptions(Customer.class,
@@ -78,14 +76,18 @@ public class CustomerFuture {
                 CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
 
                 customer.setUniqueCode(uniqueCode);
+                customer.setOpenId(UuidUtil.getUuid());
+                customer.setCreatedAt(now);
+                customer.setUpdatedAt(now);
                 customer.setStatus(-1);
 
                 Long customerId = simpleService.save(customer);
                 ResultUtil.checkResult(customerId, CustomerErrorCode.CREATE_FAILURE_CUSTOMER_SAVE);
-
+                customerProfile.setId(customerId);
                 ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.CREATE_FAILURE_CUSTOMER_PROFILE_SAVE);
                 ResultUtil.checkResult(customerOptInService.initCustomerOptIn(customerId), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
 
+                LOGGER.info("[Create Customer] Create customer success, id: {}", customerId);
                 return AjaxResult.success(customerId);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
@@ -94,43 +96,14 @@ public class CustomerFuture {
         });
     }
 
-    private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
-        if (featureArray == null) {
-            return;
-        }
-        SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual("id", customerId, null);
-        for (String feature : featureArray) {
-            switch (feature) {
-                case CustomerFeatureKey.CUSTOMER:
-                    Customer customer = simpleService.findByOptions(Customer.class, sqlOption.toString());
-                    dataJson.putAll(JSON.parseObject(JSON.toJSONString(customer)));
-                    break;
-                case CustomerFeatureKey.OPT_IN:
-                    CustomerOptIn customerOptIn = simpleService.findByOptions(CustomerOptIn.class, sqlOption.toString());
-                    dataJson.putAll(JSON.parseObject(JSON.toJSONString(customerOptIn)));
-                    break;
-                case CustomerFeatureKey.PROFILE:
-                    CustomerProfile customerProfile = simpleService.findByOptions(CustomerProfile.class, sqlOption.toString());
-                    dataJson.putAll(JSON.parseObject(JSON.toJSONString(customerProfile)));
-                    break;
-                default:
-                    LOGGER.warn("No such feature: {}", feature);
-                    break;
-            }
-        }
-    }
-
-    public CompletableFuture<String> searchCustomer(CustomerProfile customerProfile) {
+    public CompletableFuture<String> searchCustomer(String email, String openId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                JSONObject requestParam = JSON.parseObject(JSON.toJSONString(customerProfile));
-
-                if (CollectionUtils.isEmpty(requestParam)) {
+                if (StringUtils.isAllBlank(email, openId)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
                 }
 
-                JSONObject resultJson = customerProfileService.searchCustomerProfile(requestParam);
+                JSONObject resultJson = customerProfileService.searchCustomer(email, openId);
                 if (CollectionUtils.isEmpty(resultJson)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
                 }
@@ -142,14 +115,15 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> loadFeatures(Long id, List<String> features) {
+    public CompletableFuture<String> loadFeatures(Long customerId, List<String> features) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (StringUtils.isBlank(String.valueOf(id))) {
-                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
+                if (CollectionUtils.isEmpty(features)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
+
                 JSONObject featureJson = new JSONObject();
-                cascadeFeatureByCustomerId(id, features, featureJson);
+                cascadeFeatureByCustomerId(customerId, features, featureJson);
                 return AjaxResult.success(featureJson);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
@@ -158,63 +132,17 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
+    public CompletableFuture<String> updateFeatures(Long customerId, List<String> features, String data) {
         return CompletableFuture.supplyAsync(() -> {
-            if (Objects.isNull(dataJson)) {
-                LOGGER.warn("DataStr is invalid");
-                return AjaxResult.failure();
-            }
-
-            Long id = dataJson.getLong(CustomerJsonKey.ID);
-            if (Objects.isNull(id)) {
-                LOGGER.warn("Id can't be null");
-                return AjaxResult.failure();
-            }
-
-            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("id", id, null).toString());
-            if (Objects.isNull(customerDb)) {
-                LOGGER.warn("Customer is not existed id:{}", id);
-                return AjaxResult.failure();
-            }
-
-            JSONArray featureArray = dataJson.getJSONArray("features");
-            List<String> features = featureArray.toJavaList(String.class);
-            if (features == null) {
-                return AjaxResult.failure();
-            }
-            for (String feature : features) {
-                switch (feature) {
-                    case CustomerFeatureKey.OPT_IN:
-                        JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
-                        JSONObject optIn = data.getJSONObject(CustomerJsonKey.OPT_IN);
-                        if (Objects.nonNull(optIn)) {
-                            Integer optInValue;
-                            Integer optInType;
-                            Integer emailOptInValue = optIn.getInteger(CustomerJsonKey.EMAIL);
-                            Integer cellPhoneOptInValue = optIn.getInteger(CustomerJsonKey.CELL_PHONE);
-                            Integer homePhoneOptInValue = optIn.getInteger(CustomerJsonKey.HOME_PHONE);
-
-                            if (Objects.nonNull(emailOptInValue)) {
-                                optInValue = emailOptInValue;
-                                optInType = CustomerOptInType.EMAIL.getValue();
-                            } else if (Objects.nonNull(cellPhoneOptInValue)) {
-                                optInValue = cellPhoneOptInValue;
-                                optInType = CustomerOptInType.CELL_PHONE.getValue();
-                            } else {
-                                optInValue = homePhoneOptInValue;
-                                optInType = CustomerOptInType.HOME_PHONE.getValue();
-                            }
-
-                            customerOptInService.updateCustomerOptInData(id, optInType, optInValue);
-                            return AjaxResult.success();
-                        } else {
-                            LOGGER.warn("DataStr is invalid");
-                            return AjaxResult.failure();
-                        }
-                    default:
-                        LOGGER.warn("No such feature: {}", feature);
-                        break;
+            try {
+                if (CollectionUtils.isEmpty(features) || StringUtils.isBlank(data)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
+                ResultUtil.checkResult(updateFeatureByCustomerId(customerId, features, data), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+                LOGGER.info("[Update feature] update success");
+            } catch (ProcedureException e) {
+                LOGGER.warn(e.getMessage());
+                return AjaxResult.failure(e);
             }
             return AjaxResult.success();
         });
@@ -222,92 +150,79 @@ public class CustomerFuture {
 
     public CompletableFuture<String> updateCustomerProfile(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
-            if (Objects.isNull(dataJson)) {
-                LOGGER.warn("DataJson is invalid");
-                return AjaxResult.failure();
+            try {
+                Long customerId = dataJson.getLong(JsonKeyConst.ID);
+                Customer customer = dataJson.toJavaObject(Customer.class);
+                CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
+
+                if (customerId == null) {
+                    throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_ID);
+                }
+
+                ResultUtil.checkResult(simpleService.save(customer), CustomerErrorCode.UPDATE_FAILURE_CUSTOMER_SAVE);
+                ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.UPDATE_FAILURE_CUSTOMER_PROFILE_SAVE);
+            } catch (ProcedureException e) {
+                LOGGER.warn(e.getMessage());
+                return AjaxResult.failure(e);
             }
 
-            String id = dataJson.getString(CustomerJsonKey.ID);
-            if (StringUtils.isBlank(id)) {
-                LOGGER.warn("Customer id can't be null");
-                return AjaxResult.failure();
-            }
-
-            Customer customerDb = simpleService.findByOptions(Customer.class, SqlOption.getInstance().whereEqual("id", Integer.parseInt(id), null).toString());
-            if (Objects.isNull(customerDb)) {
-                LOGGER.warn("Customer is not existed id:{}", id);
-                return AjaxResult.failure();
-            }
-
-            Integer status = dataJson.getInteger(CustomerJsonKey.STATUS);
-            if (Objects.nonNull(status)) {
-                customerDb.setUpdatedAt(DateUtil.getCurrentTimestamp());
-                customerDb.setStatus(status);
-                simpleService.save(customerDb);
-            }
-            CustomerProfile customerProfileDb = simpleService.findByOptions(CustomerProfile.class, SqlOption.getInstance().whereEqual("id", Integer.parseInt(id), null).toString());
-            if (Objects.isNull(customerProfileDb)) {
-                LOGGER.warn("CustomerOptIn is not existed id:{}", id);
-                return AjaxResult.failure();
-            }
-
-
-            String firstName = dataJson.getString(CustomerJsonKey.FIRST_NAME);
-            if (StringUtils.isNotBlank(firstName)) {
-                customerProfileDb.setFirstName(firstName);
-            }
-            String middleName = dataJson.getString(CustomerJsonKey.MIDDLE_NAME);
-            if (StringUtils.isNotBlank(middleName)) {
-                customerProfileDb.setMiddleName(middleName);
-            }
-            String lastName = dataJson.getString(CustomerJsonKey.LAST_NAME);
-            if (StringUtils.isNotBlank(lastName)) {
-                customerProfileDb.setMiddleName(lastName);
-            }
-            String SSN = dataJson.getString(CustomerJsonKey.SSN);
-            if (StringUtils.isNotBlank(SSN)) {
-                customerProfileDb.setLastName(SSN);
-            }
-            Integer gender = dataJson.getInteger(CustomerJsonKey.GENDER);
-            if (Objects.nonNull(gender)) {
-                customerProfileDb.setGender(gender);
-            }
-            String address = dataJson.getString(CustomerJsonKey.ADDRESS);
-            if (StringUtils.isNotBlank(address)) {
-                customerProfileDb.setAddress(address);
-            }
-            String city = dataJson.getString(CustomerJsonKey.CITY);
-            if (StringUtils.isNotBlank(city)) {
-                customerProfileDb.setFirstName(city);
-            }
-            Integer state = dataJson.getInteger(CustomerJsonKey.STATE);
-            if (Objects.nonNull(state)) {
-                customerProfileDb.setState(state);
-            }
-            String zip = dataJson.getString(CustomerJsonKey.ZIP);
-            if (StringUtils.isNotBlank(zip)) {
-                customerProfileDb.setZip(zip);
-            }
-            String homePhone = dataJson.getString(CustomerJsonKey.HOME_PHONE);
-            if (StringUtils.isNotBlank(homePhone)) {
-                customerProfileDb.setHomePhone(homePhone);
-            }
-            String cellPhone = dataJson.getString(CustomerJsonKey.CELL_PHONE);
-            if (StringUtils.isNotBlank(cellPhone)) {
-                customerProfileDb.setCellPhone(cellPhone);
-            }
-            String email = dataJson.getString(CustomerJsonKey.EMAIL);
-            if (StringUtils.isNotBlank(email)) {
-                customerProfileDb.setEmail(email);
-            }
-            String birthday = dataJson.getString(CustomerJsonKey.BIRTHDAY);
-            if (StringUtils.isNotBlank(birthday)) {
-                customerProfileDb.setBirthday(birthday);
-            }
-
-            customerDb.setUpdatedAt(DateUtil.getCurrentTimestamp());
-            simpleService.save(customerProfileDb);
             return AjaxResult.success();
         });
+    }
+
+    private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
+        if (featureArray == null) {
+            return;
+        }
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual("id", customerId, null);
+        for (String feature : featureArray) {
+            switch (feature) {
+                case CustomerFeatureKey.OPT_IN:
+                    JSONObject optInDataJson = new JSONObject();
+                    sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
+                    List<CustomerOptInData> optInDataList = simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString());
+                    for (CustomerOptInData optInData : optInDataList) {
+                        optInDataJson.put(
+                                EnumUtil.getKeyByValue(CustomerOptInType.class, optInData.getOptInType()),
+                                optInData.getOptInValue()
+                        );
+                    }
+                    dataJson.put(CustomerJsonKey.OPT_IN, optInDataJson);
+                    break;
+                default:
+                    LOGGER.warn("No such feature: {}", feature);
+                    break;
+            }
+        }
+    }
+
+    private Integer updateFeatureByCustomerId(Long customerId, Collection<String> featureArray, String data) {
+        Integer result = -1;
+        Long now = DateUtil.getCurrentTimestamp();
+        JSONObject dataJson = JSON.parseObject(data).getJSONObject(CustomerJsonKey.DATA);
+        for (String feature : featureArray) {
+            switch (feature) {
+                case CustomerFeatureKey.OPT_IN:
+                    List<CustomerOptInData> dataList = new ArrayList<>();
+                    JSONObject optInJson = dataJson.getJSONObject(CustomerJsonKey.OPT_IN);
+                    for (String key : optInJson.keySet()) {
+                        Integer value = optInJson.getInteger(key);
+                        Integer type = EnumUtil.getValueByKey(CustomerOptInType.class, key);
+                        CustomerOptInData customerOptInData = new CustomerOptInData();
+                        customerOptInData.setId(customerId);
+                        customerOptInData.setOptInType(type);
+                        customerOptInData.setOptInValue(value);
+                        customerOptInData.setUpdatedAt(now);
+                        dataList.add(customerOptInData);
+                    }
+                    result = customerOptInService.updateCustomerOptInData(dataList);
+                    break;
+                default:
+                    LOGGER.warn("No such feature: {}", feature);
+                    break;
+            }
+        }
+        return result;
     }
 }

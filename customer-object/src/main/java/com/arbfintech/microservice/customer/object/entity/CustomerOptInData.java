@@ -9,7 +9,7 @@ import com.arbfintech.framework.component.core.annotation.Id;
  * @date 2021/1/4
  */
 @Entity
-public class CustomerOptIn {
+public class CustomerOptInData {
 
     @Id
     @Column
@@ -28,11 +28,11 @@ public class CustomerOptIn {
     @Column
     private Long updatedAt;
 
-    public CustomerOptIn() {
+    public CustomerOptInData() {
 
     }
 
-    public CustomerOptIn(Long id, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
+    public CustomerOptInData(Long id, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
         this.id = id;
         this.optInType = optInType;
         this.optInValue = optInValue;

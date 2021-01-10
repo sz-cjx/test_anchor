@@ -51,55 +51,22 @@ public class CustomerClientApi extends BaseClientApi {
         return ajaxResult.getDataString();
     }
 
-    public Integer updateFeatures(Long id, List<String> features, String data) throws ProcedureException {
+    public Integer updateFeatures(Long customerId, List<String> features, String data) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
                 MultiValueManager.getBean()
-                        .add("id", id)
+                        .add("customerId", customerId)
                         .add("features", features)
                         .add("data", data)
         );
         return checkAjaxResult(ajaxResult);
     }
 
-    /**
-     * customerOptIn
-     */
-
-    public String getCustomerOptInByCondition(String condition) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.post(
-                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/get"),
-                condition
-        );
-        checkAjaxResult(ajaxResult);
-        return ajaxResult.getDataString();
-    }
-
-    public Integer updateCustomerOptInData(String dataStr) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.put(
-                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/update"),
-                dataStr
-        );
-        return checkAjaxResult(ajaxResult);
-    }
-
-    public String listCustomerOptInData(Long customerId) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestCaller.get(
-                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/list"),
-                HttpParamVariable.getInstance()
-                        .addParam("customerId", customerId)
-                        .getParamMap()
-        );
-        checkAjaxResult(ajaxResult);
-        return ajaxResult.getDataString();
-    }
-
-    public Integer update(JSONObject dataJson) throws ProcedureException {
+    public Integer updateCustomerProfile(JSONObject dataJson) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update"),
                 dataJson
         );
         return checkAjaxResult(ajaxResult);
     }
-
 }

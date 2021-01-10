@@ -27,11 +27,12 @@ public class CustomerController {
         return customerFuture.createCustomer(dataJson);
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     public CompletableFuture<String> searchCustomer(
-            @RequestBody CustomerProfile customerProfile
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String openId
     ) {
-        return customerFuture.searchCustomer(customerProfile);
+        return customerFuture.searchCustomer(email, openId);
     }
 
     @GetMapping("/load-features")
@@ -44,12 +45,14 @@ public class CustomerController {
 
     @PutMapping("/update-features")
     public CompletableFuture<String> updateFeatures(
-            @RequestBody JSONObject dataJson
+            @RequestParam Long customerId,
+            @RequestParam List<String> features,
+            @RequestBody String data
     ) {
-        return customerFuture.updateFeatures(dataJson);
+        return customerFuture.updateFeatures(customerId, features, data);
     }
 
-    @PutMapping("/customer/update")
+    @PutMapping("/update")
     public CompletableFuture<String> updateCustomerProfile(
             @RequestBody JSONObject dataJson
     ) {
