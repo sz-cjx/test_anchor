@@ -56,7 +56,7 @@ public class CustomerClientApi extends BaseClientApi {
                 generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
                 new MultiValueManager()
                         .add("customerId", customerId)
-                        .add("features", JSON.toJSONString(features))
+                        .add("features", String.join(",", features))
                         .getMap()
         );
         checkAjaxResult(ajaxResult);
@@ -68,7 +68,7 @@ public class CustomerClientApi extends BaseClientApi {
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
                 MultiValueManager.getBean()
                         .add("customerId", customerId)
-                        .add("features", JSON.toJSONString(features))
+                        .add("features", String.join(",", features))
                         .add("data", data)
         );
         return checkAjaxResult(ajaxResult);
