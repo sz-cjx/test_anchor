@@ -35,6 +35,16 @@ public class CustomerController {
         return customerFuture.searchCustomer(email, openId);
     }
 
+    @GetMapping("/unique")
+    public CompletableFuture<String> getCustomerByUnique(
+            @RequestParam String ssn,
+            @RequestParam String email,
+            @RequestParam String routingNo,
+            @RequestParam String accountNo
+    ) {
+        return customerFuture.getCustomerByUnique(ssn, email, routingNo, accountNo);
+    }
+
     @GetMapping("/load-features")
     public CompletableFuture<String> loadFeatures(
             @RequestParam Long customerId,
