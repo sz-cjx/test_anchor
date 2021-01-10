@@ -140,9 +140,9 @@ public class CustomerFuture {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
-                String data = dataJson.getString(CustomerJsonKey.DATA);
+                JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
                 Long customerId = dataJson.getLong(CustomerJsonKey.CUSTOMER_ID);
-                if (customerId == null || CollectionUtils.isEmpty(features) || StringUtils.isBlank(data)) {
+                if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
                 ResultUtil.checkResult(updateFeatureByCustomerId(customerId, features, data), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
@@ -219,10 +219,9 @@ public class CustomerFuture {
         }
     }
 
-    private Integer updateFeatureByCustomerId(Long customerId, Collection<String> featureArray, String data) {
+    private Integer updateFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
         Integer result = -1;
         Long now = DateUtil.getCurrentTimestamp();
-        JSONObject dataJson = JSON.parseObject(data).getJSONObject(CustomerJsonKey.DATA);
         for (String feature : featureArray) {
             switch (feature) {
                 case CustomerFeatureKey.OPT_IN:

@@ -63,14 +63,10 @@ public class CustomerClientApi extends BaseClientApi {
         return ajaxResult.getDataString();
     }
 
-    public Integer updateFeatures(Long customerId, List<String> features, String data) throws ProcedureException {
+    public Integer updateFeatures(JSONObject dataJson) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
-                new JSONObject() {{
-                    put(CustomerJsonKey.CUSTOMER_ID, customerId);
-                    put(CustomerJsonKey.FEATURES, features);
-                    put(CustomerJsonKey.DATA, data);
-                }}
+                dataJson
         );
         return checkAjaxResult(ajaxResult);
     }
