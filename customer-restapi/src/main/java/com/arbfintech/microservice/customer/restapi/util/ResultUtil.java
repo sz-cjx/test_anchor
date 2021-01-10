@@ -9,7 +9,13 @@ import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
  */
 public class ResultUtil {
 
-    public static void checkResult(Long row, CustomerErrorCode errorCode) throws ProcedureException {
+    public static void checkResult(Long id, CustomerErrorCode errorCode) throws ProcedureException {
+        if (id < 1) {
+            throw new ProcedureException(errorCode);
+        }
+    }
+
+    public static void checkResult(Integer row, CustomerErrorCode errorCode) throws ProcedureException {
         if (row < 1) {
             throw new ProcedureException(errorCode);
         }

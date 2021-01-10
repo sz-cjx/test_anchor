@@ -89,7 +89,7 @@ spring:
   profiles: develop-v3.2
 arb:
   eureka:
-    url: FRAMEWORK-EUREKA-SERVER-TEST.us-west-1.elasticbeanstalk.com:8901
+    url: FRAMEWORK-EUREKA-SERVER-DEV-V3-2.us-west-1.elasticbeanstalk.com:8901
   service:
     url: MICROSERVICE-CUSTOMER-DEV-V3-2.us-west-1.elasticbeanstalk.com
 ---

@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.restapi.future.CustomerFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,24 +14,58 @@ import java.util.concurrent.CompletableFuture;
  * @date 2020/12/17
  */
 @RestController
+@RequestMapping("/customer")
 public class CustomerController {
 
     @Autowired
     private CustomerFuture customerFuture;
 
-    @PostMapping("/customer/create")
+    @PostMapping("/create")
     public CompletableFuture<String> createCustomer(
             @RequestBody JSONObject dataJson
     ) {
         return customerFuture.createCustomer(dataJson);
     }
 
-    @GetMapping("/customer/search")
+    @GetMapping("/search")
     public CompletableFuture<String> searchCustomer(
-            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) List<String> features
+            @RequestParam(required = false) String openId
     ) {
-        return customerFuture.searchCustomer(id, email, features);
+        return customerFuture.searchCustomer(email, openId);
+    }
+
+    @GetMapping("/unique")
+    public CompletableFuture<String> getCustomerByUnique(
+            @RequestParam String ssn,
+            @RequestParam String email,
+            @RequestParam String routingNo,
+            @RequestParam String accountNo
+    ) {
+        return customerFuture.getCustomerByUnique(ssn, email, routingNo, accountNo);
+    }
+
+    @GetMapping("/load-features")
+    public CompletableFuture<String> loadFeatures(
+            @RequestParam Long customerId,
+            @RequestParam List<String> features
+    ) {
+        return customerFuture.loadFeatures(customerId, features);
+    }
+
+    @PutMapping("/update-features")
+    public CompletableFuture<String> updateFeatures(
+            @RequestParam Long customerId,
+            @RequestParam List<String> features,
+            @RequestBody String data
+    ) {
+        return customerFuture.updateFeatures(customerId, features, data);
+    }
+
+    @PutMapping("/update")
+    public CompletableFuture<String> updateCustomerProfile(
+            @RequestBody JSONObject dataJson
+    ) {
+        return customerFuture.updateCustomerProfile(dataJson);
     }
 }

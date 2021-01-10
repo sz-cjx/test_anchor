@@ -35,4 +35,12 @@ public class CustomerUtil {
         }
         return CryptUtil.md5(StringUtils.join(valueArray, GlobalConst.STR_POUND));
     }
+
+    public static String removeLast(StringBuilder sb) {
+        return removeLast(sb, GlobalConst.STR_COMMA);
+    }
+
+    public static String removeLast(StringBuilder sb, String cs) {
+        return sb.replace(sb.lastIndexOf(cs), sb.length(), org.apache.commons.lang.StringUtils.EMPTY).toString();
+    }
 }

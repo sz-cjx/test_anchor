@@ -3,7 +3,6 @@ package com.arbfintech.microservice.customer.clientapi.api;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
-import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import org.springframework.stereotype.Component;
@@ -20,50 +19,65 @@ public class CustomerClientApi extends BaseClientApi {
     private static final String CUSTOMER_REST_API = "/customer-restapi";
 
     public Long createCustomer(JSONObject dataJson) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestTemplate.postByRequestBody(
+        AjaxResult ajaxResult = simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/customer/create"),
-                dataJson,
-                AjaxResult.class
+                dataJson
         );
         return fetchResultDataObject(ajaxResult, Long.class);
     }
 
-    public JSONObject searchCustomer(Long id, String email, List<String> features) throws ProcedureException {
-        AjaxResult ajaxResult = simpleRestTemplate.getByQuery(
-                generateUrl(CUSTOMER_REST_API, "/customer/search"),
+    public JSONObject getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/customer/unique"),
                 new MultiValueManager()
-                        .add("id", id)
+                        .add("ssn", ssn)
                         .add("email", email)
-                        .add("features", features)
-                        .getMap(),
-                AjaxResult.class
+                        .add("routingNo", routingNo)
+                        .add("accountNo", accountNo)
+                        .getMap()
         );
         return fetchResultDataObject(ajaxResult, JSONObject.class);
     }
 
-    public String getCustomerOptInByCondition(String condition) {
-        return simpleRestTemplate.postByRequestBody(
-                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/get"),
-                condition,
-                String.class
+    public JSONObject searchCustomer(String openId, String email) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/customer/search"),
+                new MultiValueManager()
+                        .add("email", email)
+                        .add("openId", openId)
+                        .getMap()
         );
+        return fetchResultDataObject(ajaxResult, JSONObject.class);
     }
 
-    public String updateCustomerOptInData(String dataStr) {
-        return simpleRestTemplate.putByRequestBody(
-                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/update"),
-                dataStr,
-                String.class
+    public String loadFeatures(Long customerId, List<String> features) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
+                new MultiValueManager()
+                        .add("customerId", customerId)
+                        .add("features", features)
+                        .getMap()
         );
+        checkAjaxResult(ajaxResult);
+        return ajaxResult.getDataString();
     }
 
-    public String listCustomerOptInData(Long customerId) {
-        return simpleRestTemplate.getByQuery(
-                generateUrl(CUSTOMER_REST_API, "/customer/opt-in/list"),
-                HttpParamVariable.getInstance()
-                        .addParam("customerId", customerId)
-                        .getParamMap(),
-                String.class
+    public Integer updateFeatures(Long customerId, List<String> features, String data) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.put(
+                generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
+                MultiValueManager.getBean()
+                        .add("customerId", customerId)
+                        .add("features", features)
+                        .add("data", data)
         );
+        return checkAjaxResult(ajaxResult);
+    }
+
+    public Integer updateCustomerProfile(JSONObject dataJson) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.put(
+                generateUrl(CUSTOMER_REST_API, "/customer/update"),
+                dataJson
+        );
+        return checkAjaxResult(ajaxResult);
     }
 }
