@@ -3,7 +3,6 @@ package com.arbfintech.microservice.customer.clientapi.api;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
-import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import org.springframework.stereotype.Component;
@@ -27,6 +26,18 @@ public class CustomerClientApi extends BaseClientApi {
         return fetchResultDataObject(ajaxResult, Long.class);
     }
 
+    public JSONObject getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) throws ProcedureException {
+        AjaxResult ajaxResult = simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/customer/unique"),
+                new MultiValueManager()
+                        .add("ssn", ssn)
+                        .add("email", email)
+                        .add("routingNo", routingNo)
+                        .add("accountNo", accountNo)
+                        .getMap()
+        );
+        return fetchResultDataObject(ajaxResult, JSONObject.class);
+    }
 
     public JSONObject searchCustomer(String openId, String email) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.get(

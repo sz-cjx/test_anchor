@@ -20,7 +20,7 @@ public class CustomerUtil {
         if (CollectionUtils.isEmpty(dataJson)) {
             return false;
         }
-        List<String> keyList = Lists.newArrayList(CustomerJsonKey.SSN, CustomerJsonKey.EMAIL);
+        List<String> keyList = Lists.newArrayList(CustomerJsonKey.SSN, CustomerJsonKey.EMAIL, CustomerJsonKey.BANK_ROUTING_NO, CustomerJsonKey.BANK_ACCOUNT_NO);
         for (String key : keyList) {
             if (StringUtils.isBlank(dataJson.getString(key))) {
                 return false;
@@ -34,5 +34,13 @@ public class CustomerUtil {
             valueArray[i] = valueArray[i].trim().toUpperCase();
         }
         return CryptUtil.md5(StringUtils.join(valueArray, GlobalConst.STR_POUND));
+    }
+
+    public static String removeLast(StringBuilder sb) {
+        return removeLast(sb, GlobalConst.STR_COMMA);
+    }
+
+    public static String removeLast(StringBuilder sb, String cs) {
+        return sb.replace(sb.lastIndexOf(cs), sb.length(), org.apache.commons.lang.StringUtils.EMPTY).toString();
     }
 }

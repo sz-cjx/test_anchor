@@ -62,7 +62,9 @@ public class CustomerFuture {
 
                 String uniqueCode = CustomerUtil.generateUniqueCode(
                         dataJson.getString(CustomerJsonKey.SSN),
-                        dataJson.getString(CustomerJsonKey.EMAIL)
+                        dataJson.getString(CustomerJsonKey.EMAIL),
+                        dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
+                        dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
                 );
 
                 Customer customerDb = simpleService.findByOptions(Customer.class,
@@ -174,6 +176,16 @@ public class CustomerFuture {
             }
 
             return AjaxResult.success();
+        });
+    }
+
+    public CompletableFuture<String> getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) {
+        return CompletableFuture.supplyAsync(() -> {
+            String uniqueCode = CustomerUtil.generateUniqueCode(ssn, email, routingNo, accountNo);
+            return AjaxResult.success(simpleService.findByOptions(
+                    Customer.class,
+                    SqlOption.getInstance().whereEqual("unique_code", uniqueCode, null).toString())
+            );
         });
     }
 
