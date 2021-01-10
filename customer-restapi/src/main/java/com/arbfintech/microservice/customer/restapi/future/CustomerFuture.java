@@ -84,6 +84,8 @@ public class CustomerFuture {
                 Long customerId = simpleService.save(customer);
                 ResultUtil.checkResult(customerId, CustomerErrorCode.CREATE_FAILURE_CUSTOMER_SAVE);
                 customerProfile.setId(customerId);
+                customerProfile.setCreatedAt(now);
+                customerProfile.setUpdatedAt(now);
                 ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.CREATE_FAILURE_CUSTOMER_PROFILE_SAVE);
                 ResultUtil.checkResult(customerOptInService.initCustomerOptIn(customerId), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
 
@@ -150,14 +152,19 @@ public class CustomerFuture {
 
     public CompletableFuture<String> updateCustomerProfile(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
+            Long now = DateUtil.getCurrentTimestamp();
             try {
                 Long customerId = dataJson.getLong(JsonKeyConst.ID);
-                Customer customer = dataJson.toJavaObject(Customer.class);
-                CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
 
                 if (customerId == null) {
                     throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_ID);
                 }
+
+                Customer customer = dataJson.toJavaObject(Customer.class);
+                CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
+
+                customer.setUpdatedAt(now);
+                customerProfile.setUpdatedAt(now);
 
                 ResultUtil.checkResult(simpleService.save(customer), CustomerErrorCode.UPDATE_FAILURE_CUSTOMER_SAVE);
                 ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.UPDATE_FAILURE_CUSTOMER_PROFILE_SAVE);
