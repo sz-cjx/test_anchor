@@ -4,10 +4,6 @@ import com.arbfintech.framework.component.core.base.BaseError;
 
 public enum CustomerErrorCode implements BaseError {
 
-    SUCCESS(1, "Success"),
-    DEFAULT(0, "Default"),
-    FAILURE(-1, "Failure"),
-
     QUERY_FAILURE_CUSTOMER_IS_EXISTED(-81010101, "Customer is existed."),
     QUERY_FAILURE_CUSTOMER_NOT_EXISTED(-81010102, "Customer is not existed."),
     QUERY_FAILURE_SEARCH_FAILED(-81010103, "Search failed, please enter at least one condition."),
@@ -16,7 +12,12 @@ public enum CustomerErrorCode implements BaseError {
 
     CREATE_FAILURE_CUSTOMER_SAVE(-81010201, "Create failed, save customer"),
     CREATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010202, "Create failed, save customer profile"),
-    CREATE_FAILURE_OPT_IN_SAVE(-81010203, "Create failed, save opt in");
+    CREATE_FAILURE_OPT_IN_SAVE(-81010203, "Create failed, save opt in"),
+
+    UPDATE_FAILURE_MISS_ID(-81010301, "Update failed, miss id"),
+    UPDATE_FAILURE_CUSTOMER_SAVE(-81010302, "Update failed, save customer"),
+    UPDATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010303, "Update failed, save customer profile"),
+    UPDATE_FAILURE_OPT_IN_SAVE(-81010304, "Update failed, save opt in");
 
     private Integer code;
     private String message;
