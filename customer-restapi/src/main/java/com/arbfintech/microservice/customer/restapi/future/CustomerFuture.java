@@ -136,10 +136,13 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> updateFeatures(Long customerId, List<String> features, String data) {
+    public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (CollectionUtils.isEmpty(features) || StringUtils.isBlank(data)) {
+                List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
+                String data = dataJson.getString(CustomerJsonKey.DATA);
+                Long customerId = dataJson.getLong(CustomerJsonKey.CUSTOMER_ID);
+                if (customerId == null || CollectionUtils.isEmpty(features) || StringUtils.isBlank(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
                 ResultUtil.checkResult(updateFeatureByCustomerId(customerId, features, data), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
