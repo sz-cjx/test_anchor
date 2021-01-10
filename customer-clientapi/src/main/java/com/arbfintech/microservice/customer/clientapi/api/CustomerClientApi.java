@@ -1,11 +1,11 @@
 package com.arbfintech.microservice.customer.clientapi.api;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -66,10 +66,11 @@ public class CustomerClientApi extends BaseClientApi {
     public Integer updateFeatures(Long customerId, List<String> features, String data) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
-                MultiValueManager.getBean()
-                        .add("customerId", customerId)
-                        .add("features", String.join(",", features))
-                        .add("data", data)
+                new JSONObject() {{
+                    put(CustomerJsonKey.CUSTOMER_ID, customerId);
+                    put(CustomerJsonKey.FEATURES, features);
+                    put(CustomerJsonKey.DATA, data);
+                }}
         );
         return checkAjaxResult(ajaxResult);
     }
