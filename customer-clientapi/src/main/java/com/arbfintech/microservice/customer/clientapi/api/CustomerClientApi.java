@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.clientapi.api;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
@@ -55,7 +56,7 @@ public class CustomerClientApi extends BaseClientApi {
                 generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
                 new MultiValueManager()
                         .add("customerId", customerId)
-                        .add("features", features)
+                        .add("features", JSON.toJSONString(features))
                         .getMap()
         );
         checkAjaxResult(ajaxResult);
@@ -67,7 +68,7 @@ public class CustomerClientApi extends BaseClientApi {
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
                 MultiValueManager.getBean()
                         .add("customerId", customerId)
-                        .add("features", features)
+                        .add("features", JSON.toJSONString(features))
                         .add("data", data)
         );
         return checkAjaxResult(ajaxResult);
