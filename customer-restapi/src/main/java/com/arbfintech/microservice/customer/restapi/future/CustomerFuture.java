@@ -214,7 +214,6 @@ public class CustomerFuture {
             switch (feature) {
                 case CustomerFeatureKey.OPT_IN:
                     JSONObject optInDataJson = new JSONObject();
-
                     sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
                     List<CustomerOptInData> optInDataList = simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString());
                     if (CollectionUtils.isEmpty(optInDataList)) {
