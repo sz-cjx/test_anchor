@@ -146,6 +146,12 @@ public class CustomerFuture {
                 if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
+                Customer customerDb = simpleService.findByOptions(Customer.class,
+                        SqlOption.getInstance().whereEqual("id", customerId, null).toString()
+                );
+                if (Objects.isNull(customerDb)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
+                }
                 ResultUtil.checkResult(updateFeatureByCustomerId(customerId, features, data), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
                 LOGGER.info("[Update feature] update success");
             } catch (ProcedureException e) {
@@ -164,6 +170,14 @@ public class CustomerFuture {
 
                 if (customerId == null) {
                     throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_ID);
+                }
+
+                Customer customerDb = simpleService.findByOptions(Customer.class,
+                        SqlOption.getInstance().whereEqual("id", customerId, null).toString()
+                );
+
+                if (Objects.isNull(customerDb)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
                 }
 
                 Customer customer = dataJson.toJavaObject(Customer.class);
@@ -193,7 +207,7 @@ public class CustomerFuture {
         });
     }
 
-    private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
+    private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
         if (featureArray == null) {
             return;
         }
@@ -205,6 +219,9 @@ public class CustomerFuture {
                     JSONObject optInDataJson = new JSONObject();
                     sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
                     List<CustomerOptInData> optInDataList = simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString());
+                    if (CollectionUtils.isEmpty(optInDataList)) {
+                        throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+                    }
                     for (CustomerOptInData optInData : optInDataList) {
                         optInDataJson.put(
                                 EnumUtil.getKeyByValue(CustomerOptInType.class, optInData.getOptInType()),
