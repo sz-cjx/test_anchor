@@ -66,6 +66,15 @@ public class CustomerWriter extends BaseJdbcWriter {
         for (int i = 0; i < dataList.size(); i++) {
             paramSourceArray[i] = new BeanPropertySqlParameterSource(dataList.get(i));
         }
-        return namedJdbcTemplate().batchUpdate(sql, paramSourceArray).length;
+        int[] rowsArray = namedJdbcTemplate().batchUpdate(sql, paramSourceArray);
+        return getRows(rowsArray);
+    }
+
+    public Integer getRows(int[] ints) {
+        int i = 0;
+        for (Integer anInt : ints) {
+            i = anInt + i;
+        }
+        return i;
     }
 }

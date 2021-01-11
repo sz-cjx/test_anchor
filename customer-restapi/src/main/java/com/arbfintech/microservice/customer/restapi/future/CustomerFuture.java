@@ -146,12 +146,6 @@ public class CustomerFuture {
                 if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
-                Customer customerDb = simpleService.findByOptions(Customer.class,
-                        SqlOption.getInstance().whereEqual("id", customerId, null).toString()
-                );
-                if (Objects.isNull(customerDb)) {
-                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
-                }
                 ResultUtil.checkResult(updateFeatureByCustomerId(customerId, features, data), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
                 LOGGER.info("[Update feature] update success");
             } catch (ProcedureException e) {
