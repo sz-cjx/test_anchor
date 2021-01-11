@@ -72,8 +72,8 @@ public class CustomerWriter extends BaseJdbcWriter {
 
     public Integer getRows(int[] ints) {
         int i = 0;
-        for (Integer anInt : ints) {
-            i = anInt + i;
+        for (Integer row : ints) {
+            i = row + i;
         }
         return i;
     }
