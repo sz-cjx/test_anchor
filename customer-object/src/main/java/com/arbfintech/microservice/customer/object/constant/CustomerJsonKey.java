@@ -9,43 +9,16 @@ public interface CustomerJsonKey {
     String BANK_ROUTING_NO = "bankRoutingNo";
     String BANK_ACCOUNT_NO = "bankAccountNo";
 
-    String OPEN_ID = "openId";
+    String CUSTOMER_ID = "customerId";
+
+    String DATA = "data";
 
     String EMAIL = "email";
 
-    String HOME_PHONE = "homePhone";
+    String FEATURES = "features";
 
-    String CELL_PHONE = "cellPhone";
-
-    String ID = "id";
-
-    String SSN = "ssn";
-
+    String OPEN_ID = "openId";
     String OPT_IN = "optIn";
 
-    String STATUS = "status";
-
-    String FIRST_NAME = "firstName";
-
-    String MIDDLE_NAME = "middleName";
-
-    String LAST_NAME = "lastName";
-
-    String GENDER = "gender";
-
-    String BIRTHDAY = "birthday";
-
-    String ADDRESS = "address";
-
-    String CITY = "city";
-
-    String STATE = "state";
-
-    String ZIP = "zip";
-
-    String CREATE_AT = "createAt";
-
-    String UPDATE_AT = "updateAt";
-
-    String DATA = "data";
+    String SSN = "ssn";
 }

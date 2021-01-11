@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
@@ -107,11 +108,11 @@ public class CustomerFuture {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
                 }
 
-                JSONObject resultJson = customerProfileService.searchCustomer(email, openId);
-                if (CollectionUtils.isEmpty(resultJson)) {
+                JSONArray resultJsonArray = customerProfileService.searchCustomer(email, openId);
+                if (CollectionUtils.isEmpty(resultJsonArray)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
                 }
-                return AjaxResult.success(resultJson);
+                return AjaxResult.success(resultJsonArray);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
                 return AjaxResult.failure(e);
@@ -136,10 +137,13 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> updateFeatures(Long customerId, List<String> features, String data) {
+    public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (CollectionUtils.isEmpty(features) || StringUtils.isBlank(data)) {
+                List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
+                JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
+                Long customerId = dataJson.getLong(CustomerJsonKey.CUSTOMER_ID);
+                if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
                 ResultUtil.checkResult(updateFeatureByCustomerId(customerId, features, data), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
@@ -216,10 +220,9 @@ public class CustomerFuture {
         }
     }
 
-    private Integer updateFeatureByCustomerId(Long customerId, Collection<String> featureArray, String data) {
+    private Integer updateFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
         Integer result = -1;
         Long now = DateUtil.getCurrentTimestamp();
-        JSONObject dataJson = JSON.parseObject(data).getJSONObject(CustomerJsonKey.DATA);
         for (String feature : featureArray) {
             switch (feature) {
                 case CustomerFeatureKey.OPT_IN:

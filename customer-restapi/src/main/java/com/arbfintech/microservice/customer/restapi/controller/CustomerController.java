@@ -1,7 +1,6 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.restapi.future.CustomerFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -55,11 +54,9 @@ public class CustomerController {
 
     @PutMapping("/update-features")
     public CompletableFuture<String> updateFeatures(
-            @RequestParam Long customerId,
-            @RequestParam List<String> features,
-            @RequestBody String data
+            @RequestBody JSONObject dataJson
     ) {
-        return customerFuture.updateFeatures(customerId, features, data);
+        return customerFuture.updateFeatures(dataJson);
     }
 
     @PutMapping("/update")
