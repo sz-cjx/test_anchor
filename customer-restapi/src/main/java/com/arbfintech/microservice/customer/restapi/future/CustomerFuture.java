@@ -171,15 +171,12 @@ public class CustomerFuture {
                 if (customerId == null) {
                     throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_ID);
                 }
-
                 Customer customerDb = simpleService.findByOptions(Customer.class,
                         SqlOption.getInstance().whereEqual("id", customerId, null).toString()
                 );
-
                 if (Objects.isNull(customerDb)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
                 }
-
                 Customer customer = dataJson.toJavaObject(Customer.class);
                 CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
 
@@ -217,6 +214,7 @@ public class CustomerFuture {
             switch (feature) {
                 case CustomerFeatureKey.OPT_IN:
                     JSONObject optInDataJson = new JSONObject();
+
                     sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
                     List<CustomerOptInData> optInDataList = simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString());
                     if (CollectionUtils.isEmpty(optInDataList)) {
