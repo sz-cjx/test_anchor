@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.clientapi.api;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
@@ -40,7 +41,7 @@ public class CustomerClientApi extends BaseClientApi {
         return fetchResultDataObject(ajaxResult, JSONObject.class);
     }
 
-    public JSONObject searchCustomer(String openId, String email) throws ProcedureException {
+    public JSONArray searchCustomer(String openId, String email) throws ProcedureException {
         AjaxResult ajaxResult = simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
                 new MultiValueManager()
@@ -48,7 +49,7 @@ public class CustomerClientApi extends BaseClientApi {
                         .add("openId", openId)
                         .getMap()
         );
-        return fetchResultDataObject(ajaxResult, JSONObject.class);
+        return fetchResultDataObject(ajaxResult, JSONArray.class);
     }
 
     public String loadFeatures(Long customerId, List<String> features) throws ProcedureException {

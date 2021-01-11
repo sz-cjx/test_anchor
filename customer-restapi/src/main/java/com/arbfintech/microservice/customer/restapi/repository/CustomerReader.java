@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.restapi.repository;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 @Repository
 public class CustomerReader extends BaseJdbcReader {
-    public JSONObject findByEmailOrOpenId(String email, String openId) {
+    public JSONArray findByEmailOrOpenId(String email, String openId) {
         Map<String, Object> paramMap = new HashMap<>(2);
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * ");
@@ -36,6 +37,6 @@ public class CustomerReader extends BaseJdbcReader {
         paramMap.put(CustomerJsonKey.EMAIL, email);
         paramMap.put(CustomerJsonKey.OPEN_ID, openId);
 
-        return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnJson);
+        return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnArray);
     }
 }
