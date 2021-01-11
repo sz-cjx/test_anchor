@@ -70,11 +70,11 @@ public class CustomerWriter extends BaseJdbcWriter {
         return getRows(rowsArray);
     }
 
-    public Integer getRows(int[] ints) {
-        int i = 0;
-        for (Integer row : ints) {
-            i = row + i;
+    public Integer getRows(int[] rowArray) {
+        int totalRows = 0;
+        for (Integer row : rowArray) {
+            totalRows += row;
         }
-        return i;
+        return totalRows;
     }
 }

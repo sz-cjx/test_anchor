@@ -139,7 +139,7 @@ public class CustomerFuture {
 
     public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
-            Integer toatlRow;
+            Integer toatlRow = 0;
             try {
                 List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
                 JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
