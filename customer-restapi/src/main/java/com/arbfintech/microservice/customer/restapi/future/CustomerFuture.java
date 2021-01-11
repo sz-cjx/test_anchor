@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
@@ -107,11 +108,11 @@ public class CustomerFuture {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
                 }
 
-                JSONObject resultJson = customerProfileService.searchCustomer(email, openId);
-                if (CollectionUtils.isEmpty(resultJson)) {
+                JSONArray resultJsonArray = customerProfileService.searchCustomer(email, openId);
+                if (CollectionUtils.isEmpty(resultJsonArray)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
                 }
-                return AjaxResult.success(resultJson);
+                return AjaxResult.success(resultJsonArray);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
                 return AjaxResult.failure(e);
