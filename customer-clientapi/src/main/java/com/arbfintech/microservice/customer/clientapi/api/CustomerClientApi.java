@@ -36,11 +36,11 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
-    public AjaxResult searchCustomer(Long customerId, String openId, String email) {
+    public AjaxResult searchCustomer(Long id, String openId, String email) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
                 new MultiValueManager()
-                        .add("customerId", customerId)
+                        .add("id", id)
                         .add("email", email)
                         .add("openId", openId)
                         .getMap()
