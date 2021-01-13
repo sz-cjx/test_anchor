@@ -101,14 +101,14 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> searchCustomer(String email, String openId) {
+    public CompletableFuture<String> searchCustomer(Long id, String email, String openId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (StringUtils.isAllBlank(email, openId)) {
+                if (StringUtils.isAllBlank(String.valueOf(id), email, openId)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_SEARCH_FAILED);
                 }
 
-                JSONArray resultJsonArray = customerProfileService.searchCustomer(email, openId);
+                JSONArray resultJsonArray = customerProfileService.searchCustomer(id, email, openId);
                 if (CollectionUtils.isEmpty(resultJsonArray)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
                 }

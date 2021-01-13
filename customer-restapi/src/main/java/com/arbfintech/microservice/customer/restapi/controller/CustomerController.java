@@ -28,10 +28,11 @@ public class CustomerController {
 
     @GetMapping("/search")
     public CompletableFuture<String> searchCustomer(
+            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String openId
     ) {
-        return customerFuture.searchCustomer(email, openId);
+        return customerFuture.searchCustomer(id, email, openId);
     }
 
     @GetMapping("/unique")

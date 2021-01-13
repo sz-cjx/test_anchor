@@ -17,6 +17,8 @@ public interface CustomerJsonKey {
 
     String FEATURES = "features";
 
+    String ID = "id";
+
     String OPEN_ID = "openId";
     String OPT_IN = "optIn";
 
