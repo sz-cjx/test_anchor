@@ -15,7 +15,7 @@ public class CustomerProfileService {
     @Autowired
     private CustomerReader customerReader;
 
-    public JSONArray searchCustomer(Long customerId, String email, String openId) {
-        return customerReader.findByEmailOrOpenId(customerId, email, openId);
+    public JSONArray searchCustomer(Long id, String email, String openId) {
+        return customerReader.findByEmailOrOpenId(id, email, openId);
     }
 }
