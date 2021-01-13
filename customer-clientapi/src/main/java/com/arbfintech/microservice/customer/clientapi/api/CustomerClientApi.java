@@ -1,12 +1,9 @@
 package com.arbfintech.microservice.customer.clientapi.api;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
-import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,14 +17,14 @@ public class CustomerClientApi extends BaseClientApi {
 
     private static final String CUSTOMER_REST_API = "/customer-restapi";
 
-    public AjaxResult createCustomer(JSONObject dataJson) throws ProcedureException {
+    public AjaxResult createCustomer(JSONObject dataJson) {
         return simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/customer/create"),
                 dataJson
         );
     }
 
-    public AjaxResult getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) throws ProcedureException {
+    public AjaxResult getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/unique"),
                 new MultiValueManager()
@@ -39,17 +36,18 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
-    public AjaxResult searchCustomer(String openId, String email) throws ProcedureException {
+    public AjaxResult searchCustomer(Long customerId, String openId, String email) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
                 new MultiValueManager()
+                        .add("customerId", customerId)
                         .add("email", email)
                         .add("openId", openId)
                         .getMap()
         );
     }
 
-    public AjaxResult loadFeatures(Long customerId, List<String> features) throws ProcedureException {
+    public AjaxResult loadFeatures(Long customerId, List<String> features) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
                 new MultiValueManager()
@@ -59,14 +57,14 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
-    public AjaxResult updateFeatures(JSONObject dataJson) throws ProcedureException {
+    public AjaxResult updateFeatures(JSONObject dataJson) {
         return simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
                 dataJson
         );
     }
 
-    public AjaxResult updateCustomerProfile(JSONObject dataJson) throws ProcedureException {
+    public AjaxResult updateCustomerProfile(JSONObject dataJson) {
         return simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update"),
                 dataJson

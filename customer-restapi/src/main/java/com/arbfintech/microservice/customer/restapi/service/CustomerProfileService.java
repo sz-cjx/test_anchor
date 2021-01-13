@@ -1,7 +1,6 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ public class CustomerProfileService {
     @Autowired
     private CustomerReader customerReader;
 
-    public JSONArray searchCustomer(String email, String openId) {
-        return customerReader.findByEmailOrOpenId(email, openId);
+    public JSONArray searchCustomer(Long customerId, String email, String openId) {
+        return customerReader.findByEmailOrOpenId(customerId, email, openId);
     }
 }
