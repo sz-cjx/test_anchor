@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
+import com.arbfintech.microservice.customer.object.type.SearchCustomerRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,13 +37,13 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
-    public AjaxResult searchCustomer(Long id, String openId, String email) {
+    public AjaxResult searchCustomer(SearchCustomerRequest searchCustomerRequest) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/search"),
                 new MultiValueManager()
-                        .add("id", id)
-                        .add("email", email)
-                        .add("openId", openId)
+                        .add("id", searchCustomerRequest.getId())
+                        .add("email", searchCustomerRequest.getEmail())
+                        .add("openId", searchCustomerRequest.getOpenId())
                         .getMap()
         );
     }

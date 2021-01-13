@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Fly_Roushan
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 @Repository
 public class CustomerReader extends BaseJdbcReader {
-    public JSONArray findByEmailOrOpenId(Long customerId, String email, String openId) {
+    public JSONArray findByEmailOrOpenId(Long id, String email, String openId) {
         Map<String, Object> paramMap = new HashMap<>(3);
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * ");
@@ -27,17 +28,15 @@ public class CustomerReader extends BaseJdbcReader {
         sb.append("c.id = cp.id ");
         sb.append("WHERE ");
 
-        if (StringUtils.isBlank(email)) {
-            if (StringUtils.isBlank(openId)) {
-                sb.append("c.id = :customerId");
-            } else {
-                sb.append("c.open_id = :openId");
-            }
+        if (Objects.nonNull(id)) {
+            sb.append("c.id = :id");
+        } else if (StringUtils.isNotBlank(openId)) {
+            sb.append("c.open_id = :openId");
         } else {
             sb.append("cp.email = :email");
         }
 
-        paramMap.put(CustomerJsonKey.CUSTOMER_ID, customerId);
+        paramMap.put(CustomerJsonKey.ID, id);
         paramMap.put(CustomerJsonKey.EMAIL, email);
         paramMap.put(CustomerJsonKey.OPEN_ID, openId);
 
