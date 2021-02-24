@@ -108,3 +108,19 @@ arb:
     url: TEST-FRAMEWORK-EUREKA-SERVER-V3-2.us-west-1.elasticbeanstalk.com:8901
   service:
     url: TEST-MICROSERVICE-CUSTOMER-V3-2.us-west-1.elasticbeanstalk.com
+---
+spring:
+  profiles: local-develop-3.2
+arb:
+  eureka:
+    url: 172.18.1.252:8901
+  service:
+    url: 172.18.1.252
+---
+spring:
+  profiles: local-test-3.2
+arb:
+  eureka:
+    url: 172.18.1.251:8901
+  service:
+    url: 172.18.1.251
