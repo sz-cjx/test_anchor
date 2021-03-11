@@ -63,7 +63,6 @@ public class CustomerFuture {
 
                 String uniqueCode = CustomerUtil.generateUniqueCode(
                         dataJson.getString(CustomerJsonKey.SSN),
-                        dataJson.getString(CustomerJsonKey.EMAIL),
                         dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
                         dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
                 );
