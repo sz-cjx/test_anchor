@@ -184,9 +184,9 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) {
+    public CompletableFuture<String> getCustomerByUnique(String ssn, String routingNo, String accountNo) {
         return CompletableFuture.supplyAsync(() -> {
-            String uniqueCode = CustomerUtil.generateUniqueCode(ssn, email, routingNo, accountNo);
+            String uniqueCode = CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo);
             return AjaxResult.success(simpleService.findByOptions(
                     Customer.class,
                     SqlOption.getInstance().whereEqual("unique_code", uniqueCode, null).toString())

@@ -38,11 +38,10 @@ public class CustomerController {
     @GetMapping("/unique")
     public CompletableFuture<String> getCustomerByUnique(
             @RequestParam String ssn,
-            @RequestParam String email,
             @RequestParam String routingNo,
             @RequestParam String accountNo
     ) {
-        return customerFuture.getCustomerByUnique(ssn, email, routingNo, accountNo);
+        return customerFuture.getCustomerByUnique(ssn, routingNo, accountNo);
     }
 
     @GetMapping("/load-features")
