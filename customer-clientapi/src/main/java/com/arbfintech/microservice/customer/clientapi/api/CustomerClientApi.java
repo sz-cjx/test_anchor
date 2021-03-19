@@ -25,12 +25,11 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
-    public AjaxResult getCustomerByUnique(String ssn, String email, String routingNo, String accountNo) {
+    public AjaxResult getCustomerByUnique(String ssn, String routingNo, String accountNo) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/unique"),
                 new MultiValueManager()
                         .add("ssn", ssn)
-                        .add("email", email)
                         .add("routingNo", routingNo)
                         .add("accountNo", accountNo)
                         .getMap()
