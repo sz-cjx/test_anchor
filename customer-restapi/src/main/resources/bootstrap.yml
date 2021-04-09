@@ -113,14 +113,14 @@ spring:
   profiles: local-develop-3.2
 arb:
   eureka:
-    url: 172.18.1.252:8901
+    url: localhost:8901
   service:
-    url: 172.18.1.252
+    url: localhost
 ---
 spring:
   profiles: local-test-3.2
 arb:
   eureka:
-    url: 172.18.1.251:8901
+    url: localhost:8901
   service:
-    url: 172.18.1.251
+    url: localhost
