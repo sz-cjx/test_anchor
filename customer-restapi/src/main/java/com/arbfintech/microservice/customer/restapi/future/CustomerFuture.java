@@ -276,7 +276,7 @@ public class CustomerFuture {
             } catch (ProcedureException e) {
                 e.printStackTrace();
             }
-            return AjaxResult.success("1");
+            return AjaxResult.success();
         });
     }
 }
