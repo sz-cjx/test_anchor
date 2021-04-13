@@ -73,7 +73,7 @@ public class CustomerClientApi extends BaseClientApi {
 
     public AjaxResult unsubscribeCustomer(String openId, Integer type, Integer value) {
         return simpleRestCaller.get(
-                generateUrl(CUSTOMER_REST_API, "/unsubscribe/" + openId + "/" + type + "/" + value),
+                generateUrl(CUSTOMER_REST_API, String.format("/customer/unsubscribe/%s/%s/%s", openId, type, value)),
                 null
         );
     }
