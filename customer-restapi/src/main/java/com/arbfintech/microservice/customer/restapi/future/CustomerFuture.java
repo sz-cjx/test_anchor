@@ -259,7 +259,7 @@ public class CustomerFuture {
         return CompletableFuture.supplyAsync(() -> {
             Long result = -1L;
             try {
-                if (StringUtils.isAnyBlank(openId, type.toString(), value.toString())) {
+                if (StringUtils.isAnyBlank(openId,String.valueOf(type),String.valueOf(value))) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
                 LOGGER.info("[Unsubscribe Marketing] Start to unsubscribe marketing open id: {}, type: {}, value:{}", openId, type, value);
