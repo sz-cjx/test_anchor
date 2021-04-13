@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.xhtmlrenderer.css.style.derived.StringValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -253,12 +254,15 @@ public class CustomerFuture {
         return result;
     }
 
-    public CompletableFuture<String> unsubscribeMarketing(String openId) {
+    public CompletableFuture<String> unsubscribeMarketing(String openId, Integer type, Integer value) {
+
         return CompletableFuture.supplyAsync(() -> {
+            Long result = -1L;
             try {
-                if (StringUtils.isBlank(openId)) {
-                    throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_OPEN_ID);
+                if (StringUtils.isAnyBlank(openId, type.toString(), value.toString())) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
+                LOGGER.info("[Unsubscribe Marketing] Start to unsubscribe marketing open id: {}, type: {}, value:{}", openId, type, value);
                 SqlOption customerSql = SqlOption.getInstance();
                 customerSql.whereEqual("open_id", openId, null);
                 Customer customerDb = simpleService.findByOptions(Customer.class, customerSql.toString());
@@ -267,16 +271,17 @@ public class CustomerFuture {
                 }
                 SqlOption customerOptInSql = SqlOption.getInstance();
                 customerOptInSql.whereEqual("id", customerDb.getId(), null);
-                customerOptInSql.whereEqual("opt_in_type", CustomerOptInType.EMAIL.getValue(), null);
+                customerOptInSql.whereEqual("opt_in_type", type, null);
                 CustomerOptInData customerOptInData = simpleService.findByOptions(CustomerOptInData.class, customerOptInSql.toString());
-
                 customerOptInData.setUpdatedAt(System.currentTimeMillis());
-                customerOptInData.setOptInValue(customerOptInData.getOptInValue() - CustomerOptInValue.IS_MARKETING.getValue());
-                ResultUtil.checkResult(simpleService.save(customerOptInData), CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
+                customerOptInData.setOptInValue(value);
+                result = simpleService.save(customerOptInData);
+                ResultUtil.checkResult(result, CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
             } catch (ProcedureException e) {
                 e.printStackTrace();
             }
-            return AjaxResult.success();
+            LOGGER.info("[Unsubscribe Marketing] Update success");
+            return AjaxResult.success(result);
         });
     }
 }
