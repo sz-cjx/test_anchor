@@ -70,4 +70,11 @@ public class CustomerClientApi extends BaseClientApi {
                 dataJson
         );
     }
+
+    public AjaxResult unsubscribeMarketing(String openId) {
+        return simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/unsubscribe/" + openId),
+                null
+        );
+    }
 }

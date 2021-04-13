@@ -18,6 +18,7 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
@@ -250,5 +251,32 @@ public class CustomerFuture {
             }
         }
         return result;
+    }
+
+    public CompletableFuture<String> unsubscribeMarketing(String openId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (StringUtils.isBlank(openId)) {
+                    throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_OPEN_ID);
+                }
+                SqlOption customerSql = SqlOption.getInstance();
+                customerSql.whereEqual("open_id", openId, null);
+                Customer customerDb = simpleService.findByOptions(Customer.class, customerSql.toString());
+                if (Objects.isNull(customerDb)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+                }
+                SqlOption customerOptInSql = SqlOption.getInstance();
+                customerOptInSql.whereEqual("id", customerDb.getId(), null);
+                customerOptInSql.whereEqual("opt_in_type", CustomerOptInType.EMAIL.getValue(), null);
+                CustomerOptInData customerOptInData = simpleService.findByOptions(CustomerOptInData.class, customerOptInSql.toString());
+
+                customerOptInData.setUpdatedAt(System.currentTimeMillis());
+                customerOptInData.setOptInValue(customerOptInData.getOptInValue() - CustomerOptInValue.IS_MARKETING.getValue());
+                ResultUtil.checkResult(simpleService.save(customerOptInData), CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
+            } catch (ProcedureException e) {
+                e.printStackTrace();
+            }
+            return AjaxResult.success("1");
+        });
     }
 }

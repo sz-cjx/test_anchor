@@ -65,4 +65,11 @@ public class CustomerController {
     ) {
         return customerFuture.updateCustomerProfile(dataJson);
     }
+
+    @GetMapping("/unsubscribe/{openId}")
+    public CompletableFuture<String> unsubscribeMarketing(
+            @PathVariable String openId
+    ) {
+        return customerFuture.unsubscribeMarketing(openId);
+    }
 }
