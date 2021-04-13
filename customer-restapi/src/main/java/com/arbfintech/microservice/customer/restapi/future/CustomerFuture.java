@@ -254,7 +254,7 @@ public class CustomerFuture {
         return result;
     }
 
-    public CompletableFuture<String> unsubscribeMarketing(String openId, Integer type, Integer value) {
+    public CompletableFuture<String> unsubscribeCustomer(String openId, Integer type, Integer value) {
 
         return CompletableFuture.supplyAsync(() -> {
             Long result = -1L;

@@ -67,11 +67,11 @@ public class CustomerController {
     }
 
     @GetMapping("/unsubscribe/{openId}/{type}/{value}")
-    public CompletableFuture<String> unsubscribeMarketing(
+    public CompletableFuture<String> unsubscribeCustomer(
             @PathVariable String openId,
             @PathVariable Integer type,
             @PathVariable Integer value
     ) {
-        return customerFuture.unsubscribeMarketing(openId, type, value);
+        return customerFuture.unsubscribeCustomer(openId, type, value);
     }
 }
