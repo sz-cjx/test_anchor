@@ -278,7 +278,8 @@ public class CustomerFuture {
                 result = simpleService.save(customerOptInData);
                 ResultUtil.checkResult(result, CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
             } catch (ProcedureException e) {
-                e.printStackTrace();
+                LOGGER.warn(e.getMessage());
+                return AjaxResult.failure(e);
             }
             LOGGER.info("[Unsubscribe Marketing] Update success");
             return AjaxResult.success(result);
