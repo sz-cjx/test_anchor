@@ -18,6 +18,7 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.xhtmlrenderer.css.style.derived.StringValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -250,5 +252,36 @@ public class CustomerFuture {
             }
         }
         return result;
+    }
+
+    public CompletableFuture<String> unsubscribeCustomer(String openId, Integer type, Integer value) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            Long result = -1L;
+            try {
+                if (StringUtils.isAnyBlank(openId, String.valueOf(type), String.valueOf(value))) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
+                }
+                LOGGER.info("[Unsubscribe Marketing] Start to unsubscribe marketing open id: {}, type: {}, value:{}", openId, type, value);
+                SqlOption customerSql = SqlOption.getInstance();
+                customerSql.whereEqual("open_id", openId, null);
+                Customer customerDb = simpleService.findByOptions(Customer.class, customerSql.toString());
+                if (Objects.isNull(customerDb)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+                }
+                SqlOption customerOptInSql = SqlOption.getInstance();
+                customerOptInSql.whereEqual("id", customerDb.getId(), null);
+                customerOptInSql.whereEqual("opt_in_type", type, null);
+                CustomerOptInData customerOptInData = simpleService.findByOptions(CustomerOptInData.class, customerOptInSql.toString());
+                customerOptInData.setUpdatedAt(System.currentTimeMillis());
+                customerOptInData.setOptInValue(customerOptInData.getOptInValue() - value);
+                result = simpleService.save(customerOptInData);
+                ResultUtil.checkResult(result, CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
+            } catch (ProcedureException e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("[Unsubscribe Marketing] Update success");
+            return AjaxResult.success(result);
+        });
     }
 }
