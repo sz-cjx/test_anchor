@@ -18,7 +18,8 @@ public enum CustomerErrorCode implements BaseError {
     UPDATE_FAILURE_CUSTOMER_SAVE(-81010302, "Update failed, save customer"),
     UPDATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010303, "Update failed, save customer profile"),
     UPDATE_FAILURE_OPT_IN_SAVE(-81010304, "Update failed, save opt in"),
-    UPDATE_FAILURE_MISS_OPEN_ID(-81010305, "Update failed, miss open id");
+    UPDATE_FAILURE_MISS_OPEN_ID(-81010305, "Update failed, miss open id"),
+    UPDATE_FAILURE_HAD_UNSUBSCRIBE(-81010306, "Update failed, customer had unsubscribe");
 
     private Integer code;
     private String message;

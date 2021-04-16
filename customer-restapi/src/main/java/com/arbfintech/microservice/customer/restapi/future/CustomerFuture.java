@@ -271,7 +271,11 @@ public class CustomerFuture {
                 customerOptInSql.whereEqual("opt_in_type", type, null);
                 CustomerOptInData customerOptInData = simpleService.findByOptions(CustomerOptInData.class, customerOptInSql.toString());
                 customerOptInData.setUpdatedAt(System.currentTimeMillis());
-                customerOptInData.setOptInValue(customerOptInData.getOptInValue() - value);
+                Integer optInValue = customerOptInData.getOptInValue();
+                if ((optInValue & value) != value) {
+                    throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_HAD_UNSUBSCRIBE);
+                }
+                customerOptInData.setOptInValue(optInValue - value);
                 result = simpleService.save(customerOptInData);
                 ResultUtil.checkResult(result, CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
             } catch (ProcedureException e) {
