@@ -1,6 +1,5 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
@@ -250,5 +249,37 @@ public class CustomerFuture {
             }
         }
         return result;
+    }
+
+    public CompletableFuture<String> unsubscribeCustomer(String openId, Integer type, Integer value) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            Long result = -1L;
+            try {
+                if (StringUtils.isAnyBlank(openId, String.valueOf(type), String.valueOf(value))) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
+                }
+                LOGGER.info("[Unsubscribe Marketing] Start to unsubscribe marketing open id: {}, type: {}, value:{}", openId, type, value);
+                SqlOption customerSql = SqlOption.getInstance();
+                customerSql.whereEqual("open_id", openId, null);
+                Customer customerDb = simpleService.findByOptions(Customer.class, customerSql.toString());
+                if (Objects.isNull(customerDb)) {
+                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+                }
+                SqlOption customerOptInSql = SqlOption.getInstance();
+                customerOptInSql.whereEqual("id", customerDb.getId(), null);
+                customerOptInSql.whereEqual("opt_in_type", type, null);
+                CustomerOptInData customerOptInData = simpleService.findByOptions(CustomerOptInData.class, customerOptInSql.toString());
+                customerOptInData.setUpdatedAt(System.currentTimeMillis());
+                customerOptInData.setOptInValue(customerOptInData.getOptInValue() - value);
+                result = simpleService.save(customerOptInData);
+                ResultUtil.checkResult(result, CustomerErrorCode.UPDATE_FAILURE_OPT_IN_SAVE);
+            } catch (ProcedureException e) {
+                LOGGER.warn(e.getMessage());
+                return AjaxResult.failure(e);
+            }
+            LOGGER.info("[Unsubscribe Marketing] Update success, marketing open id: {}, type: {}, value:{}", openId, type, value);
+            return AjaxResult.success(result);
+        });
     }
 }
