@@ -1,6 +1,5 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.JsonKeyConst;
@@ -18,7 +17,6 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
 import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.xhtmlrenderer.css.style.derived.StringValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -281,7 +278,7 @@ public class CustomerFuture {
                 LOGGER.warn(e.getMessage());
                 return AjaxResult.failure(e);
             }
-            LOGGER.info("[Unsubscribe Marketing] Update success");
+            LOGGER.info("[Unsubscribe Marketing] Update success, marketing open id: {}, type: {}, value:{}", openId, type, value);
             return AjaxResult.success(result);
         });
     }
