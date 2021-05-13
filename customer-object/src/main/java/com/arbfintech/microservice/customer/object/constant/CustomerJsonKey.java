@@ -22,5 +22,7 @@ public interface CustomerJsonKey {
     String OPEN_ID = "openId";
     String OPT_IN = "optIn";
 
+    String PORTFOLIO_ID = "portfolioId";
+
     String SSN = "ssn";
 }

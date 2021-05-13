@@ -17,6 +17,10 @@ public class CustomerOptInData {
 
     @Id
     @Column
+    private Long portfolioId;
+
+    @Id
+    @Column
     private Integer optInType;
 
     @Column
@@ -32,8 +36,9 @@ public class CustomerOptInData {
 
     }
 
-    public CustomerOptInData(Long id, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
+    public CustomerOptInData(Long id, Long portfolioId, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
         this.id = id;
+        this.portfolioId = portfolioId;
         this.optInType = optInType;
         this.optInValue = optInValue;
         this.createdAt = createdAt;
@@ -46,6 +51,14 @@ public class CustomerOptInData {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 
     public Integer getOptInType() {
