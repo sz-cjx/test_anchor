@@ -40,7 +40,7 @@ public class CustomerProfile {
     private String city;
 
     @Column
-    private Integer state;
+    private String state;
 
     @Column
     private String zip;
@@ -132,11 +132,11 @@ public class CustomerProfile {
         this.city = city;
     }
 
-    public Integer getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(String state) {
         this.state = state;
     }
 
