@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.type.SearchCustomerRequest;
 import org.springframework.stereotype.Component;
 
@@ -75,6 +76,13 @@ public class CustomerClientApi extends BaseClientApi {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, String.format("/customer/unsubscribe/%s/%s/%s", openId, type, value)),
                 null
+        );
+    }
+
+    public AjaxResult createCustomerOptIn(List<CustomerOptInData> optInDataList) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/customer/create/opt-in"),
+                optInDataList
         );
     }
 }

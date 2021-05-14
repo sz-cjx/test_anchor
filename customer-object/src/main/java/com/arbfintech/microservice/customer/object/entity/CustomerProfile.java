@@ -39,8 +39,13 @@ public class CustomerProfile {
     @Column
     private String city;
 
+    /**
+     * Had stateEnum
+     *
+     * EnumUtil.getValueByText(StateEnum.class, personalJson.getString(XmlKeyConst.STATE))
+     */
     @Column
-    private String state;
+    private Integer state;
 
     @Column
     private String zip;
@@ -132,11 +137,11 @@ public class CustomerProfile {
         this.city = city;
     }
 
-    public String getState() {
+    public Integer getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 
