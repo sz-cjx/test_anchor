@@ -30,6 +30,10 @@ public class CustomerOptInService {
         return customerWriter.batchSave(customerOptInDataList);
     }
 
+    public <E> Integer batchSave(List<E> dataList) {
+        return customerWriter.batchSave(dataList);
+    }
+
     public Integer updateCustomerOptInData(List<CustomerOptInData> dataList) {
         return customerWriter.batchUpdateOptIn(dataList);
     }

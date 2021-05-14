@@ -36,6 +36,13 @@ public class CustomerOptInData {
 
     }
 
+    public CustomerOptInData(Long id, Long portfolioId, Integer optInType, Integer optInValue) {
+        this.id = id;
+        this.portfolioId = portfolioId;
+        this.optInType = optInType;
+        this.optInValue = optInValue;
+    }
+
     public CustomerOptInData(Long id, Long portfolioId, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
         this.id = id;
         this.portfolioId = portfolioId;
