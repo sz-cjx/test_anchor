@@ -4,10 +4,12 @@ import com.arbfintech.framework.component.core.base.BaseError;
 
 public enum CustomerErrorCode implements BaseError {
 
+    FAILURE_MISS_REQUIRED_PARAM(-81010100, "Miss required param."),
+
     QUERY_FAILURE_CUSTOMER_IS_EXISTED(-81010101, "Customer is existed."),
     QUERY_FAILURE_CUSTOMER_NOT_EXISTED(-81010102, "Customer is not existed."),
     QUERY_FAILURE_SEARCH_FAILED(-81010103, "Search failed, please enter at least one condition."),
-    QUERY_FAILURE_MISS_REQUIRED_PARAM(-81010104, "Miss required param"),
+    QUERY_FAILURE_MISS_REQUIRED_PARAM(-81010104, "Query failure, Miss required param"),
     QUERY_FAILURE_NO_DATA_WAS_QUERIED(-81010105, "Query failure, the assigned condition cannot query any data"),
 
     CREATE_FAILURE_CUSTOMER_SAVE(-81010201, "Create failed, save customer"),

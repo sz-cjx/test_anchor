@@ -20,7 +20,7 @@ public class CustomerUtil {
         if (CollectionUtils.isEmpty(dataJson)) {
             return false;
         }
-        List<String> keyList = Lists.newArrayList(CustomerJsonKey.SSN, CustomerJsonKey.EMAIL, CustomerJsonKey.BANK_ROUTING_NO, CustomerJsonKey.BANK_ACCOUNT_NO);
+        List<String> keyList = Lists.newArrayList(CustomerJsonKey.SSN, CustomerJsonKey.EMAIL, CustomerJsonKey.BANK_ROUTING_NO, CustomerJsonKey.BANK_ACCOUNT_NO, CustomerJsonKey.PORTFOLIO_ID);
         for (String key : keyList) {
             if (StringUtils.isBlank(dataJson.getString(key))) {
                 return false;

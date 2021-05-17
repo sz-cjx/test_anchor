@@ -39,6 +39,11 @@ public class CustomerProfile {
     @Column
     private String city;
 
+    /**
+     * Had stateEnum
+     *
+     * EnumUtil.getValueByText(StateEnum.class, personalJson.getString(XmlKeyConst.STATE))
+     */
     @Column
     private Integer state;
 

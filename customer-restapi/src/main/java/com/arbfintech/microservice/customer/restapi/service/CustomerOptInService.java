@@ -20,14 +20,18 @@ public class CustomerOptInService {
     @Autowired
     private CustomerWriter customerWriter;
 
-    public Integer initCustomerOptIn(Long id) {
+    public Integer initCustomerOptIn(Long id, Long portfolioId) {
         Long time = System.currentTimeMillis();
         Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
         List<CustomerOptInData> customerOptInDataList = new ArrayList<>();
-        customerOptInDataList.add(new CustomerOptInData(id, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
-        customerOptInDataList.add(new CustomerOptInData(id, CustomerOptInType.HOME_PHONE.getValue(), defaultValue, time, time));
-        customerOptInDataList.add(new CustomerOptInData(id, CustomerOptInType.CELL_PHONE.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.HOME_PHONE.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.CELL_PHONE.getValue(), defaultValue, time, time));
         return customerWriter.batchSave(customerOptInDataList);
+    }
+
+    public <E> Integer batchSave(List<E> dataList) {
+        return customerWriter.batchSave(dataList);
     }
 
     public Integer updateCustomerOptInData(List<CustomerOptInData> dataList) {

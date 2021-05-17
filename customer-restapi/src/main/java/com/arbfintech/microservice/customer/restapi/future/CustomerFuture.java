@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -52,51 +54,51 @@ public class CustomerFuture {
     @Autowired
     private SimpleService simpleService;
 
-    public CompletableFuture<String> createCustomer(JSONObject dataJson) {
-        return CompletableFuture.supplyAsync(() -> {
-            Long now = DateUtil.getCurrentTimestamp();
-            try {
-                if (!CustomerUtil.isValid(dataJson)) {
-                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
-                }
-
-                String uniqueCode = CustomerUtil.generateUniqueCode(
-                        dataJson.getString(CustomerJsonKey.SSN),
-                        dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
-                        dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
-                );
-
-                Customer customerDb = simpleService.findByOptions(Customer.class,
-                        SqlOption.getInstance().whereEqual("unique_code", uniqueCode, null).toString()
-                );
-
-                if (Objects.nonNull(customerDb)) {
-                    throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
-                }
-                Customer customer = dataJson.toJavaObject(Customer.class);
-                CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
-
-                customer.setUniqueCode(uniqueCode);
-                customer.setOpenId(UuidUtil.getUuid());
-                customer.setCreatedAt(now);
-                customer.setUpdatedAt(now);
-                customer.setStatus(-1);
-
-                Long customerId = simpleService.save(customer);
-                ResultUtil.checkResult(customerId, CustomerErrorCode.CREATE_FAILURE_CUSTOMER_SAVE);
-                customerProfile.setId(customerId);
-                customerProfile.setCreatedAt(now);
-                customerProfile.setUpdatedAt(now);
-                ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.CREATE_FAILURE_CUSTOMER_PROFILE_SAVE);
-                ResultUtil.checkResult(customerOptInService.initCustomerOptIn(customerId), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
-
-                LOGGER.info("[Create Customer] Create customer success, id: {}", customerId);
-                return AjaxResult.success(customerId);
-            } catch (ProcedureException e) {
-                LOGGER.warn(e.getMessage());
-                return AjaxResult.failure(e);
+    @Transactional(rollbackFor = Exception.class)
+    public String createCustomer(JSONObject dataJson) {
+        Long now = DateUtil.getCurrentTimestamp();
+        try {
+            if (!CustomerUtil.isValid(dataJson)) {
+                throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
             }
-        });
+
+            String uniqueCode = CustomerUtil.generateUniqueCode(
+                    dataJson.getString(CustomerJsonKey.SSN),
+                    dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
+                    dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
+            );
+
+            Customer customerDb = simpleService.findByOptions(Customer.class,
+                    SqlOption.getInstance().whereEqual("unique_code", uniqueCode, null).toString()
+            );
+
+            if (Objects.nonNull(customerDb)) {
+                throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_IS_EXISTED);
+            }
+            Customer customer = dataJson.toJavaObject(Customer.class);
+            CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
+
+            customer.setUniqueCode(uniqueCode);
+            customer.setOpenId(UuidUtil.getUuid());
+            customer.setCreatedAt(now);
+            customer.setUpdatedAt(now);
+            customer.setStatus(-1);
+
+            Long customerId = simpleService.save(customer);
+            ResultUtil.checkResult(customerId, CustomerErrorCode.CREATE_FAILURE_CUSTOMER_SAVE);
+            customerProfile.setId(customerId);
+            customerProfile.setCreatedAt(now);
+            customerProfile.setUpdatedAt(now);
+            ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.CREATE_FAILURE_CUSTOMER_PROFILE_SAVE);
+            ResultUtil.checkResult(customerOptInService.initCustomerOptIn(customerId, dataJson.getLong(CustomerJsonKey.PORTFOLIO_ID)), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+
+            LOGGER.info("[Create Customer] Create customer success, id: {}", customerId);
+            return AjaxResult.success(customerId);
+        } catch (ProcedureException e) {
+            LOGGER.warn(e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return AjaxResult.failure(e);
+        }
     }
 
     public CompletableFuture<String> searchCustomer(Long id, String email, String openId) {
@@ -137,7 +139,7 @@ public class CustomerFuture {
 
     public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
-            Integer toatlRow = 0;
+            Integer totalRow;
             try {
                 List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
                 JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
@@ -145,14 +147,14 @@ public class CustomerFuture {
                 if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
-                toatlRow = updateFeatureByCustomerId(customerId, features, data);
-                ResultUtil.checkResult(toatlRow, CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+                totalRow = updateFeatureByCustomerId(customerId, features, data);
+                ResultUtil.checkResult(totalRow, CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
                 LOGGER.info("[Update feature] update success");
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
                 return AjaxResult.failure(e);
             }
-            return AjaxResult.success(toatlRow);
+            return AjaxResult.success(totalRow);
         });
     }
 
@@ -252,7 +254,6 @@ public class CustomerFuture {
     }
 
     public CompletableFuture<String> unsubscribeCustomer(String openId, Integer type, Integer value) {
-
         return CompletableFuture.supplyAsync(() -> {
             Long result = -1L;
             try {
@@ -285,5 +286,24 @@ public class CustomerFuture {
             LOGGER.info("[Unsubscribe Marketing] Update success, marketing open id: {}, type: {}, value:{}", openId, type, value);
             return AjaxResult.success(result);
         });
+    }
+
+    public String createCustomerOptIn(List<CustomerOptInData> optInDataList) {
+        try {
+            if (CollectionUtils.isEmpty(optInDataList) || optInDataList.get(0).getId() == null) {
+                throw new ProcedureException(CustomerErrorCode.FAILURE_MISS_REQUIRED_PARAM);
+            }
+            Long time = System.currentTimeMillis();
+            for (CustomerOptInData customerOptInData : optInDataList) {
+                customerOptInData.setCreatedAt(time);
+                customerOptInData.setUpdatedAt(time);
+            }
+            Integer row = customerOptInService.batchSave(optInDataList);
+            ResultUtil.checkResult(row, CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+            return AjaxResult.success(row);
+        } catch (ProcedureException e) {
+            LOGGER.warn(e.getMessage());
+            return AjaxResult.failure(e);
+        }
     }
 }
