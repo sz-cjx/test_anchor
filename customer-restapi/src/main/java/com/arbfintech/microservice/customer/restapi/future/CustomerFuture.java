@@ -120,7 +120,7 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> loadFeatures(Long customerId, List<String> features) {
+    public CompletableFuture<String> loadFeatures(Long customerId, Long portfolioId, List<String> features) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (CollectionUtils.isEmpty(features)) {
@@ -128,7 +128,7 @@ public class CustomerFuture {
                 }
 
                 JSONObject featureJson = new JSONObject();
-                cascadeFeatureByCustomerId(customerId, features, featureJson);
+                cascadeFeatureByCustomerId(customerId, portfolioId, features, featureJson);
                 return AjaxResult.success(featureJson);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
@@ -144,10 +144,12 @@ public class CustomerFuture {
                 List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
                 JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
                 Long customerId = dataJson.getLong(CustomerJsonKey.CUSTOMER_ID);
+                Long portfolioId = dataJson.getLong(CustomerJsonKey.PORTFOLIO_ID);
+
                 if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
-                totalRow = updateFeatureByCustomerId(customerId, features, data);
+                totalRow = updateFeatureByCustomerId(customerId, portfolioId, features, data);
                 ResultUtil.checkResult(totalRow, CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
                 LOGGER.info("[Update feature] update success");
             } catch (ProcedureException e) {
@@ -195,7 +197,7 @@ public class CustomerFuture {
         });
     }
 
-    private void cascadeFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
+    private void cascadeFeatureByCustomerId(Long customerId, Long portfolioId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
         if (featureArray == null) {
             return;
         }
@@ -204,11 +206,17 @@ public class CustomerFuture {
         for (String feature : featureArray) {
             switch (feature) {
                 case CustomerFeatureKey.OPT_IN:
+                    if (Objects.isNull(portfolioId)) {
+                        throw new ProcedureException(CustomerErrorCode.FAILURE_MISS_REQUIRED_PARAM);
+                    }
+
                     JSONObject optInDataJson = new JSONObject();
                     sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
+                    sqlOption.whereEqual("portfolio_id", portfolioId);
                     List<CustomerOptInData> optInDataList = simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString());
+
                     if (CollectionUtils.isEmpty(optInDataList)) {
-                        throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+                        optInDataList = customerOptInService.createCustomerOptIn(customerId, portfolioId);
                     }
                     for (CustomerOptInData optInData : optInDataList) {
                         optInDataJson.put(
@@ -225,12 +233,16 @@ public class CustomerFuture {
         }
     }
 
-    private Integer updateFeatureByCustomerId(Long customerId, Collection<String> featureArray, JSONObject dataJson) {
+    private Integer updateFeatureByCustomerId(Long customerId, Long portfolioId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
         Integer result = -1;
         Long now = DateUtil.getCurrentTimestamp();
         for (String feature : featureArray) {
             switch (feature) {
                 case CustomerFeatureKey.OPT_IN:
+                    if (Objects.isNull(portfolioId)) {
+                        throw new ProcedureException(CustomerErrorCode.FAILURE_MISS_REQUIRED_PARAM);
+                    }
+
                     List<CustomerOptInData> dataList = new ArrayList<>();
                     JSONObject optInJson = dataJson.getJSONObject(CustomerJsonKey.OPT_IN);
                     for (String key : optInJson.keySet()) {
@@ -238,6 +250,7 @@ public class CustomerFuture {
                         Integer type = EnumUtil.getValueByKey(CustomerOptInType.class, key);
                         CustomerOptInData customerOptInData = new CustomerOptInData();
                         customerOptInData.setId(customerId);
+                        customerOptInData.setPortfolioId(portfolioId);
                         customerOptInData.setOptInType(type);
                         customerOptInData.setOptInValue(value);
                         customerOptInData.setUpdatedAt(now);
