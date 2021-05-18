@@ -30,6 +30,16 @@ public class CustomerOptInService {
         return customerWriter.batchSave(customerOptInDataList);
     }
 
+    public List<CustomerOptInData> createCustomerOptIn(Long id, Long portfolioId) {
+        Long time = System.currentTimeMillis();
+        Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
+        List<CustomerOptInData> customerOptInDataList = new ArrayList<>();
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.HOME_PHONE.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.CELL_PHONE.getValue(), defaultValue, time, time));
+        return customerOptInDataList;
+    }
+
     public <E> Integer batchSave(List<E> dataList) {
         return customerWriter.batchSave(dataList);
     }

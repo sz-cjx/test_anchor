@@ -2,6 +2,9 @@ package com.arbfintech.microservice.customer.restapi.util;
 
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * @author Fly_Roushan
