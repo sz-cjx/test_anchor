@@ -25,8 +25,8 @@ public class CustomerOptInService {
         Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
         List<CustomerOptInData> customerOptInDataList = new ArrayList<>();
         customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
-        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.HOME_PHONE.getValue(), defaultValue, time, time));
-        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.CELL_PHONE.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.HOME_PHONE.getValue(), 0, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.CELL_PHONE.getValue(), 0, time, time));
         return customerWriter.batchSave(customerOptInDataList);
     }
 
@@ -35,8 +35,8 @@ public class CustomerOptInService {
         Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
         List<CustomerOptInData> customerOptInDataList = new ArrayList<>();
         customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.EMAIL.getValue(), defaultValue, time, time));
-        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.HOME_PHONE.getValue(), defaultValue, time, time));
-        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.CELL_PHONE.getValue(), defaultValue, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.HOME_PHONE.getValue(), 0, time, time));
+        customerOptInDataList.add(new CustomerOptInData(id, portfolioId, CustomerOptInType.CELL_PHONE.getValue(), 0, time, time));
         return customerOptInDataList;
     }
 
