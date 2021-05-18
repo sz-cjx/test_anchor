@@ -48,11 +48,12 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
-    public AjaxResult loadFeatures(Long customerId, List<String> features) {
+    public AjaxResult loadFeatures(Long customerId, Long portfolioId, List<String> features) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
                 new MultiValueManager()
                         .add("customerId", customerId)
+                        .add("portfolioId", portfolioId)
                         .add("features", String.join(",", features))
                         .getMap()
         );
