@@ -48,9 +48,10 @@ public class CustomerController {
     @GetMapping("/load-features")
     public CompletableFuture<String> loadFeatures(
             @RequestParam Long customerId,
+            @RequestParam Long portfolioId,
             @RequestParam List<String> features
     ) {
-        return customerFuture.loadFeatures(customerId, features);
+        return customerFuture.loadFeatures(customerId, portfolioId, features);
     }
 
     @PutMapping("/update-features")
