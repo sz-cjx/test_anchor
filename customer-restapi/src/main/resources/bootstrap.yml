@@ -129,6 +129,6 @@ spring:
   profiles: develop-v3.2
 arb:
   eureka:
-    url: http://47.241.4.2:8901
+    url: 47.241.4.2:8901
   service:
     url: 47.241.198.123
