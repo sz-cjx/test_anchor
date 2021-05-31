@@ -126,7 +126,7 @@ arb:
     url: localhost
 ---
 spring:
-  profiles: develop-v3.2
+  profiles: training
 arb:
   eureka:
     url: 47.241.4.2:8901
