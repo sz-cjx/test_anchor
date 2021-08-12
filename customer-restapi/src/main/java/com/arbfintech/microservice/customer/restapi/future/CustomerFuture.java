@@ -139,7 +139,6 @@ public class CustomerFuture {
 
     public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
-            Integer totalRow;
             try {
                 List<String> features = dataJson.getJSONArray(CustomerJsonKey.FEATURES).toJavaList(String.class);
                 JSONObject data = dataJson.getJSONObject(CustomerJsonKey.DATA);
@@ -149,14 +148,13 @@ public class CustomerFuture {
                 if (customerId == null || CollectionUtils.isEmpty(features) || CollectionUtils.isEmpty(data)) {
                     throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_MISS_REQUIRED_PARAM);
                 }
-                totalRow = updateFeatureByCustomerId(customerId, portfolioId, features, data);
-                ResultUtil.checkResult(totalRow, CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+                JSONObject result = updateFeatureByCustomerId(customerId, portfolioId, features, data);
                 LOGGER.info("[Update feature] update success");
+                return AjaxResult.success(result);
             } catch (ProcedureException e) {
                 LOGGER.warn(e.getMessage());
                 return AjaxResult.failure(e);
             }
-            return AjaxResult.success(totalRow);
         });
     }
 
@@ -233,8 +231,8 @@ public class CustomerFuture {
         }
     }
 
-    private Integer updateFeatureByCustomerId(Long customerId, Long portfolioId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
-        Integer result = -1;
+    private JSONObject updateFeatureByCustomerId(Long customerId, Long portfolioId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
+        JSONObject result =  new JSONObject();
         Long now = DateUtil.getCurrentTimestamp();
         for (String feature : featureArray) {
             switch (feature) {
@@ -256,7 +254,17 @@ public class CustomerFuture {
                         customerOptInData.setUpdatedAt(now);
                         dataList.add(customerOptInData);
                     }
-                    result = customerOptInService.updateCustomerOptInData(dataList);
+                    SqlOption sqlOption = SqlOption.getInstance();
+                    sqlOption.whereEqual("id", customerId, null);
+                    sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
+                    sqlOption.whereEqual("portfolio_id", portfolioId);
+                    List<CustomerOptInData> originalOptInList = simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString());
+
+                    Integer totalRow = customerOptInService.updateCustomerOptInData(dataList);
+                    ResultUtil.checkResult(totalRow, CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+
+                    result.put(CustomerJsonKey.ORIGINAL, originalOptInList);
+                    result.put(CustomerJsonKey.CURRENT, dataList);
                     break;
                 default:
                     LOGGER.warn("No such feature: {}", feature);
