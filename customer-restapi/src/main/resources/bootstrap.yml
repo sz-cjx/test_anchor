@@ -24,18 +24,6 @@ server:
 spring:
   application:
     name: ${arb.service.name}
-  cloud:
-    config:
-      label: master
-      discovery:
-        enabled: true
-        service-id: config-server
-      fail-fast: true
-      retry:
-        initial-interval: 1000
-        multiplier: 1.1
-        max-interval: 2000
-        max-attempts: 2
   datasource:
     master:
       writer:
@@ -92,6 +80,24 @@ arb:
     url: FRAMEWORK-EUREKA-SERVER-DEV-V3-2.us-west-1.elasticbeanstalk.com:8901
   service:
     url: MICROSERVICE-CUSTOMER-DEV-V3-2.us-west-1.elasticbeanstalk.com
+  database:
+    writer:
+      url: panda-mysql-dev3-2.cluster-cdyrsmnel9xh.us-west-1.rds.amazonaws.com
+    reader:
+      url: panda-mysql-dev3-2.cluster-ro-cdyrsmnel9xh.us-west-1.rds.amazonaws.com
+    schema: customer
+    username: admin
+    password: pandamysql32
+  rabbitmq:
+    url: b-3e836113-3268-46b8-8369-02c9a8d2aed5.mq.us-west-1.amazonaws.com
+    username: arbfintech
+    password: Arb@88888888
+    port: 5671
+    ssl:
+      enabled: true
+      algorithm: TLSv1.2
+logging:
+  config: http://cf.sztus.com/config/log4j2-dev-3-2.yml
 ---
 spring:
   profiles: release-v3.2
@@ -100,6 +106,24 @@ arb:
     url: framework-eureka-server-rel-v3-2.ap-southeast-1.elasticbeanstalk.com:8901
   service:
     url: microservice-customer-rel-v3-2.ap-southeast-1.elasticbeanstalk.com
+  database:
+    writer:
+      url: pandaria.cluster-cygxrcm7zhvh.ap-southeast-1.rds.amazonaws.com
+    reader:
+      url: pandaria-for-customer.cluster-custom-cygxrcm7zhvh.ap-southeast-1.rds.amazonaws.com
+    schema: customer
+    username: pandaria_admin
+    password: G456Ub$MHw&C41
+  rabbitmq:
+    url: b-fec117ac-53b1-4f6d-bd88-2d1f444ad30e.mq.ap-southeast-1.amazonaws.com
+    username: arbfintech
+    password: Arb@88888888
+    port: 5671
+    ssl:
+      enabled: true
+      algorithm: TLSv1.2
+logging:
+  config: http://cf.sztus.com/config/log4j2-rel-3-2.yml
 ---
 spring:
   profiles: test-v3.2
