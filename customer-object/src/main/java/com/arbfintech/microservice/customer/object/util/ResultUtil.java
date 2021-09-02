@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.restapi.util;
+package com.arbfintech.microservice.customer.object.util;
 
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
