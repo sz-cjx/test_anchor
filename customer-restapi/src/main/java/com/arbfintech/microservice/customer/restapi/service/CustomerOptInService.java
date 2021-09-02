@@ -5,8 +5,8 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
+import com.arbfintech.microservice.customer.object.util.ResultUtil;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerWriter;
-import com.arbfintech.microservice.customer.restapi.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
