@@ -62,10 +62,10 @@ public class CustomerController {
     }
 
     @PutMapping("/update")
-    public CompletableFuture<String> updateCustomerProfile(
+    public CompletableFuture<String> updateCustomer(
             @RequestBody JSONObject dataJson
     ) {
-        return customerFuture.updateCustomerProfile(dataJson);
+        return customerFuture.updateCustomer(dataJson);
     }
 
     @GetMapping("/unsubscribe/{openId}/{type}/{value}")
