@@ -175,9 +175,9 @@ public class CustomerFuture {
                 String accountNo = dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO);
                 if (!StringUtil.isAnyNull(ssn, routingNo, accountNo)) {
                     String uniqueCode = CustomerUtil.generateUniqueCode(
-                            dataJson.getString(CustomerJsonKey.SSN),
-                            dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO),
-                            dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO)
+                            ssn,
+                            routingNo,
+                            accountNo
                     );
                     customer.setUniqueCode(uniqueCode);
                 }
