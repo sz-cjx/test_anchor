@@ -8,7 +8,6 @@ import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
-import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.framework.component.core.util.UuidUtil;
 import com.arbfintech.framework.component.database.core.SimpleService;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
@@ -173,7 +172,7 @@ public class CustomerFuture {
                 String ssn = dataJson.getString(CustomerJsonKey.SSN);
                 String routingNo = dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO);
                 String accountNo = dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO);
-                if (!StringUtil.isAnyNull(ssn, routingNo, accountNo)) {
+                if (!StringUtils.isAnyBlank(ssn, routingNo, accountNo)) {
                     String uniqueCode = CustomerUtil.generateUniqueCode(
                             ssn,
                             routingNo,
