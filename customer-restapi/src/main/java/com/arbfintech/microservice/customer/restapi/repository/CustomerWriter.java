@@ -3,7 +3,7 @@ package com.arbfintech.microservice.customer.restapi.repository;
 import com.arbfintech.framework.component.core.annotation.Id;
 import com.arbfintech.framework.component.core.util.StringUtil;
 import com.arbfintech.framework.component.database.core.BaseJdbcWriter;
-import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
+import com.arbfintech.microservice.customer.object.util.CustomerUtil;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;

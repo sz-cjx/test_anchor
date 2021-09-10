@@ -17,10 +17,10 @@ import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
+import com.arbfintech.microservice.customer.object.util.CustomerUtil;
+import com.arbfintech.microservice.customer.object.util.ResultUtil;
 import com.arbfintech.microservice.customer.restapi.service.CustomerOptInService;
 import com.arbfintech.microservice.customer.restapi.service.CustomerProfileService;
-import com.arbfintech.microservice.customer.restapi.util.CustomerUtil;
-import com.arbfintech.microservice.customer.restapi.util.ResultUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,7 +158,7 @@ public class CustomerFuture {
         });
     }
 
-    public CompletableFuture<String> updateCustomerProfile(JSONObject dataJson) {
+    public CompletableFuture<String> updateCustomer(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
             Long now = DateUtil.getCurrentTimestamp();
             try {
@@ -167,8 +167,19 @@ public class CustomerFuture {
                 if (customerId == null) {
                     throw new ProcedureException(CustomerErrorCode.UPDATE_FAILURE_MISS_ID);
                 }
-
                 Customer customer = dataJson.toJavaObject(Customer.class);
+
+                String ssn = dataJson.getString(CustomerJsonKey.SSN);
+                String routingNo = dataJson.getString(CustomerJsonKey.BANK_ROUTING_NO);
+                String accountNo = dataJson.getString(CustomerJsonKey.BANK_ACCOUNT_NO);
+                if (!StringUtils.isAnyBlank(ssn, routingNo, accountNo)) {
+                    String uniqueCode = CustomerUtil.generateUniqueCode(
+                            ssn,
+                            routingNo,
+                            accountNo
+                    );
+                    customer.setUniqueCode(uniqueCode);
+                }
                 CustomerProfile customerProfile = dataJson.toJavaObject(CustomerProfile.class);
 
                 customer.setUpdatedAt(now);
@@ -232,7 +243,7 @@ public class CustomerFuture {
     }
 
     private JSONObject updateFeatureByCustomerId(Long customerId, Long portfolioId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
-        JSONObject result =  new JSONObject();
+        JSONObject result = new JSONObject();
         Long now = DateUtil.getCurrentTimestamp();
         for (String feature : featureArray) {
             switch (feature) {

@@ -1,4 +1,4 @@
-package com.arbfintech.microservice.customer.restapi.util;
+package com.arbfintech.microservice.customer.object.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.GlobalConst;
@@ -41,6 +41,6 @@ public class CustomerUtil {
     }
 
     public static String removeLast(StringBuilder sb, String cs) {
-        return sb.replace(sb.lastIndexOf(cs), sb.length(), org.apache.commons.lang.StringUtils.EMPTY).toString();
+        return sb.replace(sb.lastIndexOf(cs), sb.length(), StringUtils.EMPTY).toString();
     }
 }
