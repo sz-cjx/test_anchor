@@ -90,7 +90,8 @@ public class CustomerFuture {
             customerProfile.setCreatedAt(now);
             customerProfile.setUpdatedAt(now);
             ResultUtil.checkResult(simpleService.save(customerProfile), CustomerErrorCode.CREATE_FAILURE_CUSTOMER_PROFILE_SAVE);
-//            ResultUtil.checkResult(customerOptInService.initCustomerOptIn(customerId, dataJson.getLong(CustomerJsonKey.PORTFOLIO_ID)), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+            CompletableFuture.runAsync(() -> customerOptInService.initAllPortfolioOptIn(customerId));
+
 
             LOGGER.info("[Create Customer] Create customer success, id: {}", customerId);
             return AjaxResult.success(customerId);
