@@ -132,3 +132,11 @@ arb:
     url: 47.241.4.2:8901
   service:
     url: 47.241.198.123
+---
+spring:
+  profiles: develop
+arb:
+  eureka:
+    url: 47.241.76.42:8901
+  service:
+    url: 8.214.38.179
