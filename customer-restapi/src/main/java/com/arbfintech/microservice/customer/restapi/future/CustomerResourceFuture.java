@@ -5,9 +5,12 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
+import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +25,16 @@ public class CustomerResourceFuture {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerResourceFuture.class);
 
+    @Autowired
+    private CommonReader commonReader;
+
     public CompletableFuture<String> getProfileByFeature(CustomerProfileDTO customerProfileDTO) {
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {
                         switch (customerProfileDTO.getProfileFeature()) {
                             case CustomerFeatureKey.PERSONAL: {
-                                return null;
+                                return AjaxResult.success(commonReader.getEntityByCustomerId(CustomerProfile.class, customerProfileDTO.getCustomerId()));
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
                                 return null;
