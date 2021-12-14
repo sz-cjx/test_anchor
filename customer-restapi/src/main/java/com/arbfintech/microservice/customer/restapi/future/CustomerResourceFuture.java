@@ -34,7 +34,7 @@ public class CustomerResourceFuture {
                                 return null;
                             }
                             default:
-                                throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_GET_PROFILE_NOT_EXIST);
+                                throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
                     } catch (ProcedureException e) {
                         LOGGER.warn("[Get Profile]Failure to get profile data. CustomerId: {}, Feature:{}", customerProfileDTO.getCustomerId(), customerProfileDTO.getProfileFeature());
@@ -59,7 +59,7 @@ public class CustomerResourceFuture {
                                 return null;
                             }
                             default:
-                                throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_GET_PROFILE_NOT_EXIST);
+                                throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
                     } catch (ProcedureException e) {
                         LOGGER.warn("[Save Profile]Failure to save profile data. CustomerId: {}, Feature:{}", customerProfileDTO.getCustomerId(), customerProfileDTO.getProfileFeature());
