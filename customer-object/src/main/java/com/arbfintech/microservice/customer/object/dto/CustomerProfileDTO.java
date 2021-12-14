@@ -10,6 +10,8 @@ public class CustomerProfileDTO {
     @NotNull(message = "profileFeature can not be null.")
     private String profileFeature;
 
+    private String data;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -24,5 +26,13 @@ public class CustomerProfileDTO {
 
     public void setProfileFeature(String profileFeature) {
         this.profileFeature = profileFeature;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

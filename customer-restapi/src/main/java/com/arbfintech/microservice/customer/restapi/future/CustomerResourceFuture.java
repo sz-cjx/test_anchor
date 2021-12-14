@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
+import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -36,6 +38,31 @@ public class CustomerResourceFuture {
                         }
                     } catch (ProcedureException e) {
                         LOGGER.warn("[Get Profile]Failure to get profile data. CustomerId: {}, Feature:{}", customerProfileDTO.getCustomerId(), customerProfileDTO.getProfileFeature());
+                        return AjaxResult.failure(e);
+                    }
+                }
+        );
+    }
+
+    public CompletableFuture<String> saveProfileByFeature(CustomerProfileDTO customerProfileDTO, HttpServletRequest request) {
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        // TODO check token
+                        JSONObject accountJson = new JSONObject();
+
+                        switch (customerProfileDTO.getProfileFeature()) {
+                            case CustomerFeatureKey.PERSONAL: {
+                                return null;
+                            }
+                            case CustomerFeatureKey.EMPLOYMENT: {
+                                return null;
+                            }
+                            default:
+                                throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_GET_PROFILE_NOT_EXIST);
+                        }
+                    } catch (ProcedureException e) {
+                        LOGGER.warn("[Save Profile]Failure to save profile data. CustomerId: {}, Feature:{}", customerProfileDTO.getCustomerId(), customerProfileDTO.getProfileFeature());
                         return AjaxResult.failure(e);
                     }
                 }
