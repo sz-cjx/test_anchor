@@ -1,5 +1,7 @@
 package com.arbfintech.microservice.customer.object.dto;
 
+import com.alibaba.fastjson.JSONObject;
+
 import javax.validation.constraints.NotNull;
 
 public class CustomerProfileDTO {
@@ -10,7 +12,7 @@ public class CustomerProfileDTO {
     @NotNull(message = "profileFeature can not be null.")
     private String profileFeature;
 
-    private String data;
+    private JSONObject data;
 
     public Long getCustomerId() {
         return customerId;
@@ -28,11 +30,11 @@ public class CustomerProfileDTO {
         this.profileFeature = profileFeature;
     }
 
-    public String getData() {
+    public JSONObject getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(JSONObject data) {
         this.data = data;
     }
 }

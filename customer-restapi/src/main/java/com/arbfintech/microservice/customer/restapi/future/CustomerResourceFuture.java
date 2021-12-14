@@ -1,13 +1,10 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
-import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
-import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.restapi.service.CustomerResourceService;
 import org.slf4j.Logger;
@@ -16,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -59,23 +57,22 @@ public class CustomerResourceFuture {
                 () -> {
                     Long customerId = customerProfileDTO.getCustomerId();
                     String profileFeature = customerProfileDTO.getProfileFeature();
+                    JSONObject dataStr = customerProfileDTO.getData();
                     try {
                         // TODO check token
                         JSONObject accountJson = new JSONObject();
 
                         switch (profileFeature) {
                             case CustomerFeatureKey.PERSONAL: {
-                                CustomerProfile customerProfile = JSON.parseObject(customerProfileDTO.getData(), CustomerProfile.class);
-                                return customerResourceService.updateCustomerProfile(customerId, customerProfile, accountJson);
+                                return customerResourceService.updateCustomerProfile(customerId, dataStr, accountJson);
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
-                                CustomerEmploymentData customerEmploymentData = JSON.parseObject(customerProfileDTO.getData(), CustomerEmploymentData.class);
-                                return customerResourceService.updateCustomerEmploymentData(customerId, customerEmploymentData, accountJson);
+                                return customerResourceService.updateCustomerEmploymentData(customerId, dataStr, accountJson);
                             }
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
-                    } catch (ProcedureException e) {
+                    } catch (ProcedureException | ParseException e) {
                         LOGGER.warn("[Save Profile]Failure to save profile data. CustomerId: {}, Feature:{}", customerId, profileFeature);
                         return AjaxResult.failure(e);
                     }
