@@ -9,4 +9,10 @@ public interface CustomerFeatureKey {
     String CUSTOMER = "CUSTOMER";
     String OPT_IN = "OPT_IN";
     String PROFILE = "PROFILE";
+
+    /**
+     * phoenix profile
+     */
+    String PERSONAL = "PERSONAL";
+    String EMPLOYMENT = "EMPLOYMENT";
 }
