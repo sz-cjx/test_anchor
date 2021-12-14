@@ -5,9 +5,8 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
-import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
-import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
+import com.arbfintech.microservice.customer.restapi.service.CustomerResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,24 +25,25 @@ public class CustomerResourceFuture {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerResourceFuture.class);
 
     @Autowired
-    private CommonReader commonReader;
+    private CustomerResourceService customerResourceService;
 
     public CompletableFuture<String> getProfileByFeature(CustomerProfileDTO customerProfileDTO) {
         return CompletableFuture.supplyAsync(
                 () -> {
+                    Long customerId = customerProfileDTO.getCustomerId();
                     try {
                         switch (customerProfileDTO.getProfileFeature()) {
                             case CustomerFeatureKey.PERSONAL: {
-                                return AjaxResult.success(commonReader.getEntityByCustomerId(CustomerProfile.class, customerProfileDTO.getCustomerId()));
+                                return AjaxResult.success(customerResourceService.getCustomerProfile(customerId));
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
-                                return null;
+                                return AjaxResult.success(customerResourceService.getCustomerEmploymentData(customerId));
                             }
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
                     } catch (ProcedureException e) {
-                        LOGGER.warn("[Get Profile]Failure to get profile data. CustomerId: {}, Feature:{}", customerProfileDTO.getCustomerId(), customerProfileDTO.getProfileFeature());
+                        LOGGER.warn("[Get Profile]Failure to get profile data. CustomerId: {}, Feature:{}", customerId, customerProfileDTO.getProfileFeature());
                         return AjaxResult.failure(e);
                     }
                 }
