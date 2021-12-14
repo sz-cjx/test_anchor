@@ -11,7 +11,7 @@ public class CustomerResourceClientApi extends BaseClientApi {
 
     private static final String CUSTOMER_REST_API = "/customer-restapi";
 
-    public AjaxResult createCustomerOptIn(CustomerProfileDTO profileDTO) {
+    public AjaxResult getProfileByFeature(CustomerProfileDTO profileDTO) {
         return simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/profile"),
                 profileDTO
