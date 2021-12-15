@@ -15,7 +15,7 @@ public class CustomerOperationLog {
   private Long customerId;
 
   @Column
-  private Long logType;
+  private Integer logType;
 
   @Column
   private String logData;
@@ -45,11 +45,11 @@ public class CustomerOperationLog {
     this.customerId = customerId;
   }
 
-  public Long getLogType() {
+  public Integer getLogType() {
     return logType;
   }
 
-  public void setLogType(Long logType) {
+  public void setLogType(Integer logType) {
     this.logType = logType;
   }
 

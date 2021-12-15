@@ -67,6 +67,11 @@
             <version>${parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.arbfintech.microservice</groupId>
+            <artifactId>loan.object</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.arbfintech.framework</groupId>
             <artifactId>component.database</artifactId>
             <version>${parent.version}</version>

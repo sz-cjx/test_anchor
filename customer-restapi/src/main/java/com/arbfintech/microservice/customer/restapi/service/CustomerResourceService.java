@@ -1,15 +1,19 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
+import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
+import com.arbfintech.microservice.loan.object.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +32,9 @@ public class CustomerResourceService {
 
     @Autowired
     private CommonWriter commonWriter;
+
+    @Autowired
+    private SystemLogComponent systemLogComponent;
 
     public CustomerProfile getCustomerProfile(Long customerId) {
         return commonReader.getEntityByCustomerId(CustomerProfile.class, customerId);
@@ -53,7 +60,10 @@ public class CustomerResourceService {
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
-        // TODO add timeline
+        systemLogComponent.addSystemLog(
+                customerId, null, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
+                JSONObject.parseObject(JSON.toJSONString(originCustomerEmployment)), currentCustomerEmployment, DateUtil.getCurrentTimestamp()
+        );
 
         return AjaxResult.success();
     }
