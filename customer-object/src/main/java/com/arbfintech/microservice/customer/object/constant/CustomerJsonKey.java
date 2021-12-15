@@ -13,6 +13,7 @@ public interface CustomerJsonKey {
     String BANK_ACCOUNT_NO = "bankAccountNo";
     String BIRTHDAY = "birthday";
 
+    String CELL_PHONE = "cellPhone";
     String CURRENT = "current";
     String CUSTOMER_ID = "customerId";
 

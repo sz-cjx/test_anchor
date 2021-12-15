@@ -59,7 +59,24 @@ public class CustomerResourceService {
         return employmentJson;
     }
 
-    public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile, JSONObject accountJson) {
+    public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile, JSONObject accountJson) throws ParseException, ProcedureException {
+        CustomerProfile originCustomerProfile = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerProfile.class, customerId))
+                .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));
+
+        savePretreatment(currentCustomerProfile);
+
+        Long resultCode = commonWriter.save(CustomerProfile.class, currentCustomerProfile.toJSONString());
+        if (resultCode < CodeConst.SUCCESS) {
+            LOGGER.warn("[Update Customer Profile Data]Failed to replace customer profile data. customerId:{}, Request parameters:{}",
+                    customerId, currentCustomerProfile.toJSONString());
+            throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
+        }
+
+        systemLogComponent.addSystemLog(
+                customerId, null, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
+                JSONObject.parseObject(JSON.toJSONString(originCustomerProfile)), currentCustomerProfile, DateUtil.getCurrentTimestamp()
+        );
+
         return AjaxResult.success();
     }
 
@@ -88,8 +105,8 @@ public class CustomerResourceService {
      * @param dataJson
      */
     private void savePretreatment(JSONObject dataJson) throws ParseException {
-        // 去掉电话号码的mask
-        for (String key : CustomerFeildKey.getContainPhoneNumberList()) {
+        // 去掉电话号码和SSN的mask
+        for (String key : CustomerFeildKey.getRemoveMaskList()) {
             if (dataJson.containsKey(key)) {
                 dataJson.put(key, dataJson.getString(key).replaceAll("[^0-9]", ""));
             }
