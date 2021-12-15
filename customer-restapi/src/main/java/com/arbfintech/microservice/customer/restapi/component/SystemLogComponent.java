@@ -44,7 +44,7 @@ public class SystemLogComponent {
         }
     }
 
-    public void sysLogHandleFactory(Long customeriId, JSONObject logData, JSONObject originalData, JSONObject currentData,  Long timestamp) {
+    public void sysLogHandleFactory(Long customerId, JSONObject logData, JSONObject originalData, JSONObject currentData,  Long timestamp) {
         CompletableFuture.runAsync(() -> {
             JSONObject originalLogJson = null;
             JSONObject comparativeDataJson;
@@ -59,7 +59,7 @@ public class SystemLogComponent {
             currentLogJson = comparativeDataJson.getJSONObject(OriginationJsonKey.CURRENT);
 
             if (currentLogJson.size() > 0) {
-                addSystemLog(customeriId, logData, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
+                addSystemLog(customerId, logData, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
                         Objects.isNull(originalLogJson) ? null : originalLogJson, currentLogJson, timestamp);
             }
         });
