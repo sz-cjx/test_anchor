@@ -18,7 +18,6 @@ import com.arbfintech.microservice.customer.restapi.repository.reader.CommonRead
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
-import com.arbfintech.microservice.origination.object.util.ExtensionDateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +43,17 @@ public class CustomerResourceService {
     public JSONObject getCustomerProfile(Long customerId) throws ProcedureException {
         CustomerProfile customerProfile = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerProfile.class, customerId))
                 .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));
-        String state = EnumUtil.getTextByValue(StateEnum.class, customerProfile.getState());
 
         JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(customerProfile));
-        jsonObject.put(CustomerJsonKey.STATE, state);
-        jsonObject.put(CustomerJsonKey.BIRTHDAY, ExtensionDateUtil.timeStampToStrHandleNull(customerProfile.getBirthday()));
+        getPretreatment(jsonObject);
 
         return jsonObject;
     }
 
-    public JSONObject getCustomerEmploymentData(Long customerId) {
-        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+    public JSONObject getCustomerEmploymentData(Long customerId) throws ProcedureException {
+        CustomerEmploymentData employmentData = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId))
+                .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));
+
         JSONObject employmentJson = JSON.parseObject(JSON.toJSONString(employmentData));
         getPretreatment(employmentJson);
         return employmentJson;
@@ -101,10 +100,18 @@ public class CustomerResourceService {
         for (String key : CustomerFeildKey.getConversionLowercaseList()) {
             dataJson.put(key, dataJson.getString(key).toLowerCase());
         }
+
+        // profile中的state转换: String -> int
+        Integer state = (Integer) EnumUtil.getValueByText(StateEnum.class, dataJson.getString(CustomerJsonKey.STATE));
+        dataJson.put(CustomerJsonKey.STATE, state);
     }
 
     private void getPretreatment(JSONObject dataJson) {
         // 时间字符串转时间戳
         DataProcessingUtil.batchConvertTimestampToDate(dataJson, CustomerFeildKey.getTimeConversionList());
+
+        // profile中的state转换: int -> String
+        String state = EnumUtil.getTextByValue(StateEnum.class, dataJson.getInteger(CustomerJsonKey.STATE));
+        dataJson.put(CustomerJsonKey.STATE, state);
     }
 }
