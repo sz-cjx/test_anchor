@@ -67,7 +67,7 @@ public class CustomerResourceFuture {
                                 return customerResourceService.updateCustomerProfile(customerId, dataStr, accountJson);
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
-                                return customerResourceService.updateCustomerEmploymentData(customerId, dataStr, accountJson);
+                                return customerResourceService.updateCustomerEmploymentData(customerId, dataStr);
                             }
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);

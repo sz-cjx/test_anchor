@@ -40,18 +40,21 @@ public class CustomerResourceService {
         return commonReader.getEntityByCustomerId(CustomerProfile.class, customerId);
     }
 
-    public CustomerEmploymentData getCustomerEmploymentData(Long customerId) {
-        return commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+    public JSONObject getCustomerEmploymentData(Long customerId) {
+        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+        JSONObject employmentJson = JSON.parseObject(JSON.toJSONString(employmentData));
+        getPretreatment(employmentJson);
+        return employmentJson;
     }
 
     public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile, JSONObject accountJson) {
         return AjaxResult.success();
     }
 
-    public String updateCustomerEmploymentData(Long customerId, JSONObject currentCustomerEmployment, JSONObject accountJson) throws ParseException, ProcedureException {
+    public String updateCustomerEmploymentData(Long customerId, JSONObject currentCustomerEmployment) throws ParseException, ProcedureException {
         CustomerEmploymentData originCustomerEmployment = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
 
-        pretreatment(currentCustomerEmployment);
+        savePretreatment(currentCustomerEmployment);
 
         Long resultCode = commonWriter.save(CustomerEmploymentData.class, currentCustomerEmployment.toJSONString());
         if (resultCode < CodeConst.SUCCESS) {
@@ -72,7 +75,7 @@ public class CustomerResourceService {
      * 预处理： 转换时间，去掉mask，名字和邮箱转小写
      * @param dataJson
      */
-    private void pretreatment(JSONObject dataJson) throws ParseException {
+    private void savePretreatment(JSONObject dataJson) throws ParseException {
         // 去掉电话号码的mask
         for (String key : CustomerFeildKey.getContainPhoneNumberList()) {
             dataJson.put(key, dataJson.getString(key).replaceAll("[^0-9]", ""));
@@ -85,5 +88,10 @@ public class CustomerResourceService {
         for (String key : CustomerFeildKey.getConversionLowercaseList()) {
             dataJson.put(key, dataJson.getString(key).toLowerCase());
         }
+    }
+
+    private void getPretreatment(JSONObject dataJson) {
+        // 时间字符串转时间戳
+        DataProcessingUtil.batchConvertTimestampToDate(dataJson, CustomerFeildKey.getTimeConversionList());
     }
 }
