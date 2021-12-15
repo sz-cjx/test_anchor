@@ -6,10 +6,12 @@ package com.arbfintech.microservice.customer.object.constant;
  */
 public interface CustomerJsonKey {
 
+    String ALTERNATIVE_EMAIL = "alternativeEmail";
     String ALTERNATIVE_PHONE = "alternativePhone";
 
     String BANK_ROUTING_NO = "bankRoutingNo";
     String BANK_ACCOUNT_NO = "bankAccountNo";
+    String BIRTHDAY = "birthday";
 
     String CURRENT = "current";
     String CUSTOMER_ID = "customerId";
@@ -17,15 +19,20 @@ public interface CustomerJsonKey {
     String DATA = "data";
 
     String EMAIL = "email";
+    String EMPLOYER_NAME = "employerName";
     String EMPLOYER_PHONE = "employerPhone";
 
     String FEATURES = "features";
+    String FIRST_NAME = "firstName";
 
     String HOME_PHONE = "homePhone";
 
     String ID = "id";
 
+    String LAST_NAME = "lastName";
     String LAST_PAYDAY = "lastPayday";
+
+    String MIDDLE_NAME = "middleName";
 
     String OPEN_ID = "openId";
     String OPT_IN = "optIn";
@@ -33,6 +40,7 @@ public interface CustomerJsonKey {
 
     String PORTFOLIO_ID = "portfolioId";
 
+    String SUPERVISOR_NAME = "supervisorName";
     String SUPERVISOR_PHONE = "supervisorPhone";
     String SSN = "ssn";
 }

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
@@ -45,9 +44,7 @@ public class CustomerResourceService {
     public String updateCustomerEmploymentData(Long customerId, JSONObject currentCustomerEmployment, JSONObject accountJson) throws ParseException, ProcedureException {
         CustomerEmploymentData originCustomerEmployment = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
 
-        DataProcessingUtil.batchConvertDateToTimestamp(currentCustomerEmployment, CustomerJsonKey.LAST_PAYDAY);
-
-        removeMask(currentCustomerEmployment);
+        pretreatment(currentCustomerEmployment);
 
         Long resultCode = commonWriter.save(CustomerEmploymentData.class, currentCustomerEmployment.toJSONString());
         if (resultCode < CodeConst.SUCCESS) {
@@ -61,12 +58,22 @@ public class CustomerResourceService {
         return AjaxResult.success();
     }
 
-    private void removeMask(JSONObject dataJson) {
+    /**
+     * 预处理： 转换时间，去掉mask，名字和邮箱转小写
+     * @param dataJson
+     */
+    private void pretreatment(JSONObject dataJson) throws ParseException {
         // 去掉电话号码的mask
         for (String key : CustomerFeildKey.getContainPhoneNumberList()) {
             dataJson.put(key, dataJson.getString(key).replaceAll("[^0-9]", ""));
         }
 
+        // 时间字符串转时间戳
+        DataProcessingUtil.batchConvertDateToTimestamp(dataJson, CustomerFeildKey.getTimeConversionList());
 
+        // 名字和邮箱转小写
+        for (String key : CustomerFeildKey.getConversionLowercaseList()) {
+            dataJson.put(key, dataJson.getString(key).toLowerCase());
+        }
     }
 }
