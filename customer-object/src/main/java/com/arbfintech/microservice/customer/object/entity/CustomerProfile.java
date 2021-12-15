@@ -31,7 +31,7 @@ public class CustomerProfile {
     private Integer gender;
 
     @Column
-    private String birthday;
+    private Long birthday;
 
     @Column
     private String address;
@@ -125,11 +125,11 @@ public class CustomerProfile {
         this.gender = gender;
     }
 
-    public String getBirthday() {
+    public Long getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Long birthday) {
         this.birthday = birthday;
     }
 

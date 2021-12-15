@@ -18,6 +18,7 @@ import com.arbfintech.microservice.customer.restapi.repository.reader.CommonRead
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
+import com.arbfintech.microservice.origination.object.util.ExtensionDateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class CustomerResourceService {
 
         JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(customerProfile));
         jsonObject.put(CustomerJsonKey.STATE, state);
+        jsonObject.put(CustomerJsonKey.BIRTHDAY, ExtensionDateUtil.timeStampToStrHandleNull(customerProfile.getBirthday()));
 
         return jsonObject;
     }
