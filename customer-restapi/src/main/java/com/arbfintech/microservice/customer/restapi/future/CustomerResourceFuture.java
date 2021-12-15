@@ -64,7 +64,7 @@ public class CustomerResourceFuture {
 
                         switch (profileFeature) {
                             case CustomerFeatureKey.PERSONAL: {
-                                return customerResourceService.updateCustomerProfile(customerId, dataStr, accountJson);
+                                return customerResourceService.updateCustomerProfile(customerId, dataStr);
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
                                 return customerResourceService.updateCustomerEmploymentData(customerId, dataStr);
@@ -73,7 +73,7 @@ public class CustomerResourceFuture {
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
                     } catch (ProcedureException | ParseException e) {
-                        LOGGER.warn("[Save Profile]Failure to save profile data. CustomerId: {}, Feature:{}", customerId, profileFeature);
+                        LOGGER.warn("[Save Profile]Failure to save profile data. CustomerId: {}, Feature:{}, Exception:", customerId, profileFeature, e);
                         return AjaxResult.failure(e);
                     }
                 }

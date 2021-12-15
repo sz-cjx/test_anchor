@@ -16,7 +16,6 @@ import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
-import com.arbfintech.microservice.loan.object.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class CustomerResourceService {
         return employmentJson;
     }
 
-    public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile, JSONObject accountJson) throws ParseException, ProcedureException {
+    public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile) throws ParseException, ProcedureException {
         CustomerProfile originCustomerProfile = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerProfile.class, customerId))
                 .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));
 
@@ -72,9 +71,9 @@ public class CustomerResourceService {
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
-        systemLogComponent.addSystemLog(
-                customerId, null, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
-                JSONObject.parseObject(JSON.toJSONString(originCustomerProfile)), currentCustomerProfile, DateUtil.getCurrentTimestamp()
+        systemLogComponent.sysLogHandleFactory(
+                customerId, null, JSONObject.parseObject(JSON.toJSONString(originCustomerProfile)),
+                currentCustomerProfile, DateUtil.getCurrentTimestamp()
         );
 
         return AjaxResult.success();
@@ -92,9 +91,9 @@ public class CustomerResourceService {
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
-        systemLogComponent.addSystemLog(
-                customerId, null, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
-                JSONObject.parseObject(JSON.toJSONString(originCustomerEmployment)), currentCustomerEmployment, DateUtil.getCurrentTimestamp()
+        systemLogComponent.sysLogHandleFactory(
+                customerId, null, JSONObject.parseObject(JSON.toJSONString(originCustomerEmployment)),
+                currentCustomerEmployment, DateUtil.getCurrentTimestamp()
         );
 
         return AjaxResult.success();
