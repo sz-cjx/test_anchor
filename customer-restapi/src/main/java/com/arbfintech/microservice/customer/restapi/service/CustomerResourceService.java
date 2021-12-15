@@ -90,7 +90,9 @@ public class CustomerResourceService {
     private void savePretreatment(JSONObject dataJson) throws ParseException {
         // 去掉电话号码的mask
         for (String key : CustomerFeildKey.getContainPhoneNumberList()) {
-            dataJson.put(key, dataJson.getString(key).replaceAll("[^0-9]", ""));
+            if (dataJson.containsKey(key)) {
+                dataJson.put(key, dataJson.getString(key).replaceAll("[^0-9]", ""));
+            }
         }
 
         // 时间字符串转时间戳
@@ -98,7 +100,9 @@ public class CustomerResourceService {
 
         // 名字和邮箱转小写
         for (String key : CustomerFeildKey.getConversionLowercaseList()) {
-            dataJson.put(key, dataJson.getString(key).toLowerCase());
+            if (dataJson.containsKey(key)) {
+                dataJson.put(key, dataJson.getString(key).toLowerCase());
+            }
         }
 
         // profile中的state转换: String -> int
