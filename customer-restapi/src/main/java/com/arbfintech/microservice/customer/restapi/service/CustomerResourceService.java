@@ -9,6 +9,7 @@ import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
+import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
@@ -49,13 +50,13 @@ public class CustomerResourceService {
         return jsonObject;
     }
 
-    public JSONObject getCustomerEmploymentData(Long customerId) throws ProcedureException {
+    public CustomerEmploymentDTO getCustomerEmploymentData(Long customerId) throws ProcedureException {
         CustomerEmploymentData employmentData = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId))
                 .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));
 
         JSONObject employmentJson = JSON.parseObject(JSON.toJSONString(employmentData));
         getPretreatment(employmentJson);
-        return employmentJson;
+        return employmentJson.toJavaObject(CustomerEmploymentDTO.class);
     }
 
     public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile) throws ParseException, ProcedureException {
@@ -81,6 +82,10 @@ public class CustomerResourceService {
 
     public String updateCustomerEmploymentData(Long customerId, JSONObject currentCustomerEmployment) throws ParseException, ProcedureException {
         CustomerEmploymentData originCustomerEmployment = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+
+        CustomerEmploymentDTO employmentDTO = currentCustomerEmployment.toJavaObject(CustomerEmploymentDTO.class);
+        employmentDTO.setId(customerId);
+        currentCustomerEmployment = JSON.parseObject(JSON.toJSONString(employmentDTO));
 
         savePretreatment(currentCustomerEmployment);
 
