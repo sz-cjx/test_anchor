@@ -42,5 +42,6 @@ public interface CustomerJsonKey {
 
     String SUPERVISOR_NAME = "supervisorName";
     String SUPERVISOR_PHONE = "supervisorPhone";
+    String STATE = "state";
     String SSN = "ssn";
 }

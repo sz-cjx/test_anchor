@@ -3,9 +3,12 @@ package com.arbfintech.microservice.customer.restapi.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
+import com.arbfintech.framework.component.core.enumerate.StateEnum;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
+import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
@@ -15,12 +18,14 @@ import com.arbfintech.microservice.customer.restapi.repository.reader.CommonRead
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
+import com.arbfintech.microservice.origination.object.util.ExtensionDateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.Optional;
 
 @Service
 public class CustomerResourceService {
@@ -36,8 +41,16 @@ public class CustomerResourceService {
     @Autowired
     private SystemLogComponent systemLogComponent;
 
-    public CustomerProfile getCustomerProfile(Long customerId) {
-        return commonReader.getEntityByCustomerId(CustomerProfile.class, customerId);
+    public JSONObject getCustomerProfile(Long customerId) throws ProcedureException {
+        CustomerProfile customerProfile = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerProfile.class, customerId))
+                .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));
+        String state = EnumUtil.getTextByValue(StateEnum.class, customerProfile.getState());
+
+        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(customerProfile));
+        jsonObject.put(CustomerJsonKey.STATE, state);
+        jsonObject.put(CustomerJsonKey.BIRTHDAY, ExtensionDateUtil.timeStampToStrHandleNull(customerProfile.getBirthday()));
+
+        return jsonObject;
     }
 
     public JSONObject getCustomerEmploymentData(Long customerId) {
