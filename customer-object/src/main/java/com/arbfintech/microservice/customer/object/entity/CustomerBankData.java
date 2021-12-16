@@ -2,13 +2,16 @@ package com.arbfintech.microservice.customer.object.entity;
 
 import com.arbfintech.framework.component.core.annotation.Column;
 import com.arbfintech.framework.component.core.annotation.Entity;
+import com.arbfintech.framework.component.core.annotation.GeneratedValue;
 import com.arbfintech.framework.component.core.annotation.Id;
+import com.arbfintech.framework.component.core.enumerate.GenerationType;
 
 @Entity
 public class CustomerBankData {
 
   @Id
   @Column
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column
