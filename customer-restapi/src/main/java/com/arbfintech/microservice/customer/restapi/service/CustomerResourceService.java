@@ -137,7 +137,7 @@ public class CustomerResourceService {
 
         result = commonWriter.save(currentCustomerBank);
         if (result < CodeConst.SUCCESS) {
-            LOGGER.warn("[Update Employment Data]Failed to replace customer employment data. customerId:{}", customerId);
+            LOGGER.warn("[Update Employment Data]Failed to replace customer bank data. customerId:{}", customerId);
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
@@ -165,7 +165,7 @@ public class CustomerResourceService {
 
         result = commonWriter.save(customerBankCardData);
         if (result < CodeConst.SUCCESS) {
-            LOGGER.warn("[Update Employment Data]Failed to replace customer employment data. customerId:{}", customerId);
+            LOGGER.warn("[Update Employment Data]Failed to replace customer bank card data. customerId:{}", customerId);
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
