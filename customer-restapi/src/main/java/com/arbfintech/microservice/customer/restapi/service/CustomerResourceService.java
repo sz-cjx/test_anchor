@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -120,8 +121,32 @@ public class CustomerResourceService {
         return AjaxResult.success();
     }
 
-    public String updateCustomerBankData(Long customerId, JSONObject currentCustomerBank) {
-        return AjaxResult.success();
+    public String updateCustomerBankData(Long customerId, JSONObject customerBankJson) throws ProcedureException, ParseException {
+        savePretreatment(customerBankJson);
+        CustomerBankData currentCustomerBank = customerBankJson.toJavaObject(CustomerBankData.class);
+        Long id = currentCustomerBank.getId();
+        currentCustomerBank.setCustomerId(customerId);
+
+        JSONObject originCustomerBankJson = new JSONObject();
+        Long result = null;
+        if (Objects.nonNull(id)) {
+            // Update
+            CustomerBankData originCustomerBank = commonReader.getEntityByCustomerId(CustomerBankData.class, id);
+            originCustomerBankJson = JSONObject.parseObject(JSON.toJSONString(originCustomerBank));
+        }
+
+        result = commonWriter.save(currentCustomerBank);
+        if (result < CodeConst.SUCCESS) {
+            LOGGER.warn("[Update Employment Data]Failed to replace customer employment data. customerId:{}", customerId);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
+        }
+
+        systemLogComponent.sysLogHandleFactory(
+                customerId, null, originCustomerBankJson,
+                JSONObject.parseObject(JSON.toJSONString(currentCustomerBank)), DateUtil.getCurrentTimestamp()
+        );
+
+        return AjaxResult.success(result);
     }
 
     public String updateCustomerBankCardData(Long customerId, JSONObject currentCustomerBankCard) {
@@ -140,6 +165,7 @@ public class CustomerResourceService {
 
     /**
      * 预处理： 转换时间，去掉mask，名字和邮箱转小写
+     *
      * @param dataJson
      */
     private void savePretreatment(JSONObject dataJson) throws ParseException {

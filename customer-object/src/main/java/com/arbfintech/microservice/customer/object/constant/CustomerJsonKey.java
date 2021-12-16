@@ -12,6 +12,7 @@ public interface CustomerJsonKey {
 
     String BANK_ROUTING_NO = "bankRoutingNo";
     String BANK_ACCOUNT_NO = "bankAccountNo";
+    String BANK_PHONE = "bankPhone";
     String BIRTHDAY = "birthday";
 
     String CELL_PHONE = "cellPhone";
