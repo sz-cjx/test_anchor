@@ -11,10 +11,12 @@ import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
+import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
+import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,6 +39,9 @@ public class CustomerResourceService {
 
     @Autowired
     private CommonWriter commonWriter;
+
+    @Autowired
+    private CustomerReader customerReader;
 
     @Autowired
     private SystemLogComponent systemLogComponent;
@@ -102,6 +108,16 @@ public class CustomerResourceService {
         );
 
         return AjaxResult.success();
+    }
+
+    public String getOperationLog(String dataStr) {
+        JSONObject dataJson = JSON.parseObject(dataStr);
+        Long customerId = dataJson.getLong(CustomerJsonKey.CUSTOMER_ID);
+        Integer logType = dataJson.getInteger(CustomerJsonKey.LOG_TYPE);
+        Integer withinDays = dataJson.getInteger(CustomerJsonKey.WITHIN_DAYS);
+        List<CustomerOperationLog> list = customerReader.getOperationLogByCondition(customerId, logType, withinDays);
+
+        return AjaxResult.success(list);
     }
 
     /**

@@ -31,4 +31,11 @@ public class CustomerResourceController {
     ) {
         return customerResourceFuture.saveProfileByFeature(customerProfileDTO, request);
     }
+
+    @PostMapping("/operation-log")
+    public CompletableFuture<String> getOperationLog(
+            @RequestBody String dataStr
+    ) {
+        return customerResourceFuture.getOperationLog(dataStr);
+    }
 }

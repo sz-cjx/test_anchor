@@ -12,6 +12,8 @@ public class CustomerAccountDTO {
 
     private String avatarUrl;
 
+    private String createdAt;
+
     public Long getId() {
         return id;
     }
@@ -50,5 +52,13 @@ public class CustomerAccountDTO {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

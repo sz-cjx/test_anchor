@@ -31,4 +31,11 @@ public class CustomerResourceClientApi extends BaseClientApi {
                 profileDTO
         );
     }
+
+    public AjaxResult getOperationLog(String dataStr) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/operation-log"),
+                dataStr
+        );
+    }
 }

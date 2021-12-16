@@ -33,6 +33,7 @@ public interface CustomerJsonKey {
 
     String LAST_NAME = "lastName";
     String LAST_PAYDAY = "lastPayday";
+    String LOG_TYPE = "logType";
 
     String MIDDLE_NAME = "middleName";
 
@@ -46,4 +47,6 @@ public interface CustomerJsonKey {
     String SUPERVISOR_PHONE = "supervisorPhone";
     String STATE = "state";
     String SSN = "ssn";
+
+    String WITHIN_DAYS = "withinDays";
 }

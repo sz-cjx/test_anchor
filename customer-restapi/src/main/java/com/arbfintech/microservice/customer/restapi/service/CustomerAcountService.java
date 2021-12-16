@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.entity.CustomerAccountData;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
@@ -29,6 +30,7 @@ public class CustomerAcountService {
     public String getAccountInfo(Long accountId) {
         CustomerAccountData customerAccountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, accountId);
         CustomerAccountDTO customerAccountDTO = JSON.parseObject(JSON.toJSONString(customerAccountData), CustomerAccountDTO.class);
+        customerAccountDTO.setCreatedAt(DateUtil.timeStampToStr(customerAccountData.getCreatedAt()));
 
         return AjaxResult.success(customerAccountDTO);
     }

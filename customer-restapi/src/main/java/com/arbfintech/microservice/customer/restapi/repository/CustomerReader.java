@@ -1,14 +1,15 @@
 package com.arbfintech.microservice.customer.restapi.repository;
 
 import com.alibaba.fastjson.JSONArray;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
+import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Fly_Roushan
@@ -41,5 +42,28 @@ public class CustomerReader extends BaseJdbcReader {
         paramMap.put(CustomerJsonKey.OPEN_ID, openId);
 
         return namedJdbcTemplate().query(sb.toString(), paramMap, this::returnArray);
+    }
+
+    public List<CustomerOperationLog> getOperationLogByCondition(Long customerId, Integer logType, Integer withinDays) {
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM customer_operation_log");
+        sqlBuilder.append(" WHERE customer_id = :customerId");
+        sqlBuilder.append(" AND log_type = :logType");
+        sqlBuilder.append(" AND (operated_at BETWEEN :start AND :end)");
+        sqlBuilder.append(" ORDER BY id ASC");
+
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("customerId", customerId);
+        condition.put("logType", logType);
+        condition.put("start", DateUtil.getLastDaysDate(withinDays).getTime());
+        condition.put("end", DateUtil.getCurrentTimestamp());
+
+        JSONArray jsonArray = namedJdbcTemplate().query(sqlBuilder.toString(), condition, this::returnArray);
+        List<CustomerOperationLog> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(jsonArray)) {
+            list = jsonArray.toJavaList(CustomerOperationLog.class);
+        }
+
+        return list;
     }
 }

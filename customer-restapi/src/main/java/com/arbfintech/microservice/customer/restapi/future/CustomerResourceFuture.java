@@ -79,4 +79,10 @@ public class CustomerResourceFuture {
                 }
         );
     }
+
+    public CompletableFuture<String> getOperationLog(String dataStr) {
+        return CompletableFuture.supplyAsync(
+                () -> customerResourceService.getOperationLog(dataStr)
+        );
+    }
 }
