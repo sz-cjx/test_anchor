@@ -3,21 +3,21 @@ package com.arbfintech.microservice.customer.restapi.future;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
-import com.arbfintech.microservice.customer.restapi.service.CustomerAcountService;
+import com.arbfintech.microservice.customer.restapi.service.CustomerAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class CustomerAcountFuture {
+public class CustomerAccountFuture {
 
     @Autowired
-    private CustomerAcountService customerAcountService;
+    private CustomerAccountService customerAccountService;
 
     public CompletableFuture<String> getAccountInfo(Long accountId) {
         return CompletableFuture.supplyAsync(
-                () -> customerAcountService.getAccountInfo(accountId)
+                () -> customerAccountService.getAccountInfo(accountId)
         );
     }
 
@@ -25,7 +25,7 @@ public class CustomerAcountFuture {
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {
-                        return customerAcountService.saveAccountInfo(customerAccountDTO);
+                        return customerAccountService.saveAccountInfo(customerAccountDTO);
                     } catch (ProcedureException e) {
                         return AjaxResult.failure(e);
                     }

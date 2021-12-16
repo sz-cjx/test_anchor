@@ -24,7 +24,8 @@ public enum CustomerErrorCode implements BaseError {
     UPDATE_FAILURE_HAD_UNSUBSCRIBE(-81010306, "Update failed, customer had unsubscribe"),
 
     FAILURE_PROFILE_NOT_EXIST(-81010400, "Profile feature is not exist"),
-    FAILURE_FAILED_TO_UPDATE_DATA(-81010401, "The data was not updated successfully");
+    FAILURE_FAILED_TO_UPDATE_DATA(-81010401, "The data was not updated successfully"),
+    FAILURE_UPLOAD_FILE(-81010402, "Failure to upload file");
 
     private Integer code;
     private String message;

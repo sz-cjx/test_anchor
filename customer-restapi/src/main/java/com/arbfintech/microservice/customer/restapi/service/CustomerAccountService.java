@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomerAcountService {
+public class CustomerAccountService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerAcountService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerAccountService.class);
 
     @Autowired
     private CommonReader commonReader;
@@ -38,7 +38,7 @@ public class CustomerAcountService {
     public String saveAccountInfo(CustomerAccountDTO customerAccountDTO) throws ProcedureException {
         Long customerId = customerAccountDTO.getId();
         CustomerAccountData customerAccountData = JSON.parseObject(JSON.toJSONString(customerAccountDTO), CustomerAccountData.class);
-        Long resultCode = commonWriter.save(customerAccountData);
+        Long resultCode = commonWriter.save(CustomerAccountData.class, JSON.toJSONString(customerAccountData));
 
         if (resultCode < CodeConst.SUCCESS) {
             LOGGER.warn("[Update Account]Failed to save customer account data. customerId:{}", customerId);

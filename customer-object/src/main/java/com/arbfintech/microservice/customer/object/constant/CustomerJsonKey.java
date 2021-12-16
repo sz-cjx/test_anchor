@@ -19,12 +19,15 @@ public interface CustomerJsonKey {
     String CUSTOMER_ID = "customerId";
 
     String DATA = "data";
+    String DOCUMENT_NAME = "documentName";
 
     String EMAIL = "email";
     String EMPLOYER_NAME = "employerName";
     String EMPLOYER_PHONE = "employerPhone";
 
     String FEATURES = "features";
+    String FILE_DOWNLOAD_URL = "fileDownloadUrl";
+    String FILE_SIZE = "fileSize";
     String FIRST_NAME = "firstName";
 
     String HOME_PHONE = "homePhone";
