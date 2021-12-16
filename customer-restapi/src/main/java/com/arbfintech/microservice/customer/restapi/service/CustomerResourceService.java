@@ -149,8 +149,32 @@ public class CustomerResourceService {
         return AjaxResult.success(result);
     }
 
-    public String updateCustomerBankCardData(Long customerId, JSONObject currentCustomerBankCard) {
-        return AjaxResult.success();
+    public String updateCustomerBankCardData(Long customerId, JSONObject currentCustomerBankCard) throws ProcedureException, ParseException {
+        savePretreatment(currentCustomerBankCard);
+        CustomerBankCardData customerBankCardData = currentCustomerBankCard.toJavaObject(CustomerBankCardData.class);
+        Long id = customerBankCardData.getId();
+        customerBankCardData.setCustomerId(customerId);
+
+        JSONObject originCustomerBankCardJson = new JSONObject();
+        Long result = null;
+        if (Objects.nonNull(id)) {
+            // Update
+            CustomerBankCardData originCustomerBankCard = commonReader.getEntityByCustomerId(CustomerBankCardData.class, id);
+            originCustomerBankCardJson = JSONObject.parseObject(JSON.toJSONString(originCustomerBankCard));
+        }
+
+        result = commonWriter.save(customerBankCardData);
+        if (result < CodeConst.SUCCESS) {
+            LOGGER.warn("[Update Employment Data]Failed to replace customer employment data. customerId:{}", customerId);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
+        }
+
+        systemLogComponent.sysLogHandleFactory(
+                customerId, null, originCustomerBankCardJson,
+                JSONObject.parseObject(JSON.toJSONString(customerBankCardData)), DateUtil.getCurrentTimestamp()
+        );
+
+        return AjaxResult.success(result);
     }
 
     public String getOperationLog(String dataStr) {

@@ -2,6 +2,7 @@ package com.arbfintech.microservice.customer.restapi.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
@@ -53,6 +54,9 @@ public class SystemLogComponent {
             if (CollectionUtils.isEmpty(originalData)) {
                 comparativeDataJson = DataProcessingUtil.extractComparativeData(currentData, null);
             } else {
+                // 不用储存timeline的字段
+                currentData.remove(CustomerJsonKey.CUSTOMER_ID);
+
                 comparativeDataJson = DataProcessingUtil.extractComparativeData(currentData, originalData);
                 originalLogJson = comparativeDataJson.getJSONObject(OriginationJsonKey.ORIGINAL);
             }
