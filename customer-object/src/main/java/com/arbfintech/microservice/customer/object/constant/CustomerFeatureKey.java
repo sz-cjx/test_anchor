@@ -13,6 +13,8 @@ public interface CustomerFeatureKey {
     /**
      * phoenix profile
      */
+    String BANK = "BANK";
+    String CARD = "CARD";
     String PERSONAL = "PERSONAL";
     String EMPLOYMENT = "EMPLOYMENT";
 }

@@ -41,6 +41,12 @@ public class CustomerResourceFuture {
                             case CustomerFeatureKey.EMPLOYMENT: {
                                 return AjaxResult.success(customerResourceService.getCustomerEmploymentData(customerId));
                             }
+                            case CustomerFeatureKey.BANK: {
+                                return AjaxResult.success(customerResourceService.listCustomerBankData(customerId));
+                            }
+                            case CustomerFeatureKey.CARD: {
+                                return AjaxResult.success(customerResourceService.listCustomerBankCardData(customerId));
+                            }
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
@@ -68,6 +74,12 @@ public class CustomerResourceFuture {
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
                                 return customerResourceService.updateCustomerEmploymentData(customerId, dataStr);
+                            }
+                            case CustomerFeatureKey.BANK: {
+                                return customerResourceService.updateCustomerBankData(customerId, dataStr);
+                            }
+                            case CustomerFeatureKey.CARD: {
+                                return customerResourceService.updateCustomerBankCardData(customerId, dataStr);
                             }
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);

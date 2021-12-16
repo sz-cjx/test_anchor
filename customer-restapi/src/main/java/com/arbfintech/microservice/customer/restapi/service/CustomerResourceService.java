@@ -10,6 +10,8 @@ import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
+import com.arbfintech.microservice.customer.object.entity.CustomerBankCardData;
+import com.arbfintech.microservice.customer.object.entity.CustomerBankData;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,6 +60,14 @@ public class CustomerResourceService {
         JSONObject employmentJson = JSON.parseObject(JSON.toJSONString(employmentData));
         getPretreatment(employmentJson);
         return employmentJson.toJavaObject(CustomerEmploymentDTO.class);
+    }
+
+    public List<CustomerBankData> listCustomerBankData(Long customerId) {
+        return commonReader.listEntityByCustomerId(CustomerBankData.class, customerId);
+    }
+
+    public List<CustomerBankCardData> listCustomerBankCardData(Long customerId) {
+        return commonReader.listEntityByCustomerId(CustomerBankCardData.class, customerId);
     }
 
     public String updateCustomerProfile(Long customerId, JSONObject currentCustomerProfile) throws ParseException, ProcedureException {
@@ -101,6 +112,14 @@ public class CustomerResourceService {
                 currentCustomerEmployment, DateUtil.getCurrentTimestamp()
         );
 
+        return AjaxResult.success();
+    }
+
+    public String updateCustomerBankData(Long customerId, JSONObject currentCustomerBank) {
+        return AjaxResult.success();
+    }
+
+    public String updateCustomerBankCardData(Long customerId, JSONObject currentCustomerBankCard) {
         return AjaxResult.success();
     }
 
