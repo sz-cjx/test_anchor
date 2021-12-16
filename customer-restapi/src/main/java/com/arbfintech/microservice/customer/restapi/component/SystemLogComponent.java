@@ -3,8 +3,8 @@ package com.arbfintech.microservice.customer.restapi.component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
-import com.arbfintech.microservice.loan.object.enumerate.EventTypeEnum;
 import com.arbfintech.microservice.origination.object.constant.OriginationJsonKey;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class SystemLogComponent {
             customerOperationLog.setOriginal(JSON.toJSONString(original));
         }
 
-        if (!(EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue().equals(logType)
+        if (!(CustomerEventTypeEnum.CUSTOMER_REGISTRY_CHANGE.getValue().equals(logType)
                 && CollectionUtils.isEmpty(current) && CollectionUtils.isEmpty(original))) {
             commonWriter.save(customerOperationLog);
         }
@@ -59,7 +59,7 @@ public class SystemLogComponent {
             currentLogJson = comparativeDataJson.getJSONObject(OriginationJsonKey.CURRENT);
 
             if (currentLogJson.size() > 0) {
-                addSystemLog(customerId, logData, EventTypeEnum.LOAN_REGISTRY_CHANGE.getValue(),
+                addSystemLog(customerId, logData, CustomerEventTypeEnum.CUSTOMER_REGISTRY_CHANGE.getValue(),
                         Objects.isNull(originalLogJson) ? null : originalLogJson, currentLogJson, timestamp);
             }
         });

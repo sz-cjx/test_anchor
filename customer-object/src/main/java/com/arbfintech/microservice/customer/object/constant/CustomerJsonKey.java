@@ -6,6 +6,7 @@ package com.arbfintech.microservice.customer.object.constant;
  */
 public interface CustomerJsonKey {
 
+    String ACCOUNT_ID = "accountId";
     String ALTERNATIVE_EMAIL = "alternativeEmail";
     String ALTERNATIVE_PHONE = "alternativePhone";
 
