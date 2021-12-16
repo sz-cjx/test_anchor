@@ -25,7 +25,11 @@ public enum CustomerErrorCode implements BaseError {
 
     FAILURE_PROFILE_NOT_EXIST(-81010400, "Profile feature is not exist"),
     FAILURE_FAILED_TO_UPDATE_DATA(-81010401, "The data was not updated successfully"),
-    FAILURE_UPLOAD_FILE(-81010402, "Failure to upload file");
+    FAILURE_UPLOAD_FILE(-81010402, "Failure to upload file"),
+    FAILURE_CHANGE_TYPE_NOT_EXIST(-81010403, "Change password type is not exist"),
+    FAILURE_LOGIN_PASSWORD_INCORRECT(-81010404, "Current login password is incorrect"),
+    FAILURE_PAYMENT_PASSWORD_INCORRECT(-81010405, "Current payment password is incorrect")
+    ;
 
     private Integer code;
     private String message;
