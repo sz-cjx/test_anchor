@@ -45,6 +45,8 @@ public interface CustomerJsonKey {
 
     String MIDDLE_NAME = "middleName";
 
+    String NOTE = "note";
+
     String OPEN_ID = "openId";
     String OPT_IN = "optIn";
     String ORIGINAL = "original";

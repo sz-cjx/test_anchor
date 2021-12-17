@@ -21,16 +21,16 @@ public class CustomerDecisionLogicAuthorizationRecord {
     private String authorizationData;
 
     @Column
-    private Long authorizationStatus;
+    private Integer authorizationStatus;
 
     @Column
     private Long authorizatedAt;
 
     @Column
-    private Long requestCode;
+    private Integer requestCode;
 
     @Column
-    private Long requestCodeStatus;
+    private Integer requestCodeStatus;
 
     public Long getId() {
         return id;
@@ -64,11 +64,11 @@ public class CustomerDecisionLogicAuthorizationRecord {
         this.authorizationData = authorizationData;
     }
 
-    public Long getAuthorizationStatus() {
+    public Integer getAuthorizationStatus() {
         return authorizationStatus;
     }
 
-    public void setAuthorizationStatus(Long authorizationStatus) {
+    public void setAuthorizationStatus(Integer authorizationStatus) {
         this.authorizationStatus = authorizationStatus;
     }
 
@@ -80,19 +80,19 @@ public class CustomerDecisionLogicAuthorizationRecord {
         this.authorizatedAt = authorizatedAt;
     }
 
-    public Long getRequestCode() {
+    public Integer getRequestCode() {
         return requestCode;
     }
 
-    public void setRequestCode(Long requestCode) {
+    public void setRequestCode(Integer requestCode) {
         this.requestCode = requestCode;
     }
 
-    public Long getRequestCodeStatus() {
+    public Integer getRequestCodeStatus() {
         return requestCodeStatus;
     }
 
-    public void setRequestCodeStatus(Long requestCodeStatus) {
+    public void setRequestCodeStatus(Integer requestCodeStatus) {
         this.requestCodeStatus = requestCodeStatus;
     }
 }

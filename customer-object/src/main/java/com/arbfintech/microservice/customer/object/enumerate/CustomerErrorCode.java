@@ -29,7 +29,8 @@ public enum CustomerErrorCode implements BaseError {
     FAILURE_CHANGE_TYPE_NOT_EXIST(-81010403, "Change password type is not exist"),
     FAILURE_LOGIN_PASSWORD_INCORRECT(-81010404, "Current login password is incorrect"),
     FAILURE_PAYMENT_PASSWORD_INCORRECT(-81010405, "Current payment password is incorrect"),
-    FAILURE_UPDATE_BANK_CARD_EXPIRATION_DATE(-81010406, "The expiration time of the bank card must be after the current time")
+    FAILURE_UPDATE_BANK_CARD_EXPIRATION_DATE(-81010406, "The expiration time of the bank card must be after the current time"),
+    FAILURE_QUERY_DATA_IS_EXISTED(-81010407, "Data is not existed")
     ;
 
     private Integer code;

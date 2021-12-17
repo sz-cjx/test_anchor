@@ -12,16 +12,27 @@ public class CustomerOptIn {
   private Long customerId;
 
   @Column
-  private Long optInType;
+  private Integer optInType;
 
   @Column
-  private Long optInStatus;
+  private Integer optInStatus;
 
   @Column
   private Long createdAt;
 
   @Column
   private Long updatedAt;
+
+  public CustomerOptIn() {
+  }
+
+  public CustomerOptIn(Long customerId, Integer optInType, Integer optInStatus, Long createdAt, Long updatedAt) {
+    this.customerId = customerId;
+    this.optInType = optInType;
+    this.optInStatus = optInStatus;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 
   public Long getCustomerId() {
     return customerId;
@@ -31,19 +42,19 @@ public class CustomerOptIn {
     this.customerId = customerId;
   }
 
-  public Long getOptInType() {
+  public Integer getOptInType() {
     return optInType;
   }
 
-  public void setOptInType(Long optInType) {
+  public void setOptInType(Integer optInType) {
     this.optInType = optInType;
   }
 
-  public Long getOptInStatus() {
+  public Integer getOptInStatus() {
     return optInStatus;
   }
 
-  public void setOptInStatus(Long optInStatus) {
+  public void setOptInStatus(Integer optInStatus) {
     this.optInStatus = optInStatus;
   }
 

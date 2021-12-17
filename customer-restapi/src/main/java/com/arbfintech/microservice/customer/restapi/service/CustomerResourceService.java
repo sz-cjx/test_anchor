@@ -11,8 +11,12 @@ import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.framework.component.core.util.JsonUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
+import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
 import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
@@ -23,8 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -199,6 +205,85 @@ public class CustomerResourceService {
         List<CustomerOperationLog> list = customerReader.getOperationLogByCondition(customerId, logType, withinDays);
 
         return AjaxResult.success(list);
+    }
+
+    /**
+     * 查询opt-in的数据，如果没有查到，初始化并返回
+     * @param customerId
+     * @return
+     */
+    public String getCustomerOptIn(Long customerId) {
+        List<CustomerOptIn> optInList = commonReader.listEntityByCustomerId(CustomerOptIn.class, customerId);
+        if (CollectionUtils.isEmpty(optInList)) {
+            // 初始化opt-in
+            LOGGER.warn("[Init Customer Opt-In]Start init customer opt-in. CustomerId:{}", customerId);
+            optInList = new ArrayList<>();
+            Long currentTimestamp = DateUtil.getCurrentTimestamp();
+            Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
+            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.EMAIL.getValue(),defaultValue, currentTimestamp, currentTimestamp));
+            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.ALTERNATIVE_EMAIL.getValue(),defaultValue, currentTimestamp, currentTimestamp));
+            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.HOME_PHONE.getValue(),0, currentTimestamp, currentTimestamp));
+            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.CELL_PHONE.getValue(),0, currentTimestamp, currentTimestamp));
+
+            commonWriter.save(CustomerOptIn.class, JSON.toJSONString(optInList));
+
+            JSONObject logData = new JSONObject();
+            logData.put(CustomerJsonKey.NOTE, "Initialize Customer Opt-In");
+            systemLogComponent.addSystemLog(
+                    customerId, logData, CustomerEventTypeEnum.CUSTOMER_NOTE.getValue(),
+                    null, null, currentTimestamp
+            );
+        }
+
+        return AjaxResult.success(optInList);
+    }
+
+    public String saveCustomerOptIn(CustomerOptInDTO customerOptInDTO) throws ProcedureException {
+        Long customerId = customerOptInDTO.getCustomerId();
+        Integer optInType = customerOptInDTO.getOptInType();
+        Integer currentValue = customerOptInDTO.getOptInStatus();
+        CustomerOptInType customerOptInType = EnumUtil.getByValue(CustomerOptInType.class, optInType);
+
+        CustomerOptIn originCustomerOptIn = customerReader.getCustomerOptInByCondition(customerId, optInType);
+        if (Objects.isNull(originCustomerOptIn) || Objects.isNull(originCustomerOptIn.getOptInStatus())) {
+            throw new ProcedureException(CustomerErrorCode.FAILURE_QUERY_DATA_IS_EXISTED);
+        }
+
+        Integer originValue = originCustomerOptIn.getOptInStatus();
+        Integer isMarketingValue = CustomerOptInValue.IS_MARKETING.getValue();
+        Integer isOperationValue = CustomerOptInValue.IS_OPERATION.getValue();
+
+        JSONObject originJson = new JSONObject();
+        JSONObject currentJson = new JSONObject();
+        boolean originEnable = false;
+
+        if (!Objects.equals(originValue & isMarketingValue, currentValue & isMarketingValue)) {
+            if (Objects.equals(originValue & isMarketingValue, isMarketingValue)) {
+                originEnable = true;
+            }
+            originJson.put(customerOptInType.getKey() + "IsMarketing", originEnable ? "Enable" : "Disable");
+            currentJson.put(customerOptInType.getKey() + "IsMarketing", originEnable ? "Disable" : "Enable");
+        } else if (!Objects.equals(originValue & isOperationValue, currentValue & isOperationValue)) {
+            if (Objects.equals(originValue & isOperationValue, isOperationValue)) {
+                originEnable = true;
+            }
+            originJson.put(customerOptInType.getKey() + "IsOperation", originEnable ? "Enable" : "Disable");
+            currentJson.put(customerOptInType.getKey() + "IsOperation", originEnable ? "Disable" : "Enable");
+        }
+
+        if (!CollectionUtils.isEmpty(currentJson)) {
+            Long currentTimestamp = DateUtil.getCurrentTimestamp();
+            originCustomerOptIn.setOptInStatus(currentValue);
+            originCustomerOptIn.setUpdatedAt(currentTimestamp);
+            commonWriter.save(originCustomerOptIn);
+
+            systemLogComponent.sysLogHandleFactory(
+                    customerId, null, originJson,
+                    currentJson, currentTimestamp
+            );
+        }
+
+        return AjaxResult.success();
     }
 
     /**

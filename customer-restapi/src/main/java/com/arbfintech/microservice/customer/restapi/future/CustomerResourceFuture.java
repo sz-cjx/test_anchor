@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
+import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.restapi.service.CustomerResourceService;
@@ -98,6 +99,24 @@ public class CustomerResourceFuture {
     public CompletableFuture<String> getOperationLog(String dataStr) {
         return CompletableFuture.supplyAsync(
                 () -> customerResourceService.getOperationLog(dataStr)
+        );
+    }
+
+    public CompletableFuture<String> getCustomerOptIn(Long customerId) {
+        return CompletableFuture.supplyAsync(
+                () -> customerResourceService.getCustomerOptIn(customerId)
+        );
+    }
+
+    public CompletableFuture<String> saveCustomerOptIn(CustomerOptInDTO customerOptInDTO) {
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return customerResourceService.saveCustomerOptIn(customerOptInDTO);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
         );
     }
 }

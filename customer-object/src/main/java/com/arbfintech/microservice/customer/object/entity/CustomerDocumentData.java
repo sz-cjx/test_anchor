@@ -21,7 +21,7 @@ public class CustomerDocumentData {
   private String documentUrl;
 
   @Column
-  private Long documentType;
+  private Integer documentType;
 
   @Column
   private Long createdAt;
@@ -58,11 +58,11 @@ public class CustomerDocumentData {
     this.documentUrl = documentUrl;
   }
 
-  public Long getDocumentType() {
+  public Integer getDocumentType() {
     return documentType;
   }
 
-  public void setDocumentType(Long documentType) {
+  public void setDocumentType(Integer documentType) {
     this.documentType = documentType;
   }
 

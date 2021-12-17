@@ -1,12 +1,10 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
+import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
 import com.arbfintech.microservice.customer.restapi.future.CustomerResourceFuture;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CompletableFuture;
@@ -37,5 +35,20 @@ public class CustomerResourceController {
             @RequestBody String dataStr
     ) {
         return customerResourceFuture.getOperationLog(dataStr);
+    }
+
+    @GetMapping("/opt-in")
+    public CompletableFuture<String> getCustomerOptIn(
+            @RequestParam Long customerId
+    ) {
+        return customerResourceFuture.getCustomerOptIn(customerId);
+    }
+
+    @PostMapping("/opt-in")
+    public CompletableFuture<String> saveCustomerOptIn(
+            @RequestBody CustomerOptInDTO customerOptInDTO,
+            HttpServletRequest request
+    ) {
+        return customerResourceFuture.saveCustomerOptIn(customerOptInDTO);
     }
 }

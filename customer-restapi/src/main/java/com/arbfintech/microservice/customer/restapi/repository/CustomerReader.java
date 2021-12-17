@@ -1,10 +1,12 @@
 package com.arbfintech.microservice.customer.restapi.repository;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -65,5 +67,24 @@ public class CustomerReader extends BaseJdbcReader {
         }
 
         return list;
+    }
+
+    public CustomerOptIn getCustomerOptInByCondition(Long customerId, Integer optInType) {
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM customer_opt_in");
+        sqlBuilder.append(" WHERE customer_id = :customerId");
+        sqlBuilder.append(" AND opt_in_type = :optInType");
+
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("customerId", customerId);
+        condition.put("optInType", optInType);
+
+        JSONObject jsonObject = namedJdbcTemplate().query(sqlBuilder.toString(), condition, this::returnJson);
+        CustomerOptIn customerOptIn = null;
+        if (!CollectionUtils.isEmpty(jsonObject)) {
+            customerOptIn = jsonObject.toJavaObject(CustomerOptIn.class);
+        }
+
+        return customerOptIn;
     }
 }
