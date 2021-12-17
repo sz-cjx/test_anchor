@@ -15,6 +15,7 @@ public interface CustomerJsonKey {
     String BANK_PHONE = "bankPhone";
     String BIRTHDAY = "birthday";
 
+    String CARD_NO = "cardNo";
     String CELL_PHONE = "cellPhone";
     String CURRENT = "current";
     String CUSTOMER_ID = "customerId";
@@ -25,6 +26,9 @@ public interface CustomerJsonKey {
     String EMAIL = "email";
     String EMPLOYER_NAME = "employerName";
     String EMPLOYER_PHONE = "employerPhone";
+    String EXPIRATION_MONTH = "expirationMonth";
+    String EXPIRATION_YEAR = "expirationYear";
+    String EXPIRED_AT= "expiredAt";
 
     String FEATURES = "features";
     String FILE_DOWNLOAD_URL = "fileDownloadUrl";

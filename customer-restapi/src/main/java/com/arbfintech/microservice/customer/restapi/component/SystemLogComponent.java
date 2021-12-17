@@ -51,12 +51,12 @@ public class SystemLogComponent {
             JSONObject comparativeDataJson;
             JSONObject currentLogJson;
 
+            // 不用储存timeline的字段
+            currentData.remove(CustomerJsonKey.CUSTOMER_ID);
+
             if (CollectionUtils.isEmpty(originalData)) {
                 comparativeDataJson = DataProcessingUtil.extractComparativeData(currentData, null);
             } else {
-                // 不用储存timeline的字段
-                currentData.remove(CustomerJsonKey.CUSTOMER_ID);
-
                 comparativeDataJson = DataProcessingUtil.extractComparativeData(currentData, originalData);
                 originalLogJson = comparativeDataJson.getJSONObject(OriginationJsonKey.ORIGINAL);
             }

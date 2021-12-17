@@ -8,13 +8,10 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.framework.component.core.util.JsonUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
-import com.arbfintech.microservice.customer.object.entity.CustomerBankCardData;
-import com.arbfintech.microservice.customer.object.entity.CustomerBankData;
-import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
-import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
-import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
+import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
@@ -84,7 +81,7 @@ public class CustomerResourceService {
 
         Long resultCode = commonWriter.save(CustomerProfile.class, currentCustomerProfile.toJSONString());
         if (resultCode < CodeConst.SUCCESS) {
-            LOGGER.warn("[Update Customer Profile Data]Failed to replace customer profile data. customerId:{}, Request parameters:{}",
+            LOGGER.warn("[Update Customer Profile Data]Failed to replace customer profile data. CustomerId:{}, Request parameters:{}",
                     customerId, currentCustomerProfile.toJSONString());
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
@@ -108,7 +105,7 @@ public class CustomerResourceService {
 
         Long resultCode = commonWriter.save(CustomerEmploymentData.class, currentCustomerEmployment.toJSONString());
         if (resultCode < CodeConst.SUCCESS) {
-            LOGGER.warn("[Update Employment Data]Failed to replace customer employment data. customerId:{}, Request parameters:{}",
+            LOGGER.warn("[Update Employment Data]Failed to replace customer employment data. CustomerId:{}, Request parameters:{}",
                     customerId, currentCustomerEmployment.toJSONString());
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
@@ -137,7 +134,7 @@ public class CustomerResourceService {
 
         result = commonWriter.save(currentCustomerBank);
         if (result < CodeConst.SUCCESS) {
-            LOGGER.warn("[Update Employment Data]Failed to replace customer bank data. customerId:{}", customerId);
+            LOGGER.warn("[Update Bank Data]Failed to replace customer bank data. CustomerId:{}", customerId);
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
@@ -151,9 +148,26 @@ public class CustomerResourceService {
 
     public String updateCustomerBankCardData(Long customerId, JSONObject currentCustomerBankCard) throws ProcedureException, ParseException {
         savePretreatment(currentCustomerBankCard);
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+
+        if (JsonUtil.containsKey(currentCustomerBankCard, CustomerJsonKey.EXPIRATION_MONTH, CustomerJsonKey.EXPIRATION_YEAR)) {
+            Integer expirationMonth = currentCustomerBankCard.getInteger(CustomerJsonKey.EXPIRATION_MONTH);
+            Integer expirationYear = currentCustomerBankCard.getInteger(CustomerJsonKey.EXPIRATION_YEAR);
+            long expirationAt = DateUtil.strToTimeStamp(expirationYear + "-" + expirationMonth + "-1");
+
+            if (expirationAt < currentTimestamp) {
+                LOGGER.warn("[Update Card Data]Expiration time is less than current time. CustomerId:{}, ExpirationMonth:{}, ExpirationYear: {}",
+                        customerId, expirationMonth, expirationYear);
+                throw new ProcedureException(CustomerErrorCode.FAILURE_UPDATE_BANK_CARD_EXPIRATION_DATE);
+            }
+
+            currentCustomerBankCard.put(CustomerJsonKey.EXPIRED_AT, expirationAt);
+        }
+
         CustomerBankCardData customerBankCardData = currentCustomerBankCard.toJavaObject(CustomerBankCardData.class);
         Long id = customerBankCardData.getId();
         customerBankCardData.setCustomerId(customerId);
+        customerBankCardData.setAddedAt(currentTimestamp);
 
         JSONObject originCustomerBankCardJson = new JSONObject();
         Long result = null;
@@ -165,13 +179,13 @@ public class CustomerResourceService {
 
         result = commonWriter.save(customerBankCardData);
         if (result < CodeConst.SUCCESS) {
-            LOGGER.warn("[Update Employment Data]Failed to replace customer bank card data. customerId:{}", customerId);
+            LOGGER.warn("[Update Card Data]Failed to replace customer bank card data. CustomerId:{}", customerId);
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
         systemLogComponent.sysLogHandleFactory(
                 customerId, null, originCustomerBankCardJson,
-                JSONObject.parseObject(JSON.toJSONString(customerBankCardData)), DateUtil.getCurrentTimestamp()
+                JSONObject.parseObject(JSON.toJSONString(customerBankCardData)), currentTimestamp
         );
 
         return AjaxResult.success(result);

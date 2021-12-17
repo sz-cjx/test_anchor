@@ -17,6 +17,7 @@ public class CustomerFeildKey {
             CustomerJsonKey.EMPLOYER_PHONE,
             CustomerJsonKey.SUPERVISOR_PHONE,
             CustomerJsonKey.BANK_PHONE,
+            CustomerJsonKey.CARD_NO,
             CustomerJsonKey.SSN
     );
 

@@ -84,8 +84,11 @@ public class CustomerResourceFuture {
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
                         }
-                    } catch (ProcedureException | ParseException e) {
+                    } catch (ProcedureException e) {
                         LOGGER.warn("[Save Profile]Failure to save profile data. CustomerId: {}, Feature:{}, Exception:", customerId, profileFeature, e);
+                        return AjaxResult.failure(e);
+                    } catch (ParseException e) {
+                        LOGGER.warn("[Save Profile]Failure to parse profile data. CustomerId: {}, Feature:{}", customerId, profileFeature);
                         return AjaxResult.failure(e);
                     }
                 }
