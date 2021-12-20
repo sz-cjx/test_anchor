@@ -30,7 +30,8 @@ public enum CustomerErrorCode implements BaseError {
     FAILURE_LOGIN_PASSWORD_INCORRECT(-81010404, "Current login password is incorrect"),
     FAILURE_PAYMENT_PASSWORD_INCORRECT(-81010405, "Current payment password is incorrect"),
     FAILURE_UPDATE_BANK_CARD_EXPIRATION_DATE(-81010406, "The expiration time of the bank card must be after the current time"),
-    FAILURE_QUERY_DATA_IS_EXISTED(-81010407, "Data is not existed")
+    FAILURE_QUERY_DATA_IS_EXISTED(-81010407, "Data is not existed"),
+    FAILURE_DOCUMENT_CATEGORY_NOT_EXIST(-81010408, "Document category type is not exist")
     ;
 
     private Integer code;

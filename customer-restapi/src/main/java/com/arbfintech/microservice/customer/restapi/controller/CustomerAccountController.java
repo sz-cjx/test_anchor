@@ -12,26 +12,26 @@ import java.util.concurrent.CompletableFuture;
 public class CustomerAccountController {
 
     @Autowired
-    private CustomerAccountFuture customerAcountFuture;
+    private CustomerAccountFuture customerAccountFuture;
 
     @GetMapping("/account")
     public CompletableFuture<String> getAccountInfo(
             @RequestParam Long accountId
     ) {
-        return customerAcountFuture.getAccountInfo(accountId);
+        return customerAccountFuture.getAccountInfo(accountId);
     }
 
     @PostMapping("/account")
     public CompletableFuture<String> saveAccountInfo(
             @RequestBody CustomerAccountDTO customerAccountDTO
     ) {
-        return customerAcountFuture.saveAccountInfo(customerAccountDTO);
+        return customerAccountFuture.saveAccountInfo(customerAccountDTO);
     }
 
     @PostMapping("/change-password")
     public CompletableFuture<String> changePassword(
             @RequestBody CustomerAccountPasswordDTO customerAccountPasswordDTO
     ) {
-        return customerAcountFuture.changePassword(customerAccountPasswordDTO);
+        return customerAccountFuture.changePassword(customerAccountPasswordDTO);
     }
 }
