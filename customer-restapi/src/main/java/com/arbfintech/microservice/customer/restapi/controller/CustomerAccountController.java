@@ -16,9 +16,9 @@ public class CustomerAccountController {
 
     @GetMapping("/account")
     public CompletableFuture<String> getAccountInfo(
-            @RequestParam Long accountId
+            @RequestParam Long id
     ) {
-        return customerAccountFuture.getAccountInfo(accountId);
+        return customerAccountFuture.getAccountInfo(id);
     }
 
     @PostMapping("/account")

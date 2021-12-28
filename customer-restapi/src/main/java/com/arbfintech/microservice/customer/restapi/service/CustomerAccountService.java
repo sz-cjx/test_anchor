@@ -33,8 +33,8 @@ public class CustomerAccountService {
     private CommonWriter commonWriter;
 
     // TODO get accountId from token
-    public String getAccountInfo(Long accountId) {
-        CustomerAccountData customerAccountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, accountId);
+    public String getAccountInfo(Long id) {
+        CustomerAccountData customerAccountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, id);
         CustomerAccountDTO customerAccountDTO = JSON.parseObject(JSON.toJSONString(customerAccountData), CustomerAccountDTO.class);
         customerAccountDTO.setCreatedAt(DateUtil.timeStampToStr(customerAccountData.getCreatedAt()));
 
