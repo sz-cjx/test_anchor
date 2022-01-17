@@ -13,10 +13,10 @@ public class CustomerAccountClientApi extends BaseClientApi {
 
     private static final String CUSTOMER_REST_API = "/customer-restapi";
 
-    public AjaxResult getAccountInfo(Long accountId) {
+    public AjaxResult getAccountInfo(Long id) {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/account"),
-                HttpParamVariable.getInstance().addParam(CustomerJsonKey.ACCOUNT_ID, accountId).getParamMap()
+                HttpParamVariable.getInstance().addParam(CustomerJsonKey.ID, id).getParamMap()
         );
     }
 
