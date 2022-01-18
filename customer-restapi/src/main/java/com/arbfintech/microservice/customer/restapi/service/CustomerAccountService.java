@@ -1,11 +1,15 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.util.CryptUtil;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.framework.component.core.util.RandomUtil;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
@@ -14,6 +18,8 @@ import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.ChangePasswordTypeEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerAccountStatusEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
+import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
@@ -38,6 +44,9 @@ public class CustomerAccountService {
 
     @Autowired
     private CustomerReader customerReader;
+
+    @Autowired
+    private SystemLogComponent systemLogComponent;
 
     // TODO get accountId from token
     public String getAccountInfo(Long id) {
@@ -127,8 +136,10 @@ public class CustomerAccountService {
             throw new ProcedureException(CustomerErrorCode.FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED);
         }
 
-        // TODO 加密、登录
-        accountData.setPaymentPassword(activateAccountDTO.getPassword());
+        String salt = RandomUtil.getAlphaNumeric();
+        String passwordInMd5 = generalPassword(activateAccountDTO.getPassword(), salt);
+
+        accountData.setPaymentPassword(passwordInMd5);
         accountData.setStatus(CustomerAccountStatusEnum.INACTIVE.getValue());
 
         Long resultCode = commonWriter.save(accountData);
@@ -138,7 +149,27 @@ public class CustomerAccountService {
             throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
         }
 
+        // TODO 登录
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        JSONObject logData = new JSONObject();
+        logData.put(CustomerJsonKey.COUNTRY, "America");
+        logData.put(CustomerJsonKey.CITY, "New York");
+        logData.put(CustomerJsonKey.PHONE_MODEL, "iOS 15.1");
+        logData.put(CustomerJsonKey.IP, "192.168.0.1");
+        logData.put(CustomerJsonKey.SIGN_IN_TIME,
+                DateUtil.timeStampToStr(currentTimestamp, DateUtil.DEFAULT_DATETIME_PATTERN));
+
+        systemLogComponent.addSystemLog(
+                customerProfile.getId(), logData, CustomerEventTypeEnum.CUSTOMER_SIGN_IN.getValue(),
+                null, null, currentTimestamp
+        );
+
+
         return AjaxResult.success();
+    }
+
+    private String generalPassword(String password, String salt) {
+        return CryptUtil.md5(password.toLowerCase() + salt);
     }
 
 }

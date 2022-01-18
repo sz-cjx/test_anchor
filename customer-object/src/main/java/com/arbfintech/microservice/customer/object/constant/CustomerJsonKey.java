@@ -17,6 +17,8 @@ public interface CustomerJsonKey {
 
     String CARD_NO = "cardNo";
     String CELL_PHONE = "cellPhone";
+    String CITY = "city";
+    String COUNTRY = "country";
     String CURRENT = "current";
     String CUSTOMER_ID = "customerId";
 
@@ -38,6 +40,7 @@ public interface CustomerJsonKey {
     String HOME_PHONE = "homePhone";
 
     String ID = "id";
+    String IP = "ip";
 
     String LAST_NAME = "lastName";
     String LAST_PAYDAY = "lastPayday";
@@ -51,8 +54,10 @@ public interface CustomerJsonKey {
     String OPT_IN = "optIn";
     String ORIGINAL = "original";
 
+    String PHONE_MODEL = "phoneModel";
     String PORTFOLIO_ID = "portfolioId";
 
+    String SIGN_IN_TIME = "signInTime";
     String SUPERVISOR_NAME = "supervisorName";
     String SUPERVISOR_PHONE = "supervisorPhone";
     String STATE = "state";
