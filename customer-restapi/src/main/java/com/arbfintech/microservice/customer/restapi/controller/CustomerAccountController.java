@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
+import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
 import com.arbfintech.microservice.customer.restapi.future.CustomerAccountFuture;
@@ -33,5 +34,12 @@ public class CustomerAccountController {
             @RequestBody CustomerAccountPasswordDTO customerAccountPasswordDTO
     ) {
         return customerAccountFuture.changePassword(customerAccountPasswordDTO);
+    }
+
+    @PostMapping("/activate-account")
+    public CompletableFuture<String> activateAccount(
+            @RequestBody ActivateAccountDTO activateAccountDTO
+    ) {
+        return customerAccountFuture.activateAccount(activateAccountDTO);
     }
 }

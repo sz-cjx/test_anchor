@@ -2,6 +2,7 @@ package com.arbfintech.microservice.customer.restapi.future;
 
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
 import com.arbfintech.microservice.customer.restapi.service.CustomerAccountService;
@@ -39,6 +40,18 @@ public class CustomerAccountFuture {
                 () -> {
                     try {
                         return customerAccountService.changePassword(customerAccountPasswordDTO);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
+        );
+    }
+
+    public CompletableFuture<String> activateAccount(ActivateAccountDTO activateAccountDTO){
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return customerAccountService.activateAccount(activateAccountDTO);
                     } catch (ProcedureException e) {
                         return AjaxResult.failure(e);
                     }

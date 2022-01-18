@@ -7,6 +7,7 @@ import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
+import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -86,5 +87,22 @@ public class CustomerReader extends BaseJdbcReader {
         }
 
         return customerOptIn;
+    }
+
+    public CustomerProfile getCustomerInfoByEmail(String email) {
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM customer_profile");
+        sqlBuilder.append(" WHERE email = :email");
+
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("email", email);
+
+        JSONObject jsonObject = namedJdbcTemplate().query(sqlBuilder.toString(), condition, this::returnJson);
+        CustomerProfile customerProfile = null;
+        if (!CollectionUtils.isEmpty(jsonObject)) {
+            customerProfile = jsonObject.toJavaObject(CustomerProfile.class);
+        }
+
+        return customerProfile;
     }
 }

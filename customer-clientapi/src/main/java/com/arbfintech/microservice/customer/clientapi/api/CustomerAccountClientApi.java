@@ -4,6 +4,7 @@ import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
+import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,13 @@ public class CustomerAccountClientApi extends BaseClientApi {
         return simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/change-password"),
                 customerAccountPasswordDTO
+        );
+    }
+
+    public AjaxResult activateAccount(ActivateAccountDTO activateAccountDTO) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/activate-account"),
+                activateAccountDTO
         );
     }
 }

@@ -6,11 +6,15 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
 import com.arbfintech.microservice.customer.object.entity.CustomerAccountData;
+import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.ChangePasswordTypeEnum;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerAccountStatusEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
+import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import org.slf4j.Logger;
@@ -31,6 +35,9 @@ public class CustomerAccountService {
 
     @Autowired
     private CommonWriter commonWriter;
+
+    @Autowired
+    private CustomerReader customerReader;
 
     // TODO get accountId from token
     public String getAccountInfo(Long id) {
@@ -102,6 +109,36 @@ public class CustomerAccountService {
             default:
                 throw new ProcedureException(CustomerErrorCode.FAILURE_CHANGE_TYPE_NOT_EXIST);
         }
+    }
+
+    public String activateAccount(ActivateAccountDTO activateAccountDTO) throws ProcedureException {
+        String email = activateAccountDTO.getEmail().toLowerCase();
+        LOGGER.info("[Activate Account]Start activate. Email:{}", email);
+        CustomerProfile customerProfile = customerReader.getCustomerInfoByEmail(email);
+        if (Objects.isNull(customerProfile)) {
+            LOGGER.warn("[Activate Account]Failed to find customer profile. Email:{}", email);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_ACTIVATE_ACCOUNT_EMAIL_NOT_EXIST);
+        }
+
+        CustomerAccountData accountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, customerProfile.getId());
+        Integer accountStatus = accountData.getStatus();
+        if (CustomerAccountStatusEnum.ACTIVE.getValue().equals(accountStatus)) {
+            LOGGER.warn("[Activate Account]Account has been activated. CustomerId: {},Email:{}", customerProfile.getId(), email);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED);
+        }
+
+        // TODO 加密、登录
+        accountData.setPaymentPassword(activateAccountDTO.getPassword());
+        accountData.setStatus(CustomerAccountStatusEnum.INACTIVE.getValue());
+
+        Long resultCode = commonWriter.save(accountData);
+
+        if (resultCode < CodeConst.SUCCESS) {
+            LOGGER.warn("[Activate Account]Failed to save account info. customerId:{}", customerProfile.getId());
+            throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
+        }
+
+        return AjaxResult.success();
     }
 
 }

@@ -31,7 +31,10 @@ public enum CustomerErrorCode implements BaseError {
     FAILURE_PAYMENT_PASSWORD_INCORRECT(-81010405, "Current payment password is incorrect"),
     FAILURE_UPDATE_BANK_CARD_EXPIRATION_DATE(-81010406, "The expiration time of the bank card must be after the current time"),
     FAILURE_QUERY_DATA_IS_EXISTED(-81010407, "Data is not existed"),
-    FAILURE_DOCUMENT_CATEGORY_NOT_EXIST(-81010408, "Document category type is not exist")
+    FAILURE_DOCUMENT_CATEGORY_NOT_EXIST(-81010408, "Document category type is not exist"),
+
+    FAILURE_ACTIVATE_ACCOUNT_EMAIL_NOT_EXIST(-81010410, "No corresponding user information found by email"),
+    FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED(-81010411, "Account has been activated"),
     ;
 
     private Integer code;

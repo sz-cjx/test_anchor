@@ -27,7 +27,7 @@ public class CustomerAccountData {
     private String avatarUrl;
 
     @Column
-    private Long status;
+    private Integer status;
 
     @Column
     private String loginPassword;
@@ -86,11 +86,11 @@ public class CustomerAccountData {
         this.avatarUrl = avatarUrl;
     }
 
-    public Long getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Long status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
