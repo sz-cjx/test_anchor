@@ -35,6 +35,9 @@ public enum CustomerErrorCode implements BaseError {
 
     FAILURE_ACTIVATE_ACCOUNT_EMAIL_NOT_EXIST(-81010410, "No corresponding user information found by email"),
     FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED(-81010411, "Account has been activated"),
+    FAILURE_SIGN_IN_ACCOUNT_NOT_EXIST(-81010412, "Sign-In failed, account is not existed."),
+    FAILURE_SIGN_IN_ACCOUNT_HAS_BEEN_DISABLED(-81010413, "Sign-In failed, account has been disabled"),
+    FAILURE_SIGN_IN_INCORRECT_PASSWORD(-81010413, "Sign-In failed, incorrect password."),
     ;
 
     private Integer code;

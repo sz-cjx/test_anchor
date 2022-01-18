@@ -42,4 +42,11 @@ public class CustomerAccountController {
     ) {
         return customerAccountFuture.activateAccount(activateAccountDTO);
     }
+
+    @PostMapping("/sign-in")
+    public CompletableFuture<String> signIn(
+            @RequestBody ActivateAccountDTO activateAccountDTO
+    ) {
+        return customerAccountFuture.signIn(activateAccountDTO);
+    }
 }

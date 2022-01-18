@@ -41,4 +41,11 @@ public class CustomerAccountClientApi extends BaseClientApi {
                 activateAccountDTO
         );
     }
+
+    public AjaxResult signIn(ActivateAccountDTO activateAccountDTO) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/sign-in"),
+                activateAccountDTO
+        );
+    }
 }

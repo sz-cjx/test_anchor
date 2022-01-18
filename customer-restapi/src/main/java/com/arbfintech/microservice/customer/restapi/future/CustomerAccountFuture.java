@@ -58,4 +58,16 @@ public class CustomerAccountFuture {
                 }
         );
     }
+
+    public CompletableFuture<String> signIn(ActivateAccountDTO activateAccountDTO){
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return customerAccountService.signIn(activateAccountDTO);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
+        );
+    }
 }

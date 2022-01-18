@@ -139,8 +139,9 @@ public class CustomerAccountService {
         String salt = RandomUtil.getAlphaNumeric();
         String passwordInMd5 = generalPassword(activateAccountDTO.getPassword(), salt);
 
-        accountData.setPaymentPassword(passwordInMd5);
-        accountData.setStatus(CustomerAccountStatusEnum.INACTIVE.getValue());
+        accountData.setSalt(salt);
+        accountData.setLoginPassword(passwordInMd5);
+        accountData.setStatus(CustomerAccountStatusEnum.ACTIVE.getValue());
 
         Long resultCode = commonWriter.save(accountData);
 
@@ -164,6 +165,47 @@ public class CustomerAccountService {
                 null, null, currentTimestamp
         );
 
+
+        return AjaxResult.success();
+    }
+
+    public String signIn(ActivateAccountDTO activateAccountDTO) throws ProcedureException {
+        String email = activateAccountDTO.getEmail().toLowerCase();
+        LOGGER.info("[Sign In]Start activate. Email:{}", email);
+        CustomerProfile customerProfile = customerReader.getCustomerInfoByEmail(email);
+        if (Objects.isNull(customerProfile)) {
+            LOGGER.warn("[Sign In]Failed to find customer account. Email:{}", email);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_SIGN_IN_ACCOUNT_NOT_EXIST);
+        }
+
+        CustomerAccountData accountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, customerProfile.getId());
+        Long customerId = accountData.getId();
+        if (!CustomerAccountStatusEnum.ACTIVE.getValue().equals(accountData.getStatus())) {
+            LOGGER.warn("[Sign In]Account has been disabled. CustomerId: {}, Email:{}", customerId, email);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_SIGN_IN_ACCOUNT_HAS_BEEN_DISABLED);
+        }
+
+        String salt = accountData.getSalt();
+        String passwordInMd5 = generalPassword(activateAccountDTO.getPassword(), salt);
+        if (!Objects.equals(accountData.getLoginPassword(), passwordInMd5)) {
+            LOGGER.warn("[Sign In]Incorrect password.. CustomerId: {}, Email:{}", customerId, email);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_SIGN_IN_INCORRECT_PASSWORD);
+        }
+
+        // TODO 登录
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        JSONObject logData = new JSONObject();
+        logData.put(CustomerJsonKey.COUNTRY, "America");
+        logData.put(CustomerJsonKey.CITY, "New York");
+        logData.put(CustomerJsonKey.PHONE_MODEL, "iOS 15.1");
+        logData.put(CustomerJsonKey.IP, "192.168.0.1");
+        logData.put(CustomerJsonKey.SIGN_IN_TIME,
+                DateUtil.timeStampToStr(currentTimestamp, DateUtil.DEFAULT_DATETIME_PATTERN));
+
+        systemLogComponent.addSystemLog(
+                customerProfile.getId(), logData, CustomerEventTypeEnum.CUSTOMER_SIGN_IN.getValue(),
+                null, null, currentTimestamp
+        );
 
         return AjaxResult.success();
     }

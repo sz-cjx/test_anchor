@@ -30,6 +30,9 @@ public class CustomerAccountData {
     private Integer status;
 
     @Column
+    private String salt;
+
+    @Column
     private String loginPassword;
 
     @Column
@@ -92,6 +95,14 @@ public class CustomerAccountData {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public String getLoginPassword() {
