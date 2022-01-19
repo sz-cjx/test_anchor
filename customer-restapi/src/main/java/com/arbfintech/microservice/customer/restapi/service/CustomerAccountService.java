@@ -79,15 +79,15 @@ public class CustomerAccountService {
         switch (typeEnum) {
             case LOGIN: {
                 String currentLoginPassword = customerAccountPasswordDTO.getCurrentLoginPassword();
-                if (!Objects.equals(currentLoginPassword, customerAccountData.getLoginPassword())) {
+                if (!Objects.equals(generalPassword(currentLoginPassword, customerAccountData.getSalt()), customerAccountData.getLoginPassword())) {
+                    LOGGER.warn("[Update Account]Current login password is incorrect. customerId:{}", customerId);
                     throw new ProcedureException(CustomerErrorCode.FAILURE_LOGIN_PASSWORD_INCORRECT);
                 }
 
                 String newLoginPassword = customerAccountPasswordDTO.getLoginPassword();
-                CustomerAccountData saveData = JSON.parseObject(JSON.toJSONString(customerAccountPasswordDTO), CustomerAccountData.class);
-                saveData.setLoginPassword(newLoginPassword);
 
-                Long resultCode = commonWriter.save(CustomerAccountData.class, JSON.toJSONString(saveData));
+                customerAccountData.setLoginPassword(generalPassword(newLoginPassword, customerAccountData.getSalt()));
+                Long resultCode = commonWriter.save(customerAccountData);
 
                 if (resultCode < CodeConst.SUCCESS) {
                     LOGGER.warn("[Update Account]Failed to change login password. customerId:{}", customerId);
@@ -98,15 +98,14 @@ public class CustomerAccountService {
             }
             case PAYMENT: {
                 String currentPaymentPassword = customerAccountPasswordDTO.getCurrentPaymentPassword();
-                if (!Objects.equals(currentPaymentPassword, customerAccountData.getPaymentPassword())) {
+                if (!Objects.equals(generalPassword(currentPaymentPassword, customerAccountData.getSalt()), customerAccountData.getPaymentPassword())) {
+                    LOGGER.warn("[Update Account]Current payment password is incorrect. customerId:{}", customerId);
                     throw new ProcedureException(CustomerErrorCode.FAILURE_LOGIN_PASSWORD_INCORRECT);
                 }
 
                 String newPaymentPassword = customerAccountPasswordDTO.getPaymentPassword();
-                CustomerAccountData saveData = JSON.parseObject(JSON.toJSONString(customerAccountPasswordDTO), CustomerAccountData.class);
-                saveData.setPaymentPassword(newPaymentPassword);
-
-                Long resultCode = commonWriter.save(CustomerAccountData.class, JSON.toJSONString(saveData));
+                customerAccountData.setPaymentPassword(generalPassword(newPaymentPassword, customerAccountData.getSalt()));
+                Long resultCode = commonWriter.save(customerAccountData);
 
                 if (resultCode < CodeConst.SUCCESS) {
                     LOGGER.warn("[Update Account]Failed to change payment password. customerId:{}", customerId);
