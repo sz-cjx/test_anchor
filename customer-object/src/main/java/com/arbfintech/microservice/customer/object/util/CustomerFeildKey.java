@@ -3,6 +3,7 @@ package com.arbfintech.microservice.customer.object.util;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CustomerFeildKey {
@@ -43,6 +44,23 @@ public class CustomerFeildKey {
     );
 
     /**
+     * 定义personal中影响计算的key
+     */
+    private static final List<String> PERSONAL_CALCULATE_FACTOR_LIST = Collections.singletonList(
+            CustomerJsonKey.STATE
+
+    );
+
+    /**
+     * 定义employment中影响计算的key
+     */
+    private static final List<String> EMPLOYMENT_CALCULATE_FACTOR_LIST = Arrays.asList(
+            CustomerJsonKey.VOE,
+            CustomerJsonKey.LAST_PAYDAY,
+            CustomerJsonKey.PAYROLL_FREQUENCY
+    );
+
+    /**
      * 获取包含电话号码和SSN的list
      * @return
      */
@@ -60,5 +78,21 @@ public class CustomerFeildKey {
 
     public static List<String> getConversionLowercaseList() {
         return CONVERSION_LOWERCASE_LIST;
+    }
+
+    /**
+     * 获取personal中影响计算的key
+     * @return
+     */
+    public static List<String> getPersonalCalculateFactorList() {
+        return PERSONAL_CALCULATE_FACTOR_LIST;
+    }
+
+    /**
+     * 获取employment中影响计算的key
+     * @return
+     */
+    public static List<String> getEmploymentCalculateFactorList() {
+        return EMPLOYMENT_CALCULATE_FACTOR_LIST;
     }
 }

@@ -56,6 +56,9 @@ public interface CustomerJsonKey {
 
     String PHONE_MODEL = "phoneModel";
     String PORTFOLIO_ID = "portfolioId";
+    String PAYROLL_FREQUENCY = "payrollFrequency";
+
+    String VOE = "voe";
 
     String SIGN_IN_TIME = "signInTime";
     String SUPERVISOR_NAME = "supervisorName";
