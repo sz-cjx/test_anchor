@@ -6,6 +6,7 @@ import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.IBVRequestCodeStatusEnum;
 import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.object.util.ExtentionJsonUtil;
+import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class BusinessService {
 
     @Autowired
     private CommonReader commonReader;
+
+    @Autowired
+    private AlgorithmRedisRepository algorithmRedisRepository;
 
     public String calculateLoanAmount (Long customerId) {
 
@@ -62,7 +66,14 @@ public class BusinessService {
 
         // TODO get statement
 
-
+        /*
+         * Step 1: 从redis中获取用于计算loan amount的参数列表
+         * Step 2: 组装用于计算loan amount的参数 - LoanAmountRequest对象
+         * Step 3: 计算loan amount
+         */
+//        String loanAmountParameterStr = algorithmRedisRepository.fetchString(
+//                CacheKey.LOAN_AMOUNT_PARAMETER, )
+//        );
 
 
 

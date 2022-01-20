@@ -76,6 +76,13 @@
             <artifactId>component.database</artifactId>
             <version>${parent.version}</version>
         </dependency>
+        <!-- Framework Cache Dependency -->
+        <dependency>
+            <groupId>com.arbfintech.framework</groupId>
+            <artifactId>component.cache</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
