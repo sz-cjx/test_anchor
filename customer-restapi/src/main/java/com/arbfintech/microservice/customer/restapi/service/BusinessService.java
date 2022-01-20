@@ -52,8 +52,8 @@ public class BusinessService {
     private AlgorithmService algorithmService;
 
     public String calculateLoanAmount (Long customerId) throws ProcedureException {
-
         CalculationResultDTO calculationResultDTO = new CalculationResultDTO();
+        LOGGER.info("[Calculate Loan Amount]Start calculate loan amount. CustomerId: {}", customerId);
 
         /**
          *  1、校验参数是否齐全（personal, employment, bank, ibv）
@@ -80,10 +80,10 @@ public class BusinessService {
         calculationResultDTO.setBankResult(bankResult);
         calculationResultDTO.setIbvResult(ibvResult);
 
+        LOGGER.info("[Calculate Loan Amount]Check calculate parameter" +
+                        "CustomerId: {}, PersonalResult: {}, EmploymentResult: {}, BankResult: {}, IbvResult: {}",
+                customerId, personalResult, employmentResult, bankResult, ibvResult);
         if (!(personalResult && employmentResult && bankResult && ibvResult)) {
-            LOGGER.info("[Calculate Loan Amount]Fail to calculate loanAmount, missing parameter. " +
-                    "CustomerId: {}, PersonalResult: {}, EmploymentResult: {}, BankResult: {}, IbvResult: {}",
-                    customerId, personalResult, employmentResult, bankResult, ibvResult);
             return AjaxResult.success(calculationResultDTO);
         }
 
@@ -98,6 +98,7 @@ public class BusinessService {
         // profile中的state转换: int -> String
         String state = EnumUtil.getTextByValue(StateEnum.class, customerProfile.getState());
 
+        LOGGER.info("[Calculate Loan Amount]Start assemble calculate parameter. CustomerId: {}", customerId);
         LoanAmountRequest amountRequest = new LoanAmountRequest();
         amountRequest.setLastPayday(customerEmployment.getLastPayday());
         amountRequest.setState(state);
@@ -114,6 +115,10 @@ public class BusinessService {
         amountRequest.setTransferredAmount(new BigDecimal(0));
 
         List<CustomerStatementData> statementDataList = commonReader.listEntityByCustomerId(CustomerStatementData.class, customerId);
+        if (CollectionUtils.isEmpty(statementDataList)) {
+            LOGGER.info("[Calculate Loan Amount]Fail to calculate loan amount, Missing statement. CustomerId: {}", customerId);
+            throw new ProcedureException(CustomerErrorCode.CALCULATOR_STOP_TO_MISSING_PARAMETER);
+        }
         List<DirectDeposit> depositList = new ArrayList<>();
         for (CustomerStatementData statement : statementDataList) {
             DirectDeposit deposit = new DirectDeposit();
