@@ -3,6 +3,7 @@ package com.arbfintech.microservice.customer.restapi.repository.reader;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
+import com.arbfintech.microservice.customer.object.entity.CustomerDecisionLogicAuthorizationRecord;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public class CommonReader extends BaseJdbcReader {
 
     public <T> T getEntityByCustomerId(Class<T> tClass, Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
-        if (tClass.equals(CustomerOptIn.class)) {
+        if (tClass.equals(CustomerOptIn.class) || tClass.equals(CustomerDecisionLogicAuthorizationRecord.class)) {
             sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
         } else {
             sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);
