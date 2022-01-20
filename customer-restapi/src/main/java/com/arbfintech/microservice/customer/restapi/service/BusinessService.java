@@ -102,10 +102,12 @@ public class BusinessService {
         LoanAmountRequest amountRequest = new LoanAmountRequest();
         amountRequest.setLastPayday(customerEmployment.getLastPayday());
         amountRequest.setState(state);
-        amountRequest.setRoutingNo("");
         amountRequest.setVoe(customerEmployment.getVoe());
         amountRequest.setCategory(LoanCategoryEnum.NEW.getValue());
         amountRequest.setPayrollFrequency(customerEmployment.getPayrollFrequency());
+
+        // TODO need update
+        amountRequest.setRoutingNo("123456789");
         amountRequest.setNumberOfOpenLoans(0);
         amountRequest.setLoanType(LoanTypeEnum.MULTIPLE_ADVANCE_LOAN.getValue());
         amountRequest.setAccountBalance(new BigDecimal(0));
