@@ -38,6 +38,8 @@ public enum CustomerErrorCode implements BaseError {
     FAILURE_SIGN_IN_ACCOUNT_NOT_EXIST(-81010412, "Sign-In failed, account is not existed."),
     FAILURE_SIGN_IN_ACCOUNT_HAS_BEEN_DISABLED(-81010413, "Sign-In failed, account has been disabled"),
     FAILURE_SIGN_IN_INCORRECT_PASSWORD(-81010413, "Sign-In failed, incorrect password."),
+
+    CALCULATOR_STOP_TO_CALCULATE_FAILURR(-81010420, "Stop to calculate loan amount. Fail to calculate."),
     ;
 
     private Integer code;

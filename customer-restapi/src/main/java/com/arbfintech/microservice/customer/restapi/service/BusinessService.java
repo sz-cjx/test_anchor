@@ -1,19 +1,37 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
+import com.alibaba.fastjson.JSON;
+import com.arbfintech.framework.component.algorithm.service.AlgorithmService;
+import com.arbfintech.framework.component.algorithm.type.DirectDeposit;
+import com.arbfintech.framework.component.algorithm.type.LoanAmountParameter;
+import com.arbfintech.framework.component.algorithm.type.LoanAmountRequest;
+import com.arbfintech.framework.component.algorithm.type.LoanAmountResponse;
+import com.arbfintech.framework.component.core.constant.CodeConst;
+import com.arbfintech.framework.component.core.enumerate.LoanTypeEnum;
+import com.arbfintech.framework.component.core.enumerate.ModeEnum;
+import com.arbfintech.framework.component.core.enumerate.StateEnum;
 import com.arbfintech.framework.component.core.type.AjaxResult;
+import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.util.EnumUtil;
+import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.IBVRequestCodeStatusEnum;
+import com.arbfintech.microservice.customer.object.enumerate.VOBTypeEnum;
 import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.object.util.ExtentionJsonUtil;
 import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
+import com.arbfintech.microservice.loan.object.enumerate.LoanCategoryEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,13 +40,18 @@ public class BusinessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessService.class);
 
+    private static final int FLAGS_STRICT = 1 << 9;
+
     @Autowired
     private CommonReader commonReader;
 
     @Autowired
     private AlgorithmRedisRepository algorithmRedisRepository;
 
-    public String calculateLoanAmount (Long customerId) {
+    @Autowired
+    private AlgorithmService algorithmService;
+
+    public String calculateLoanAmount (Long customerId) throws ProcedureException {
 
         CalculationResultDTO calculationResultDTO = new CalculationResultDTO();
 
@@ -64,19 +87,66 @@ public class BusinessService {
             return AjaxResult.success(calculationResultDTO);
         }
 
-        // TODO get statement
-
         /*
          * Step 1: 从redis中获取用于计算loan amount的参数列表
          * Step 2: 组装用于计算loan amount的参数 - LoanAmountRequest对象
          * Step 3: 计算loan amount
          */
-//        String loanAmountParameterStr = algorithmRedisRepository.fetchString(
-//                CacheKey.LOAN_AMOUNT_PARAMETER, )
-//        );
+        String loanAmountParameterStr = algorithmRedisRepository.fetchString(CustomerCacheKey.LOAN_AMOUNT_PARAMETER, 8L);
+        List<LoanAmountParameter> loanAmountParameterList = JSON.parseArray(loanAmountParameterStr, LoanAmountParameter.class);
 
+        // profile中的state转换: int -> String
+        String state = EnumUtil.getTextByValue(StateEnum.class, customerProfile.getState());
 
+        LoanAmountRequest amountRequest = new LoanAmountRequest();
+        amountRequest.setLastPayday(customerEmployment.getLastPayday());
+        amountRequest.setState(state);
+        amountRequest.setRoutingNo("");
+        amountRequest.setVoe(customerEmployment.getVoe());
+        amountRequest.setCategory(LoanCategoryEnum.NEW.getValue());
+        amountRequest.setPayrollFrequency(customerEmployment.getPayrollFrequency());
+        amountRequest.setNumberOfOpenLoans(0);
+        amountRequest.setLoanType(LoanTypeEnum.MULTIPLE_ADVANCE_LOAN.getValue());
+        amountRequest.setAccountBalance(new BigDecimal(0));
+        amountRequest.setAmountOfOpenLoans(new BigDecimal(0));
+        amountRequest.setFlags(FLAGS_STRICT);
+        amountRequest.setMode(ModeEnum.AUDIT.getValue());
+        amountRequest.setTransferredAmount(new BigDecimal(0));
 
+        List<CustomerStatementData> statementDataList = commonReader.listEntityByCustomerId(CustomerStatementData.class, customerId);
+        List<DirectDeposit> depositList = new ArrayList<>();
+        for (CustomerStatementData statement : statementDataList) {
+            DirectDeposit deposit = new DirectDeposit();
+            deposit.setAmount(statement.getAmount());
+            deposit.setBalance(statement.getBalance());
+            deposit.setPayrollDate(statement.getPayrollDate());
+            deposit.setPayrollType(statement.getPayrollType());
+            deposit.setVob(VOBTypeEnum.DECISION_LOGIC.getValue());
+            depositList.add(deposit);
+        }
+        amountRequest.setStatement(depositList);
+
+        // TODO get program from redis
+        amountRequest.setInterestRate(new BigDecimal("7.8"));
+        amountRequest.setMinimumLoanAmount(new BigDecimal("200"));
+        amountRequest.setMaximumLoanAmount(new BigDecimal("1500"));
+
+        LoanAmountResponse loanAmountResponse = null;
+        try {
+            loanAmountResponse = algorithmService.calcLoanAmount(
+                    amountRequest, loanAmountParameterList
+            );
+        } catch (ProcedureException e) {
+            LOGGER.warn("[Calculate Loan Amount]Fail to calculate loan amount. CustomerId: {}, Exception: {}", customerId, e);
+            throw new ProcedureException(CustomerErrorCode.CALCULATOR_STOP_TO_CALCULATE_FAILURR);
+        }
+
+        if (!(CodeConst.SUCCESS == loanAmountResponse.getResultCode())) {
+            LOGGER.warn("[Calculate Loan Amount]Fail to calculate loanAmount. CustomerId:{}", customerId);
+            throw new ProcedureException(CustomerErrorCode.CALCULATOR_STOP_TO_CALCULATE_FAILURR);
+        }
+
+        calculationResultDTO.setLoanAmount(loanAmountResponse.getLoanAmount());
         return AjaxResult.success(calculationResultDTO);
     }
 }

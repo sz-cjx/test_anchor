@@ -1,5 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.future;
 
+import com.arbfintech.framework.component.core.type.AjaxResult;
+import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.restapi.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +17,11 @@ public class CustomerOperationFuture {
     public CompletableFuture<String> calculateLoanAmount (Long customerId) {
         return CompletableFuture.supplyAsync(
                 () -> {
-                    return businessService.calculateLoanAmount(customerId);
+                    try {
+                        return businessService.calculateLoanAmount(customerId);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
                 }
         );
     }

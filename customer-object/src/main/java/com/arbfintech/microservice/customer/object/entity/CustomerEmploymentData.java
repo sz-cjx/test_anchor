@@ -32,7 +32,7 @@ public class CustomerEmploymentData {
     private String employerZip;
 
     @Column
-    private Long jobType;
+    private Integer jobType;
 
     @Column
     private String jobTitle;
@@ -44,37 +44,37 @@ public class CustomerEmploymentData {
     private String supervisorPhone;
 
     @Column
-    private Long incomeType;
+    private Integer incomeType;
 
     @Column
-    private Long payrollType;
+    private Integer payrollType;
 
     @Column
-    private Long payrollFrequency;
+    private Integer payrollFrequency;
 
     @Column
     private Long lastPayday;
 
     @Column
-    private Long paydayOnHoliday;
+    private Integer paydayOnHoliday;
 
     @Column
-    private Long paydayOnAvailable;
+    private Integer paydayOnAvailable;
 
     @Column
-    private Long firstDayOfMonth;
+    private Integer firstDayOfMonth;
 
     @Column
-    private Long secondDayOfMonth;
+    private Integer secondDayOfMonth;
 
     @Column
-    private Long firstDayOfWeek;
+    private Integer firstDayOfWeek;
 
     @Column
-    private Long secondDayOfWeek;
+    private Integer secondDayOfWeek;
 
     @Column
-    private Long voe;
+    private Integer voe;
 
     @Column
     private BigDecimal monthlyIncome;
@@ -135,11 +135,11 @@ public class CustomerEmploymentData {
         this.employerZip = employerZip;
     }
 
-    public Long getJobType() {
+    public Integer getJobType() {
         return jobType;
     }
 
-    public void setJobType(Long jobType) {
+    public void setJobType(Integer jobType) {
         this.jobType = jobType;
     }
 
@@ -167,27 +167,27 @@ public class CustomerEmploymentData {
         this.supervisorPhone = supervisorPhone;
     }
 
-    public Long getIncomeType() {
+    public Integer getIncomeType() {
         return incomeType;
     }
 
-    public void setIncomeType(Long incomeType) {
+    public void setIncomeType(Integer incomeType) {
         this.incomeType = incomeType;
     }
 
-    public Long getPayrollType() {
+    public Integer getPayrollType() {
         return payrollType;
     }
 
-    public void setPayrollType(Long payrollType) {
+    public void setPayrollType(Integer payrollType) {
         this.payrollType = payrollType;
     }
 
-    public Long getPayrollFrequency() {
+    public Integer getPayrollFrequency() {
         return payrollFrequency;
     }
 
-    public void setPayrollFrequency(Long payrollFrequency) {
+    public void setPayrollFrequency(Integer payrollFrequency) {
         this.payrollFrequency = payrollFrequency;
     }
 
@@ -199,59 +199,59 @@ public class CustomerEmploymentData {
         this.lastPayday = lastPayday;
     }
 
-    public Long getPaydayOnHoliday() {
+    public Integer getPaydayOnHoliday() {
         return paydayOnHoliday;
     }
 
-    public void setPaydayOnHoliday(Long paydayOnHoliday) {
+    public void setPaydayOnHoliday(Integer paydayOnHoliday) {
         this.paydayOnHoliday = paydayOnHoliday;
     }
 
-    public Long getPaydayOnAvailable() {
+    public Integer getPaydayOnAvailable() {
         return paydayOnAvailable;
     }
 
-    public void setPaydayOnAvailable(Long paydayOnAvailable) {
+    public void setPaydayOnAvailable(Integer paydayOnAvailable) {
         this.paydayOnAvailable = paydayOnAvailable;
     }
 
-    public Long getFirstDayOfMonth() {
+    public Integer getFirstDayOfMonth() {
         return firstDayOfMonth;
     }
 
-    public void setFirstDayOfMonth(Long firstDayOfMonth) {
+    public void setFirstDayOfMonth(Integer firstDayOfMonth) {
         this.firstDayOfMonth = firstDayOfMonth;
     }
 
-    public Long getSecondDayOfMonth() {
+    public Integer getSecondDayOfMonth() {
         return secondDayOfMonth;
     }
 
-    public void setSecondDayOfMonth(Long secondDayOfMonth) {
+    public void setSecondDayOfMonth(Integer secondDayOfMonth) {
         this.secondDayOfMonth = secondDayOfMonth;
     }
 
-    public Long getFirstDayOfWeek() {
+    public Integer getFirstDayOfWeek() {
         return firstDayOfWeek;
     }
 
-    public void setFirstDayOfWeek(Long firstDayOfWeek) {
+    public void setFirstDayOfWeek(Integer firstDayOfWeek) {
         this.firstDayOfWeek = firstDayOfWeek;
     }
 
-    public Long getSecondDayOfWeek() {
+    public Integer getSecondDayOfWeek() {
         return secondDayOfWeek;
     }
 
-    public void setSecondDayOfWeek(Long secondDayOfWeek) {
+    public void setSecondDayOfWeek(Integer secondDayOfWeek) {
         this.secondDayOfWeek = secondDayOfWeek;
     }
 
-    public Long getVoe() {
+    public Integer getVoe() {
         return voe;
     }
 
-    public void setVoe(Long voe) {
+    public void setVoe(Integer voe) {
         this.voe = voe;
     }
 

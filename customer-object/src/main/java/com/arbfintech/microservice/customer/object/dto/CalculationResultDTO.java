@@ -1,5 +1,7 @@
 package com.arbfintech.microservice.customer.object.dto;
 
+import java.math.BigDecimal;
+
 public class CalculationResultDTO {
 
     private Boolean personalResult;
@@ -9,6 +11,8 @@ public class CalculationResultDTO {
     private Boolean bankResult;
 
     private Boolean ibvResult;
+
+    private BigDecimal loanAmount;
 
     public Boolean getPersonalResult() {
         return personalResult;
@@ -40,5 +44,13 @@ public class CalculationResultDTO {
 
     public void setIbvResult(Boolean ibvResult) {
         this.ibvResult = ibvResult;
+    }
+
+    public BigDecimal getLoanAmount() {
+        return loanAmount;
+    }
+
+    public void setLoanAmount(BigDecimal loanAmount) {
+        this.loanAmount = loanAmount;
     }
 }
