@@ -8,6 +8,7 @@ import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.entity.CustomerDecisionLogicAuthorizationRecord;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
+import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,8 +31,12 @@ public class CommonReader extends BaseJdbcReader {
         }
 
         T entity = findByOptions(tClass, sqlOption.toString());
-        JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
-        JSONObject decryptJson = AESCryptoUtil.decryptData(entityJson);
-        return JSONObject.parseObject(JSON.toJSONString(decryptJson), tClass);
+        if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
+            JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
+            JSONObject decryptJson = AESCryptoUtil.decryptData(entityJson);
+            return JSONObject.parseObject(JSON.toJSONString(decryptJson), tClass);
+        } else {
+            return entity;
+        }
     }
 }

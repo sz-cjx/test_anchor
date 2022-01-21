@@ -17,7 +17,7 @@ import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
-import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
+import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
@@ -293,17 +293,17 @@ public class CustomerResourceService {
      */
     private void savePretreatment(JSONObject dataJson) throws ParseException {
         // 去掉电话号码和SSN的mask
-        for (String key : CustomerFeildKey.getRemoveMaskList()) {
+        for (String key : CustomerFieldKey.getRemoveMaskList()) {
             if (dataJson.containsKey(key)) {
                 dataJson.put(key, dataJson.getString(key).replaceAll("[^0-9]", ""));
             }
         }
 
         // 时间字符串转时间戳
-        DataProcessingUtil.batchConvertDateToTimestamp(dataJson, CustomerFeildKey.getTimeConversionList());
+        DataProcessingUtil.batchConvertDateToTimestamp(dataJson, CustomerFieldKey.getTimeConversionList());
 
         // 名字和邮箱转小写
-        for (String key : CustomerFeildKey.getConversionLowercaseList()) {
+        for (String key : CustomerFieldKey.getConversionLowercaseList()) {
             if (dataJson.containsKey(key)) {
                 dataJson.put(key, dataJson.getString(key).toLowerCase());
             }
@@ -316,7 +316,7 @@ public class CustomerResourceService {
 
     private void getPretreatment(JSONObject dataJson) {
         // 时间字符串转时间戳
-        DataProcessingUtil.batchConvertTimestampToDate(dataJson, CustomerFeildKey.getTimeConversionList());
+        DataProcessingUtil.batchConvertTimestampToDate(dataJson, CustomerFieldKey.getTimeConversionList());
 
         // profile中的state转换: int -> String
         String state = EnumUtil.getTextByValue(StateEnum.class, dataJson.getInteger(CustomerJsonKey.STATE));

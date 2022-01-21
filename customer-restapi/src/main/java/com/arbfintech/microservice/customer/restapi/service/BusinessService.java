@@ -21,7 +21,7 @@ import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.IBVRequestCodeStatusEnum;
 import com.arbfintech.microservice.customer.object.enumerate.VOBTypeEnum;
-import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
+import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import com.arbfintech.microservice.customer.object.util.ExtentionJsonUtil;
 import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
@@ -66,11 +66,11 @@ public class BusinessService {
          */
         CustomerProfile customerProfile = commonReader.getEntityByCustomerId(CustomerProfile.class, customerId);
         Boolean personalResult = ExtentionJsonUtil.containsKey(
-                customerProfile, CustomerFeildKey.getPersonalCalculateFactorList());
+                customerProfile, CustomerFieldKey.getPersonalCalculateFactorList());
 
         CustomerEmploymentData customerEmployment = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
         Boolean employmentResult = ExtentionJsonUtil.containsKey(
-                customerEmployment, CustomerFeildKey.getEmploymentCalculateFactorList());
+                customerEmployment, CustomerFieldKey.getEmploymentCalculateFactorList());
 
         List<CustomerBankData> bankDataList = commonReader.listEntityByCustomerId(CustomerBankData.class, customerId);
         List<CustomerBankCardData> bankCardDataList = commonReader.listEntityByCustomerId(CustomerBankCardData.class, customerId);
