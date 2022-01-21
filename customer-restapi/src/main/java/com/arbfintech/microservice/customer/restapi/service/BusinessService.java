@@ -12,6 +12,7 @@ import com.arbfintech.framework.component.core.enumerate.ModeEnum;
 import com.arbfintech.framework.component.core.enumerate.StateEnum;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
+import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
@@ -24,6 +25,7 @@ import com.arbfintech.microservice.customer.object.util.CustomerFeildKey;
 import com.arbfintech.microservice.customer.object.util.ExtentionJsonUtil;
 import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
+import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.LoanCategoryEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,9 @@ public class BusinessService {
 
     @Autowired
     private CommonReader commonReader;
+
+    @Autowired
+    private CommonWriter commonWriter;
 
     @Autowired
     private AlgorithmRedisRepository algorithmRedisRepository;
@@ -175,7 +180,18 @@ public class BusinessService {
                 throw new ProcedureException(CustomerErrorCode.CALCULATOR_STOP_TO_CALCULATE_FAILURR);
             }
 
-            calculationResultDTO.setLoanAmount(loanAmountResponse.getLoanAmount());
+            BigDecimal loanAmount = loanAmountResponse.getLoanAmount();
+            calculationResultDTO.setLoanAmount(loanAmount);
+
+            CustomerCreditData creditData = commonReader.getEntityByCustomerId(CustomerCreditData.class, customerId);
+            if (Objects.isNull(creditData)) {
+                creditData = new CustomerCreditData();
+                creditData.setCustomerId(customerId);
+            }
+            creditData.setMaximumCreditAmount(loanAmount);
+            creditData.setUpdateAt(DateUtil.getCurrentTimestamp());
+            commonWriter.save(creditData);
+
             return AjaxResult.success(calculationResultDTO);
         } catch (ProcedureException e) {
             return AjaxResult.success(calculationResultDTO);
