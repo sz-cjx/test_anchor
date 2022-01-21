@@ -71,12 +71,6 @@ public class CustomerProfile {
     @Column
     private Integer language;
 
-    @Column
-    private String alternativePhone;
-
-    @Column
-    private String alternativeEmail;
-
     public Long getId() {
         return id;
     }
@@ -219,21 +213,5 @@ public class CustomerProfile {
 
     public void setLanguage(Integer language) {
         this.language = language;
-    }
-
-    public String getAlternativePhone() {
-        return alternativePhone;
-    }
-
-    public void setAlternativePhone(String alternativePhone) {
-        this.alternativePhone = alternativePhone;
-    }
-
-    public String getAlternativeEmail() {
-        return alternativeEmail;
-    }
-
-    public void setAlternativeEmail(String alternativeEmail) {
-        this.alternativeEmail = alternativeEmail;
     }
 }
