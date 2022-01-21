@@ -61,6 +61,24 @@ public class CustomerFeildKey {
     );
 
     /**
+     * 存入数据库时需要加密，取出时需要解密的字段
+     */
+    private static final List<String> ENCODE_FIELD_LIST = Arrays.asList(
+            CustomerJsonKey.SSN,
+            CustomerJsonKey.EMAIL,
+            CustomerJsonKey.ALTERNATIVE_EMAIL,
+            CustomerJsonKey.CELL_PHONE,
+            CustomerJsonKey.HOME_PHONE,
+            CustomerJsonKey.ALTERNATIVE_PHONE,
+            CustomerJsonKey.ACCOUNT_NO,
+            CustomerJsonKey.BIRTHDAY,
+            CustomerJsonKey.FIRST_NAME,
+            CustomerJsonKey.MIDDLE_NAME,
+            CustomerJsonKey.LAST_NAME,
+            CustomerJsonKey.ADDRESS
+    );
+
+    /**
      * 获取包含电话号码和SSN的list
      * @return
      */
@@ -94,5 +112,13 @@ public class CustomerFeildKey {
      */
     public static List<String> getEmploymentCalculateFactorList() {
         return EMPLOYMENT_CALCULATE_FACTOR_LIST;
+    }
+
+    /**
+     * 获取数据库存取需要加解密的字段
+     * @return
+     */
+    public static List<String> getEncodeFieldList() {
+        return ENCODE_FIELD_LIST;
     }
 }

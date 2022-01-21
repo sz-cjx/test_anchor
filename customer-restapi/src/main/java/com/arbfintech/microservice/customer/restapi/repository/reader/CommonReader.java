@@ -1,10 +1,13 @@
 package com.arbfintech.microservice.customer.restapi.repository.reader;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.entity.CustomerDecisionLogicAuthorizationRecord;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
+import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,6 +28,10 @@ public class CommonReader extends BaseJdbcReader {
         } else {
             sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);
         }
-        return findByOptions(tClass, sqlOption.toString());
+
+        T entity = findByOptions(tClass, sqlOption.toString());
+        JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
+        JSONObject decryptJson = AESCryptoUtil.decryptData(entityJson);
+        return JSONObject.parseObject(JSON.toJSONString(decryptJson), tClass);
     }
 }
