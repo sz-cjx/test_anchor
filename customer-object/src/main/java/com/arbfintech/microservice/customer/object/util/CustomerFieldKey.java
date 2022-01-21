@@ -1,12 +1,15 @@
 package com.arbfintech.microservice.customer.object.util;
 
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
+import com.arbfintech.microservice.customer.object.entity.CustomerBankData;
+import com.arbfintech.microservice.customer.object.entity.CustomerContactData;
+import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomerFeildKey {
+public class CustomerFieldKey {
 
     /**
      * 定义包含电活号码和SSN的list
@@ -79,6 +82,15 @@ public class CustomerFeildKey {
     );
 
     /**
+     * 需要加密解密的class
+     */
+    private static final List<Class> ENCODE_CLASS_LIST = Arrays.asList(
+            CustomerProfile.class,
+            CustomerBankData.class,
+            CustomerContactData.class
+    );
+
+    /**
      * 获取包含电话号码和SSN的list
      * @return
      */
@@ -120,5 +132,13 @@ public class CustomerFeildKey {
      */
     public static List<String> getEncodeFieldList() {
         return ENCODE_FIELD_LIST;
+    }
+
+    /**
+     * 获取需要加密解密的class
+     * @return
+     */
+    public static List<Class> getEncodeClassList() {
+        return ENCODE_CLASS_LIST;
     }
 }

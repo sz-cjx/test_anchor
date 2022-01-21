@@ -2,6 +2,7 @@ package com.arbfintech.microservice.customer.object.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -17,10 +18,6 @@ public class AESCryptoUtil {
     private static String encodeType = "AES";
 
     private static String unicodeType = "utf-8";
-
-    public static void main(String[] args) {
-        System.out.println(AESEncrypt(null));
-    }
 
     /**
      * 加密
@@ -75,10 +72,14 @@ public class AESCryptoUtil {
     }
 
     public static JSONObject decryptData(JSONObject dataJson) {
+        if (CollectionUtils.isEmpty(dataJson)) {
+            return null;
+        }
+
         JSONObject decodedData = new JSONObject(){{
             putAll(dataJson);
         }};
-        for (String field : CustomerFeildKey.getEncodeFieldList()) {
+        for (String field : CustomerFieldKey.getEncodeFieldList()) {
             if (dataJson.containsKey(field) && StringUtils.isNotEmpty(dataJson.getString(field))) {
                 decodedData.put(field, AESDecrypt(dataJson.getString(field)));
             }
@@ -87,10 +88,14 @@ public class AESCryptoUtil {
     }
 
     public static JSONObject encryptData(JSONObject dataJson) {
+        if (CollectionUtils.isEmpty(dataJson)) {
+            return null;
+        }
+
         JSONObject decodedData = new JSONObject(){{
             putAll(dataJson);
         }};
-        for (String field : CustomerFeildKey.getEncodeFieldList()) {
+        for (String field : CustomerFieldKey.getEncodeFieldList()) {
             if (dataJson.containsKey(field) && StringUtils.isNotEmpty(dataJson.getString(field))) {
                 decodedData.put(field, AESEncrypt(dataJson.getString(field)));
             }
