@@ -35,6 +35,13 @@ public class CustomerAccountClientApi extends BaseClientApi {
         );
     }
 
+    public AjaxResult forgotPassword(CustomerAccountPasswordDTO customerAccountPasswordDTO) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/forgot-password"),
+                customerAccountPasswordDTO
+        );
+    }
+
     public AjaxResult activateAccount(ActivateAccountDTO activateAccountDTO) {
         return simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/activate-account"),

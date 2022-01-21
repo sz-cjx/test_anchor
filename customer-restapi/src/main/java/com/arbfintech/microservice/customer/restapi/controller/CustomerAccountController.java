@@ -36,6 +36,13 @@ public class CustomerAccountController {
         return customerAccountFuture.changePassword(customerAccountPasswordDTO);
     }
 
+    @PostMapping("/forgot-password")
+    public CompletableFuture<String> forgotPassword(
+            @RequestBody CustomerAccountPasswordDTO customerAccountPasswordDTO
+    ) {
+        return customerAccountFuture.forgotPassword(customerAccountPasswordDTO);
+    }
+
     @PostMapping("/activate-account")
     public CompletableFuture<String> activateAccount(
             @RequestBody ActivateAccountDTO activateAccountDTO

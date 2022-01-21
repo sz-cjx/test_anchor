@@ -14,6 +14,8 @@ public class CustomerAccountPasswordDTO {
 
     private Integer changeType;
 
+    private String verification;
+
     public Long getId() {
         return id;
     }
@@ -60,5 +62,13 @@ public class CustomerAccountPasswordDTO {
 
     public void setChangeType(Integer changeType) {
         this.changeType = changeType;
+    }
+
+    public String getVerification() {
+        return verification;
+    }
+
+    public void setVerification(String verification) {
+        this.verification = verification;
     }
 }

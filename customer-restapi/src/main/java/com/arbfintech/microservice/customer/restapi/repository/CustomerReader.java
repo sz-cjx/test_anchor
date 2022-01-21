@@ -8,6 +8,7 @@ import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
+import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -95,12 +96,12 @@ public class CustomerReader extends BaseJdbcReader {
         sqlBuilder.append(" WHERE email = :email");
 
         Map<String, Object> condition = new HashMap<>();
-        condition.put("email", email);
+        condition.put("email", AESCryptoUtil.AESEncrypt(email));
 
         JSONObject jsonObject = namedJdbcTemplate().query(sqlBuilder.toString(), condition, this::returnJson);
         CustomerProfile customerProfile = null;
         if (!CollectionUtils.isEmpty(jsonObject)) {
-            customerProfile = jsonObject.toJavaObject(CustomerProfile.class);
+            customerProfile = Objects.requireNonNull(AESCryptoUtil.decryptData(jsonObject)).toJavaObject(CustomerProfile.class);
         }
 
         return customerProfile;

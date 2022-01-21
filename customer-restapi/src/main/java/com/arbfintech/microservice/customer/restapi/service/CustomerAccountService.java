@@ -119,6 +119,28 @@ public class CustomerAccountService {
         }
     }
 
+    public String forgotPassword(CustomerAccountPasswordDTO customerAccountPasswordDTO) throws ProcedureException {
+        Long customerId = customerAccountPasswordDTO.getId();
+        String password = customerAccountPasswordDTO.getLoginPassword();
+        String verification = customerAccountPasswordDTO.getVerification();
+
+        CustomerAccountData customerAccountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, customerId);
+        if (Objects.isNull(customerAccountData)) {
+            LOGGER.info("[Forgot Password]Fail to update password, account is not exist. CustomerId: {}", customerId);
+            throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+        }
+
+        // TODO check verification
+        customerAccountData.setLoginPassword(generalPassword(password, customerAccountData.getSalt()));
+        Long resultCode = commonWriter.save(customerAccountData);
+        if (resultCode < CodeConst.SUCCESS) {
+            LOGGER.warn("[Forgot Password]Failed to change payment password. customerId:{}", customerId);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_FAILED_TO_UPDATE_DATA);
+        }
+
+        return AjaxResult.success();
+    }
+
     public String activateAccount(ActivateAccountDTO activateAccountDTO) throws ProcedureException {
         String email = activateAccountDTO.getEmail().toLowerCase();
         LOGGER.info("[Activate Account]Start activate. Email:{}", email);

@@ -47,6 +47,18 @@ public class CustomerAccountFuture {
         );
     }
 
+    public CompletableFuture<String> forgotPassword(CustomerAccountPasswordDTO customerAccountPasswordDTO) {
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return customerAccountService.forgotPassword(customerAccountPasswordDTO);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
+        );
+    }
+
     public CompletableFuture<String> activateAccount(ActivateAccountDTO activateAccountDTO){
         return CompletableFuture.supplyAsync(
                 () -> {
