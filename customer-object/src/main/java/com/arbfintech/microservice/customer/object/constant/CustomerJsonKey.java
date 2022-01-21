@@ -12,6 +12,7 @@ public interface CustomerJsonKey {
     String ALTERNATIVE_EMAIL = "alternativeEmail";
     String ALTERNATIVE_PHONE = "alternativePhone";
 
+    String BANK = "bank";
     String BANK_ROUTING_NO = "bankRoutingNo";
     String BANK_ACCOUNT_NO = "bankAccountNo";
     String BANK_PHONE = "bankPhone";
@@ -59,6 +60,8 @@ public interface CustomerJsonKey {
     String PHONE_MODEL = "phoneModel";
     String PORTFOLIO_ID = "portfolioId";
     String PAYROLL_FREQUENCY = "payrollFrequency";
+
+    String ROUTING_NO = "routingNo";
 
     String VOE = "voe";
 

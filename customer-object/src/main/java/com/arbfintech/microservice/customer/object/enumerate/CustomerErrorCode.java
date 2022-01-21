@@ -11,6 +11,7 @@ public enum CustomerErrorCode implements BaseError {
     QUERY_FAILURE_SEARCH_FAILED(-81010103, "Search failed, please enter at least one condition."),
     QUERY_FAILURE_MISS_REQUIRED_PARAM(-81010104, "Query failure, Miss required param"),
     QUERY_FAILURE_NO_DATA_WAS_QUERIED(-81010105, "Query failure, the assigned condition cannot query any data"),
+    FAILURE_INPUT_DATA_IS_INCOMPLETE(-81010106, "Failure: Input data is incomplete"),
 
     CREATE_FAILURE_CUSTOMER_SAVE(-81010201, "Create failed, save customer"),
     CREATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010202, "Create failed, save customer profile"),

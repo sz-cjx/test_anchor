@@ -6,14 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
-import com.arbfintech.microservice.customer.object.entity.CustomerDecisionLogicAuthorizationRecord;
+import com.arbfintech.microservice.customer.object.entity.CustomerIbvData;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
-
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CommonReader extends BaseJdbcReader {
@@ -42,7 +42,7 @@ public class CommonReader extends BaseJdbcReader {
 
     public <T> T getEntityByCustomerId(Class<T> tClass, Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
-        if (tClass.equals(CustomerOptIn.class) || tClass.equals(CustomerDecisionLogicAuthorizationRecord.class)) {
+        if (tClass.equals(CustomerOptIn.class) || tClass.equals(CustomerIbvData.class)) {
             sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
         } else {
             sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);
@@ -56,5 +56,52 @@ public class CommonReader extends BaseJdbcReader {
         } else {
             return entity;
         }
+    }
+
+    public <T> T getEntityByCondition(Class<T> tClass, Map<String, Object> condition) {
+        SqlOption sqlOption = SqlOption.getInstance();
+
+        if (CollectionUtils.isEmpty(condition)) {
+            return null;
+        }
+
+        for (String key : condition.keySet()) {
+            sqlOption.whereEqual(toUnderlineName(key), condition.get(key));
+        }
+
+        T entity = findByOptions(tClass, sqlOption.toString());
+
+        if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
+            JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
+            JSONObject decryptJson = AESCryptoUtil.decryptData(entityJson);
+            return JSONObject.parseObject(JSON.toJSONString(decryptJson), tClass);
+        } else {
+            return entity;
+        }
+    }
+
+    private static String toUnderlineName(String s) {
+        if (s == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean upperCase = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            boolean nextUpperCase = true;
+            if (i < (s.length() - 1)) {
+                nextUpperCase = Character.isUpperCase(s.charAt(i + 1));
+            }
+            if (Character.isUpperCase(c)) {
+                if (!upperCase || !nextUpperCase) {
+                    if (i > 0) sb.append("_");
+                }
+                upperCase = true;
+            } else {
+                upperCase = false;
+            }
+            sb.append(Character.toLowerCase(c));
+        }
+        return sb.toString();
     }
 }

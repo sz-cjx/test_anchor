@@ -12,16 +12,15 @@ import com.arbfintech.framework.component.core.util.JsonUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
+import com.arbfintech.microservice.customer.object.dto.IbvDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInType;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerOptInValue;
+import com.arbfintech.microservice.customer.object.enumerate.*;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
+import com.arbfintech.microservice.loan.object.enumerate.DecisionLogicRequestCodeStatusEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomerResourceService {
@@ -282,6 +278,46 @@ public class CustomerResourceService {
                     currentJson, currentTimestamp
             );
         }
+
+        return AjaxResult.success();
+    }
+
+    public String getDecisionLogic(Long customerId) {
+        HashMap<String, Object> condition = new HashMap<>();
+        condition.put("customerId", customerId);
+        condition.put("portfolioId", 0);
+        CustomerIbvData customerIbvData = commonReader.getEntityByCondition(CustomerIbvData.class, condition);
+        IbvDTO ibvDTO = JSON.parseObject(JSON.toJSONString(customerIbvData), IbvDTO.class);
+        return AjaxResult.success(ibvDTO);
+    }
+
+    public String authorizationDecisionLogic(IbvDTO ibvDTO) throws ProcedureException {
+        Long customerId = ibvDTO.getCustomerId();
+        String authorizationStr = ibvDTO.getAuthorizationData();
+        JSONObject authorizationJson = JSON.parseObject(authorizationStr);
+        if (!JsonUtil.containsKey(authorizationJson, CustomerJsonKey.EMAIL,
+                CustomerJsonKey.BANK, CustomerJsonKey.ACCOUNT_NO, CustomerJsonKey.ROUTING_NO)) {
+            LOGGER.info("[Authorize Decision Logic]Lack of some information. CustomerId: {}, AuthorizeData: {}",
+                    customerId, authorizationStr);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_INPUT_DATA_IS_INCOMPLETE);
+        }
+
+        HashMap<String, Object> condition = new HashMap<>();
+        condition.put("customerId", customerId);
+        condition.put("portfolioId", 0);
+        CustomerIbvData customerIbvData = commonReader.getEntityByCondition(CustomerIbvData.class, condition);
+        if (Objects.isNull(customerIbvData)) {
+            customerIbvData = new CustomerIbvData();
+            customerIbvData.setCustomerId(customerId);
+            customerIbvData.setPortfolioId(0L);
+        }
+
+        customerIbvData.setAuthorizationData(ibvDTO.getAuthorizationData());
+        customerIbvData.setAuthorizationStatus(AuthorizationStatusEnum.AUTHORIZE.getValue());
+        customerIbvData.setAuthorizatedAt(DateUtil.getCurrentTimestamp());
+        customerIbvData.setRequestCodeStatus(DecisionLogicRequestCodeStatusEnum.VERIFIED.getValue());
+
+        commonWriter.save(customerIbvData);
 
         return AjaxResult.success();
     }

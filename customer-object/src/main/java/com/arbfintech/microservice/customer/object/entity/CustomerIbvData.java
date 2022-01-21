@@ -5,7 +5,7 @@ import com.arbfintech.framework.component.core.annotation.Entity;
 import com.arbfintech.framework.component.core.annotation.Id;
 
 @Entity
-public class CustomerDecisionLogicAuthorizationRecord {
+public class CustomerIbvData {
 
     @Id
     @Column

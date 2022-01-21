@@ -2,6 +2,7 @@ package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
+import com.arbfintech.microservice.customer.object.dto.IbvDTO;
 import com.arbfintech.microservice.customer.restapi.future.CustomerResourceFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +51,19 @@ public class CustomerResourceController {
             HttpServletRequest request
     ) {
         return customerResourceFuture.saveCustomerOptIn(customerOptInDTO);
+    }
+
+    @GetMapping("/authorization/decision-logic")
+    public CompletableFuture<String> getDecisionLogic (
+            @RequestParam Long customerId
+    ) {
+        return customerResourceFuture.getDecisionLogic(customerId);
+    }
+
+    @PostMapping("/authorization/decision-logic-authorize")
+    public CompletableFuture<String> authorizationDecisionLogic (
+            @RequestBody IbvDTO ibvDTO
+    ) {
+        return customerResourceFuture.authorizationDecisionLogic(ibvDTO);
     }
 }

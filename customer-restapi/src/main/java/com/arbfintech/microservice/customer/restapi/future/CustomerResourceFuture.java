@@ -6,6 +6,7 @@ import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.constant.CustomerFeatureKey;
 import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
+import com.arbfintech.microservice.customer.object.dto.IbvDTO;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.restapi.service.CustomerResourceService;
 import org.slf4j.Logger;
@@ -113,6 +114,24 @@ public class CustomerResourceFuture {
                 () -> {
                     try {
                         return customerResourceService.saveCustomerOptIn(customerOptInDTO);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
+        );
+    }
+
+    public CompletableFuture<String> getDecisionLogic(Long customerId) {
+        return CompletableFuture.supplyAsync(
+                () -> customerResourceService.getDecisionLogic(customerId)
+        );
+    }
+
+    public CompletableFuture<String> authorizationDecisionLogic(IbvDTO ibvDTO) {
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return customerResourceService.authorizationDecisionLogic(ibvDTO);
                     } catch (ProcedureException e) {
                         return AjaxResult.failure(e);
                     }

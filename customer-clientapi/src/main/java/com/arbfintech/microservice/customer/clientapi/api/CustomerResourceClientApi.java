@@ -1,5 +1,6 @@
 package com.arbfintech.microservice.customer.clientapi.api;
 
+import com.alibaba.fastjson.JSON;
 import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.HttpParamVariable;
@@ -7,6 +8,7 @@ import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.constant.RequestConst;
 import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerProfileDTO;
+import com.arbfintech.microservice.customer.object.dto.IbvDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -56,6 +58,20 @@ public class CustomerResourceClientApi extends BaseClientApi {
                 generateUrl(CUSTOMER_REST_API, "/opt-in"),
                 header,
                 customerOptInDTO
+        );
+    }
+
+    public AjaxResult getDecisionLogic(Long customerId) {
+        return simpleRestCaller.get(
+                generateUrl(CUSTOMER_REST_API, "/authorization/decision-logic"),
+                HttpParamVariable.getInstance().addParam(CustomerJsonKey.CUSTOMER_ID, customerId).getParamMap()
+        );
+    }
+
+    public AjaxResult authorizationDecisionLogic(IbvDTO ibvDTO) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/authorization/decision-logic-authorize"),
+                JSON.toJSONString(ibvDTO)
         );
     }
 }

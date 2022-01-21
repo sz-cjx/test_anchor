@@ -76,8 +76,8 @@ public class BusinessService {
         List<CustomerBankCardData> bankCardDataList = commonReader.listEntityByCustomerId(CustomerBankCardData.class, customerId);
         Boolean bankResult = !(CollectionUtils.isEmpty(bankDataList) || CollectionUtils.isEmpty(bankCardDataList));
 
-        CustomerDecisionLogicAuthorizationRecord ibvData = commonReader.getEntityByCustomerId(
-                CustomerDecisionLogicAuthorizationRecord.class, customerId);
+        CustomerIbvData ibvData = commonReader.getEntityByCustomerId(
+                CustomerIbvData.class, customerId);
         Boolean ibvResult = Objects.nonNull(ibvData) &&
                 IBVRequestCodeStatusEnum.VERIFIED.getValue().equals(ibvData.getRequestCodeStatus());
 
