@@ -21,6 +21,7 @@ public interface CustomerJsonKey {
     String CARD_NO = "cardNo";
     String CELL_PHONE = "cellPhone";
     String CITY = "city";
+    String CONTACT_TYPE = "contactType";
     String COUNTRY = "country";
     String CURRENT = "current";
     String CUSTOMER_ID = "customerId";

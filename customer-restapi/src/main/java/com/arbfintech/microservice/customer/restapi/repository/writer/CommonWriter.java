@@ -16,7 +16,7 @@ public class CommonWriter extends BaseJdbcWriter {
     public <E> Long save(Class<E> entityClass, String entityStr) {
         if (CustomerContactData.class.equals(entityClass)) {
             JSONObject entityJson = JSON.parseObject(entityStr);
-            entityJson.put(CustomerJsonKey.VALUE, AESCryptoUtil.AESDecrypt(entityJson.getString(CustomerJsonKey.VALUE)));
+            entityJson.put(CustomerJsonKey.VALUE, AESCryptoUtil.AESEncrypt(entityJson.getString(CustomerJsonKey.VALUE)));
             return save(entityClass, JSON.toJSONString(entityJson), null);
         } else if (CustomerFieldKey.getEncodeClassList().contains(entityClass)) {
             JSONObject entityJson = JSON.parseObject(entityStr);
@@ -34,15 +34,15 @@ public class CommonWriter extends BaseJdbcWriter {
             for (int i = 0; i < entityArray.size(); i++) {
                 JSONObject entityJson = entityArray.getJSONObject(i);
                 if (CustomerContactData.class.equals(entityClass)) {
-                    entityJson.put(CustomerJsonKey.VALUE, AESCryptoUtil.AESDecrypt(entityJson.getString(CustomerJsonKey.VALUE)));
+                    entityJson.put(CustomerJsonKey.VALUE, AESCryptoUtil.AESEncrypt(entityJson.getString(CustomerJsonKey.VALUE)));
                 } else {
                     entityJson = AESCryptoUtil.encryptData(entityJson);
                 }
                 saveList.add(entityJson);
             }
-            return save(entityClass, saveList.toJSONString());
+            return save(entityClass, saveList.toJSONString(), null);
         } else {
-            return save(entityClass, entityStr);
+            return save(entityClass, entityStr, null);
         }
     }
 }

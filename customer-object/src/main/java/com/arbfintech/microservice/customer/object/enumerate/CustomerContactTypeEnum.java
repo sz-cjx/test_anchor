@@ -22,11 +22,13 @@ public enum CustomerContactTypeEnum implements BaseEnum {
     private final String text;
     private final String key;
 
-    private static final Map<Integer, CustomerContactTypeEnum> enumContainer = new HashMap<>();
+    private static final Map<Integer, CustomerContactTypeEnum> valueMappingContainer = new HashMap<>();
+    private static final Map<String, CustomerContactTypeEnum> keyMappingContainer = new HashMap<>();
 
     static {
         for (CustomerContactTypeEnum typeEnum : CustomerContactTypeEnum.values()) {
-            enumContainer.put(typeEnum.getValue(), typeEnum);
+            valueMappingContainer.put(typeEnum.getValue(), typeEnum);
+            keyMappingContainer.put(typeEnum.getKey(), typeEnum);
         }
     }
 
@@ -45,6 +47,10 @@ public enum CustomerContactTypeEnum implements BaseEnum {
     }
 
     public static CustomerContactTypeEnum getEnumByvalue(Integer contactType) {
-        return enumContainer.get(contactType);
+        return valueMappingContainer.get(contactType);
+    }
+
+    public static CustomerContactTypeEnum getEnumByKey(String key) {
+        return keyMappingContainer.get(key);
     }
 }

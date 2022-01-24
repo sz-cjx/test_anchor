@@ -1,6 +1,7 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.enumerate.StateEnum;
@@ -10,6 +11,7 @@ import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.framework.component.core.util.JsonUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
+import com.arbfintech.microservice.customer.object.dto.CustomerContactDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerEmploymentDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerOptInDTO;
 import com.arbfintech.microservice.customer.object.dto.IbvDTO;
@@ -22,6 +24,7 @@ import com.arbfintech.microservice.customer.restapi.repository.reader.CommonRead
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.DecisionLogicRequestCodeStatusEnum;
 import com.arbfintech.microservice.origination.object.util.DataProcessingUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +105,48 @@ public class CustomerResourceService {
                 currentCustomerProfile, DateUtil.getCurrentTimestamp()
         );
 
+        return AjaxResult.success();
+    }
+
+    public String updateCustomerContact(Long customerId, JSONObject currentCustomerContact) throws ProcedureException, ParseException {
+        List<CustomerContactData> contactDataList = commonReader.listEntityByCustomerId(CustomerContactData.class, customerId);
+        savePretreatment(currentCustomerContact);
+        CustomerContactDTO currentData = JSON.toJavaObject(currentCustomerContact, CustomerContactDTO.class);
+        currentCustomerContact = JSONObject.parseObject(JSON.toJSONString(currentData));
+        JSONArray currentArray = new JSONArray();
+        for (CustomerContactTypeEnum contactTypeEnum : CustomerContactTypeEnum.values()) {
+            String contactValue = currentCustomerContact.getString(contactTypeEnum.getKey());
+            if (StringUtils.isNotBlank(contactValue)) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(CustomerJsonKey.CUSTOMER_ID, customerId);
+                jsonObject.put(CustomerJsonKey.CONTACT_TYPE, contactTypeEnum.getValue());
+                jsonObject.put(CustomerJsonKey.VALUE, contactValue);
+                currentArray.add(jsonObject);
+            }
+        }
+        if (CollectionUtils.isEmpty(currentArray)) {
+            LOGGER.info("[Update Contact]Missing customer contact data. CustomerId: {}", customerId);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_MISS_REQUIRED_PARAM);
+        }
+
+        commonWriter.bathSave(CustomerContactData.class, currentArray.toJSONString());
+
+        CustomerContactDTO originData = null;
+        if (!CollectionUtils.isEmpty(contactDataList)) {
+            JSONObject originJson = new JSONObject();
+            for (CustomerContactData contactData : contactDataList) {
+                originJson.put(
+                        CustomerContactTypeEnum.getEnumByvalue(contactData.getContactType()).getKey(),
+                        contactData.getValue()
+                );
+            }
+            originData = originJson.toJavaObject(CustomerContactDTO.class);
+        }
+
+        systemLogComponent.sysLogHandleFactory(
+                customerId, null, JSONObject.parseObject(JSON.toJSONString(originData)),
+                currentCustomerContact, DateUtil.getCurrentTimestamp()
+        );
         return AjaxResult.success();
     }
 

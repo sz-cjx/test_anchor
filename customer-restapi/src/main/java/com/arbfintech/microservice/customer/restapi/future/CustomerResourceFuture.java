@@ -68,23 +68,26 @@ public class CustomerResourceFuture {
                 () -> {
                     Long customerId = customerProfileDTO.getCustomerId();
                     String profileFeature = customerProfileDTO.getProfileFeature();
-                    JSONObject dataStr = customerProfileDTO.getData();
+                    JSONObject dataJson = customerProfileDTO.getData();
                     try {
                         // TODO check token
                         JSONObject accountJson = new JSONObject();
 
                         switch (profileFeature) {
                             case CustomerFeatureKey.PERSONAL: {
-                                return customerResourceService.updateCustomerProfile(customerId, dataStr);
+                                return customerResourceService.updateCustomerProfile(customerId, dataJson);
+                            }
+                            case CustomerFeatureKey.CONTACT: {
+                                return customerResourceService.updateCustomerContact(customerId, dataJson);
                             }
                             case CustomerFeatureKey.EMPLOYMENT: {
-                                return customerResourceService.updateCustomerEmploymentData(customerId, dataStr);
+                                return customerResourceService.updateCustomerEmploymentData(customerId, dataJson);
                             }
                             case CustomerFeatureKey.BANK: {
-                                return customerResourceService.updateCustomerBankData(customerId, dataStr);
+                                return customerResourceService.updateCustomerBankData(customerId, dataJson);
                             }
                             case CustomerFeatureKey.CARD: {
-                                return customerResourceService.updateCustomerBankCardData(customerId, dataStr);
+                                return customerResourceService.updateCustomerBankCardData(customerId, dataJson);
                             }
                             default:
                                 throw new ProcedureException(CustomerErrorCode.FAILURE_PROFILE_NOT_EXIST);
