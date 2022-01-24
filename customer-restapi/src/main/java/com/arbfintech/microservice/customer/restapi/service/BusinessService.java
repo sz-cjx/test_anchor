@@ -62,7 +62,7 @@ public class BusinessService {
         LOGGER.info("[Calculate Loan Amount]Start calculate loan amount. CustomerId: {}", customerId);
 
         /**
-         *  1、校验参数是否齐全（personal, employment, bank, ibv）
+         *  1、校验参数是否齐全（personal, contact, employment, bank, ibv）
          */
         CustomerProfile customerProfile = commonReader.getEntityByCustomerId(CustomerProfile.class, customerId);
         Boolean personalResult = ExtentionJsonUtil.containsKey(

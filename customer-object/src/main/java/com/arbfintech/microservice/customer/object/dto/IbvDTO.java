@@ -1,7 +1,5 @@
 package com.arbfintech.microservice.customer.object.dto;
 
-import java.io.Serializable;
-
 public class IbvDTO {
 
     private Long id;
@@ -13,6 +11,8 @@ public class IbvDTO {
     private Integer authorizationStatus;
 
     private Long authorizatedAt;
+
+    private Integer requestCodeStatus;
 
     public Long getId() {
         return id;
@@ -52,5 +52,13 @@ public class IbvDTO {
 
     public void setAuthorizatedAt(Long authorizatedAt) {
         this.authorizatedAt = authorizatedAt;
+    }
+
+    public Integer getRequestCodeStatus() {
+        return requestCodeStatus;
+    }
+
+    public void setRequestCodeStatus(Integer requestCodeStatus) {
+        this.requestCodeStatus = requestCodeStatus;
     }
 }
