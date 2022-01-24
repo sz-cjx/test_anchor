@@ -18,6 +18,7 @@ import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
 import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
+import com.arbfintech.microservice.customer.object.enumerate.CustomerContactTypeEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.IBVRequestCodeStatusEnum;
 import com.arbfintech.microservice.customer.object.enumerate.VOBTypeEnum;
@@ -37,6 +38,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class BusinessService {
@@ -68,6 +70,16 @@ public class BusinessService {
         Boolean personalResult = ExtentionJsonUtil.containsKey(
                 customerProfile, CustomerFieldKey.getPersonalCalculateFactorList());
 
+        List<CustomerContactData> contactList = commonReader.listEntityByCustomerId(CustomerContactData.class, customerId);
+        Boolean contactResult = false;
+        if (!CollectionUtils.isEmpty(contactList)){
+            List<Integer> contactTypeList = contactList.stream().map(CustomerContactData::getContactType).collect(Collectors.toList());
+            if (contactTypeList.contains(CustomerContactTypeEnum.EMAIL.getValue())
+                    && contactTypeList.contains(CustomerContactTypeEnum.CELL_PHONE.getValue())) {
+                contactResult = true;
+            }
+        }
+
         CustomerEmploymentData customerEmployment = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
         Boolean employmentResult = ExtentionJsonUtil.containsKey(
                 customerEmployment, CustomerFieldKey.getEmploymentCalculateFactorList());
@@ -82,6 +94,7 @@ public class BusinessService {
                 IBVRequestCodeStatusEnum.VERIFIED.getValue().equals(ibvData.getRequestCodeStatus());
 
         calculationResultDTO.setPersonalResult(personalResult);
+        calculationResultDTO.setContactResult(contactResult);
         calculationResultDTO.setEmploymentResult(employmentResult);
         calculationResultDTO.setBankResult(bankResult);
         calculationResultDTO.setIbvResult(ibvResult);
@@ -99,14 +112,15 @@ public class BusinessService {
     public String calculateLoanAmount (Long customerId, CalculationProcessDTO calculationProcessDTO) {
         CalculationResultDTO calculationResultDTO = calculationProcessDTO.getCalculationResultDTO();
         Boolean personalResult = calculationResultDTO.getPersonalResult();
+        Boolean contactResult = calculationResultDTO.getContactResult();
         Boolean employmentResult = calculationResultDTO.getEmploymentResult();
         Boolean bankResult = calculationResultDTO.getBankResult();
         Boolean ibvResult = calculationResultDTO.getIbvResult();
 
         LOGGER.info("[Calculate Loan Amount]Check calculate parameter" +
-                        "CustomerId: {}, PersonalResult: {}, EmploymentResult: {}, BankResult: {}, IbvResult: {}",
-                customerId, personalResult, employmentResult, bankResult, ibvResult);
-        if (!(personalResult && employmentResult && bankResult && ibvResult)) {
+                        "CustomerId:{}, PersonalResult:{}, ContactResult:{}, EmploymentResult:{}, BankResult:{}, IbvResult:{}",
+                customerId, personalResult, contactResult, employmentResult, bankResult, ibvResult);
+        if (!(personalResult && contactResult && employmentResult && bankResult && ibvResult)) {
             return AjaxResult.success(calculationResultDTO);
         }
 

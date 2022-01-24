@@ -58,6 +58,15 @@ public class CustomerResourceService {
         return jsonObject;
     }
 
+    public List<CustomerContactData> getCustomerContact(Long customerId) throws ProcedureException {
+        List<CustomerContactData> contactData = commonReader.listEntityByCustomerId(CustomerContactData.class, customerId);
+        if (CollectionUtils.isEmpty(contactData)) {
+            throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+        }
+
+        return contactData;
+    }
+
     public CustomerEmploymentDTO getCustomerEmploymentData(Long customerId) throws ProcedureException {
         CustomerEmploymentData employmentData = Optional.ofNullable(commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId))
                 .orElseThrow(() -> new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED));

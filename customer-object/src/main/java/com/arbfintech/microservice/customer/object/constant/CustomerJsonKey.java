@@ -63,6 +63,7 @@ public interface CustomerJsonKey {
 
     String ROUTING_NO = "routingNo";
 
+    String VALUE = "value";
     String VOE = "voe";
 
     String SIGN_IN_TIME = "signInTime";

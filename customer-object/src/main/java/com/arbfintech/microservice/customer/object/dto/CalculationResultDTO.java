@@ -6,6 +6,8 @@ public class CalculationResultDTO {
 
     private Boolean personalResult;
 
+    private Boolean contactResult;
+
     private Boolean employmentResult;
 
     private Boolean bankResult;
@@ -20,6 +22,14 @@ public class CalculationResultDTO {
 
     public void setPersonalResult(Boolean personalResult) {
         this.personalResult = personalResult;
+    }
+
+    public Boolean getContactResult() {
+        return contactResult;
+    }
+
+    public void setContactResult(Boolean contactResult) {
+        this.contactResult = contactResult;
     }
 
     public Boolean getEmploymentResult() {

@@ -6,12 +6,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.ConditionTypeConst;
 import com.arbfintech.framework.component.core.type.SqlOption;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
+import com.arbfintech.microservice.customer.object.entity.CustomerContactData;
 import com.arbfintech.microservice.customer.object.entity.CustomerIbvData;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
 import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +30,15 @@ public class CommonReader extends BaseJdbcReader {
             return null;
         }
 
-        if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
+        if (CustomerContactData.class.equals(tClass)) {
+            JSONArray resultArray = new JSONArray();
+            for (T entity : entityList) {
+                JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
+                entityJson.put(CustomerJsonKey.VALUE, AESCryptoUtil.AESDecrypt(entityJson.getString(CustomerJsonKey.VALUE)));
+                resultArray.add(entityJson);
+            }
+            return resultArray.toJavaList(tClass);
+        } else if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
             JSONArray resultArray = new JSONArray();
             for (T entity : entityList) {
                 JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
@@ -49,13 +60,7 @@ public class CommonReader extends BaseJdbcReader {
         }
 
         T entity = findByOptions(tClass, sqlOption.toString());
-        if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
-            JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
-            JSONObject decryptJson = AESCryptoUtil.decryptData(entityJson);
-            return JSONObject.parseObject(JSON.toJSONString(decryptJson), tClass);
-        } else {
-            return entity;
-        }
+        return decodeEntity(tClass, entity);
     }
 
     public <T> T getEntityByCondition(Class<T> tClass, Map<String, Object> condition) {
@@ -70,8 +75,15 @@ public class CommonReader extends BaseJdbcReader {
         }
 
         T entity = findByOptions(tClass, sqlOption.toString());
+        return decodeEntity(tClass, entity);
+    }
 
-        if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
+    private <T> T decodeEntity(Class<T> tClass, T entity) {
+        if (CustomerContactData.class.equals(tClass)) {
+            JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
+            entityJson.put(CustomerJsonKey.VALUE, AESCryptoUtil.AESDecrypt(entityJson.getString(CustomerJsonKey.VALUE)));
+            return JSONObject.parseObject(JSON.toJSONString(entityJson), tClass);
+        } else if (CustomerFieldKey.getEncodeClassList().contains(tClass)) {
             JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
             JSONObject decryptJson = AESCryptoUtil.decryptData(entityJson);
             return JSONObject.parseObject(JSON.toJSONString(decryptJson), tClass);

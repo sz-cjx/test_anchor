@@ -16,5 +16,6 @@ public interface CustomerFeatureKey {
     String BANK = "BANK";
     String CARD = "CARD";
     String PERSONAL = "PERSONAL";
+    String CONTACT = "CONTACT";
     String EMPLOYMENT = "EMPLOYMENT";
 }

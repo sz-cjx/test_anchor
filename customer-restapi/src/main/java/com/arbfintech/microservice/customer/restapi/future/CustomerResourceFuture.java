@@ -40,6 +40,9 @@ public class CustomerResourceFuture {
                             case CustomerFeatureKey.PERSONAL: {
                                 return AjaxResult.success(customerResourceService.getCustomerProfile(customerId));
                             }
+                            case CustomerFeatureKey.CONTACT: {
+                                return AjaxResult.success(customerResourceService.getCustomerContact(customerId));
+                            }
                             case CustomerFeatureKey.EMPLOYMENT: {
                                 return AjaxResult.success(customerResourceService.getCustomerEmploymentData(customerId));
                             }
