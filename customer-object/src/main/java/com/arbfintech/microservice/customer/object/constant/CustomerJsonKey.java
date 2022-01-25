@@ -44,6 +44,7 @@ public interface CustomerJsonKey {
     String HOME_PHONE = "homePhone";
 
     String ID = "id";
+    String INSTALLMENT_DATE = "installmentDate";
     String IP = "ip";
 
     String LAST_NAME = "lastName";
@@ -63,6 +64,8 @@ public interface CustomerJsonKey {
     String PAYROLL_FREQUENCY = "payrollFrequency";
 
     String ROUTING_NO = "routingNo";
+
+    String TRANSACTION_DATE = "transactionDate";
 
     String VALUE = "value";
     String VOE = "voe";

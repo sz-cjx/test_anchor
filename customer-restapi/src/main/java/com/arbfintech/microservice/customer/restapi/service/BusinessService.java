@@ -1,6 +1,8 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.algorithm.service.AlgorithmService;
 import com.arbfintech.framework.component.algorithm.type.*;
 import com.arbfintech.framework.component.core.constant.CodeConst;
@@ -12,6 +14,7 @@ import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
+import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
 import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
@@ -216,7 +219,28 @@ public class BusinessService {
         InstallmentResponse installmentResponse = algorithmService.calculateInstallmentList(
                 installmentRequest
         );
-        return AjaxResult.success(installmentResponse);
+
+        long firstDebitDate = installmentResponse.getFirstDebitDate();
+        long lastDebitDate = installmentResponse.getLastDebitDate();
+
+        paymentScheduleDTO.setFirstDebitDate(DateUtil.timeStampToStr(firstDebitDate));
+        paymentScheduleDTO.setLastDebitDate(DateUtil.timeStampToStr(lastDebitDate));
+        paymentScheduleDTO.setRegularAmount(installmentResponse.getRegularAmount());
+        paymentScheduleDTO.setTotalAmount(installmentResponse.getTotalAmount());
+        paymentScheduleDTO.setTotalInterest(installmentResponse.getTotalInterest());
+        paymentScheduleDTO.setTotalPrincipal(installmentResponse.getTotalPrincipal());
+        paymentScheduleDTO.setTotalUnpaidFee(installmentResponse.getTotalUnpaidFee());
+
+        JSONArray jsonArray = new JSONArray();
+        for (Installment installment : installmentResponse.getInstallmentList()) {
+            JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(installment));
+            jsonObject.put(CustomerJsonKey.INSTALLMENT_DATE, DateUtil.timeStampToStr(installment.getInstallmentDate()));
+            jsonObject.put(CustomerJsonKey.TRANSACTION_DATE, DateUtil.timeStampToStr(installment.getTransactionDate()));
+            jsonArray.add(jsonObject);
+        }
+        paymentScheduleDTO.setInstallmentList(jsonArray);
+
+        return AjaxResult.success(paymentScheduleDTO);
     }
 
     private InstallmentRequest assembleInstallmentRequest(PaymentScheduleDTO paymentScheduleDTO) throws ParseException {
