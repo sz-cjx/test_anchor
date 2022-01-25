@@ -2,10 +2,7 @@ package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
 import com.arbfintech.framework.component.algorithm.service.AlgorithmService;
-import com.arbfintech.framework.component.algorithm.type.DirectDeposit;
-import com.arbfintech.framework.component.algorithm.type.LoanAmountParameter;
-import com.arbfintech.framework.component.algorithm.type.LoanAmountRequest;
-import com.arbfintech.framework.component.algorithm.type.LoanAmountResponse;
+import com.arbfintech.framework.component.algorithm.type.*;
 import com.arbfintech.framework.component.core.constant.CodeConst;
 import com.arbfintech.framework.component.core.enumerate.LoanTypeEnum;
 import com.arbfintech.framework.component.core.enumerate.ModeEnum;
@@ -18,6 +15,7 @@ import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
 import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
+import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.*;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
@@ -26,6 +24,7 @@ import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRe
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.LoanCategoryEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -209,6 +209,47 @@ public class BusinessService {
         } catch (ProcedureException e) {
             return AjaxResult.success(calculationResultDTO);
         }
+    }
+
+    public String preCalculateInstallment (PaymentScheduleDTO paymentScheduleDTO) throws ProcedureException, ParseException {
+        InstallmentRequest installmentRequest = assembleInstallmentRequest(paymentScheduleDTO);
+        InstallmentResponse installmentResponse = algorithmService.calculateInstallmentList(
+                installmentRequest
+        );
+        return AjaxResult.success(installmentResponse);
+    }
+
+    private InstallmentRequest assembleInstallmentRequest(PaymentScheduleDTO paymentScheduleDTO) throws ParseException {
+        Long customerId = paymentScheduleDTO.getCustomerId();
+        BigDecimal loanAmount = paymentScheduleDTO.getLoanAmount();
+        String effectiveDateStr = paymentScheduleDTO.getEffectiveDate();
+        Long effectiveDate = StringUtils.isNotBlank(effectiveDateStr) ?
+                DateUtil.strToTimeStamp(effectiveDateStr) : DateUtil.getCurrentDate().getTime();
+        LOGGER.info("[Pre-Calculate Payment Schedule]Assemble InstallmentRequest data. CustomerId:{}", customerId);
+        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+
+        InstallmentRequest request = new InstallmentRequest();
+        request.setLoanId(-1L);
+        request.setPortfolioId(-1L);
+        request.setDefaultAchProvider(1L);
+        request.setDefaultDebitCardProvider(9L);
+        request.setDefaultOutHouseProvider(10L);
+        request.setDefaultDisbursementMode(15014);
+        request.setDefaultRepaymentMode(15014);
+
+        request.setPaydayOnHoliday(employmentData.getPaydayOnHoliday());
+        request.setPaydayOnAvailable(employmentData.getPaydayOnAvailable());
+        request.setPayrollFrequency(employmentData.getPayrollFrequency());
+        request.setLastPayday(employmentData.getLastPayday());
+        request.setEffectiveDate(effectiveDate);
+        request.setInterestRate(new BigDecimal("7.8"));
+        request.setApprovedAmount(loanAmount);
+        request.setTotalPrincipal(loanAmount);
+        request.setFirstDayOfWeek(employmentData.getFirstDayOfWeek());
+        request.setFirstDayOfMonth(employmentData.getFirstDayOfMonth());
+        request.setSecondDayOfMonth(employmentData.getSecondDayOfMonth());
+
+        return request;
     }
 
     public String verifyContactInformation (ContactVerifyDTO contactVerifyDTO) {
