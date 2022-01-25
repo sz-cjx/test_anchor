@@ -17,11 +17,9 @@ import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
 import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
+import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerContactTypeEnum;
-import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
-import com.arbfintech.microservice.customer.object.enumerate.IBVRequestCodeStatusEnum;
-import com.arbfintech.microservice.customer.object.enumerate.VOBTypeEnum;
+import com.arbfintech.microservice.customer.object.enumerate.*;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import com.arbfintech.microservice.customer.object.util.ExtentionJsonUtil;
 import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRedisRepository;
@@ -36,6 +34,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -210,5 +209,21 @@ public class BusinessService {
         } catch (ProcedureException e) {
             return AjaxResult.success(calculationResultDTO);
         }
+    }
+
+    public String verifyContactInformation (ContactVerifyDTO contactVerifyDTO) {
+        Long customerId = contactVerifyDTO.getCustomerId();
+        String verifyCode = contactVerifyDTO.getVerifyCode();
+
+        HashMap<String, Object> condition = new HashMap<>();
+        condition.put("customerId", customerId);
+        condition.put("contactType", contactVerifyDTO.getContactType());
+
+        CustomerContactData customerContactData = commonReader.getEntityByCondition(CustomerContactData.class, condition);
+        customerContactData.setVerifiedStatus(VerifyEnum.VERIFIED.getValue());
+        customerContactData.setVerifiedAt(DateUtil.getCurrentTimestamp());
+        commonWriter.save(customerContactData);
+
+        return AjaxResult.success();
     }
 }

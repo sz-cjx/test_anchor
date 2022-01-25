@@ -1,10 +1,10 @@
 package com.arbfintech.microservice.customer.restapi.controller;
 
+import com.arbfintech.framework.component.core.type.AjaxResult;
+import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
 import com.arbfintech.microservice.customer.restapi.future.CustomerOperationFuture;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,5 +19,12 @@ public class CustomerOperationConteroller {
             @RequestParam Long customerId
     ) {
         return operationFuture.calculateLoanAmount(customerId);
+    }
+
+    @PostMapping("/contact/verify")
+    public CompletableFuture<String> verifyContactInformation(
+            @RequestBody ContactVerifyDTO contactVerifyDTO
+    ){
+        return operationFuture.verifyContactInformation(contactVerifyDTO);
     }
 }
