@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.algorithm.service.AlgorithmService;
 import com.arbfintech.framework.component.algorithm.type.*;
+import com.arbfintech.framework.component.cache.core.SimpleRedisRepository;
 import com.arbfintech.framework.component.core.constant.CodeConst;
+import com.arbfintech.framework.component.core.constant.GlobalConst;
 import com.arbfintech.framework.component.core.enumerate.LoanTypeEnum;
 import com.arbfintech.framework.component.core.enumerate.ModeEnum;
 import com.arbfintech.framework.component.core.enumerate.StateEnum;
@@ -57,6 +59,9 @@ public class BusinessService {
 
     @Autowired
     private AlgorithmRedisRepository algorithmRedisRepository;
+
+    @Autowired
+    private SimpleRedisRepository simpleRedisRepository;
 
     @Autowired
     private AlgorithmService algorithmService;
@@ -215,6 +220,15 @@ public class BusinessService {
     }
 
     public String preCalculateInstallment (PaymentScheduleDTO paymentScheduleDTO) throws ProcedureException, ParseException {
+        Long customerId = paymentScheduleDTO.getCustomerId();
+        if (Objects.isNull(paymentScheduleDTO.getLoanAmount())) {
+            JSONObject jsonObject = simpleRedisRepository.fetchJsonObject(CustomerCacheKey.PAYMENT_SCHEDULE_DATA, customerId);
+            PaymentScheduleDTO result = null;
+            if (!CollectionUtils.isEmpty(jsonObject)) {
+                result = jsonObject.toJavaObject(PaymentScheduleDTO.class);
+            }
+            return AjaxResult.success(result);
+        }
         InstallmentRequest installmentRequest = assembleInstallmentRequest(paymentScheduleDTO);
         InstallmentResponse installmentResponse = algorithmService.calculateInstallmentList(
                 installmentRequest
@@ -241,6 +255,12 @@ public class BusinessService {
         }
         paymentScheduleDTO.setInstallmentList(jsonArray);
 
+        simpleRedisRepository.cacheObjectByKeys(
+                CustomerCacheKey.PAYMENT_SCHEDULE_DATA,
+                JSON.parseObject(JSON.toJSONString(paymentScheduleDTO)),
+                GlobalConst.SECONDS_IN_DAY * GlobalConst.MILLISECONDS_UNIT,
+                customerId);
+
         return AjaxResult.success(paymentScheduleDTO);
     }
 
@@ -254,6 +274,7 @@ public class BusinessService {
         CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
 
         InstallmentRequest request = new InstallmentRequest();
+        // TODO need Complete
         request.setLoanId(-1L);
         request.setPortfolioId(-1L);
         request.setDefaultAchProvider(1L);
