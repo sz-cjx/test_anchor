@@ -223,6 +223,7 @@ public class BusinessService {
         long firstDebitDate = installmentResponse.getFirstDebitDate();
         long lastDebitDate = installmentResponse.getLastDebitDate();
 
+        paymentScheduleDTO.setEffectiveDate(DateUtil.timeStampToStr(installmentRequest.getEffectiveDate()));
         paymentScheduleDTO.setFirstDebitDate(DateUtil.timeStampToStr(firstDebitDate));
         paymentScheduleDTO.setLastDebitDate(DateUtil.timeStampToStr(lastDebitDate));
         paymentScheduleDTO.setRegularAmount(installmentResponse.getRegularAmount());
