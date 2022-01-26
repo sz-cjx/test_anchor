@@ -222,9 +222,10 @@ public class BusinessService {
     public String preCalculateInstallment (PaymentScheduleDTO paymentScheduleDTO) throws ProcedureException, ParseException {
         Long customerId = paymentScheduleDTO.getCustomerId();
         if (Objects.isNull(paymentScheduleDTO.getLoanAmount())) {
-            JSONObject jsonObject = simpleRedisRepository.fetchJsonObject(CustomerCacheKey.PAYMENT_SCHEDULE_DATA, customerId);
+            String PaymentScheduleStr = simpleRedisRepository.fetchString(CustomerCacheKey.PAYMENT_SCHEDULE_DATA, customerId);
             PaymentScheduleDTO result = null;
-            if (!CollectionUtils.isEmpty(jsonObject)) {
+            if (!StringUtils.isEmpty(PaymentScheduleStr)) {
+                JSONObject jsonObject = JSON.parseObject(PaymentScheduleStr) ;
                 result = jsonObject.toJavaObject(PaymentScheduleDTO.class);
             }
             return AjaxResult.success(result);
@@ -255,9 +256,9 @@ public class BusinessService {
         }
         paymentScheduleDTO.setInstallmentList(jsonArray);
 
-        simpleRedisRepository.cacheObjectByKeys(
+        simpleRedisRepository.cacheObjectByArgs(
                 CustomerCacheKey.PAYMENT_SCHEDULE_DATA,
-                JSON.parseObject(JSON.toJSONString(paymentScheduleDTO)),
+                JSON.toJSONString(paymentScheduleDTO),
                 GlobalConst.SECONDS_IN_DAY * GlobalConst.MILLISECONDS_UNIT,
                 customerId);
 
