@@ -227,10 +227,17 @@ public class BusinessService {
             }
             return AjaxResult.success(result);
         }
-        InstallmentRequest installmentRequest = assembleInstallmentRequest(paymentScheduleDTO);
+        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+        InstallmentRequest installmentRequest = assembleInstallmentRequest(paymentScheduleDTO, employmentData);
         InstallmentResponse installmentResponse = algorithmService.calculateInstallmentList(
                 installmentRequest
         );
+        Double apr = null;
+        try {
+            apr = algorithmService.calculateApr(assembleAprRequest(employmentData, installmentResponse));
+        } catch (ProcedureException e) {
+            LOGGER.info("[Calculate Apr]Fail to calculate Apr. CustomerId:{}", customerId);
+        }
 
         long firstDebitDate = installmentResponse.getFirstDebitDate();
         long lastDebitDate = installmentResponse.getLastDebitDate();
@@ -243,6 +250,7 @@ public class BusinessService {
         paymentScheduleDTO.setTotalInterest(installmentResponse.getTotalInterest());
         paymentScheduleDTO.setTotalPrincipal(installmentResponse.getTotalPrincipal());
         paymentScheduleDTO.setTotalUnpaidFee(installmentResponse.getTotalUnpaidFee());
+        paymentScheduleDTO.setApr(BigDecimal.valueOf(apr));
 
         JSONArray jsonArray = new JSONArray();
         for (Installment installment : installmentResponse.getInstallmentList()) {
@@ -262,14 +270,13 @@ public class BusinessService {
         return AjaxResult.success(paymentScheduleDTO);
     }
 
-    private InstallmentRequest assembleInstallmentRequest(PaymentScheduleDTO paymentScheduleDTO) throws ParseException {
+    private InstallmentRequest assembleInstallmentRequest(PaymentScheduleDTO paymentScheduleDTO, CustomerEmploymentData employmentData) throws ParseException {
         Long customerId = paymentScheduleDTO.getCustomerId();
         BigDecimal approvedAmount = paymentScheduleDTO.getApprovedAmount();
         String effectiveDateStr = paymentScheduleDTO.getEffectiveDate();
         Long effectiveDate = StringUtils.isNotBlank(effectiveDateStr) ?
                 DateUtil.strToTimeStamp(effectiveDateStr) : DateUtil.getCurrentDate().getTime();
         LOGGER.info("[Pre-Calculate Payment Schedule]Assemble InstallmentRequest data. CustomerId:{}", customerId);
-        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
 
         InstallmentRequest request = new InstallmentRequest();
         // TODO need Complete
@@ -296,6 +303,20 @@ public class BusinessService {
         return request;
     }
 
+    public AprRequest assembleAprRequest(CustomerEmploymentData employmentData, InstallmentResponse installmentResponse) {
+        AprRequest aprRequest = new AprRequest();
+        List<Installment> installmentList = installmentResponse.getInstallmentList();
+        LOGGER.info("[Pre-Calculate Payment Schedule]assemble AprRequest data");
+        aprRequest.setPayrollFrequency(employmentData.getPayrollFrequency());
+        aprRequest.setInstallmentList(installmentList);
+        aprRequest.setTotalPrincipal(installmentResponse.getTotalPrincipal());
+        aprRequest.setInterestRate(new BigDecimal("7.8"));
+        aprRequest.setFirstDayOfMonth(employmentData.getFirstDayOfMonth());
+        aprRequest.setSecondDayOfMonth(employmentData.getSecondDayOfMonth());
+        return aprRequest;
+    }
+
+
     public String verifyContactInformation (ContactVerifyDTO contactVerifyDTO) {
         Long customerId = contactVerifyDTO.getCustomerId();
         String verifyCode = contactVerifyDTO.getVerifyCode();
@@ -312,13 +333,14 @@ public class BusinessService {
         return AjaxResult.success();
     }
 
-    public String customerToLoan(CustomerToLoanDTO customerToLoanDTO) {
+    public String customerToLoan(CustomerToLoanDTO customerToLoanDTO) throws ProcedureException {
         Long customerId = customerToLoanDTO.getCustomerId();
         Long bankId = customerToLoanDTO.getBankId();
         Long cardId = customerToLoanDTO.getCardId();
         LOGGER.info("[Customer TO Loan]Start to query customer relative information. CustomerId:{}", customerId);
 
         JSONObject dataJson = new JSONObject();
+        assemblePaymentData(dataJson, customerId);
         assembleContactData(dataJson, customerId);
         assembleCreditData(dataJson, customerId);
         assembleEmploymentData(dataJson, customerId);
@@ -327,6 +349,7 @@ public class BusinessService {
         assembleBankData(dataJson, customerId, bankId, cardId);
 
         // TODO assemble portfolio...
+        dataJson.put(CustomerJsonKey.PORTFOLIO_ID, 3);
 
         return AjaxResult.success(dataJson);
     }
@@ -394,5 +417,26 @@ public class BusinessService {
         CustomerBankCardData cardData = commonReader.getEntityByCondition(CustomerBankCardData.class, condition);
         dataJson.put(CustomerJsonKey.CARD_NO, cardData.getCardNo());
         LOGGER.info("[Customer TO Loan]Success to assemble Bank data. CustomerId:{}", customerId);
+    }
+
+    private void assemblePaymentData(JSONObject dataJson, Long customerId) throws ProcedureException {
+        String PaymentScheduleStr = simpleRedisRepository.fetchString(CustomerCacheKey.PAYMENT_SCHEDULE_DATA, customerId);
+        if (StringUtils.isEmpty(PaymentScheduleStr)) {
+            throw new ProcedureException(CustomerErrorCode.CUSTOMER_TO_LOAN_MISSING_APPROVED_AMOUNT);
+        }
+        JSONObject paymentJson = JSON.parseObject(PaymentScheduleStr) ;
+        PaymentScheduleDTO paymentScheduleDTO = paymentJson.toJavaObject(PaymentScheduleDTO.class);
+
+        dataJson.put(CustomerJsonKey.EFFECTIVE_DATE, paymentScheduleDTO.getEffectiveDate());
+        dataJson.put(CustomerJsonKey.LOAN_AMOUNT, paymentScheduleDTO.getApprovedAmount());
+        dataJson.put(CustomerJsonKey.APPROVED_AMOUNT, paymentScheduleDTO.getApprovedAmount());
+        dataJson.put(CustomerJsonKey.TOTAL_AMOUNT, paymentScheduleDTO.getApprovedAmount());
+        dataJson.put(CustomerJsonKey.FIRST_CREDIT_DATE, paymentScheduleDTO.getEffectiveDate());
+        dataJson.put(CustomerJsonKey.FIRST_DEBIT_DATE, paymentScheduleDTO.getFirstDebitDate());
+        dataJson.put(CustomerJsonKey.LAST_DEBIT_DATE, paymentScheduleDTO.getLastDebitDate());
+        dataJson.put(CustomerJsonKey.REGULAR_AMOUNT, paymentScheduleDTO.getRegularAmount());
+        dataJson.put(CustomerJsonKey.DEBIT_COUNT, paymentScheduleDTO.getInstallmentList().size() - 1);
+        dataJson.put(CustomerJsonKey.INSTALLMENT, paymentScheduleDTO.getInstallmentList());
+        dataJson.put(CustomerJsonKey.APR, paymentScheduleDTO.getApr());
     }
 }

@@ -42,6 +42,7 @@ public enum CustomerErrorCode implements BaseError {
 
     CALCULATOR_STOP_TO_MISSING_PARAMETER(-81010420, "Stop to calculate loan amount. Missing parameter"),
     CALCULATOR_STOP_TO_CALCULATE_FAILURR(-81010421, "Stop to calculate loan amount. Fail to calculate."),
+    CUSTOMER_TO_LOAN_MISSING_APPROVED_AMOUNT(-81010422, "Fail to create loan, missing loan amount."),
     ;
 
     private Integer code;

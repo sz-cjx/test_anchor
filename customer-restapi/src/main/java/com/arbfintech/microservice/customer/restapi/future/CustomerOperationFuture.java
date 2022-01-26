@@ -52,7 +52,13 @@ public class CustomerOperationFuture {
 
     public CompletableFuture<String> customerToLoan (CustomerToLoanDTO customerToLoanDTO) {
         return CompletableFuture.supplyAsync(
-                () -> businessService.customerToLoan(customerToLoanDTO)
+                () -> {
+                    try {
+                        return businessService.customerToLoan(customerToLoanDTO);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
         );
     }
 

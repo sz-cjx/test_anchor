@@ -27,6 +27,8 @@ public class PaymentScheduleDTO {
 
     private List<Object> installmentList;
 
+    private BigDecimal apr;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -113,5 +115,13 @@ public class PaymentScheduleDTO {
 
     public void setInstallmentList(List<Object> installmentList) {
         this.installmentList = installmentList;
+    }
+
+    public BigDecimal getApr() {
+        return apr;
+    }
+
+    public void setApr(BigDecimal apr) {
+        this.apr = apr;
     }
 }

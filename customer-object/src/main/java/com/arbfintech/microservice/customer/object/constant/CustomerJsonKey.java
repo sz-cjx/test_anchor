@@ -11,6 +11,8 @@ public interface CustomerJsonKey {
     String ADDRESS = "address";
     String ALTERNATIVE_EMAIL = "alternativeEmail";
     String ALTERNATIVE_PHONE = "alternativePhone";
+    String APPROVED_AMOUNT = "approvedAmount";
+    String APR = "apr";
 
     String BANK = "bank";
     String BANK_ROUTING_NO = "bankRoutingNo";
@@ -28,8 +30,10 @@ public interface CustomerJsonKey {
     String CUSTOMER_ID = "customerId";
 
     String DATA = "data";
+    String DEBIT_COUNT = "debitCount";
     String DOCUMENT_NAME = "documentName";
 
+    String EFFECTIVE_DATE = "effectiveDate";
     String EMAIL = "email";
     String EMPLOYER_NAME = "employerName";
     String EMPLOYER_PHONE = "employerPhone";
@@ -40,14 +44,18 @@ public interface CustomerJsonKey {
     String FEATURES = "features";
     String FILE_DOWNLOAD_URL = "fileDownloadUrl";
     String FILE_SIZE = "fileSize";
+    String FIRST_CREDIT_DATE = "firstCreditDate";
+    String FIRST_DEBIT_DATE = "firstDebitDate";
     String FIRST_NAME = "firstName";
 
     String HOME_PHONE = "homePhone";
 
     String ID = "id";
+    String INSTALLMENT = "installment";
     String INSTALLMENT_DATE = "installmentDate";
     String IP = "ip";
 
+    String LAST_DEBIT_DATE = "lastDebitDate";
     String LAST_NAME = "lastName";
     String LAST_PAYDAY = "lastPayday";
     String LOAN_AMOUNT = "loanAmount";
@@ -65,10 +73,12 @@ public interface CustomerJsonKey {
     String PORTFOLIO_ID = "portfolioId";
     String PAYROLL_FREQUENCY = "payrollFrequency";
 
+    String REGULAR_AMOUNT = "regularAmount";
     String ROUTING_NO = "routingNo";
 
     String UPDATED_AT = "updatedAt";
 
+    String TOTAL_AMOUNT = "totalAmount";
     String TRANSACTION_DATE = "transactionDate";
 
     String VALUE = "value";
