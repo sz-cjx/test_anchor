@@ -79,6 +79,10 @@ public interface CustomerJsonKey {
     String UPDATED_AT = "updatedAt";
 
     String TOTAL_AMOUNT = "totalAmount";
+    String TOTAL_INTEREST = "totalInterest";
+    String TOTAL_PAY_AMOUNT = "totalPayAmount";
+    String TOTAL_PRINCIPAL = "totalPrincipal";
+    String TOTAL_UNPAID_FEE = "totalUnpaidFee";
     String TRANSACTION_DATE = "transactionDate";
 
     String VALUE = "value";

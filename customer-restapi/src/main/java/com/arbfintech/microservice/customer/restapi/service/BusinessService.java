@@ -356,14 +356,11 @@ public class BusinessService {
 
     private void assembleContactData(JSONObject dataJson, Long customerId) {
         LOGGER.info("[Customer TO Loan]Start to assemble Contact data. CustomerId:{}", customerId);
-        List<CustomerContactData> customerContactData = commonReader.listEntityByCustomerId(CustomerContactData.class, customerId);
-
-        customerContactData.parallelStream().peek(
-                item -> {
-                    CustomerContactTypeEnum contactTypeEnum = CustomerContactTypeEnum.getEnumByvalue(item.getContactType());
-                    dataJson.put(contactTypeEnum.getKey(), item.getValue());
-                }
-        );
+        List<CustomerContactData> customerContactList = commonReader.listEntityByCustomerId(CustomerContactData.class, customerId);
+        for (CustomerContactData customerContact : customerContactList) {
+            CustomerContactTypeEnum contactTypeEnum = CustomerContactTypeEnum.getEnumByvalue(customerContact.getContactType());
+            dataJson.put(contactTypeEnum.getKey(), customerContact.getValue());
+        }
         LOGGER.info("[Customer TO Loan]Success to assemble Contact data. CustomerId:{}", customerId);
     }
 
@@ -432,6 +429,10 @@ public class BusinessService {
         dataJson.put(CustomerJsonKey.APPROVED_AMOUNT, paymentScheduleDTO.getApprovedAmount());
         dataJson.put(CustomerJsonKey.TOTAL_AMOUNT, paymentScheduleDTO.getApprovedAmount());
         dataJson.put(CustomerJsonKey.FIRST_CREDIT_DATE, paymentScheduleDTO.getEffectiveDate());
+        dataJson.put(CustomerJsonKey.TOTAL_INTEREST, paymentScheduleDTO.getTotalInterest());
+        dataJson.put(CustomerJsonKey.TOTAL_PRINCIPAL, paymentScheduleDTO.getTotalPrincipal());
+        dataJson.put(CustomerJsonKey.TOTAL_UNPAID_FEE, paymentScheduleDTO.getTotalPrincipal());
+        dataJson.put(CustomerJsonKey.TOTAL_PAY_AMOUNT, paymentScheduleDTO.getTotalAmount());
         dataJson.put(CustomerJsonKey.FIRST_DEBIT_DATE, paymentScheduleDTO.getFirstDebitDate());
         dataJson.put(CustomerJsonKey.LAST_DEBIT_DATE, paymentScheduleDTO.getLastDebitDate());
         dataJson.put(CustomerJsonKey.REGULAR_AMOUNT, paymentScheduleDTO.getRegularAmount());
