@@ -1,7 +1,5 @@
 package com.arbfintech.microservice.customer.object.dto;
 
-import com.alibaba.fastjson.JSONObject;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -11,7 +9,7 @@ public class PaymentScheduleDTO {
 
     private String effectiveDate;
 
-    private BigDecimal loanAmount;
+    private BigDecimal approvedAmount;
 
     private String firstDebitDate;
 
@@ -45,12 +43,12 @@ public class PaymentScheduleDTO {
         this.effectiveDate = effectiveDate;
     }
 
-    public BigDecimal getLoanAmount() {
-        return loanAmount;
+    public BigDecimal getApprovedAmount() {
+        return approvedAmount;
     }
 
-    public void setLoanAmount(BigDecimal loanAmount) {
-        this.loanAmount = loanAmount;
+    public void setApprovedAmount(BigDecimal approvedAmount) {
+        this.approvedAmount = approvedAmount;
     }
 
     public String getFirstDebitDate() {

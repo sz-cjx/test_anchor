@@ -6,6 +6,7 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
+import com.arbfintech.microservice.customer.object.dto.CustomerToLoanDTO;
 import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,13 @@ public class CustomerOperationClientApi extends BaseClientApi {
         return simpleRestCaller.post(
                 generateUrl(CUSTOMER_REST_API, "/contact/verify"),
                 JSON.toJSONString(contactVerifyDTO)
+        );
+    }
+
+    public AjaxResult customerToLoan(CustomerToLoanDTO customerToLoanDTO) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/customer-to-loan"),
+                JSON.toJSONString(customerToLoanDTO)
         );
     }
 }

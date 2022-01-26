@@ -23,6 +23,7 @@ public interface CustomerJsonKey {
     String CITY = "city";
     String CONTACT_TYPE = "contactType";
     String COUNTRY = "country";
+    String CREATED_AT = "createdAt";
     String CURRENT = "current";
     String CUSTOMER_ID = "customerId";
 
@@ -49,6 +50,7 @@ public interface CustomerJsonKey {
 
     String LAST_NAME = "lastName";
     String LAST_PAYDAY = "lastPayday";
+    String LOAN_AMOUNT = "loanAmount";
     String LOG_TYPE = "logType";
 
     String MIDDLE_NAME = "middleName";
@@ -65,6 +67,8 @@ public interface CustomerJsonKey {
 
     String ROUTING_NO = "routingNo";
 
+    String UPDATED_AT = "updatedAt";
+
     String TRANSACTION_DATE = "transactionDate";
 
     String VALUE = "value";
@@ -74,6 +78,7 @@ public interface CustomerJsonKey {
     String SUPERVISOR_NAME = "supervisorName";
     String SUPERVISOR_PHONE = "supervisorPhone";
     String STATE = "state";
+    String STATEMENT = "statement";
     String SSN = "ssn";
 
     String WITHIN_DAYS = "withinDays";

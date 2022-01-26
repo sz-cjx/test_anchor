@@ -400,7 +400,7 @@ public class CustomerResourceService {
         }
 
         // profile中的state转换: String -> int
-        Integer state = (Integer) EnumUtil.getValueByText(StateEnum.class, dataJson.getString(CustomerJsonKey.STATE));
+        Integer state = StateEnum.getStateEnumBytext(dataJson.getString(CustomerJsonKey.STATE)).getValue();
         dataJson.put(CustomerJsonKey.STATE, state);
     }
 
@@ -409,7 +409,7 @@ public class CustomerResourceService {
         DataProcessingUtil.batchConvertTimestampToDate(dataJson, CustomerFieldKey.getTimeConversionList());
 
         // profile中的state转换: int -> String
-        String state = EnumUtil.getTextByValue(StateEnum.class, dataJson.getInteger(CustomerJsonKey.STATE));
+        String state = StateEnum.getStateEnumByValue(dataJson.getInteger(CustomerJsonKey.STATE)).getText();
         dataJson.put(CustomerJsonKey.STATE, state);
     }
 }

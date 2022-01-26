@@ -4,6 +4,7 @@ import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
+import com.arbfintech.microservice.customer.object.dto.CustomerToLoanDTO;
 import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
 import com.arbfintech.microservice.customer.restapi.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,12 @@ public class CustomerOperationFuture {
     public CompletableFuture<String> verifyContactInformation (ContactVerifyDTO contactVerifyDTO) {
         return CompletableFuture.supplyAsync(
                 () -> businessService.verifyContactInformation(contactVerifyDTO)
+        );
+    }
+
+    public CompletableFuture<String> customerToLoan (CustomerToLoanDTO customerToLoanDTO) {
+        return CompletableFuture.supplyAsync(
+                () -> businessService.customerToLoan(customerToLoanDTO)
         );
     }
 

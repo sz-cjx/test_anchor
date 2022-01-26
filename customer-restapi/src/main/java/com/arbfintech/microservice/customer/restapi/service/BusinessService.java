@@ -17,10 +17,7 @@ import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
-import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
-import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
-import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
-import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
+import com.arbfintech.microservice.customer.object.dto.*;
 import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.*;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
@@ -221,7 +218,7 @@ public class BusinessService {
 
     public String preCalculateInstallment (PaymentScheduleDTO paymentScheduleDTO) throws ProcedureException, ParseException {
         Long customerId = paymentScheduleDTO.getCustomerId();
-        if (Objects.isNull(paymentScheduleDTO.getLoanAmount())) {
+        if (Objects.isNull(paymentScheduleDTO.getApprovedAmount())) {
             String PaymentScheduleStr = simpleRedisRepository.fetchString(CustomerCacheKey.PAYMENT_SCHEDULE_DATA, customerId);
             PaymentScheduleDTO result = null;
             if (!StringUtils.isEmpty(PaymentScheduleStr)) {
@@ -267,7 +264,7 @@ public class BusinessService {
 
     private InstallmentRequest assembleInstallmentRequest(PaymentScheduleDTO paymentScheduleDTO) throws ParseException {
         Long customerId = paymentScheduleDTO.getCustomerId();
-        BigDecimal loanAmount = paymentScheduleDTO.getLoanAmount();
+        BigDecimal approvedAmount = paymentScheduleDTO.getApprovedAmount();
         String effectiveDateStr = paymentScheduleDTO.getEffectiveDate();
         Long effectiveDate = StringUtils.isNotBlank(effectiveDateStr) ?
                 DateUtil.strToTimeStamp(effectiveDateStr) : DateUtil.getCurrentDate().getTime();
@@ -290,8 +287,8 @@ public class BusinessService {
         request.setLastPayday(employmentData.getLastPayday());
         request.setEffectiveDate(effectiveDate);
         request.setInterestRate(new BigDecimal("7.8"));
-        request.setApprovedAmount(loanAmount);
-        request.setTotalPrincipal(loanAmount);
+        request.setApprovedAmount(approvedAmount);
+        request.setTotalPrincipal(approvedAmount);
         request.setFirstDayOfWeek(employmentData.getFirstDayOfWeek());
         request.setFirstDayOfMonth(employmentData.getFirstDayOfMonth());
         request.setSecondDayOfMonth(employmentData.getSecondDayOfMonth());
@@ -313,5 +310,89 @@ public class BusinessService {
         commonWriter.save(customerContactData);
 
         return AjaxResult.success();
+    }
+
+    public String customerToLoan(CustomerToLoanDTO customerToLoanDTO) {
+        Long customerId = customerToLoanDTO.getCustomerId();
+        Long bankId = customerToLoanDTO.getBankId();
+        Long cardId = customerToLoanDTO.getCardId();
+        LOGGER.info("[Customer TO Loan]Start to query customer relative information. CustomerId:{}", customerId);
+
+        JSONObject dataJson = new JSONObject();
+        assembleContactData(dataJson, customerId);
+        assembleCreditData(dataJson, customerId);
+        assembleEmploymentData(dataJson, customerId);
+        assembleProfileData(dataJson, customerId);
+        assembleStatementData(dataJson, customerId);
+        assembleBankData(dataJson, customerId, bankId, cardId);
+
+        // TODO assemble portfolio...
+
+        return AjaxResult.success(dataJson);
+    }
+
+    private void assembleContactData(JSONObject dataJson, Long customerId) {
+        LOGGER.info("[Customer TO Loan]Start to assemble Contact data. CustomerId:{}", customerId);
+        List<CustomerContactData> customerContactData = commonReader.listEntityByCustomerId(CustomerContactData.class, customerId);
+
+        customerContactData.parallelStream().peek(
+                item -> {
+                    CustomerContactTypeEnum contactTypeEnum = CustomerContactTypeEnum.getEnumByvalue(item.getContactType());
+                    dataJson.put(contactTypeEnum.getKey(), item.getValue());
+                }
+        );
+        LOGGER.info("[Customer TO Loan]Success to assemble Contact data. CustomerId:{}", customerId);
+    }
+
+    private void assembleCreditData(JSONObject dataJson, Long customerId) {
+        LOGGER.info("[Customer TO Loan]Loan to assemble Credit data. CustomerId:{}", customerId);
+        CustomerCreditData creditData = commonReader.getEntityByCustomerId(CustomerCreditData.class, customerId);
+        dataJson.put(CustomerJsonKey.LOAN_AMOUNT, creditData.getMaximumCreditAmount());
+        LOGGER.info("[Customer TO Loan]Success to assemble Credit data. CustomerId:{}", customerId);
+    }
+
+    private void assembleEmploymentData(JSONObject dataJson, Long customerId) {
+        LOGGER.info("[Customer TO Loan]Loan to assemble Employment data. CustomerId:{}", customerId);
+        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
+        JSONObject employmentJson = JSON.parseObject(JSON.toJSONString(employmentData));
+        employmentJson.remove(CustomerJsonKey.ID);
+        dataJson.putAll(employmentJson);
+        LOGGER.info("[Customer TO Loan]Success to assemble Employment data. CustomerId:{}", customerId);
+    }
+
+    private void assembleProfileData(JSONObject dataJson, Long customerId) {
+        LOGGER.info("[Customer TO Loan]Loan to assemble Profile data. CustomerId:{}", customerId);
+        CustomerProfile customerProfile = commonReader.getEntityByCustomerId(CustomerProfile.class, customerId);
+        JSONObject customerProfileJson = JSON.parseObject(JSON.toJSONString(customerProfile));
+        customerProfileJson.remove(CustomerJsonKey.ID);
+        customerProfileJson.remove(CustomerJsonKey.CREATED_AT);
+        customerProfileJson.remove(CustomerJsonKey.UPDATED_AT);
+        StateEnum stateEnume = StateEnum.getStateEnumByValue(customerProfileJson.getInteger(CustomerJsonKey.STATE));
+        customerProfileJson.put(CustomerJsonKey.STATE, stateEnume.getText());
+        dataJson.putAll(customerProfileJson);
+        LOGGER.info("[Customer TO Loan]Success to assemble Profile data. CustomerId:{}", customerId);
+    }
+
+    private void assembleStatementData(JSONObject dataJson, Long customerId) {
+        LOGGER.info("[Customer TO Loan]Loan to assemble Statement data. CustomerId:{}", customerId);
+        List<CustomerStatementData> statementList = commonReader.listEntityByCustomerId(CustomerStatementData.class, customerId);
+        dataJson.put(CustomerJsonKey.STATEMENT, statementList);
+        LOGGER.info("[Customer TO Loan]Success to assemble Statement data. CustomerId:{}", customerId);
+    }
+
+    private void assembleBankData(JSONObject dataJson, Long customerId, Long bankId, Long cardId) {
+        LOGGER.info("[Customer TO Loan]Loan to assemble Bank data. CustomerId:{}", customerId);
+        HashMap<String, Object> condition = new HashMap<>();
+        condition.put("id", bankId);
+
+        CustomerBankData bankData = commonReader.getEntityByCondition(CustomerBankData.class, condition);
+        JSONObject bankJson = JSON.parseObject(JSON.toJSONString(bankData));
+        bankJson.remove(CustomerJsonKey.ID);
+        dataJson.putAll(bankJson);
+
+        condition.put("id", cardId);
+        CustomerBankCardData cardData = commonReader.getEntityByCondition(CustomerBankCardData.class, condition);
+        dataJson.put(CustomerJsonKey.CARD_NO, cardData.getCardNo());
+        LOGGER.info("[Customer TO Loan]Success to assemble Bank data. CustomerId:{}", customerId);
     }
 }
