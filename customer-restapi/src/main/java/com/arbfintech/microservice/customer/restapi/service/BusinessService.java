@@ -335,18 +335,14 @@ public class BusinessService {
 
     public String customerToLoan(CustomerToLoanDTO customerToLoanDTO) throws ProcedureException {
         Long customerId = customerToLoanDTO.getCustomerId();
-        Long bankId = customerToLoanDTO.getBankId();
-        Long cardId = customerToLoanDTO.getCardId();
         LOGGER.info("[Customer TO Loan]Start to query customer relative information. CustomerId:{}", customerId);
 
         JSONObject dataJson = new JSONObject();
-        assemblePaymentData(dataJson, customerId);
         assembleContactData(dataJson, customerId);
         assembleCreditData(dataJson, customerId);
         assembleEmploymentData(dataJson, customerId);
         assembleProfileData(dataJson, customerId);
         assembleStatementData(dataJson, customerId);
-        assembleBankData(dataJson, customerId, bankId, cardId);
 
         // TODO assemble portfolio...
         dataJson.put(CustomerJsonKey.PORTFOLIO_ID, 3);
