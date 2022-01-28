@@ -7,7 +7,6 @@ import com.arbfintech.framework.component.core.type.HttpParamVariable;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerToLoanDTO;
-import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,13 +18,6 @@ public class CustomerOperationClientApi extends BaseClientApi {
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/loan-amount/calculate"),
                 HttpParamVariable.getInstance().addParam(CustomerJsonKey.CUSTOMER_ID, customerId).getParamMap()
-        );
-    }
-
-    public AjaxResult preCalculateInstallment(PaymentScheduleDTO paymentScheduleDTO) {
-        return simpleRestCaller.post(
-                generateUrl(CUSTOMER_REST_API, "/payment-schedule/pre-calculate"),
-                JSON.toJSONString(paymentScheduleDTO)
         );
     }
 

@@ -1,13 +1,14 @@
 package com.arbfintech.microservice.customer.restapi.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.algorithm.service.AlgorithmService;
-import com.arbfintech.framework.component.algorithm.type.*;
+import com.arbfintech.framework.component.algorithm.type.DirectDeposit;
+import com.arbfintech.framework.component.algorithm.type.LoanAmountParameter;
+import com.arbfintech.framework.component.algorithm.type.LoanAmountRequest;
+import com.arbfintech.framework.component.algorithm.type.LoanAmountResponse;
 import com.arbfintech.framework.component.cache.core.SimpleRedisRepository;
 import com.arbfintech.framework.component.core.constant.CodeConst;
-import com.arbfintech.framework.component.core.constant.GlobalConst;
 import com.arbfintech.framework.component.core.enumerate.LoanTypeEnum;
 import com.arbfintech.framework.component.core.enumerate.ModeEnum;
 import com.arbfintech.framework.component.core.enumerate.StateEnum;
@@ -17,7 +18,10 @@ import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.core.util.EnumUtil;
 import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
-import com.arbfintech.microservice.customer.object.dto.*;
+import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
+import com.arbfintech.microservice.customer.object.dto.CalculationResultDTO;
+import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
+import com.arbfintech.microservice.customer.object.dto.CustomerToLoanDTO;
 import com.arbfintech.microservice.customer.object.entity.*;
 import com.arbfintech.microservice.customer.object.enumerate.*;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
@@ -25,6 +29,7 @@ import com.arbfintech.microservice.customer.object.util.ExtentionJsonUtil;
 import com.arbfintech.microservice.customer.restapi.repository.cache.AlgorithmRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
+import com.arbfintech.microservice.origination.object.dto.PaymentScheduleDTO;
 import com.arbfintech.microservice.loan.object.enumerate.LoanCategoryEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -216,107 +220,6 @@ public class BusinessService {
         }
     }
 
-    public String preCalculateInstallment (PaymentScheduleDTO paymentScheduleDTO) throws ProcedureException, ParseException {
-        Long customerId = paymentScheduleDTO.getCustomerId();
-        if (Objects.isNull(paymentScheduleDTO.getApprovedAmount())) {
-            String PaymentScheduleStr = simpleRedisRepository.fetchString(CustomerCacheKey.PAYMENT_SCHEDULE_DATA, customerId);
-            PaymentScheduleDTO result = null;
-            if (!StringUtils.isEmpty(PaymentScheduleStr)) {
-                JSONObject jsonObject = JSON.parseObject(PaymentScheduleStr) ;
-                result = jsonObject.toJavaObject(PaymentScheduleDTO.class);
-            }
-            return AjaxResult.success(result);
-        }
-        CustomerEmploymentData employmentData = commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
-        InstallmentRequest installmentRequest = assembleInstallmentRequest(paymentScheduleDTO, employmentData);
-        InstallmentResponse installmentResponse = algorithmService.calculateInstallmentList(
-                installmentRequest
-        );
-        Double apr = null;
-        try {
-            apr = algorithmService.calculateApr(assembleAprRequest(employmentData, installmentResponse));
-        } catch (ProcedureException e) {
-            LOGGER.info("[Calculate Apr]Fail to calculate Apr. CustomerId:{}", customerId);
-        }
-
-        long firstDebitDate = installmentResponse.getFirstDebitDate();
-        long lastDebitDate = installmentResponse.getLastDebitDate();
-
-        paymentScheduleDTO.setEffectiveDate(DateUtil.timeStampToStr(installmentRequest.getEffectiveDate()));
-        paymentScheduleDTO.setFirstDebitDate(DateUtil.timeStampToStr(firstDebitDate));
-        paymentScheduleDTO.setLastDebitDate(DateUtil.timeStampToStr(lastDebitDate));
-        paymentScheduleDTO.setRegularAmount(installmentResponse.getRegularAmount());
-        paymentScheduleDTO.setTotalAmount(installmentResponse.getTotalAmount());
-        paymentScheduleDTO.setTotalInterest(installmentResponse.getTotalInterest());
-        paymentScheduleDTO.setTotalPrincipal(installmentResponse.getTotalPrincipal());
-        paymentScheduleDTO.setTotalUnpaidFee(installmentResponse.getTotalUnpaidFee());
-        paymentScheduleDTO.setApr(BigDecimal.valueOf(apr));
-
-        JSONArray jsonArray = new JSONArray();
-        for (Installment installment : installmentResponse.getInstallmentList()) {
-            JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(installment));
-            jsonObject.put(CustomerJsonKey.INSTALLMENT_DATE, DateUtil.timeStampToStr(installment.getInstallmentDate()));
-            jsonObject.put(CustomerJsonKey.TRANSACTION_DATE, DateUtil.timeStampToStr(installment.getTransactionDate()));
-            jsonArray.add(jsonObject);
-        }
-        paymentScheduleDTO.setInstallmentList(jsonArray);
-
-        simpleRedisRepository.cacheObjectByArgs(
-                CustomerCacheKey.PAYMENT_SCHEDULE_DATA,
-                JSON.toJSONString(paymentScheduleDTO),
-                GlobalConst.SECONDS_IN_DAY * GlobalConst.MILLISECONDS_UNIT,
-                customerId);
-
-        return AjaxResult.success(paymentScheduleDTO);
-    }
-
-    private InstallmentRequest assembleInstallmentRequest(PaymentScheduleDTO paymentScheduleDTO, CustomerEmploymentData employmentData) throws ParseException {
-        Long customerId = paymentScheduleDTO.getCustomerId();
-        BigDecimal approvedAmount = paymentScheduleDTO.getApprovedAmount();
-        String effectiveDateStr = paymentScheduleDTO.getEffectiveDate();
-        Long effectiveDate = StringUtils.isNotBlank(effectiveDateStr) ?
-                DateUtil.strToTimeStamp(effectiveDateStr) : DateUtil.getCurrentDate().getTime();
-        LOGGER.info("[Pre-Calculate Payment Schedule]Assemble InstallmentRequest data. CustomerId:{}", customerId);
-
-        InstallmentRequest request = new InstallmentRequest();
-        // TODO need Complete
-        request.setLoanId(-1L);
-        request.setPortfolioId(-1L);
-        request.setDefaultAchProvider(1L);
-        request.setDefaultDebitCardProvider(9L);
-        request.setDefaultOutHouseProvider(10L);
-        request.setDefaultDisbursementMode(15014);
-        request.setDefaultRepaymentMode(15014);
-
-        request.setPaydayOnHoliday(employmentData.getPaydayOnHoliday());
-        request.setPaydayOnAvailable(employmentData.getPaydayOnAvailable());
-        request.setPayrollFrequency(employmentData.getPayrollFrequency());
-        request.setLastPayday(employmentData.getLastPayday());
-        request.setEffectiveDate(effectiveDate);
-        request.setInterestRate(new BigDecimal("7.8"));
-        request.setApprovedAmount(approvedAmount);
-        request.setTotalPrincipal(approvedAmount);
-        request.setFirstDayOfWeek(employmentData.getFirstDayOfWeek());
-        request.setFirstDayOfMonth(employmentData.getFirstDayOfMonth());
-        request.setSecondDayOfMonth(employmentData.getSecondDayOfMonth());
-
-        return request;
-    }
-
-    public AprRequest assembleAprRequest(CustomerEmploymentData employmentData, InstallmentResponse installmentResponse) {
-        AprRequest aprRequest = new AprRequest();
-        List<Installment> installmentList = installmentResponse.getInstallmentList();
-        LOGGER.info("[Pre-Calculate Payment Schedule]assemble AprRequest data");
-        aprRequest.setPayrollFrequency(employmentData.getPayrollFrequency());
-        aprRequest.setInstallmentList(installmentList);
-        aprRequest.setTotalPrincipal(installmentResponse.getTotalPrincipal());
-        aprRequest.setInterestRate(new BigDecimal("7.8"));
-        aprRequest.setFirstDayOfMonth(employmentData.getFirstDayOfMonth());
-        aprRequest.setSecondDayOfMonth(employmentData.getSecondDayOfMonth());
-        return aprRequest;
-    }
-
-
     public String verifyContactInformation (ContactVerifyDTO contactVerifyDTO) {
         Long customerId = contactVerifyDTO.getCustomerId();
         String verifyCode = contactVerifyDTO.getVerifyCode();
@@ -346,6 +249,7 @@ public class BusinessService {
 
         // TODO assemble portfolio...
         dataJson.put(CustomerJsonKey.PORTFOLIO_ID, 3);
+        dataJson.put(CustomerJsonKey.CUSTOMER_ID, customerId);
 
         return AjaxResult.success(dataJson);
     }

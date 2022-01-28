@@ -2,7 +2,6 @@ package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerToLoanDTO;
-import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
 import com.arbfintech.microservice.customer.restapi.future.CustomerOperationFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +19,6 @@ public class CustomerOperationController {
             @RequestParam Long customerId
     ) {
         return operationFuture.calculateLoanAmount(customerId);
-    }
-
-    @PostMapping("/payment-schedule/pre-calculate")
-    public CompletableFuture<String> preCalculateInstallment(
-            @RequestBody PaymentScheduleDTO paymentScheduleDTO
-    ) {
-        return operationFuture.preCalculateInstallment(paymentScheduleDTO);
     }
 
     @PostMapping("/contact/verify")

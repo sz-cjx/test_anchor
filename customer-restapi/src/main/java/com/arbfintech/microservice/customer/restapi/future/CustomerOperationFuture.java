@@ -5,12 +5,10 @@ import com.arbfintech.framework.component.core.type.ProcedureException;
 import com.arbfintech.microservice.customer.object.dto.CalculationProcessDTO;
 import com.arbfintech.microservice.customer.object.dto.ContactVerifyDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerToLoanDTO;
-import com.arbfintech.microservice.customer.object.dto.PaymentScheduleDTO;
 import com.arbfintech.microservice.customer.restapi.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -26,18 +24,6 @@ public class CustomerOperationFuture {
                         CalculationProcessDTO calculationProcessDTO = businessService.checkCalculationParam(customerId);
                         return businessService.calculateLoanAmount(customerId, calculationProcessDTO);
                     } catch (ProcedureException e) {
-                        return AjaxResult.failure(e);
-                    }
-                }
-        );
-    }
-
-    public CompletableFuture<String> preCalculateInstallment (PaymentScheduleDTO paymentScheduleDTO) {
-        return CompletableFuture.supplyAsync(
-                () -> {
-                    try {
-                        return businessService.preCalculateInstallment(paymentScheduleDTO);
-                    } catch (ProcedureException | ParseException e) {
                         return AjaxResult.failure(e);
                     }
                 }
