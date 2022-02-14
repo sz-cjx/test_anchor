@@ -104,6 +104,15 @@ spring:
         database: ${arb.redis.algorithm.reader.database}
         hostName: ${arb.redis.algorithm.reader.url}
         port: ${arb.redis.algorithm.reader.port}
+    auth:
+      writer:
+        database: ${arb.redis.auth.writer.database}
+        hostName: ${arb.redis.auth.writer.url}
+        port: ${arb.redis.auth.writer.port}
+      reader:
+        database: ${arb.redis.auth.reader.database}
+        hostName: ${arb.redis.auth.reader.url}
+        port: ${arb.redis.auth.reader.port}
 ---
 spring:
   profiles: local-v3.2

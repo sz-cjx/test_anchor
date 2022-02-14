@@ -3,12 +3,12 @@ package com.arbfintech.microservice.customer.restapi.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.framework.component.core.constant.CodeConst;
+import com.arbfintech.framework.component.core.constant.GlobalConst;
+import com.arbfintech.framework.component.core.constant.StatusConst;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.ProcedureException;
-import com.arbfintech.framework.component.core.util.CryptUtil;
-import com.arbfintech.framework.component.core.util.DateUtil;
-import com.arbfintech.framework.component.core.util.EnumUtil;
-import com.arbfintech.framework.component.core.util.RandomUtil;
+import com.arbfintech.framework.component.core.util.*;
+import com.arbfintech.microservice.customer.object.constant.CustomerCacheKey;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
@@ -21,6 +21,7 @@ import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerEventTypeEnum;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
+import com.arbfintech.microservice.customer.restapi.repository.cache.AuthRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import org.slf4j.Logger;
@@ -47,6 +48,9 @@ public class CustomerAccountService {
 
     @Autowired
     private SystemLogComponent systemLogComponent;
+
+    @Autowired
+    private AuthRedisRepository authRedisRepository;
 
     // TODO get accountId from token
     public String getAccountInfo(Long id) {
@@ -213,6 +217,12 @@ public class CustomerAccountService {
             throw new ProcedureException(CustomerErrorCode.FAILURE_SIGN_IN_INCORRECT_PASSWORD);
         }
 
+        JSONObject tokenJson = createToken(accountData);
+        JSONObject resultJson = new JSONObject(){{
+            put(CustomerCacheKey.TOKEN, tokenJson.get(CustomerCacheKey.ACCESS_TOKEN));
+            put(CustomerJsonKey.CUSTOMER_ID, accountData.getId());
+        }};
+
         // TODO 登录
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         JSONObject logData = new JSONObject();
@@ -228,7 +238,35 @@ public class CustomerAccountService {
                 null, null, currentTimestamp
         );
 
-        return AjaxResult.success();
+        return AjaxResult.success(resultJson);
+    }
+
+    private JSONObject createToken(CustomerAccountData accountData) {
+        String accountId = accountData.getAccountId();
+
+        String tokenKey = authRedisRepository.generateKey(CustomerCacheKey.TOKEN, accountId);
+        String tokenStr = authRedisRepository.get(tokenKey);
+        Long createdAt = System.currentTimeMillis();
+
+        JSONObject tokenJson = JSON.parseObject(tokenStr);
+        if (Objects.isNull(tokenJson)) {
+            tokenJson = new JSONObject() {{
+                put(CustomerJsonKey.ACCOUNT_ID, accountId);
+                put(CustomerCacheKey.ACCESS_TOKEN, UuidUtil.getUuid());
+                put(CustomerCacheKey.REFRESH_TOKEN, UuidUtil.getUuid());
+                put(CustomerJsonKey.CREATED_AT, createdAt);
+            }};
+        }
+
+        Long expiredIn = GlobalConst.SECONDS_IN_DAY * GlobalConst.MILLISECONDS_UNIT;
+        Long expiredAt = createdAt + expiredIn;
+        tokenJson.put(CustomerCacheKey.EXPIRED_AT, expiredAt);
+        tokenJson.put(CustomerCacheKey.EXPIRED_IN, expiredIn);
+        tokenJson.put(CustomerCacheKey.STATUS, StatusConst.ENABLED);
+
+        authRedisRepository.set(tokenKey, tokenJson.toJSONString());
+
+        return tokenJson;
     }
 
     private String generalPassword(String password, String salt) {
