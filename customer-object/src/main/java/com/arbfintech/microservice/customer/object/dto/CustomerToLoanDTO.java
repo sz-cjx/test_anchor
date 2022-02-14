@@ -4,6 +4,8 @@ public class CustomerToLoanDTO {
 
     private Long customerId;
 
+    private Long portfolioId;
+
     private Long bankId;
 
     private Long cardId;
@@ -14,6 +16,14 @@ public class CustomerToLoanDTO {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 
     public Long getBankId() {

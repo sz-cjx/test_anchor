@@ -247,8 +247,7 @@ public class BusinessService {
         assembleProfileData(dataJson, customerId);
         assembleStatementData(dataJson, customerId);
 
-        // TODO assemble portfolio...
-        dataJson.put(CustomerJsonKey.PORTFOLIO_ID, 3);
+        dataJson.put(CustomerJsonKey.PORTFOLIO_ID, customerToLoanDTO.getPortfolioId());
         dataJson.put(CustomerJsonKey.CUSTOMER_ID, customerId);
 
         return AjaxResult.success(dataJson);
