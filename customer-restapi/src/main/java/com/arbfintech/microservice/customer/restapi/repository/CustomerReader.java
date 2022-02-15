@@ -6,7 +6,7 @@ import com.arbfintech.framework.component.core.util.DateUtil;
 import com.arbfintech.framework.component.database.core.BaseJdbcReader;
 import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerOperationLog;
-import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
 import org.apache.commons.lang.StringUtils;
@@ -71,20 +71,21 @@ public class CustomerReader extends BaseJdbcReader {
         return list;
     }
 
-    public CustomerOptIn getCustomerOptInByCondition(Long customerId, Integer optInType) {
+    public CustomerOptInData getCustomerOptInByCondition(Long customerId, Integer optInType) {
         StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("SELECT * FROM customer_opt_in");
-        sqlBuilder.append(" WHERE customer_id = :customerId");
+        sqlBuilder.append("SELECT * FROM customer_opt_in_data");
+        sqlBuilder.append(" WHERE id = :customerId");
         sqlBuilder.append(" AND opt_in_type = :optInType");
+        sqlBuilder.append(" AND portfolio_id = 0");
 
         Map<String, Object> condition = new HashMap<>();
         condition.put("customerId", customerId);
         condition.put("optInType", optInType);
 
         JSONObject jsonObject = namedJdbcTemplate().query(sqlBuilder.toString(), condition, this::returnJson);
-        CustomerOptIn customerOptIn = null;
+        CustomerOptInData customerOptIn = null;
         if (!CollectionUtils.isEmpty(jsonObject)) {
-            customerOptIn = jsonObject.toJavaObject(CustomerOptIn.class);
+            customerOptIn = jsonObject.toJavaObject(CustomerOptInData.class);
         }
 
         return customerOptIn;

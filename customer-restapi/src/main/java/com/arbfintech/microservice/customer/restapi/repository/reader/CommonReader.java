@@ -10,7 +10,7 @@ import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.entity.CustomerContactData;
 import com.arbfintech.microservice.customer.object.entity.CustomerCreditData;
 import com.arbfintech.microservice.customer.object.entity.CustomerIbvData;
-import com.arbfintech.microservice.customer.object.entity.CustomerOptIn;
+import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
 import com.arbfintech.microservice.customer.object.util.AESCryptoUtil;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import org.springframework.stereotype.Repository;
@@ -24,7 +24,11 @@ public class CommonReader extends BaseJdbcReader {
 
     public <T> List<T> listEntityByCustomerId(Class<T> tClass, Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
+        if (tClass.equals(CustomerOptInData.class)) {
+            sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);
+        } else {
+            sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
+        }
 
         List<T> entityList = findAllByOptions(tClass, sqlOption.toString());
         if (CollectionUtils.isEmpty(entityList)) {
@@ -54,7 +58,7 @@ public class CommonReader extends BaseJdbcReader {
 
     public <T> T getEntityByCustomerId(Class<T> tClass, Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
-        if (tClass.equals(CustomerOptIn.class) || tClass.equals(CustomerIbvData.class) || tClass.equals(CustomerCreditData.class)) {
+        if (tClass.equals(CustomerIbvData.class) || tClass.equals(CustomerCreditData.class)) {
             sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = '%d'", customerId);
         } else {
             sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%d'", customerId);

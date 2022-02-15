@@ -20,6 +20,7 @@ import com.arbfintech.microservice.customer.object.enumerate.*;
 import com.arbfintech.microservice.customer.object.util.CustomerFieldKey;
 import com.arbfintech.microservice.customer.restapi.component.SystemLogComponent;
 import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
+import com.arbfintech.microservice.customer.restapi.repository.CustomerWriter;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
 import com.arbfintech.microservice.loan.object.enumerate.DecisionLogicRequestCodeStatusEnum;
@@ -47,6 +48,9 @@ public class CustomerResourceService {
 
     @Autowired
     private CustomerReader customerReader;
+
+    @Autowired
+    private CustomerWriter customerWriter;
 
     @Autowired
     private SystemLogComponent systemLogComponent;
@@ -263,19 +267,18 @@ public class CustomerResourceService {
      * @return
      */
     public String getCustomerOptIn(Long customerId) {
-        List<CustomerOptIn> optInList = commonReader.listEntityByCustomerId(CustomerOptIn.class, customerId);
+        List<CustomerOptInData> optInList = commonReader.listEntityByCustomerId(CustomerOptInData.class, customerId);
         if (CollectionUtils.isEmpty(optInList)) {
             // 初始化opt-in
             LOGGER.warn("[Init Customer Opt-In]Start init customer opt-in. CustomerId:{}", customerId);
             optInList = new ArrayList<>();
             Long currentTimestamp = DateUtil.getCurrentTimestamp();
             Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
-            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.EMAIL.getValue(),defaultValue, currentTimestamp, currentTimestamp));
-            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.ALTERNATIVE_EMAIL.getValue(),defaultValue, currentTimestamp, currentTimestamp));
-            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.HOME_PHONE.getValue(),0, currentTimestamp, currentTimestamp));
-            optInList.add(new CustomerOptIn(customerId, CustomerOptInType.CELL_PHONE.getValue(),0, currentTimestamp, currentTimestamp));
-
-            commonWriter.save(CustomerOptIn.class, JSON.toJSONString(optInList));
+            optInList.add(new CustomerOptInData(customerId, 0L, CustomerOptInType.EMAIL.getValue(),defaultValue, currentTimestamp, currentTimestamp));
+            optInList.add(new CustomerOptInData(customerId, 0L, CustomerOptInType.ALTERNATIVE_EMAIL.getValue(),defaultValue, currentTimestamp, currentTimestamp));
+            optInList.add(new CustomerOptInData(customerId, 0L, CustomerOptInType.HOME_PHONE.getValue(),0, currentTimestamp, currentTimestamp));
+            optInList.add(new CustomerOptInData(customerId, 0L, CustomerOptInType.CELL_PHONE.getValue(),0, currentTimestamp, currentTimestamp));
+            customerWriter.batchSave(optInList);
 
             JSONObject logData = new JSONObject();
             logData.put(CustomerJsonKey.NOTE, "Initialize Customer Opt-In");
@@ -294,12 +297,12 @@ public class CustomerResourceService {
         Integer currentValue = customerOptInDTO.getOptInStatus();
         CustomerOptInType customerOptInType = EnumUtil.getByValue(CustomerOptInType.class, optInType);
 
-        CustomerOptIn originCustomerOptIn = customerReader.getCustomerOptInByCondition(customerId, optInType);
-        if (Objects.isNull(originCustomerOptIn) || Objects.isNull(originCustomerOptIn.getOptInStatus())) {
+        CustomerOptInData originCustomerOptIn = customerReader.getCustomerOptInByCondition(customerId, optInType);
+        if (Objects.isNull(originCustomerOptIn) || Objects.isNull(originCustomerOptIn.getOptInValue())) {
             throw new ProcedureException(CustomerErrorCode.FAILURE_QUERY_DATA_IS_EXISTED);
         }
 
-        Integer originValue = originCustomerOptIn.getOptInStatus();
+        Integer originValue = originCustomerOptIn.getOptInValue();
         Integer isMarketingValue = CustomerOptInValue.IS_MARKETING.getValue();
         Integer isOperationValue = CustomerOptInValue.IS_OPERATION.getValue();
 
@@ -323,7 +326,7 @@ public class CustomerResourceService {
 
         if (!CollectionUtils.isEmpty(currentJson)) {
             Long currentTimestamp = DateUtil.getCurrentTimestamp();
-            originCustomerOptIn.setOptInStatus(currentValue);
+            originCustomerOptIn.setOptInValue(currentValue);
             originCustomerOptIn.setUpdatedAt(currentTimestamp);
             commonWriter.save(originCustomerOptIn);
 
