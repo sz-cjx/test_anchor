@@ -403,8 +403,10 @@ public class CustomerResourceService {
         }
 
         // profile中的state转换: String -> int
-        Integer state = StateEnum.getStateEnumBytext(dataJson.getString(CustomerJsonKey.STATE)).getValue();
-        dataJson.put(CustomerJsonKey.STATE, state);
+        if (dataJson.containsKey(CustomerJsonKey.STATE)) {
+            Integer state = StateEnum.getStateEnumBytext(dataJson.getString(CustomerJsonKey.STATE)).getValue();
+            dataJson.put(CustomerJsonKey.STATE, state);
+        }
     }
 
     private void getPretreatment(JSONObject dataJson) {
