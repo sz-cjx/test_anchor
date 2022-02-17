@@ -83,4 +83,12 @@ public class CustomerController {
     ) {
         return CompletableFuture.supplyAsync(() -> customerFuture.createCustomerOptIn(optInDataList));
     }
+
+    @GetMapping("/list-features")
+    public String listFeatures(
+            @RequestParam List<Long> customerIds,
+            @RequestParam Long portfolioId
+    ) {
+        return customerFuture.listFeatures(customerIds, portfolioId);
+    }
 }
