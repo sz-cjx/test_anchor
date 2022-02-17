@@ -177,3 +177,11 @@ arb:
     url: 47.241.76.42:8901
   service:
     url: 8.214.38.179
+---
+spring:
+  profiles: develop-phoenix
+arb:
+  eureka:
+    url: 47.241.9.237:8901
+  service:
+    url: 47.241.9.237
