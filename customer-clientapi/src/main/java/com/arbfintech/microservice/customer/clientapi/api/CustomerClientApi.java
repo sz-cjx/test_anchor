@@ -61,7 +61,7 @@ public class CustomerClientApi extends BaseClientApi {
 
     public AjaxResult listFeatures(List<Long> customerIds, Long portfolioId) {
         return simpleRestCaller.get(
-                generateUrl(CUSTOMER_REST_API, "/customer/load-features"),
+                generateUrl(CUSTOMER_REST_API, "/customer/list-features"),
                 new MultiValueManager()
                         .add("customerIds", customerIds)
                         .add("portfolioId", portfolioId)
