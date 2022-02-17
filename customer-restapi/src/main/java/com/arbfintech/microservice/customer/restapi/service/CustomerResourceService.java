@@ -414,7 +414,10 @@ public class CustomerResourceService {
         DataProcessingUtil.batchConvertTimestampToDate(dataJson, CustomerFieldKey.getTimeConversionList());
 
         // profile中的state转换: int -> String
-        String state = StateEnum.getStateEnumByValue(dataJson.getInteger(CustomerJsonKey.STATE)).getText();
-        dataJson.put(CustomerJsonKey.STATE, state);
+
+        if (dataJson.containsKey(CustomerJsonKey.STATE)) {
+            String state = StateEnum.getStateEnumByValue(dataJson.getInteger(CustomerJsonKey.STATE)).getText();
+            dataJson.put(CustomerJsonKey.STATE, state);
+        }
     }
 }
