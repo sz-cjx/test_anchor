@@ -237,7 +237,7 @@ public class CustomerFuture {
             Long customerId = optInDataEntry.getKey();
             List<CustomerOptInData> customerOptInDataList = optInDataEntry.getValue();
             if (CollectionUtils.isEmpty(customerOptInDataList)) {
-                customerOptInDataList = customerOptInService.createCustomerOptIn(customerId, portfolioId);
+                customerOptInDataList = customerOptInService.getDefaultOptInDataList(customerId, portfolioId);
                 saveCustomerOptInDataList.addAll(customerOptInDataList);
             }
             JSONObject optInDataJson = new JSONObject();
@@ -276,7 +276,6 @@ public class CustomerFuture {
 
                     if (CollectionUtils.isEmpty(optInDataList)) {
                         optInDataList = customerOptInService.createCustomerOptIn(customerId, portfolioId);
-                        ResultUtil.checkResult(customerOptInService.batchSave(optInDataList), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
                     }
 
                     for (CustomerOptInData optInData : optInDataList) {
