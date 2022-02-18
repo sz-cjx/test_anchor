@@ -56,4 +56,12 @@ public class CustomerAccountController {
     ) {
         return customerAccountFuture.signIn(activateAccountDTO);
     }
+
+    @Deprecated
+    @PostMapping("/create-account")
+    public CompletableFuture<String> createTestAccount(
+            @RequestBody String dataStr
+    ) {
+        return customerAccountFuture.createTestAccount(dataStr);
+    }
 }

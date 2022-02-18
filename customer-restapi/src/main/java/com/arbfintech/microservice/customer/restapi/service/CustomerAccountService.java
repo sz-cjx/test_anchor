@@ -14,6 +14,7 @@ import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
 import com.arbfintech.microservice.customer.object.entity.CustomerAccountData;
+import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
 import com.arbfintech.microservice.customer.object.enumerate.ChangePasswordTypeEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerAccountStatusEnum;
@@ -271,6 +272,42 @@ public class CustomerAccountService {
 
     private String generalPassword(String password, String salt) {
         return CryptUtil.md5(password.toLowerCase() + salt);
+    }
+
+    @Deprecated
+    public String createTestAccount(String dataStr) throws ProcedureException {
+        JSONObject dataJson = JSON.parseObject(dataStr);
+        String email = dataJson.getString(CustomerJsonKey.EMAIL);
+        String password = "4297f44b13955235245b2497399d7a93";
+
+        CustomerProfile customerProfileDB = customerReader.getCustomerInfoByEmail(email);
+        if (Objects.nonNull(customerProfileDB)) {
+            LOGGER.warn("[Activate Account]Failed to find customer profile. Email:{}", email);
+            throw new ProcedureException(CustomerErrorCode.FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED);
+        }
+
+        CustomerAccountData accountData = new CustomerAccountData();
+        accountData.setAccountId(UuidUtil.getUuid());
+        String salt = RandomUtil.getAlphaNumeric();
+        String passwordInMd5 = generalPassword(password, salt);
+
+        accountData.setSalt(salt);
+        accountData.setLoginPassword(passwordInMd5);
+        accountData.setUsername(salt);
+        accountData.setStatus(CustomerAccountStatusEnum.ACTIVE.getValue());
+        accountData.setCreatedAt(DateUtil.getCurrentTimestamp());
+        Long customerId = commonWriter.create(CustomerAccountData.class, JSON.toJSONString(accountData));
+
+        CustomerProfile customerProfile = new CustomerProfile();
+        customerProfile.setEmail(email);
+        customerProfile.setId(customerId);
+        commonWriter.save(customerProfile);
+
+        CustomerEmploymentData employmentData = new CustomerEmploymentData();
+        employmentData.setId(customerId);
+        commonWriter.save(employmentData);
+
+        return AjaxResult.success();
     }
 
 }

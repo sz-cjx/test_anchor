@@ -82,4 +82,17 @@ public class CustomerAccountFuture {
                 }
         );
     }
+
+    @Deprecated
+    public CompletableFuture<String> createTestAccount(String dataStr){
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return customerAccountService.createTestAccount(dataStr);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
+        );
+    }
 }
