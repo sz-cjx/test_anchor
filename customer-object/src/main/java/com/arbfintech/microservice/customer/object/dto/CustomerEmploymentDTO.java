@@ -14,6 +14,8 @@ public class CustomerEmploymentDTO {
 
     private Long paydayOnHoliday;
 
+    private Long paydayOnAvailable;
+
     private Long voe;
 
     private String employerPhone;
@@ -74,6 +76,14 @@ public class CustomerEmploymentDTO {
 
     public void setPaydayOnHoliday(Long paydayOnHoliday) {
         this.paydayOnHoliday = paydayOnHoliday;
+    }
+
+    public Long getPaydayOnAvailable() {
+        return paydayOnAvailable;
+    }
+
+    public void setPaydayOnAvailable(Long paydayOnAvailable) {
+        this.paydayOnAvailable = paydayOnAvailable;
     }
 
     public Long getVoe() {
