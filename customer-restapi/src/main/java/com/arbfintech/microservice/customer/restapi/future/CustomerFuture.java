@@ -30,11 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author Fly_Roushan
@@ -138,6 +136,16 @@ public class CustomerFuture {
         });
     }
 
+    public String listFeatures(List<Long> customerIds, Long portfolioId) {
+        try {
+            return AjaxResult.success(cascadeFeatureByCustomerIds(customerIds, portfolioId));
+        } catch (Exception e) {
+            LOGGER.warn(e.getMessage());
+            return AjaxResult.failure(e);
+        }
+
+    }
+
     public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -207,6 +215,47 @@ public class CustomerFuture {
         });
     }
 
+    private JSONArray cascadeFeatureByCustomerIds(List<Long> customerIds, Long portfolioId) throws ProcedureException {
+        JSONArray result = new JSONArray();
+        if (CollectionUtils.isEmpty(customerIds)) {
+            return result;
+        }
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereIN("id", customerIds, null);
+
+        if (Objects.isNull(portfolioId)) {
+            return result;
+        }
+
+        sqlOption.whereIN("opt_in_type", EnumUtil.getAllValues(CustomerOptInType.class), null);
+        sqlOption.whereEqual("portfolio_id", portfolioId);
+        List<CustomerOptInData> optInDataList = Optional.ofNullable(simpleService.findAllByOptions(CustomerOptInData.class, sqlOption.toString())).orElse(new ArrayList<>());
+
+        Map<Long, List<CustomerOptInData>> optInDataMap = optInDataList.stream().collect(Collectors.groupingBy(CustomerOptInData::getId));
+        List<CustomerOptInData> saveCustomerOptInDataList = new ArrayList<>();
+        for (Map.Entry<Long, List<CustomerOptInData>> optInDataEntry : optInDataMap.entrySet()) {
+            Long customerId = optInDataEntry.getKey();
+            List<CustomerOptInData> customerOptInDataList = optInDataEntry.getValue();
+            if (CollectionUtils.isEmpty(customerOptInDataList)) {
+                customerOptInDataList = customerOptInService.getDefaultOptInDataList(customerId, portfolioId);
+                saveCustomerOptInDataList.addAll(customerOptInDataList);
+            }
+            JSONObject optInDataJson = new JSONObject();
+            optInDataJson.put(CustomerJsonKey.ID, customerId);
+            for (CustomerOptInData optInData : customerOptInDataList) {
+                optInDataJson.put(
+                        EnumUtil.getKeyByValue(CustomerOptInType.class, optInData.getOptInType()),
+                        optInData.getOptInValue()
+                );
+            }
+            result.add(optInDataJson);
+        }
+        if (!CollectionUtils.isEmpty(saveCustomerOptInDataList)) {
+            ResultUtil.checkResult(customerOptInService.batchSave(saveCustomerOptInDataList), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
+        }
+        return result;
+    }
+
     private void cascadeFeatureByCustomerId(Long customerId, Long portfolioId, Collection<String> featureArray, JSONObject dataJson) throws ProcedureException {
         if (featureArray == null) {
             return;
@@ -228,6 +277,7 @@ public class CustomerFuture {
                     if (CollectionUtils.isEmpty(optInDataList)) {
                         optInDataList = customerOptInService.createCustomerOptIn(customerId, portfolioId);
                     }
+
                     for (CustomerOptInData optInData : optInDataList) {
                         optInDataJson.put(
                                 EnumUtil.getKeyByValue(CustomerOptInType.class, optInData.getOptInType()),
