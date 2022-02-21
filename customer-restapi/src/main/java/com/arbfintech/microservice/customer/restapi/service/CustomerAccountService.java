@@ -282,7 +282,7 @@ public class CustomerAccountService {
 
         CustomerProfile customerProfileDB = customerReader.getCustomerInfoByEmail(email);
         if (Objects.nonNull(customerProfileDB)) {
-            LOGGER.warn("[Activate Account]Failed to find customer profile. Email:{}", email);
+            LOGGER.warn("[Activate Account]Account has been created. Email:{}", email);
             throw new ProcedureException(CustomerErrorCode.FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED);
         }
 
