@@ -4,6 +4,8 @@ public class CustomerAccountDTO {
 
     private Long id;
 
+    private String accountId;
+
     private String username;
 
     private String nickname;
@@ -20,6 +22,14 @@ public class CustomerAccountDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
     }
 
     public String getUsername() {
