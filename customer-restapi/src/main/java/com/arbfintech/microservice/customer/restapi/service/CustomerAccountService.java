@@ -253,8 +253,8 @@ public class CustomerAccountService {
         if (Objects.isNull(tokenJson)) {
             tokenJson = new JSONObject() {{
                 put(CustomerJsonKey.ACCOUNT_ID, accountId);
-                put(CustomerCacheKey.ACCESS_TOKEN, UuidUtil.getUuid());
-                put(CustomerCacheKey.REFRESH_TOKEN, UuidUtil.getUuid());
+                put(CustomerCacheKey.ACCESS_TOKEN, accountId);
+                put(CustomerCacheKey.REFRESH_TOKEN, accountId);
                 put(CustomerJsonKey.CREATED_AT, createdAt);
             }};
         }
