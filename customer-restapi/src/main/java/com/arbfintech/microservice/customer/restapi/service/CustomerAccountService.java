@@ -16,6 +16,7 @@ import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDT
 import com.arbfintech.microservice.customer.object.entity.CustomerAccountData;
 import com.arbfintech.microservice.customer.object.entity.CustomerEmploymentData;
 import com.arbfintech.microservice.customer.object.entity.CustomerProfile;
+import com.arbfintech.microservice.customer.object.entity.CustomerStatementData;
 import com.arbfintech.microservice.customer.object.enumerate.ChangePasswordTypeEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerAccountStatusEnum;
 import com.arbfintech.microservice.customer.object.enumerate.CustomerErrorCode;
@@ -30,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -307,6 +311,35 @@ public class CustomerAccountService {
         employmentData.setId(customerId);
         commonWriter.save(employmentData);
 
+        BigDecimal amount = new BigDecimal(60000);
+
+        CustomerStatementData statementA = new CustomerStatementData();
+        statementA.setCustomerId(customerId);
+        statementA.setPayrollDate(1602820800000L);
+        statementA.setPayrollType(18000);
+        statementA.setAmount(amount);
+        statementA.setBalance(amount);
+
+        CustomerStatementData statementB = new CustomerStatementData();
+        statementB.setCustomerId(customerId);
+        statementB.setPayrollDate(1602820800000L);
+        statementB.setPayrollType(18000);
+        statementB.setAmount(amount);
+        statementB.setBalance(amount);
+
+        CustomerStatementData statementC = new CustomerStatementData();
+        statementC.setCustomerId(customerId);
+        statementC.setPayrollDate(1602820800000L);
+        statementC.setPayrollType(18000);
+        statementC.setAmount(amount);
+        statementC.setBalance(amount);
+
+        List<CustomerStatementData> list = new ArrayList<>();
+        list.add(statementA);
+        list.add(statementB);
+        list.add(statementC);
+
+        commonWriter.save(CustomerStatementData.class, JSON.toJSONString(list));
         return AjaxResult.success();
     }
 
