@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Repository
 public class CommonReader extends BaseJdbcReader {
@@ -80,7 +81,10 @@ public class CommonReader extends BaseJdbcReader {
         }
 
         T entity = findByOptions(tClass, sqlOption.toString());
-        return decodeEntity(tClass, entity);
+        if (Objects.nonNull(entity)) {
+            entity = decodeEntity(tClass, entity);
+        }
+        return entity;
     }
 
     private <T> T decodeEntity(Class<T> tClass, T entity) {

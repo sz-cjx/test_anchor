@@ -229,6 +229,9 @@ public class BusinessService {
         condition.put("contactType", contactVerifyDTO.getContactType());
 
         CustomerContactData customerContactData = commonReader.getEntityByCondition(CustomerContactData.class, condition);
+        if (Objects.isNull(customerContactData)) {
+            customerContactData = new CustomerContactData();
+        }
         customerContactData.setVerifiedStatus(VerifyEnum.VERIFIED.getValue());
         customerContactData.setVerifiedAt(DateUtil.getCurrentTimestamp());
         commonWriter.save(customerContactData);
