@@ -26,16 +26,14 @@ import com.arbfintech.microservice.customer.restapi.repository.CustomerReader;
 import com.arbfintech.microservice.customer.restapi.repository.cache.AuthRedisRepository;
 import com.arbfintech.microservice.customer.restapi.repository.reader.CommonReader;
 import com.arbfintech.microservice.customer.restapi.repository.writer.CommonWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomerAccountService {
@@ -58,10 +56,25 @@ public class CustomerAccountService {
     private AuthRedisRepository authRedisRepository;
 
     // TODO get accountId from token
-    public String getAccountInfo(Long id) {
-        CustomerAccountData customerAccountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, id);
+    public String getAccountInfo(Long id, String accountId) throws ProcedureException {
+        CustomerAccountData customerAccountData = null;
+        if (Objects.nonNull(id)) {
+            customerAccountData = commonReader.getEntityByCustomerId(CustomerAccountData.class, id);
+        } else if (StringUtils.isNotBlank(accountId)) {
+            Map<String, Object> condition = new HashMap<>();
+            condition.put(CustomerJsonKey.ACCOUNT_ID, accountId);
+            customerAccountData = commonReader.getEntityByCondition(CustomerAccountData.class, condition);
+        }
+
+        if (Objects.isNull(customerAccountData)) {
+            LOGGER.info("[Get Account]Fail to get account. CustomerId:{}, AccountId:{}", id, accountId);
+            throw new ProcedureException(CustomerErrorCode.QUERY_FAILURE_CUSTOMER_NOT_EXISTED);
+        }
+
+        CustomerProfile customerProfile = commonReader.getEntityByCustomerId(CustomerProfile.class, customerAccountData.getId());
         CustomerAccountDTO customerAccountDTO = JSON.parseObject(JSON.toJSONString(customerAccountData), CustomerAccountDTO.class);
         customerAccountDTO.setCreatedAt(DateUtil.timeStampToStr(customerAccountData.getCreatedAt()));
+        customerAccountDTO.setEmail(customerProfile.getEmail());
 
         return AjaxResult.success(customerAccountDTO);
     }

@@ -7,17 +7,27 @@ import com.arbfintech.microservice.customer.object.constant.CustomerJsonKey;
 import com.arbfintech.microservice.customer.object.dto.ActivateAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountDTO;
 import com.arbfintech.microservice.customer.object.dto.CustomerAccountPasswordDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 public class CustomerAccountClientApi extends BaseClientApi {
 
     private static final String CUSTOMER_REST_API = "/customer-restapi";
 
-    public AjaxResult getAccountInfo(Long id) {
+    public AjaxResult getAccountInfo(Long id, String accountId) {
+        HttpParamVariable httpParamVariable = HttpParamVariable.getInstance();
+        if (Objects.nonNull(id)) {
+            httpParamVariable.addParam(CustomerJsonKey.ID, id);
+        }
+        if (StringUtils.isNotBlank(accountId)) {
+            httpParamVariable.addParam(CustomerJsonKey.ACCOUNT_ID, accountId);
+        }
         return simpleRestCaller.get(
                 generateUrl(CUSTOMER_REST_API, "/account"),
-                HttpParamVariable.getInstance().addParam(CustomerJsonKey.ID, id).getParamMap()
+                httpParamVariable.getParamMap()
         );
     }
 

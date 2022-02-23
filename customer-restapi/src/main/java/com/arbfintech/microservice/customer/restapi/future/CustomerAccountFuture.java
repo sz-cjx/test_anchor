@@ -17,9 +17,15 @@ public class CustomerAccountFuture {
     @Autowired
     private CustomerAccountService customerAccountService;
 
-    public CompletableFuture<String> getAccountInfo(Long id) {
+    public CompletableFuture<String> getAccountInfo(Long id, String accountId) {
         return CompletableFuture.supplyAsync(
-                () -> customerAccountService.getAccountInfo(id)
+                () -> {
+                    try {
+                        return customerAccountService.getAccountInfo(id, accountId);
+                    } catch (ProcedureException e) {
+                        return AjaxResult.failure(e);
+                    }
+                }
         );
     }
 
