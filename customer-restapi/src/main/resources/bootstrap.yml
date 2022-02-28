@@ -2,7 +2,7 @@
 arb:
   service:
     name: customer-restapi
-    port: 8101
+    port: 9509
 eureka:
   instance:
     instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}
@@ -140,3 +140,11 @@ arb:
     url: 47.241.76.42:8901
   service:
     url: 8.214.38.179
+---
+spring:
+  profiles: aze-8
+arb:
+  eureka:
+    url: 8.214.104.21:7901
+  service:
+    url: 8.214.104.21
