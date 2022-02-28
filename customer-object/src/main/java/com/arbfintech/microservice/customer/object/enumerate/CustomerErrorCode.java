@@ -11,6 +11,7 @@ public enum CustomerErrorCode implements BaseError {
     QUERY_FAILURE_SEARCH_FAILED(-81010103, "Search failed, please enter at least one condition."),
     QUERY_FAILURE_MISS_REQUIRED_PARAM(-81010104, "Query failure, Miss required param"),
     QUERY_FAILURE_NO_DATA_WAS_QUERIED(-81010105, "Query failure, the assigned condition cannot query any data"),
+    FAILURE_INPUT_DATA_IS_INCOMPLETE(-81010106, "Failure: Input data is incomplete"),
 
     CREATE_FAILURE_CUSTOMER_SAVE(-81010201, "Create failed, save customer"),
     CREATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010202, "Create failed, save customer profile"),
@@ -21,7 +22,28 @@ public enum CustomerErrorCode implements BaseError {
     UPDATE_FAILURE_CUSTOMER_PROFILE_SAVE(-81010303, "Update failed, save customer profile"),
     UPDATE_FAILURE_OPT_IN_SAVE(-81010304, "Update failed, save opt in"),
     UPDATE_FAILURE_MISS_OPEN_ID(-81010305, "Update failed, miss open id"),
-    UPDATE_FAILURE_HAD_UNSUBSCRIBE(-81010306, "Update failed, customer had unsubscribe");
+    UPDATE_FAILURE_HAD_UNSUBSCRIBE(-81010306, "Update failed, customer had unsubscribe"),
+
+    FAILURE_PROFILE_NOT_EXIST(-81010400, "Profile feature is not exist"),
+    FAILURE_FAILED_TO_UPDATE_DATA(-81010401, "The data was not updated successfully"),
+    FAILURE_UPLOAD_FILE(-81010402, "Failure to upload file"),
+    FAILURE_CHANGE_TYPE_NOT_EXIST(-81010403, "Change password type is not exist"),
+    FAILURE_LOGIN_PASSWORD_INCORRECT(-81010404, "Current login password is incorrect"),
+    FAILURE_PAYMENT_PASSWORD_INCORRECT(-81010405, "Current payment password is incorrect"),
+    FAILURE_UPDATE_BANK_CARD_EXPIRATION_DATE(-81010406, "The expiration time of the bank card must be after the current time"),
+    FAILURE_QUERY_DATA_IS_EXISTED(-81010407, "Data is not existed"),
+    FAILURE_DOCUMENT_CATEGORY_NOT_EXIST(-81010408, "Document category type is not exist"),
+
+    FAILURE_ACTIVATE_ACCOUNT_EMAIL_NOT_EXIST(-81010410, "No corresponding user information found by email"),
+    FAILURE_ACTIVATE_ACCOUNT_HAS_BEEN_ACTIVATED(-81010411, "Account has been activated"),
+    FAILURE_SIGN_IN_ACCOUNT_NOT_EXIST(-81010412, "Sign-In failed, account is not existed."),
+    FAILURE_SIGN_IN_ACCOUNT_HAS_BEEN_DISABLED(-81010413, "Sign-In failed, account has been disabled"),
+    FAILURE_SIGN_IN_INCORRECT_PASSWORD(-81010413, "Sign-In failed, incorrect password."),
+
+    CALCULATOR_STOP_TO_MISSING_PARAMETER(-81010420, "Stop to calculate loan amount. Missing parameter"),
+    CALCULATOR_STOP_TO_CALCULATE_FAILURR(-81010421, "Stop to calculate loan amount. Fail to calculate."),
+    CUSTOMER_TO_LOAN_MISSING_APPROVED_AMOUNT(-81010422, "Fail to create loan, missing loan amount."),
+    ;
 
     private Integer code;
     private String message;

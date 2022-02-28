@@ -18,5 +18,10 @@
             <artifactId>customer.object</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.5.34</version>
+        </dependency>
     </dependencies>
 </project>

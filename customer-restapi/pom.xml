@@ -62,9 +62,32 @@
             <version>${parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.arbfintech.microservice</groupId>
+            <artifactId>origination.object</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.arbfintech.microservice</groupId>
+            <artifactId>loan.object</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.arbfintech.framework</groupId>
             <artifactId>component.database</artifactId>
             <version>${parent.version}</version>
+        </dependency>
+        <!-- Framework Cache Dependency -->
+        <dependency>
+            <groupId>com.arbfintech.framework</groupId>
+            <artifactId>component.cache</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.arbfintech.framework</groupId>
+            <artifactId>component-algorithm</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

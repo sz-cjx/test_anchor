@@ -29,6 +29,10 @@ public class CustomerUtil {
         return true;
     }
 
+    public static void main(String[] args) {
+        System.err.println(generateUniqueCode("593369859", "067024822", "43634818391"));
+    }
+
     public static String generateUniqueCode(String... valueArray) {
         for (int i = 0; i < valueArray.length; i++) {
             valueArray[i] = valueArray[i].trim().toUpperCase();

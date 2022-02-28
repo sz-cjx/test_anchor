@@ -41,7 +41,7 @@ public class CustomerProfile {
 
     /**
      * Had stateEnum
-     *
+     * <p>
      * EnumUtil.getValueByText(StateEnum.class, personalJson.getString(XmlKeyConst.STATE))
      */
     @Column
@@ -64,6 +64,12 @@ public class CustomerProfile {
 
     @Column
     private Long updatedAt;
+
+    @Column
+    private Integer military;
+
+    @Column
+    private Integer language;
 
     public Long getId() {
         return id;
@@ -191,5 +197,21 @@ public class CustomerProfile {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Integer getMilitary() {
+        return military;
+    }
+
+    public void setMilitary(Integer military) {
+        this.military = military;
+    }
+
+    public Integer getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Integer language) {
+        this.language = language;
     }
 }

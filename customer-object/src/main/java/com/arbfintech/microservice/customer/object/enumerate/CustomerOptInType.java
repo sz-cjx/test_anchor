@@ -2,9 +2,6 @@ package com.arbfintech.microservice.customer.object.enumerate;
 
 import com.arbfintech.framework.component.core.base.BaseEnum;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Fly_Roushan
  * @date 2021/1/6
@@ -24,7 +21,12 @@ public enum CustomerOptInType implements BaseEnum {
     /**
      * Home Phone
      */
-    CELL_PHONE(3, "Cell Phone", "CELL_PHONE", "cellPhone");
+    CELL_PHONE(3, "Cell Phone", "CELL_PHONE", "cellPhone"),
+
+    /**
+     * Alternative Email
+     */
+    ALTERNATIVE_EMAIL(4, "Alternative Email", "ALTERNATIVE_EMAIL", "alternativeEmail");
 
     CustomerOptInType(Integer value, String text, String code, String key) {
         this.value = value;
