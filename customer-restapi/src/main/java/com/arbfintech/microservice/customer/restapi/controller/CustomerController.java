@@ -2,6 +2,7 @@ package com.arbfintech.microservice.customer.restapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
+import com.arbfintech.microservice.customer.object.type.ListFeaturesResquest;
 import com.arbfintech.microservice.customer.restapi.future.CustomerFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -82,5 +83,10 @@ public class CustomerController {
             @RequestBody List<CustomerOptInData> optInDataList
     ) {
         return CompletableFuture.supplyAsync(() -> customerFuture.createCustomerOptIn(optInDataList));
+    }
+
+    @PostMapping("/list-features")
+    public String listFeatures(@RequestBody ListFeaturesResquest listFeaturesResquest) {
+        return customerFuture.listFeatures(listFeaturesResquest.getCustomerIds(), listFeaturesResquest.getPortfolioId());
     }
 }

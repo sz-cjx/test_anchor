@@ -5,6 +5,7 @@ import com.arbfintech.framework.component.core.base.BaseClientApi;
 import com.arbfintech.framework.component.core.type.AjaxResult;
 import com.arbfintech.framework.component.core.type.MultiValueManager;
 import com.arbfintech.microservice.customer.object.entity.CustomerOptInData;
+import com.arbfintech.microservice.customer.object.type.ListFeaturesResquest;
 import com.arbfintech.microservice.customer.object.type.SearchCustomerRequest;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +57,13 @@ public class CustomerClientApi extends BaseClientApi {
                         .add("portfolioId", portfolioId)
                         .add("features", String.join(",", features))
                         .getMap()
+        );
+    }
+
+    public AjaxResult listFeatures(ListFeaturesResquest listFeaturesResquest) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/customer/list-features"),
+                listFeaturesResquest
         );
     }
 

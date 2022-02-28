@@ -49,7 +49,7 @@ public class CustomerOptInService {
         return customerWriter.batchUpdateOptIn(dataList);
     }
 
-    private List<CustomerOptInData> getDefaultOptInDataList(Long id, Long portfolioId) {
+    public List<CustomerOptInData> getDefaultOptInDataList(Long id, Long portfolioId) {
         Long time = System.currentTimeMillis();
         Integer defaultValue = CustomerOptInValue.IS_MARKETING.getValue() + CustomerOptInValue.IS_OPERATION.getValue();
         List<CustomerOptInData> customerOptInDataList = new ArrayList<>();
