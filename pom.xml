@@ -3,13 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.arbfintech.microservice</groupId>
     <artifactId>customer</artifactId>
-    <version>3.2.0</version>
+    <version>4.0.1</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>customer-object</module>
-        <module>customer-restapi</module>
-        <module>customer-clientapi</module>
+        <module>customer-client</module>
+        <module>customer-server</module>
     </modules>
 
     <!-- global -->
@@ -43,7 +42,7 @@
     <dependencies>
         <!-- arbfintech components -->
         <dependency>
-            <groupId>com.arbfintech.framework</groupId>
+            <groupId>com.sztus.framework</groupId>
             <artifactId>component.core</artifactId>
             <version>${project.version}</version>
         </dependency>
