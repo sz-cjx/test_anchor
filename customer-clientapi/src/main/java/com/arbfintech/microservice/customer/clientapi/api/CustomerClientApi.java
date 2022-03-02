@@ -67,6 +67,13 @@ public class CustomerClientApi extends BaseClientApi {
         );
     }
 
+    public AjaxResult listCustomer(ListFeaturesResquest listFeaturesResquest) {
+        return simpleRestCaller.post(
+                generateUrl(CUSTOMER_REST_API, "/customer/list-customer"),
+                listFeaturesResquest
+        );
+    }
+
     public AjaxResult updateFeatures(JSONObject dataJson) {
         return simpleRestCaller.put(
                 generateUrl(CUSTOMER_REST_API, "/customer/update-features"),
