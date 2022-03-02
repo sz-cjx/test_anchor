@@ -2,7 +2,7 @@
 arb:
   service:
     name: customer-restapi
-    port: 8101
+    port: 9509
 eureka:
   instance:
     instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}
@@ -76,43 +76,6 @@ spring:
         poolPreparedStatements: true                # 打开PSCache，并且指定每个连接上PSCache的大小
         maxPoolPreparedStatementPerConnectionSize: 20
         filters: stat,wall,slf4j                    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙，此处是filter修改的地方
-  redis:
-    jedis:
-      pool:
-        MaxTotal: 200
-        minIdle: 1
-        maxWaitMillis: 5000
-        maxIdle: 5
-        testOnBorrow: true
-        testOnReturn: true
-        testWhileIdle: true
-    primary:
-      writer:
-        database: ${arb.redis.primary.writer.database}
-        hostName: ${arb.redis.primary.writer.url}
-        port: ${arb.redis.primary.writer.port}
-      reader:
-        database: ${arb.redis.primary.reader.database}
-        hostName: ${arb.redis.primary.reader.url}
-        port: ${arb.redis.primary.reader.port}
-    algorithm:
-      writer:
-        database: ${arb.redis.algorithm.writer.database}
-        hostName: ${arb.redis.algorithm.writer.url}
-        port: ${arb.redis.algorithm.writer.port}
-      reader:
-        database: ${arb.redis.algorithm.reader.database}
-        hostName: ${arb.redis.algorithm.reader.url}
-        port: ${arb.redis.algorithm.reader.port}
-    auth:
-      writer:
-        database: ${arb.redis.auth.writer.database}
-        hostName: ${arb.redis.auth.writer.url}
-        port: ${arb.redis.auth.writer.port}
-      reader:
-        database: ${arb.redis.auth.reader.database}
-        hostName: ${arb.redis.auth.reader.url}
-        port: ${arb.redis.auth.reader.port}
 ---
 spring:
   profiles: local-v3.2
@@ -185,3 +148,11 @@ arb:
     url: 47.241.9.237:8901
   service:
     url: 47.241.9.237
+---
+spring:
+  profiles: aze-8
+arb:
+  eureka:
+    url: 8.214.104.21:7901
+  service:
+    url: 8.214.104.21
