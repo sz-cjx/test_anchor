@@ -140,3 +140,11 @@ arb:
     url: FRAMEWORK-EUREKA-SERVER-DEV-V3-2.us-west-1.elasticbeanstalk.com:7901
   service:
     url: MICROSERVICE-EMPLOYEE-DEV-V3-2.us-west-1.elasticbeanstalk.com
+---
+spring:
+  profiles: aze-8
+arb:
+  eureka:
+    url: 8.214.104.21:7901
+  service:
+    url: 8.214.104.21
