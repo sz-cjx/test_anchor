@@ -1,0 +1,14 @@
+FROM java:8
+ENV APPLICATION='customer-restapi'
+VOLUME /tmp
+
+ADD customer.restapi-3.2.0.jar customer.jar
+
+RUN bash -c 'touch /customer.jar'
+RUN ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+RUN echo 'America/New_York' >/etc/timezone
+
+EXPOSE 8101
+COPY agent /usr/local/agent
+#ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/customer.jar"]
+ENTRYPOINT [ "sh", "-c", "java  -javaagent:/usr/local/agent/skywalking-agent.jar -Dskywalking.agent.service_name=microservice-customer -Dskywalking.collector.backend_service=skywalking.sztus.com:11800 -Djava.security.egd=file:/dev/./urandom -jar /customer.jar" ]
