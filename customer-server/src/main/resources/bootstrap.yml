@@ -9,7 +9,7 @@ server:
   port: ${arb.service.port}
   servlet:
     #  统一访问前缀
-    context-path: /v3
+    context-path: /v4
 spring:
   application:
     name: ${arb.service.name}
@@ -94,21 +94,6 @@ spring:
         hostName: ${arb.redis.primary.reader.url}
         port: ${arb.redis.primary.reader.port}
 
-  #  消息队列组件, 选配 看自己的服务是否需要他
-  rabbitmq:
-    host: ${arb.rabbitmq.url}
-    username: ${arb.rabbitmq.username}
-    password: ${arb.rabbitmq.password}
-    port: ${arb.rabbitmq.port}
-    ssl:
-      enabled: ${arb.rabbitmq.ssl.enabled}
-      algorithm: ${arb.rabbitmq.ssl.algorithm}
-    publisher-confirms: true
-    publisher-returns: true
-    listener:
-      simple:
-        acknowledge-mode: manual
-
 eureka:
   instance:
     instance-id: ${arb.service.url}:${spring.application.name}:${arb.service.port}
@@ -147,14 +132,6 @@ arb:
         database: 2
         url: 172.18.1.251
         port: 6379
-  rabbitmq:
-    url: 172.18.1.251
-    username: arbfintech
-    password: Arb@8888
-    port: 5672
-    ssl:
-      enabled: false
-      algorithm: TLSv1.2
 ---
 spring:
   profiles: develop-v3.2
