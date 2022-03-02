@@ -146,6 +146,16 @@ public class CustomerFuture {
 
     }
 
+    public String listCustomer(List<Long> customerIds) {
+        try {
+            return AjaxResult.success(cascadeCustomersByCustomerIds(customerIds));
+        } catch (Exception e) {
+            LOGGER.warn(e.getMessage());
+            return AjaxResult.failure(e);
+        }
+
+    }
+
     public CompletableFuture<String> updateFeatures(JSONObject dataJson) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -213,6 +223,15 @@ public class CustomerFuture {
                     SqlOption.getInstance().whereEqual("unique_code", uniqueCode, null).toString())
             );
         });
+    }
+
+    private List<Customer> cascadeCustomersByCustomerIds(List<Long> customerIds) {
+        if (CollectionUtils.isEmpty(customerIds)) {
+            return new ArrayList<>();
+        }
+        SqlOption customerSql = SqlOption.getInstance();
+        customerSql.whereIN("id", customerIds, null);
+        return Optional.ofNullable(simpleService.findAllByOptions(Customer.class, customerSql.toString())).orElse(new ArrayList<>());
     }
 
     private JSONArray cascadeFeatureByCustomerIds(List<Long> customerIds, Long portfolioId) throws ProcedureException {

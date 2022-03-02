@@ -89,4 +89,9 @@ public class CustomerController {
     public String listFeatures(@RequestBody ListFeaturesResquest listFeaturesResquest) {
         return customerFuture.listFeatures(listFeaturesResquest.getCustomerIds(), listFeaturesResquest.getPortfolioId());
     }
+
+    @PostMapping("/list-customer")
+    public String listCustomer(@RequestBody ListFeaturesResquest listFeaturesResquest) {
+        return customerFuture.listCustomer(listFeaturesResquest.getCustomerIds());
+    }
 }
