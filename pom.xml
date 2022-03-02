@@ -40,7 +40,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- arbfintech components -->
+        <!-- sztus components -->
         <dependency>
             <groupId>com.sztus.framework</groupId>
             <artifactId>component.core</artifactId>
