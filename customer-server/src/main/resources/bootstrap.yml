@@ -115,7 +115,7 @@ arb:
       url: 172.18.1.251:3308
     reader:
       url: 172.18.1.251:3308
-    schema: employee
+    schema: customer
     username: root
     password: Arb@8888
   eureka:
