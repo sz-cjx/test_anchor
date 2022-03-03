@@ -6,11 +6,15 @@ import com.sztus.microservice.customer.client.object.parameter.request.GetCustom
 import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerByConditionsResponse;
 import com.sztus.microservice.customer.server.converter.CustomerMapper;
 import com.sztus.microservice.customer.server.domain.CustomerAccountData;
+import com.sztus.microservice.customer.server.domain.CustomerProfile;
 import com.sztus.microservice.customer.server.service.CustomerAccountService;
+import com.sztus.microservice.customer.server.service.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping
@@ -22,13 +26,16 @@ public class CustomerController {
     ) {
         String email = request.getEmail();
 
-        CustomerAccountData customerAccountData = customerAccountService.getCustomerByConditions(email);
+        CustomerProfile customerProfile = customerProfileService.getCustomerProfileByConditions(email);
 
-        GetCustomerByConditionsResponse response = (GetCustomerByConditionsResponse) CustomerMapper.INSTANCE.convertCustomerToView(customerAccountData);
+        GetCustomerByConditionsResponse response = null;
+        if (Objects.nonNull(customerProfile)) {
+            response = CustomerMapper.INSTANCE.convertCustomerProfileToResponse(customerProfile);
+        }
 
         return AjaxResult.success(response);
     }
 
     @Autowired
-    private CustomerAccountService customerAccountService;
+    private CustomerProfileService customerProfileService;
 }
