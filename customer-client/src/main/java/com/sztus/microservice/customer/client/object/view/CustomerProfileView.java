@@ -1,7 +1,5 @@
 package com.sztus.microservice.customer.client.object.view;
 
-import com.sztus.framework.component.core.annotation.Column;
-
 public class CustomerProfileView {
 
     private Long id;

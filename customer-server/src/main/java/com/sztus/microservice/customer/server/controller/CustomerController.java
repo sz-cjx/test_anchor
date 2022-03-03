@@ -2,7 +2,9 @@ package com.sztus.microservice.customer.server.controller;
 
 import com.sztus.framework.component.core.type.AjaxResult;
 import com.sztus.microservice.customer.client.constant.CustomerAction;
+import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerAccountByConditionsRequest;
 import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerByConditionsRequest;
+import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerAccountByConditionsResponse;
 import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerByConditionsResponse;
 import com.sztus.microservice.customer.server.converter.CustomerMapper;
 import com.sztus.microservice.customer.server.domain.CustomerAccountData;
@@ -36,6 +38,25 @@ public class CustomerController {
         return AjaxResult.success(response);
     }
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_ACCOUNT_BY_CONDITIONS)
+    public String getCustomerAccountByConditions(
+            GetCustomerAccountByConditionsRequest request
+    ) {
+        Long customerId = request.getId();
+
+        CustomerAccountData customerAccountData = customerAccountService.getCustomerAccountByConditions(null, customerId);
+
+        GetCustomerAccountByConditionsResponse response = null;
+        if (Objects.nonNull(customerAccountData)) {
+            response = CustomerMapper.INSTANCE.convertCustomerAccountToResponse(customerAccountData);
+        }
+
+        return AjaxResult.success(response);
+    }
+
     @Autowired
     private CustomerProfileService customerProfileService;
+
+    @Autowired
+    private CustomerAccountService customerAccountService;
 }

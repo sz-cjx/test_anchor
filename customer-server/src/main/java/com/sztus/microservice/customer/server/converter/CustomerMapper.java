@@ -1,5 +1,6 @@
 package com.sztus.microservice.customer.server.converter;
 
+import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerAccountByConditionsResponse;
 import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerByConditionsResponse;
 import com.sztus.microservice.customer.client.object.view.CustomerAccountView;
 import com.sztus.microservice.customer.server.domain.CustomerAccountData;
@@ -13,6 +14,8 @@ public interface CustomerMapper {
     CustomerAccountData convertViewToCustomer(CustomerAccountView customerAccountView);
 
     GetCustomerByConditionsResponse convertCustomerProfileToResponse(CustomerProfile customerProfile);
+
+    GetCustomerAccountByConditionsResponse convertCustomerAccountToResponse(CustomerAccountData customerAccountData);
 
     CustomerAccountView convertCustomerToView(CustomerAccountData customerAccountData);
 

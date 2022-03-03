@@ -14,12 +14,15 @@ import java.util.Objects;
 @Service
 public class CustomerAccountService {
 
-    public CustomerAccountData getCustomerAccountByConditions(String openId) {
+    public CustomerAccountData getCustomerAccountByConditions(String openId, Long id) {
         LOGGER.info(">>> CustomerAccountService.getCustomerAccountByConditions");
 
         SqlOption sqlOption = SqlOption.getInstance();
         if (Objects.nonNull(openId)) {
             sqlOption.whereEqual(DbKey.OPEN_ID, openId);
+        }
+        if (Objects.nonNull(id)) {
+            sqlOption.whereEqual(DbKey.ID, id);
         }
 
         return simpleJdbcReader.findByOptions(CustomerAccountData.class, sqlOption.toString());
