@@ -11,6 +11,7 @@ import com.sztus.microservice.customer.server.domain.CustomerAccountData;
 import com.sztus.microservice.customer.server.domain.CustomerProfile;
 import com.sztus.microservice.customer.server.service.CustomerAccountService;
 import com.sztus.microservice.customer.server.service.CustomerProfileService;
+import com.sztus.microservice.customer.server.util.AESCryptoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class CustomerController {
     ) {
         String email = request.getEmail();
 
-        CustomerProfile customerProfile = customerProfileService.getCustomerProfileByConditions(email);
+        CustomerProfile customerProfile = customerProfileService.getCustomerProfileByConditions(AESCryptoUtil.AESEncrypt(email));
 
         GetCustomerByConditionsResponse response = null;
         if (Objects.nonNull(customerProfile)) {
