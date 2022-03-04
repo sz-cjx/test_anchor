@@ -1,7 +1,6 @@
 package com.sztus.microservice.customer.server.service;
 
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.framework.component.core.type.ResponseCode;
 import com.sztus.framework.component.core.type.SqlOption;
 import com.sztus.framework.component.database.core.SimpleJdbcReader;
 import com.sztus.microservice.customer.client.object.enumeration.CustomerErrorCode;
@@ -23,7 +22,7 @@ public class CustomerProfileService {
     public CustomerProfile getCustomerProfileByConditions(GetCustomerByConditionsRequest request) throws ProcedureException {
 
         String email = request.getEmail();
-        if (StringUtils.isBlank(email)) throw new ProcedureException(ResponseCode.FAILURE_PARAMETER_IS_INCOMPLETE);
+        if (StringUtils.isBlank(email)) throw new ProcedureException(CustomerErrorCode.FAILURE_PARAMETER_IS_INCOMPLETE);
 
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.EMAIL, AESCryptoUtil.AESEncrypt(email));

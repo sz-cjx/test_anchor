@@ -2,7 +2,6 @@ package com.sztus.microservice.customer.server.controller;
 
 import com.sztus.framework.component.core.type.AjaxResult;
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.framework.component.core.type.ResponseResult;
 import com.sztus.microservice.customer.client.constant.CustomerAction;
 import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerAccountByConditionsRequest;
 import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerByConditionsRequest;
@@ -32,7 +31,7 @@ public class CustomerController {
             CustomerProfile customerProfile = customerProfileService.getCustomerProfileByConditions(request);
             return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerProfileToResponse(customerProfile));
         } catch (ProcedureException e) {
-            return ResponseResult.failure(e);
+            return AjaxResult.failure(e);
         }
     }
 
