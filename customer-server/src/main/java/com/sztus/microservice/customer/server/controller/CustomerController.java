@@ -31,8 +31,7 @@ public class CustomerController {
     ) {
 
         try {
-            String email = request.getEmail();
-            CustomerProfile customerProfile = customerProfileService.getCustomerProfileByConditions(AESCryptoUtil.AESEncrypt(email));
+            CustomerProfile customerProfile = customerProfileService.getCustomerProfileByConditions(request);
             return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerProfileToResponse(customerProfile));
         } catch (ProcedureException e) {
             return ResponseResult.failure(e);

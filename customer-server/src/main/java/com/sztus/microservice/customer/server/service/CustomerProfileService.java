@@ -1,11 +1,15 @@
 package com.sztus.microservice.customer.server.service;
 
 import com.sztus.framework.component.core.type.ProcedureException;
+import com.sztus.framework.component.core.type.ResponseCode;
 import com.sztus.framework.component.core.type.SqlOption;
 import com.sztus.framework.component.database.core.SimpleJdbcReader;
 import com.sztus.microservice.customer.client.object.enumeration.CustomerErrorCode;
+import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerByConditionsRequest;
 import com.sztus.microservice.customer.server.constant.DbKey;
 import com.sztus.microservice.customer.server.domain.CustomerProfile;
+import com.sztus.microservice.customer.server.util.AESCryptoUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +21,13 @@ import java.util.Optional;
 @Service
 public class CustomerProfileService {
 
-    public CustomerProfile getCustomerProfileByConditions(String email) throws ProcedureException {
-        LOGGER.info(">>> CustomerAccountService.getCustomerProfileByConditions");
+    public CustomerProfile getCustomerProfileByConditions(GetCustomerByConditionsRequest request) throws ProcedureException {
+
+        String email = request.getEmail();
+        if (StringUtils.isBlank(email)) throw new ProcedureException(ResponseCode.FAILURE_PARAMETER_IS_INCOMPLETE);
 
         SqlOption sqlOption = SqlOption.getInstance();
-        if (Objects.nonNull(email)) {
-            sqlOption.whereEqual(DbKey.EMAIL, email);
-        }
+        sqlOption.whereEqual(DbKey.EMAIL, AESCryptoUtil.AESEncrypt(email));
 
         return Optional
                 .ofNullable(simpleJdbcReader.findByOptions(CustomerProfile.class, sqlOption.toString()))
