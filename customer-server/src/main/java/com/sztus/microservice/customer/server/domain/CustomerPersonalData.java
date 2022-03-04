@@ -1,24 +1,70 @@
-package com.sztus.microservice.customer.client.object.view;
+package com.sztus.microservice.customer.server.domain;
 
-public class CustomerProfileView {
+import com.sztus.framework.component.core.annotation.Column;
+import com.sztus.framework.component.core.annotation.Entity;
+import com.sztus.framework.component.core.annotation.Id;
 
+@Entity
+public class CustomerPersonalData {
+
+    @Id
+    @Column
     private Long id;
+
+    @Column
     private String firstName;
+
+    @Column
     private String middleName;
+
+    @Column
     private String lastName;
+
+    @Column
     private String ssn;
+
+    @Column
     private Integer gender;
+
+    @Column
     private String birthday;
+
+    @Column
     private String address;
+
+    @Column
     private String city;
+
+    /**
+     * Had stateEnum
+     * <p>
+     * EnumUtil.getValueByText(StateEnum.class, personalJson.getString(XmlKeyConst.STATE))
+     */
+    @Column
     private Integer state;
+
+    @Column
     private String zip;
+
+    @Column
     private String homePhone;
+
+    @Column
     private String cellPhone;
+
+    @Column
     private String email;
+
+    @Column
     private Long createdAt;
+
+    @Column
     private Long updatedAt;
+
+    @Column
     private Integer military;
+
+    @Column
     private Integer language;
 
     public Long getId() {

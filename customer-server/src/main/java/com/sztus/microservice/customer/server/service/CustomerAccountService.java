@@ -3,7 +3,7 @@ package com.sztus.microservice.customer.server.service;
 import com.sztus.framework.component.core.type.SqlOption;
 import com.sztus.framework.component.database.core.SimpleJdbcReader;
 import com.sztus.microservice.customer.server.constant.DbKey;
-import com.sztus.microservice.customer.server.domain.CustomerAccountData;
+import com.sztus.microservice.customer.server.domain.CustomerProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Service
 public class CustomerAccountService {
 
-    public CustomerAccountData getCustomerAccountByConditions(String openId, Long id) {
+    public CustomerProfile getCustomerAccountByConditions(String openId, Long id) {
         LOGGER.info(">>> CustomerAccountService.getCustomerAccountByConditions");
 
         SqlOption sqlOption = SqlOption.getInstance();
@@ -25,7 +25,7 @@ public class CustomerAccountService {
             sqlOption.whereEqual(DbKey.ID, id);
         }
 
-        return simpleJdbcReader.findByOptions(CustomerAccountData.class, sqlOption.toString());
+        return simpleJdbcReader.findByOptions(CustomerProfile.class, sqlOption.toString());
     }
 
     @Autowired

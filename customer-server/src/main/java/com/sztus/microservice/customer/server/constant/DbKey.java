@@ -5,7 +5,7 @@ package com.sztus.microservice.customer.server.constant;
  */
 public interface DbKey {
 
-    String CUSTOMER_ID = "customerId";
+    String CUSTOMER_ID = "customer_id";
 
     String EMAIL = "email";
 

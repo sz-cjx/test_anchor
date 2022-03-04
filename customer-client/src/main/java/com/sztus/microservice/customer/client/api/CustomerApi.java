@@ -25,15 +25,6 @@ public class CustomerApi extends BaseClientApi {
         return fetchResultDataObject(ajaxResult, GetCustomerByConditionsResponse.class);
     }
 
-    public GetCustomerAccountByConditionsResponse getCustomerAccountByConditions(GetCustomerAccountByConditionsRequest request) throws ProcedureException {
-        AjaxResult ajaxResult = restCaller.get(
-                generateUrl(Re.ROOT, CustomerAction.GET_CUSTOMER_ACCOUNT_BY_CONDITIONS),
-                request
-        );
-
-        return fetchResultDataObject(ajaxResult, GetCustomerAccountByConditionsResponse.class);
-    }
-
     @Autowired
     private SimpleRestCaller restCaller;
 }

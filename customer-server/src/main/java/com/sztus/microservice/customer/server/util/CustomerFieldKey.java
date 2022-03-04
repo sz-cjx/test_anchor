@@ -3,7 +3,7 @@ package com.sztus.microservice.customer.server.util;
 import com.sztus.microservice.customer.server.constant.CustomerJsonKey;
 import com.sztus.microservice.customer.server.domain.CustomerBankData;
 import com.sztus.microservice.customer.server.domain.CustomerContactData;
-import com.sztus.microservice.customer.server.domain.CustomerProfile;
+import com.sztus.microservice.customer.server.domain.CustomerPersonalData;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,7 +85,7 @@ public class CustomerFieldKey {
      * 需要加密解密的class
      */
     private static final List<Class> ENCODE_CLASS_LIST = Arrays.asList(
-            CustomerProfile.class,
+            CustomerPersonalData.class,
             CustomerBankData.class,
             CustomerContactData.class
     );

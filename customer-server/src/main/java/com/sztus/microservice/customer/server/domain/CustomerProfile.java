@@ -2,61 +2,29 @@ package com.sztus.microservice.customer.server.domain;
 
 import com.sztus.framework.component.core.annotation.Column;
 import com.sztus.framework.component.core.annotation.Entity;
+import com.sztus.framework.component.core.annotation.GeneratedValue;
 import com.sztus.framework.component.core.annotation.Id;
+import com.sztus.framework.component.core.enumerate.GenerationType;
 
-/**
- * @author Crystal
- */
 @Entity
 public class CustomerProfile {
 
     @Id
     @Column
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long customerId;
 
     @Column
-    private String firstName;
+    private String username;
 
     @Column
-    private String middleName;
+    private String nickname;
 
     @Column
-    private String lastName;
+    private String introduction;
 
     @Column
-    private String ssn;
-
-    @Column
-    private Integer gender;
-
-    @Column
-    private String birthday;
-
-    @Column
-    private String address;
-
-    @Column
-    private String city;
-
-    /**
-     * Had stateEnum
-     * <p>
-     * EnumUtil.getValueByText(StateEnum.class, personalJson.getString(XmlKeyConst.STATE))
-     */
-    @Column
-    private Integer state;
-
-    @Column
-    private String zip;
-
-    @Column
-    private String homePhone;
-
-    @Column
-    private String cellPhone;
-
-    @Column
-    private String email;
+    private String avatarUrl;
 
     @Column
     private Long createdAt;
@@ -64,122 +32,44 @@ public class CustomerProfile {
     @Column
     private Long updatedAt;
 
-    @Column
-    private Integer military;
-
-    @Column
-    private Integer language;
-
-    public Long getId() {
-        return id;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getMiddleName() {
-        return middleName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
-    public String getSsn() {
-        return ssn;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setSsn(String ssn) {
-        this.ssn = ssn;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public String getHomePhone() {
-        return homePhone;
-    }
-
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
-
-    public String getCellPhone() {
-        return cellPhone;
-    }
-
-    public void setCellPhone(String cellPhone) {
-        this.cellPhone = cellPhone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public Long getCreatedAt() {
@@ -196,21 +86,5 @@ public class CustomerProfile {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Integer getMilitary() {
-        return military;
-    }
-
-    public void setMilitary(Integer military) {
-        this.military = military;
-    }
-
-    public Integer getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Integer language) {
-        this.language = language;
     }
 }
