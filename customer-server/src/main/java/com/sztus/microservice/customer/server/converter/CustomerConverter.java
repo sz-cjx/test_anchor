@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface CustomerMapper {
+public interface CustomerConverter {
 
     CustomerAccountData convertViewToCustomer(CustomerAccountView customerAccountView);
 
@@ -19,6 +19,6 @@ public interface CustomerMapper {
 
     CustomerAccountView convertCustomerToView(CustomerAccountData customerAccountData);
 
-    CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
+    CustomerConverter INSTANCE = Mappers.getMapper(CustomerConverter.class);
 
 }
