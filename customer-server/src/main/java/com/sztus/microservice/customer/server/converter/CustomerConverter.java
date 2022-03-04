@@ -10,11 +10,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface CustomerConverter {
 
-    CustomerProfile convertViewToCustomer(CustomerAccountView customerAccountView);
-
-    GetCustomerByConditionsResponse convertCustomerProfileToResponse(Customer customer);
-
-    CustomerAccountView convertCustomerToView(CustomerProfile customerProfile);
+    GetCustomerByConditionsResponse convertCustomerToGetCustomerResponse(Customer customer);
 
     CustomerConverter INSTANCE = Mappers.getMapper(CustomerConverter.class);
 

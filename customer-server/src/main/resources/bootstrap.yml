@@ -110,6 +110,8 @@ eureka:
 spring:
   profiles: local-v4
 arb:
+  gateway:
+    url: http://localhost:8910
   database:
     writer:
       url: 172.18.1.251:3308

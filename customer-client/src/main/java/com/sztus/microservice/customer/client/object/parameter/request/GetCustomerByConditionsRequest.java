@@ -1,6 +1,7 @@
 package com.sztus.microservice.customer.client.object.parameter.request;
 
 public class GetCustomerByConditionsRequest {
+
     private String email;
 
     public String getEmail() {
@@ -10,4 +11,5 @@ public class GetCustomerByConditionsRequest {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

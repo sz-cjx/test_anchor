@@ -22,8 +22,8 @@ public class CustomerController {
     ) {
 
         try {
-            Customer customerPersonalData = customerService.getCustomerProfileByConditions(request);
-            return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerProfileToResponse(customerPersonalData));
+            Customer customer = customerService.getCustomerByConditions(request);
+            return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerToGetCustomerResponse(customer));
         } catch (ProcedureException e) {
             return AjaxResult.failure(e);
         }
