@@ -108,7 +108,7 @@ eureka:
     healthcheck: enabled
 ---
 spring:
-  profiles: local-v3.2
+  profiles: local-v4
 arb:
   database:
     writer:
