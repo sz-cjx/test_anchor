@@ -16,8 +16,9 @@ import java.util.Optional;
 @Service
 public class CustomerService {
 
-    public Customer getCustomerByEmail(String email) throws ProcedureException {
+    public Customer getCustomerByConditions(GetCustomerByConditionsRequest request) throws ProcedureException {
 
+        String email = request.getEmail();
         if (StringUtils.isBlank(email)) {
             throw new ProcedureException(CustomerErrorCode.FAILURE_PARAMETER_IS_INCOMPLETE);
         }

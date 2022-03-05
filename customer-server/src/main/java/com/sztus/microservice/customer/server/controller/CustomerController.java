@@ -17,13 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerController {
 
     @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITIONS)
-    public String getCustomerByConditions(
+    public String getCustomerRequest(
             GetCustomerByConditionsRequest request
     ) {
 
         try {
-            String email = request.getEmail();
-            Customer customer = customerService.getCustomerByEmail(email);
+            Customer customer = customerService.getCustomerByConditions(request);
             return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerToGetCustomerResponse(customer));
         } catch (ProcedureException e) {
             return AjaxResult.failure(e);
