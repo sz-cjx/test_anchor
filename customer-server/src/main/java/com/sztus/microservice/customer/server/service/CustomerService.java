@@ -7,7 +7,6 @@ import com.sztus.microservice.customer.client.object.enumeration.CustomerErrorCo
 import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerByConditionsRequest;
 import com.sztus.microservice.customer.server.constant.DbKey;
 import com.sztus.microservice.customer.server.domain.Customer;
-import com.sztus.microservice.customer.server.util.AESCryptoUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +16,14 @@ import java.util.Optional;
 @Service
 public class CustomerService {
 
-    public Customer getCustomerByConditions(GetCustomerByConditionsRequest request) throws ProcedureException {
+    public Customer getCustomerByEmail(String email) throws ProcedureException {
 
-        String email = request.getEmail();
-        if (StringUtils.isBlank(email)) throw new ProcedureException(CustomerErrorCode.FAILURE_PARAMETER_IS_INCOMPLETE);
+        if (StringUtils.isBlank(email)) {
+            throw new ProcedureException(CustomerErrorCode.FAILURE_PARAMETER_IS_INCOMPLETE);
+        }
 
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.EMAIL, AESCryptoUtil.AESEncrypt(email));
+        sqlOption.whereEqual(DbKey.EMAIL, email);
 
         return Optional
                 .ofNullable(simpleJdbcReader.findByOptions(Customer.class, sqlOption.toString()))

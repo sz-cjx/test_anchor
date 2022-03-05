@@ -22,7 +22,8 @@ public class CustomerController {
     ) {
 
         try {
-            Customer customer = customerService.getCustomerByConditions(request);
+            String email = request.getEmail();
+            Customer customer = customerService.getCustomerByEmail(email);
             return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerToGetCustomerResponse(customer));
         } catch (ProcedureException e) {
             return AjaxResult.failure(e);
