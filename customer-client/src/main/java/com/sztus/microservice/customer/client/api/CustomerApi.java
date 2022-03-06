@@ -4,23 +4,26 @@ import com.sztus.framework.component.core.base.BaseClientApi;
 import com.sztus.framework.component.core.component.SimpleRestCaller;
 import com.sztus.framework.component.core.type.AjaxResult;
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.microservice.customer.client.constant.CustomerAction;
-import com.sztus.microservice.customer.client.constant.Re;
-import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerByConditionsRequest;
-import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerByConditionsResponse;
+import com.sztus.microservice.customer.client.object.business.CustomerAction;
+import com.sztus.microservice.customer.client.object.business.Re;
+import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerRequest;
+import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerApi extends BaseClientApi {
 
-    public GetCustomerByConditionsResponse getCustomerByConditions(GetCustomerByConditionsRequest request) throws ProcedureException {
+    public GetCustomerResponse getCustomer(String email) throws ProcedureException {
+        GetCustomerRequest request = new GetCustomerRequest();
+        request.setEmail(email);
+
         AjaxResult ajaxResult = restCaller.get(
-                generateUrl(Re.ROOT, CustomerAction.GET_CUSTOMER_BY_CONDITIONS),
+                generateUrl(Re.ROOT, CustomerAction.GET_CUSTOMER),
                 request
         );
 
-        return fetchResultDataObject(ajaxResult, GetCustomerByConditionsResponse.class);
+        return fetchResultDataObject(ajaxResult, GetCustomerResponse.class);
     }
 
     @Autowired

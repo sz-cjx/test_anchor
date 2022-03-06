@@ -1,4 +1,4 @@
-package com.sztus.microservice.customer.client.constant;
+package com.sztus.microservice.customer.client.object.business;
 
 /**
  * Runtime Environments

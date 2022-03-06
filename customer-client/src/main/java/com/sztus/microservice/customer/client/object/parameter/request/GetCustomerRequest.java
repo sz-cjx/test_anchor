@@ -1,6 +1,6 @@
 package com.sztus.microservice.customer.client.object.parameter.request;
 
-public class GetCustomerByConditionsRequest {
+public class GetCustomerRequest {
 
     private String email;
 

@@ -2,8 +2,9 @@ package com.sztus.microservice.customer.server.controller;
 
 import com.sztus.framework.component.core.type.AjaxResult;
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.microservice.customer.client.constant.CustomerAction;
-import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerByConditionsRequest;
+import com.sztus.microservice.customer.client.object.business.CustomerAction;
+import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerRequest;
+import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerResponse;
 import com.sztus.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.microservice.customer.server.domain.Customer;
 import com.sztus.microservice.customer.server.service.CustomerService;
@@ -16,14 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class CustomerController {
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITIONS)
-    public String getCustomerRequest(
-            GetCustomerByConditionsRequest request
+    @GetMapping(CustomerAction.GET_CUSTOMER)
+    public String getCustomer(
+            GetCustomerRequest request
     ) {
-
         try {
-            Customer customer = customerService.getCustomerByConditions(request);
-            return AjaxResult.success(CustomerConverter.INSTANCE.convertCustomerToGetCustomerResponse(customer));
+            String email = request.getEmail();
+
+            Customer customer = customerService.getCustomer(email);
+
+            GetCustomerResponse response = CustomerConverter.INSTANCE.CustomerToGetCustomerResponse(customer);
+
+            return AjaxResult.success(response);
         } catch (ProcedureException e) {
             return AjaxResult.failure(e);
         }
