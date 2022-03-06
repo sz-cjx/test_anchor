@@ -108,14 +108,16 @@ eureka:
     healthcheck: enabled
 ---
 spring:
-  profiles: local-v3.2
+  profiles: local-v4
 arb:
+  gateway:
+    url: http://localhost:8910
   database:
     writer:
       url: 172.18.1.251:3308
     reader:
       url: 172.18.1.251:3308
-    schema: employee
+    schema: customer
     username: root
     password: Arb@8888
   eureka:
