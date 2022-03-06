@@ -24,11 +24,11 @@ public class CustomerService {
         sqlOption.whereEqual(DbKey.EMAIL, email);
 
         return Optional
-                .ofNullable(simpleJdbcReader.findByOptions(Customer.class, sqlOption.toString()))
+                .ofNullable(jdbcReader.findByOptions(Customer.class, sqlOption.toString()))
                 .orElseThrow(() -> new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED));
     }
 
     @Autowired
-    private SimpleJdbcReader simpleJdbcReader;
+    private SimpleJdbcReader jdbcReader;
 
 }
