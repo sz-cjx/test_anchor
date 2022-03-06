@@ -14,10 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomerApi extends BaseClientApi {
 
-    public GetCustomerResponse getCustomer(String email) throws ProcedureException {
-        GetCustomerRequest request = new GetCustomerRequest();
-        request.setEmail(email);
-
+    public GetCustomerResponse getCustomer(GetCustomerRequest request) throws ProcedureException {
         AjaxResult ajaxResult = restCaller.get(
                 generateUrl(Re.ROOT, CustomerAction.GET_CUSTOMER),
                 request
