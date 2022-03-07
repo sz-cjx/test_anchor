@@ -96,12 +96,12 @@ spring:
 
 eureka:
   instance:
-    instance-id: ${arb.service.url}:${spring.application.name}:${arb.service.port}
+    instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}
     hostname: ${arb.service.url}
     ip-address: ${arb.service.url}
+    prefer-ip-address: true
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 10
-    prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://${arb.eureka.url}/eureka/
@@ -134,14 +134,6 @@ arb:
         database: 2
         url: 172.18.1.251
         port: 6379
----
-spring:
-  profiles: develop-v3.2
-arb:
-  eureka:
-    url: FRAMEWORK-EUREKA-SERVER-DEV-V3-2.us-west-1.elasticbeanstalk.com:7901
-  service:
-    url: MICROSERVICE-EMPLOYEE-DEV-V3-2.us-west-1.elasticbeanstalk.com
 ---
 spring:
   profiles: aze-8
