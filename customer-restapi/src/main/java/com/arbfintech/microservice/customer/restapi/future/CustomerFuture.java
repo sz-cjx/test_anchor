@@ -237,12 +237,14 @@ public class CustomerFuture {
     private JSONArray cascadeFeatureByCustomerIds(List<Long> customerIds, Long portfolioId) throws ProcedureException {
         JSONArray result = new JSONArray();
         if (CollectionUtils.isEmpty(customerIds)) {
+            LOGGER.error("[CustomerFuture.cascadeFeatureByCustomerIds] CustomerIds is empty");
             return result;
         }
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereIN("id", customerIds, null);
 
         if (Objects.isNull(portfolioId)) {
+            LOGGER.error("[CustomerFuture.cascadeFeatureByCustomerIds] PortfolioId is null");
             return result;
         }
 
