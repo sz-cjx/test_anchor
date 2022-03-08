@@ -1,4 +1,4 @@
-FROM java:8
+FROM amazoncorretto:latest
 ENV APPLICATION='customer-restapi'
 VOLUME /tmp
 
@@ -10,4 +10,4 @@ RUN echo 'America/New_York' >/etc/timezone
 
 EXPOSE 8101
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/customer.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "-XX:+UseContainerSupport","-XX:MaxRAMPercentage=70.0", "/customer.jar"]
