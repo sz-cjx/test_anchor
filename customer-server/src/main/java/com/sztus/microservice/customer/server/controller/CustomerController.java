@@ -23,8 +23,9 @@ public class CustomerController {
     ) {
         try {
             String email = request.getEmail();
+            String openId = request.getOpenId();
 
-            Customer customer = customerService.getCustomer(email);
+            Customer customer = customerService.getCustomer(email, openId);
 
             GetCustomerResponse response = CustomerConverter.INSTANCE.CustomerToGetCustomerResponse(customer);
 
