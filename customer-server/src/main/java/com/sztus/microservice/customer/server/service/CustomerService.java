@@ -76,7 +76,7 @@ public class CustomerService {
         if (Objects.isNull(result) || result < CodeConst.DEFAULT) {
             throw new ProcedureException(CustomerErrorCode.FAIL_TO_SAVE_CUSTOMER_INFORMATION);
         }
-        if (result >= CodeConst.SUCCESS && Objects.isNull(id)) {
+        if (result >= CodeConst.SUCCESS && Objects.isNull(id) && StringUtils.isBlank(openId)) {
             customer.setId(result);
         }
 
