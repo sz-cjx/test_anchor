@@ -8,7 +8,7 @@ import com.sztus.framework.component.core.util.DateUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.core.SimpleJdbcReader;
 import com.sztus.framework.component.database.core.SimpleJdbcWriter;
-import com.sztus.microservice.customer.client.object.business.CustomerErrorCode;
+import com.sztus.microservice.customer.client.object.type.CustomerErrorCode;
 import com.sztus.microservice.customer.server.business.DbKey;
 import com.sztus.microservice.customer.server.domain.Customer;
 import org.apache.commons.lang3.StringUtils;

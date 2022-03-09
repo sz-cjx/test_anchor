@@ -2,7 +2,7 @@ package com.sztus.microservice.customer.server.controller;
 
 import com.sztus.framework.component.core.type.AjaxResult;
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.microservice.customer.client.object.business.CustomerAction;
+import com.sztus.microservice.customer.client.object.type.CustomerAction;
 import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerRequest;
 import com.sztus.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
 import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerResponse;

@@ -1,4 +1,4 @@
-package com.sztus.microservice.customer.client.object.business;
+package com.sztus.microservice.customer.client.object.type;
 
 import com.sztus.framework.component.core.base.BaseError;
 
