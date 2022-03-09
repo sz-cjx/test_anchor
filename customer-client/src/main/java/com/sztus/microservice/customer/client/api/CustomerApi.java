@@ -7,7 +7,9 @@ import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.microservice.customer.client.object.business.CustomerAction;
 import com.sztus.microservice.customer.client.object.business.Re;
 import com.sztus.microservice.customer.client.object.parameter.request.GetCustomerRequest;
+import com.sztus.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
 import com.sztus.microservice.customer.client.object.parameter.response.GetCustomerResponse;
+import com.sztus.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,15 @@ public class CustomerApi extends BaseClientApi {
         );
 
         return fetchResultDataObject(ajaxResult, GetCustomerResponse.class);
+    }
+
+    public SaveCustomerResponse saveCustomer(SaveCustomerRequest request) throws ProcedureException {
+        AjaxResult ajaxResult = restCaller.post(
+                generateUrl(Re.ROOT, CustomerAction.SAVE_CUSTOMER),
+                request
+        );
+
+        return fetchResultDataObject(ajaxResult, SaveCustomerResponse.class);
     }
 
     @Autowired
