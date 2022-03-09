@@ -52,7 +52,7 @@ public class CustomerService {
         if (result < CodeConst.DEFAULT) {
             throw new ProcedureException(CustomerErrorCode.FAILED_TO_SAVE_CUSTOMER);
         }
-        if (result >= CodeConst.SUCCESS) {
+        if (result >= CodeConst.SUCCESS && Objects.isNull(customer.getId())) {
             customer.setId(result);
         }
 
