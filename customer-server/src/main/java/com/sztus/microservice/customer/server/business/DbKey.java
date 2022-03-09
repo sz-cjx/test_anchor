@@ -5,6 +5,10 @@ package com.sztus.microservice.customer.server.business;
  */
 public interface DbKey {
 
+    String ID = "id";
+
     String EMAIL = "email";
+
+    String OPEN_ID = "open_id";
 
 }

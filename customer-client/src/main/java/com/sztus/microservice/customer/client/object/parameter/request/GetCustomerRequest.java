@@ -4,6 +4,8 @@ public class GetCustomerRequest {
 
     private String email;
 
+    private String openId;
+
     public String getEmail() {
         return email;
     }
@@ -12,4 +14,11 @@ public class GetCustomerRequest {
         this.email = email;
     }
 
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 }
