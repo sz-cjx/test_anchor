@@ -32,7 +32,7 @@ public class CustomerService {
         }
 
         if (StringUtils.isNotBlank(openId)) {
-            sqlOption.whereEqual(DbKey.OPEN_ID, email);
+            sqlOption.whereEqual(DbKey.OPEN_ID, openId);
         }
 
         return Optional
