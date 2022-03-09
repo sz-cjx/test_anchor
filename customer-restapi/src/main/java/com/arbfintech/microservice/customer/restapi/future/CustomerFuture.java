@@ -254,13 +254,17 @@ public class CustomerFuture {
 
         Map<Long, List<CustomerOptInData>> optInDataMap = optInDataList.stream().collect(Collectors.groupingBy(CustomerOptInData::getId));
         List<CustomerOptInData> saveCustomerOptInDataList = new ArrayList<>();
-        for (Map.Entry<Long, List<CustomerOptInData>> optInDataEntry : optInDataMap.entrySet()) {
-            Long customerId = optInDataEntry.getKey();
-            List<CustomerOptInData> customerOptInDataList = optInDataEntry.getValue();
+        for (Long customerId : customerIds) {
+            List<CustomerOptInData> customerOptInDataList = new ArrayList<>();
+            if (optInDataMap.containsKey(customerId)) {
+                customerOptInDataList = optInDataMap.get(customerId);
+            }
+
             if (CollectionUtils.isEmpty(customerOptInDataList)) {
                 customerOptInDataList = customerOptInService.getDefaultOptInDataList(customerId, portfolioId);
                 saveCustomerOptInDataList.addAll(customerOptInDataList);
             }
+
             JSONObject optInDataJson = new JSONObject();
             optInDataJson.put(CustomerJsonKey.ID, customerId);
             for (CustomerOptInData optInData : customerOptInDataList) {
@@ -271,6 +275,7 @@ public class CustomerFuture {
             }
             result.add(optInDataJson);
         }
+
         if (!CollectionUtils.isEmpty(saveCustomerOptInDataList)) {
             ResultUtil.checkResult(customerOptInService.batchSave(saveCustomerOptInDataList), CustomerErrorCode.CREATE_FAILURE_OPT_IN_SAVE);
         }
