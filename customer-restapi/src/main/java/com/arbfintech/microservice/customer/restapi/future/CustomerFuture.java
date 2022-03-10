@@ -240,6 +240,7 @@ public class CustomerFuture {
             LOGGER.error("[CustomerFuture.cascadeFeatureByCustomerIds] CustomerIds is empty");
             return result;
         }
+        customerIds = customerIds.parallelStream().distinct().collect(Collectors.toList());
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereIN("id", customerIds, null);
 
