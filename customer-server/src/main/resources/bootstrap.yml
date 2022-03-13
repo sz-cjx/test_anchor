@@ -142,3 +142,11 @@ arb:
     url: 8.214.104.21:7901
   service:
     url: 8.214.104.21
+---
+spring:
+  profiles: aze-8-feature
+arb:
+  eureka:
+    url: localhost:7901
+  service:
+    url: localhost
