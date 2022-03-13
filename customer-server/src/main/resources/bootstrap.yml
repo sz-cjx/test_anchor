@@ -150,23 +150,3 @@ arb:
     url: localhost:7901
   service:
     url: localhost
-  database:
-    writer:
-      url: localhost:3308
-    reader:
-      url: localhost:3308
-    schema: customer
-    username: root
-    password: Arb@8888
-  gateway:
-    url: http://localhost:7903
-  redis:
-    primary:
-      writer:
-        database: 5
-        url: localhost
-        port: 6379
-      reader:
-        database: 5
-        url: localhost
-        port: 6379
