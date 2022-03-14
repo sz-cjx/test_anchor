@@ -56,12 +56,12 @@
 
         <dependency>
             <groupId>com.sztus.framework</groupId>
-            <artifactId>component.database</artifactId>
+            <artifactId>component-database</artifactId>
             <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sztus.framework</groupId>
-            <artifactId>component.cache</artifactId>
+            <artifactId>component-cache</artifactId>
             <version>${parent.version}</version>
         </dependency>
 
