@@ -43,7 +43,7 @@
         <!-- sztus components -->
         <dependency>
             <groupId>com.sztus.framework</groupId>
-            <artifactId>component.core</artifactId>
+            <artifactId>component-core</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
