@@ -1,45 +1,40 @@
 #自定义配置
-arb:
+szt:
   service:
     #  微服务名 需要自行修改
-    name: customer
+    name: microservice-customer
     #  端口号 需要申请,确保不重复
     port: 9509
 server:
-  port: ${arb.service.port}
+  port: ${szt.service.port}
   servlet:
     #  统一访问前缀
     context-path: /v4
 spring:
   application:
-    name: ${arb.service.name}
+    name: ${szt.service.name}
   cloud:
-    config:
-      label: master
+    nacos:
       discovery:
-        enabled: true
-        service-id: config-server
-      fail-fast: false
-      retry:
-        initial-interval: 1000
-        multiplier: 1.1
-        max-interval: 2000
-        max-attempts: 6
-  servlet:
-    multipart:
-      enabled: true
-      file-size-threshold: 0
-      max-file-size: 256Mb
-      max-request-size: 256Mb
+        service: ${spring.application.name}
+        server-addr: ${szt.nacos.addr}
+        namespace: ${szt.nacos.namespace}
+        group: ${szt.nacos.group}
+      config:
+        file-extension: yaml
+        server-addr: ${szt.nacos.addr}
+        name: ${szt.nacos.config-name}
+        namespace: ${szt.nacos.namespace}
+        group: ${szt.nacos.group}
   # 数据库组件
   datasource:
     master:
       writer:
         type: com.alibaba.druid.pool.DruidDataSource # Druid数据库连接池
         driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://${arb.database.writer.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
-        username: ${arb.database.username}
-        password: ${arb.database.password}
+        url: jdbc:mysql://${szt.database.writer.url}/${szt.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+        username: ${szt.database.username}
+        password: ${szt.database.password}
         testOnBorrow: true                          # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
         testOnReturn: true                          # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
         testWhileIdle: true
@@ -56,9 +51,9 @@ spring:
       reader:
         type: com.alibaba.druid.pool.DruidDataSource # Druid数据库连接池
         driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://${arb.database.reader.url}/${arb.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
-        username: ${arb.database.username}
-        password: ${arb.database.password}
+        url: jdbc:mysql://${szt.database.reader.url}/${szt.database.schema}?charset=utf8mb4&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true
+        username: ${szt.database.username}
+        password: ${szt.database.password}
         testOnBorrow: true                          # 指明是否从池中取出连接前进行检验，如果检验失败，则从池中取出连接并尝试取出另一个
         testOnReturn: true                          # 指明连接是否被空闲连接回收器（如果有）进行检验，如果检测失败，则连接将被从池中去除
         testWhileIdle: true
@@ -86,87 +81,22 @@ spring:
         testWhileIdle: true
     primary:
       writer:
-        database: ${arb.redis.primary.writer.database}
-        hostName: ${arb.redis.primary.writer.url}
-        port: ${arb.redis.primary.writer.port}
+        database: ${szt.redis.primary.writer.database}
+        hostName: ${szt.redis.primary.writer.url}
+        port: ${szt.redis.primary.writer.port}
       reader:
-        database: ${arb.redis.primary.reader.database}
-        hostName: ${arb.redis.primary.reader.url}
-        port: ${arb.redis.primary.reader.port}
+        database: ${szt.redis.primary.reader.database}
+        hostName: ${szt.redis.primary.reader.url}
+        port: ${szt.redis.primary.reader.port}
+---
+spring:
+  config:
+    activate:
+      on-profile: aze-8-feature
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    config-name: microservice-customer
+    namespace: feature
+    group: PAN-4700
 
-eureka:
-  instance:
-    instance-id: ${arb.service.url}:${arb.service.name}:${arb.service.port}
-    hostname: ${arb.service.url}
-    ip-address: ${arb.service.url}
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
-  client:
-    service-url:
-      defaultZone: http://${arb.eureka.url}/eureka/
-    healthcheck: enabled
----
-spring:
-  profiles: local-v4
-arb:
-  gateway:
-    url: http://localhost:8910
-  database:
-    writer:
-      url: 172.18.1.251:3308
-    reader:
-      url: 172.18.1.251:3308
-    schema: customer
-    username: root
-    password: Arb@8888
-  eureka:
-    url: localhost:7901
-  service:
-    url: localhost
-  redis:
-    primary:
-      writer:
-        database: 2
-        url: 172.18.1.251
-        port: 6379
-      reader:
-        database: 2
-        url: 172.18.1.251
-        port: 6379
----
-spring:
-  profiles: aze-8
-arb:
-  eureka:
-    url: 8.214.104.21:7901
-  service:
-    url: 8.214.104.21
----
-spring:
-  profiles: aze-8-feature
-arb:
-  eureka:
-    url: localhost:7901
-  service:
-    url: localhost
-  database:
-    writer:
-      url: localhost:3308
-    reader:
-      url: localhost:3308
-    schema: customer
-    username: root
-    password: Arb@8888
-  gateway:
-    url: http://localhost:7903
-  redis:
-    primary:
-      writer:
-        database: 5
-        url: localhost
-        port: 6379
-      reader:
-        database: 5
-        url: localhost
-        port: 6379
