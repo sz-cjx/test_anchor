@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "microservice-oauth", path = "/v4", contextId = "oauth-api")
+@FeignClient(value = "microservice-oauth", path = "/v4", contextId = "customer-api")
 public interface CustomerApi {
 
     @GetMapping(CustomerAction.GET_CUSTOMER)
