@@ -18,36 +18,25 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
 
     @GetMapping(CustomerAction.GET_CUSTOMER)
-    public String getCustomer(
+    public GetCustomerResponse getCustomer(
             GetCustomerRequest request
-    ) {
-        try {
-            String email = request.getEmail();
-            String openId = request.getOpenId();
+    ) throws ProcedureException {
+        String email = request.getEmail();
+        String openId = request.getOpenId();
 
-            Customer customer = customerService.getCustomer(email, openId);
+        Customer customer = customerService.getCustomer(email, openId);
 
-            GetCustomerResponse response = CustomerConverter.INSTANCE.CustomerToGetCustomerResponse(customer);
-
-            return AjaxResult.success(response);
-        } catch (ProcedureException e) {
-            return AjaxResult.failure(e);
-        }
+        return CustomerConverter.INSTANCE.CustomerToGetCustomerResponse(customer);
     }
 
     @PostMapping(CustomerAction.SAVE_CUSTOMER)
-    public String saveCustomer(
+    public SaveCustomerResponse saveCustomer(
             @RequestBody SaveCustomerRequest request
-    ) {
-        try {
-            Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
-            Customer customerInDb = customerService.saveCustomer(customer);
+    ) throws ProcedureException {
+        Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
+        Customer customerInDb = customerService.saveCustomer(customer);
 
-            SaveCustomerResponse response = CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customerInDb);
-            return AjaxResult.success(response);
-        } catch (ProcedureException e) {
-            return AjaxResult.failure(e);
-        }
+        return CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customerInDb);
     }
 
     @Autowired
