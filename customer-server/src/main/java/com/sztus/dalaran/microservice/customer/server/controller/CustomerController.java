@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 public class CustomerController {
 
-    @GetMapping(CustomerAction.GET_CUSTOMER)
+    @PostMapping(CustomerAction.GET_CUSTOMER)
     public GetCustomerResponse getCustomer(
-            GetCustomerRequest request
+            @RequestBody GetCustomerRequest request
     ) throws ProcedureException {
         String email = request.getEmail();
         String openId = request.getOpenId();
