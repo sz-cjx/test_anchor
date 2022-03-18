@@ -99,4 +99,14 @@ szt:
     config-name: microservice-customer
     namespace: feature
     group: PAN-4700
-
+---
+spring:
+  config:
+    activate:
+      on-profile: aze-8
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    config-name: microservice-customer
+    namespace: AZE-8
+    group: aze-8
