@@ -12,29 +12,4 @@
 
     <artifactId>customer-client</artifactId>
     <packaging>jar</packaging>
-
-    <dependencies>
-        <!--    openfeign 组件用于内部服务之间的通信    -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <!--    负载均衡组件    -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-        </dependency>
-
-        <!--     使用Apache HttpClient替换Feign原生httpclient-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
-        </dependency>
-    </dependencies>
 </project>
