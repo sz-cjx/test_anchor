@@ -1,8 +1,8 @@
 package com.sztus.dalaran.microservice.customer.server.domain;
 
-import com.sztus.framework.component.core.annotation.Column;
-import com.sztus.framework.component.core.annotation.Entity;
-import com.sztus.framework.component.core.annotation.Id;
+import com.sztus.framework.component.database.annotation.Column;
+import com.sztus.framework.component.database.annotation.Entity;
+import com.sztus.framework.component.database.annotation.Id;
 
 @Entity
 public class Customer {
