@@ -121,3 +121,14 @@ szt:
     config-name: microservice-customer
     namespace: aze-8-rel
     group: aze-8-rel
+---
+spring:
+  config:
+    activate:
+      on-profile: aze-8-develop-pigeon
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    config-name: microservice-customer
+    namespace: AZE-8-DEVELOP-PIGEON
+    group: DEVELOP-PIGEON
