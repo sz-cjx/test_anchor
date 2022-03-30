@@ -88,6 +88,18 @@ spring:
         database: ${szt.redis.primary.reader.database}
         hostName: ${szt.redis.primary.reader.url}
         port: ${szt.redis.primary.reader.port}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-v4
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    config-name: microservice-customer
+    namespace: local
+    group: local
 ---
 spring:
   config:
