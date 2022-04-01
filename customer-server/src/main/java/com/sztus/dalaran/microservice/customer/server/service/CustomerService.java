@@ -99,13 +99,11 @@ public class CustomerService {
 
     public Customer getCustomerByUnique(GetCustomerByUniqueRequest request) throws ProcedureException {
         String ssn = request.getSsn();
-        String routingNo = request.getRoutingNo();
-        String accountNo = request.getAccountNo();
-        if (StringUtils.isAnyBlank(ssn, routingNo, accountNo)) {
+        if (StringUtils.isAnyBlank(ssn)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.UNIQUE_CODE, CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo));
+        sqlOption.whereEqual(DbKey.UNIQUE_CODE, CustomerUtil.generateUniqueCode(ssn));
         return Optional
                 .ofNullable(jdbcReader.findByOptions(Customer.class, sqlOption.toString()))
                 .orElseThrow(() -> new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED));
@@ -114,14 +112,12 @@ public class CustomerService {
     @Transactional(rollbackFor = Exception.class)
     public Customer createCustomer(CreateCustomerRequest request) throws ProcedureException {
         String ssn = request.getSsn();
-        String routingNo = request.getRoutingNo();
-        String accountNo = request.getAccountNo();
 
-        if (StringUtils.isAnyBlank(ssn, routingNo, accountNo)) {
+        if (StringUtils.isAnyBlank(ssn)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        String uniqueCode = CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo);
+        String uniqueCode = CustomerUtil.generateUniqueCode(ssn);
         Customer customerDb = jdbcReader.findByOptions(Customer.class,
                 SqlOption.getInstance().whereEqual(DbKey.UNIQUE_CODE, uniqueCode).toString()
         );
