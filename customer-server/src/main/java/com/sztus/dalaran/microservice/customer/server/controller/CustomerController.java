@@ -1,20 +1,20 @@
 package com.sztus.dalaran.microservice.customer.server.controller;
 
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.CreateCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerByUniqueRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.CreateCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerByUniqueResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.type.CustomerAction;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerOptInDataView;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
+import com.sztus.dalaran.microservice.customer.server.converter.CustomerOptInDataConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerOptInData;
+import com.sztus.dalaran.microservice.customer.server.service.CustomerOptInDataService;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerService;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -60,6 +60,24 @@ public class CustomerController {
         return CustomerConverter.INSTANCE.CustomerToCreateCustomerResponse(customerInDb);
     }
 
+    @GetMapping(CustomerAction.GET_OPT_IN_AS_LIST)
+    public GetCustomerOptInDataAsListResponse getOptInDataAsList(
+            GetCustomerOptInDataRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+
+        List<CustomerOptInData> optInDataAsList = customerOptInDataService.getOptInDataAsList(customerId);
+        List<CustomerOptInDataView> optInDataViewAsList = CustomerOptInDataConverter.INSTANCE.CustomerOptInDataListToView(optInDataAsList);
+
+        GetCustomerOptInDataAsListResponse response = new GetCustomerOptInDataAsListResponse();
+        response.setItems(optInDataViewAsList);
+
+        return response;
+    }
+
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private CustomerOptInDataService customerOptInDataService;
 }
