@@ -22,7 +22,7 @@ public class CustomerOptInDataService {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        return jdbcReader.findAllByOptions(CustomerOptInData.class, SqlOption.getInstance().whereEqual(DbKey.ID, customerId).toString());
+        return jdbcReader.findAllByOptions(CustomerOptInData.class, SqlOption.getInstance().whereEqual(DbKey.CUSTOMER_ID, customerId).toString());
     }
 
     public Customer saveCustomerOptInData(Customer customer) throws ProcedureException {

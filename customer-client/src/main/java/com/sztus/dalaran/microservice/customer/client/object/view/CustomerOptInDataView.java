@@ -2,18 +2,18 @@ package com.sztus.dalaran.microservice.customer.client.object.view;
 
 public class CustomerOptInDataView {
 
-    private Long id;
+    private Long customerId;
     private Integer optInType;
     private Integer optInValue;
     private Long createdAt;
     private Long updatedAt;
 
-    public Long getId() {
-        return id;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public Integer getOptInType() {

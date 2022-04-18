@@ -13,7 +13,7 @@ public class CustomerOptInData {
 
     @Id
     @Column
-    private Long id;
+    private Long customerId;
 
     @Id
     @Column
@@ -32,20 +32,20 @@ public class CustomerOptInData {
 
     }
 
-    public CustomerOptInData(Long id, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
-        this.id = id;
+    public CustomerOptInData(Long customerId, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
+        this.customerId = customerId;
         this.optInType = optInType;
         this.optInValue = optInValue;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public Integer getOptInType() {
