@@ -1,44 +1,12 @@
-package com.sztus.dalaran.microservice.customer.server.domain;
+package com.sztus.dalaran.microservice.customer.client.object.view;
 
-import com.sztus.framework.component.database.annotation.Column;
-import com.sztus.framework.component.database.annotation.Entity;
-import com.sztus.framework.component.database.annotation.Id;
+public class CustomerOptInDataView {
 
-/**
- * @author Fly_Roushan
- * @date 2021/1/4
- */
-@Entity
-public class CustomerOptInData {
-
-    @Id
-    @Column
     private Long customerId;
-
-    @Id
-    @Column
     private Integer optInType;
-
-    @Column
     private Integer optInValue;
-
-    @Column
     private Long createdAt;
-
-    @Column
     private Long updatedAt;
-
-    public CustomerOptInData() {
-
-    }
-
-    public CustomerOptInData(Long customerId, Integer optInType, Integer optInValue, Long createdAt, Long updatedAt) {
-        this.customerId = customerId;
-        this.optInType = optInType;
-        this.optInValue = optInValue;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 
     public Long getCustomerId() {
         return customerId;

@@ -1,13 +1,7 @@
 package com.sztus.dalaran.microservice.customer.client.api;
 
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.CreateCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerByUniqueRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.CreateCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerByUniqueResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.type.CustomerAction;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -36,5 +30,10 @@ public interface CustomerApi {
     @PostMapping(CustomerAction.CREATE_CUSTOMER)
     CreateCustomerResponse createCustomer(
             @RequestBody CreateCustomerRequest request
+    );
+
+    @GetMapping(CustomerAction.GET_OPT_IN_AS_LIST)
+    GetCustomerOptInDataAsListResponse getOptInDataAsList(
+            @SpringQueryMap GetCustomerOptInDataRequest request
     );
 }

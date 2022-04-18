@@ -5,9 +5,11 @@ package com.sztus.dalaran.microservice.customer.server.business;
  */
 public interface DbKey {
 
-    String ID = "id";
+    String CUSTOMER_ID = "customer_id";
 
     String EMAIL = "email";
+
+    String ID = "id";
 
     String OPEN_ID = "open_id";
 
