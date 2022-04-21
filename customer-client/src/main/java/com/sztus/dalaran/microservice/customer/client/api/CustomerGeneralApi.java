@@ -32,6 +32,15 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPersonalRequest request
     );
 
+    @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
+    ListBankAccountResponse listBankAccount(
+            ListBankAccountRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
+    SaveBankAccountResponse saveBankAccount(
+            @RequestBody  SaveBankAccountRequest request
+    );
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
     GetCustomerEmploymentResponse getCustomerEmployment(
             @SpringQueryMap GetCustomerEmploymentRequest request

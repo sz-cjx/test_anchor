@@ -11,7 +11,6 @@ public class CustomerPersonalData {
 
   @Id
   @Column
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long customerId;
 
   @Column

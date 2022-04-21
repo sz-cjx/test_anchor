@@ -1,6 +1,7 @@
 package com.sztus.dalaran.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.dalaran.microservice.customer.server.domain.*;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CustomerReader;
@@ -65,7 +66,17 @@ public class CustomerGeneralService {
         return customerReader.findByOptions(CustomerPersonalData.class, instance.toString());
     }
 
-    public Long saveCustomerPersonal(CustomerPersonalData personalData) {
+    public Long saveCustomerPersonal(CustomerPersonalData personalData) throws ProcedureException {
+        if (Objects.nonNull(personalData.getSsn())) {
+            SqlOption option = SqlOption.getInstance();
+            option.whereNotEqual("customer_id", personalData.getCustomerId());
+            option.whereEqual("ssn", personalData.getSsn());
+            CustomerPersonalData dbPersonalData = customerReader.findByOptions(CustomerPersonalData.class, option.toString());
+            if (Objects.nonNull(dbPersonalData)) {
+                throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
+            }
+        }
+
         return customerWriter.save(CustomerPersonalData.class, JSON.toJSONString(personalData));
     }
 
@@ -89,4 +100,18 @@ public class CustomerGeneralService {
         CustomerCheckUtil.checkSaveResult(result);
     }
 
+
+    public List<CustomerBankAccountData> listBankAccountByCustomerId(Long customerId) {
+        SqlOption instance = SqlOption.getInstance();
+        instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
+        return customerReader.findAllByOptions(CustomerBankAccountData.class, instance.toString());
+    }
+
+    public Long saveBankAccount(CustomerBankAccountData bankAccountData) {
+        return customerWriter.save(CustomerBankAccountData.class, JSON.toJSONString(bankAccountData));
+    }
+
+    public CustomerBankAccountData getBankAccountById(Long id) {
+        return customerReader.findById(CustomerBankAccountData.class, id, null);
+    }
 }
