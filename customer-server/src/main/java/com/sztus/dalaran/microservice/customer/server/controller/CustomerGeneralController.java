@@ -5,8 +5,10 @@ import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactDataView;
+import com.sztus.dalaran.microservice.customer.server.converter.CustomerContactDataConverter;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
-import com.sztus.dalaran.microservice.customer.server.domain.*;
+import com.sztus.dalaran.microservice.customer.server.object.domain.*;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralService;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
@@ -178,6 +180,35 @@ public class CustomerGeneralController {
         generalService.saveCustomerPayroll(payrollData);
 
         return CustomerConverter.INSTANCE.CusPayrollToSaveCusPayrollResponse(payrollData);
+    }
+
+    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
+    public GetCustomerContactDataAsListResponse getCustomerContactDataAsList(
+            GetCustomerContactDataRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        List<CustomerContactData> customerContactDataAsList = generalService.getCustomerContactDataAsList(customerId);
+        List<CustomerContactDataView> customerContactDataViewAsList =
+                CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(customerContactDataAsList);
+
+        GetCustomerContactDataAsListResponse response = new GetCustomerContactDataAsListResponse();
+        response.setList(customerContactDataViewAsList);
+
+        return response;
+    }
+
+    @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
+    public void saveCustomerContactData(
+            @RequestBody SaveCustomerContactDataRequest request
+    ) throws ProcedureException {
+        List<CustomerContactDataView> contactDataViewList = request.getContactDataList();
+        List<CustomerContactData> contactDataList = CustomerContactDataConverter.INSTANCE.CustomerContactDataViewToList(contactDataViewList);
+
+        generalService.saveCustomerContactData(contactDataList);
     }
 
 }
