@@ -1,18 +1,21 @@
 package com.sztus.dalaran.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
-import com.sztus.dalaran.microservice.customer.server.domain.*;
+import com.sztus.dalaran.microservice.customer.server.object.domain.*;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CustomerReader;
 import com.sztus.dalaran.microservice.customer.server.respository.writer.CommonWriter;
 import com.sztus.dalaran.microservice.customer.server.respository.writer.CustomerWriter;
+import com.sztus.dalaran.microservice.customer.server.type.constant.DbKey;
 import com.sztus.dalaran.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -112,5 +115,24 @@ public class CustomerGeneralService {
 
     public CustomerBankAccountData getBankAccountById(Long id) {
         return customerReader.findById(CustomerBankAccountData.class, id, null);
+    }
+
+    public List<CustomerContactData> getCustomerContactDataAsList(Long customerId) {
+        return customerReader.findAllByOptions(CustomerContactData.class, SqlOption.getInstance().whereEqual(DbKey.CUSTOMER_ID, customerId).toString());
+    }
+
+    public void saveCustomerContactData(List<CustomerContactData> contactDataList) throws ProcedureException {
+        if (CollectionUtils.isEmpty(contactDataList)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        Long successNumber = 0L;
+        for (CustomerContactData customerContactData : contactDataList) {
+            successNumber += customerWriter.save(CustomerContactData.class, JSON.toJSONString(customerContactData, SerializerFeature.WriteMapNullValue));
+        }
+
+        if (successNumber < contactDataList.size()) {
+            throw new ProcedureException(CustomerErrorCode.FAILURE_TO_SAVE_DATA);
+        }
     }
 }

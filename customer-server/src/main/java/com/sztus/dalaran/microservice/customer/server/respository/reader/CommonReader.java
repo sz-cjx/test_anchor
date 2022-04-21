@@ -1,7 +1,7 @@
 package com.sztus.dalaran.microservice.customer.server.respository.reader;
 
-import com.sztus.dalaran.microservice.customer.server.domain.Customer;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
+import com.sztus.dalaran.microservice.customer.server.object.domain.Customer;
+import com.sztus.dalaran.microservice.customer.server.object.domain.CustomerBankAccountData;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.core.BaseJdbcReader;
 import com.sztus.framework.component.database.type.SqlOption;

@@ -2,7 +2,7 @@ package com.sztus.dalaran.microservice.customer.server.converter;
 
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.*;
-import com.sztus.dalaran.microservice.customer.server.domain.*;
+import com.sztus.dalaran.microservice.customer.server.object.domain.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

@@ -1,4 +1,4 @@
-package com.sztus.dalaran.microservice.customer.server.domain;
+package com.sztus.dalaran.microservice.customer.server.object.domain;
 
 import com.sztus.framework.component.database.annotation.Column;
 import com.sztus.framework.component.database.annotation.Entity;
