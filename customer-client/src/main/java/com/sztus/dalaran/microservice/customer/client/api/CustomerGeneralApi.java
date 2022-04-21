@@ -32,12 +32,12 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPersonalRequest request
     );
 
-    @GetMapping(CustomerAction.GET_PERSONAL)
+    @GetMapping(CustomerAction.GET_EMPLOYMENT)
     GetCustomerEmploymentResponse getCustomerEmployment(
             @SpringQueryMap GetCustomerEmploymentRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_PERSONAL)
+    @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
     SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
     );

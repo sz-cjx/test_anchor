@@ -91,10 +91,9 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
     public GetCustomerEmploymentResponse getCustomerEmployment(
-            GetCustomerEmploymentRequest getCustomerEmploymentRequest
+            GetCustomerEmploymentRequest request
     ) throws ProcedureException {
-        Long customerId = getCustomerEmploymentRequest.getCustomerId();
-
+        Long customerId = request.getCustomerId();
         if (Objects.isNull(customerId)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
@@ -106,9 +105,9 @@ public class CustomerGeneralController {
 
     @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
     public SaveCustomerEmploymentResponse saveCustomerEmployment(
-            @RequestBody SaveCustomerEmploymentRequest saveCustomerEmploymentRequest
+            @RequestBody SaveCustomerEmploymentRequest request
     ) throws ProcedureException {
-        CustomerEmploymentData employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(saveCustomerEmploymentRequest);
+        CustomerEmploymentData employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
         generalService.saveCustomerEmployment(employmentData);
 
         return CustomerConverter.INSTANCE.CusEmploymentToToSaveCusEmploymentResponse(employmentData);
