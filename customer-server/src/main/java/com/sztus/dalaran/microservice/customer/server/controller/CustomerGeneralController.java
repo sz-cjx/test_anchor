@@ -2,14 +2,17 @@ package com.sztus.dalaran.microservice.customer.server.controller;
 
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerPersonalDataRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalRequest;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.view.CustomerView;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralService;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
@@ -62,5 +65,31 @@ public class CustomerGeneralController {
         generalService.saveCustomer(customer);
 
         return CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customer);
+    }
+
+    @GetMapping(CustomerAction.GET_PERSONAL)
+    public GetCustomerPersonalResponse getCustomerPersonalData(
+            GetCustomerPersonalDataRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        CustomerPersonalData customerPersonalData = generalService.getPersonalByCustomerId(customerId);
+        return CustomerConverter.INSTANCE.PersonalToPersonalView(customerPersonalData);
+    }
+
+    @PostMapping(CustomerAction.SAVE_PERSONAL)
+    public Long saveCustomerPersonalData(
+            @RequestBody SaveCustomerPersonalRequest request
+    ) throws ProcedureException {
+        CustomerPersonalData personalData = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
+
+        if (Objects.isNull(personalData.getCustomerId())) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        return generalService.saveCustomerPersonal(personalData);
     }
 }
