@@ -3,7 +3,9 @@ package com.sztus.dalaran.microservice.customer.server.controller;
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerView;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
@@ -13,6 +15,8 @@ import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -48,5 +52,15 @@ public class CustomerGeneralController {
 
         return CustomerConverter.INSTANCE.CustomerToCustomerView(customer);
 
+    }
+
+    @PostMapping(CustomerAction.SAVE_CUSTOMER)
+    public SaveCustomerResponse saveCustomer(
+            @RequestBody SaveCustomerRequest request
+    ) throws ProcedureException {
+        Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
+        generalService.saveCustomer(customer);
+
+        return CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customer);
     }
 }
