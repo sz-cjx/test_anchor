@@ -117,22 +117,16 @@ public class CustomerGeneralService {
         return customerReader.findById(CustomerBankAccountData.class, id, null);
     }
 
-    public List<CustomerContactData> getCustomerContactDataAsList(Long customerId) {
+    public List<CustomerContactData> listCustomerContact(Long customerId) {
         return customerReader.findAllByOptions(CustomerContactData.class, SqlOption.getInstance().whereEqual(DbKey.CUSTOMER_ID, customerId).toString());
     }
 
-    public void saveCustomerContactData(List<CustomerContactData> contactDataList) throws ProcedureException {
-        if (CollectionUtils.isEmpty(contactDataList)) {
+    public void saveCustomerContactData(CustomerContactData contactData) throws ProcedureException {
+        if (Objects.isNull(contactData) || Objects.isNull(contactData.getCustomerId()) || Objects.isNull(contactData.getContactType())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        Long successNumber = 0L;
-        for (CustomerContactData customerContactData : contactDataList) {
-            successNumber += customerWriter.save(CustomerContactData.class, JSON.toJSONString(customerContactData, SerializerFeature.WriteMapNullValue));
-        }
-
-        if (successNumber < contactDataList.size()) {
-            throw new ProcedureException(CustomerErrorCode.FAILURE_TO_SAVE_DATA);
-        }
+        Long result = customerWriter.save(CustomerContactData.class, JSON.toJSONString(contactData));
+        CustomerCheckUtil.checkSaveResult(result);
     }
 }

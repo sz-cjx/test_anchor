@@ -32,6 +32,11 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPersonalRequest request
     );
 
+    @GetMapping(CustomerAction.GET_BANK_ACCOUNT)
+    GetBankAccountResponse getBankAccount(
+            @SpringQueryMap GetBankAccountRequest request
+    );
+
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
     ListBankAccountResponse listBankAccount(
             @SpringQueryMap ListBankAccountRequest request
@@ -61,9 +66,9 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPayrollRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
-    GetCustomerContactDataAsListResponse getCustomerContactDataAsList(
-            @SpringQueryMap GetCustomerContactDataRequest request
+    @GetMapping(CustomerAction.LIST_CUSTOMER_CONTACT)
+    ListCustomerContactResponse listCustomerContact(
+            @SpringQueryMap ListCustomerContactRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)

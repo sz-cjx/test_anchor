@@ -182,21 +182,21 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusPayrollToSaveCusPayrollResponse(payrollData);
     }
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
-    public GetCustomerContactDataAsListResponse getCustomerContactDataAsList(
-            GetCustomerContactDataRequest request
+    @GetMapping(CustomerAction.LIST_CUSTOMER_CONTACT)
+    public ListCustomerContactResponse listCustomerContact(
+            ListCustomerContactRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         if (Objects.isNull(customerId)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        List<CustomerContactData> customerContactDataAsList = generalService.getCustomerContactDataAsList(customerId);
-        List<CustomerContactDataView> customerContactDataViewAsList =
-                CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(customerContactDataAsList);
+        List<CustomerContactData> list = generalService.listCustomerContact(customerId);
+        List<CustomerContactDataView> viewList =
+                CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(list);
 
-        GetCustomerContactDataAsListResponse response = new GetCustomerContactDataAsListResponse();
-        response.setList(customerContactDataViewAsList);
+        ListCustomerContactResponse response = new ListCustomerContactResponse();
+        response.setList(viewList);
 
         return response;
     }
@@ -205,10 +205,9 @@ public class CustomerGeneralController {
     public void saveCustomerContactData(
             @RequestBody SaveCustomerContactDataRequest request
     ) throws ProcedureException {
-        List<CustomerContactDataView> contactDataViewList = request.getContactDataList();
-        List<CustomerContactData> contactDataList = CustomerContactDataConverter.INSTANCE.CustomerContactDataViewToList(contactDataViewList);
+        CustomerContactData customerContactData = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
-        generalService.saveCustomerContactData(contactDataList);
+        generalService.saveCustomerContactData(customerContactData);
     }
 
 }

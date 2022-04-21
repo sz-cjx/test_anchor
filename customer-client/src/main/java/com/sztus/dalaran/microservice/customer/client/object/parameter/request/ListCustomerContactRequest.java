@@ -1,6 +1,6 @@
 package com.sztus.dalaran.microservice.customer.client.object.parameter.request;
 
-public class GetCustomerContactDataRequest {
+public class ListCustomerContactRequest {
 
     private Long customerId;
 
