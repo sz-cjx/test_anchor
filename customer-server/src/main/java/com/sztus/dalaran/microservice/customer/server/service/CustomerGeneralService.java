@@ -2,11 +2,7 @@ package com.sztus.dalaran.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
-import com.sztus.dalaran.microservice.customer.server.domain.Customer;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerEmploymentData;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
+import com.sztus.dalaran.microservice.customer.server.domain.*;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CustomerReader;
 import com.sztus.dalaran.microservice.customer.server.respository.writer.CommonWriter;
@@ -71,42 +67,50 @@ public class CustomerGeneralService {
     }
 
     public Long saveCustomerPersonal(CustomerPersonalData personalData) throws ProcedureException {
-        if (Objects.nonNull(personalData.getSsn())){
+        if (Objects.nonNull(personalData.getSsn())) {
             SqlOption option = SqlOption.getInstance();
-            option.whereNotEqual("customer_id",personalData.getCustomerId());
-            option.whereEqual("ssn",personalData.getSsn());
+            option.whereNotEqual("customer_id", personalData.getCustomerId());
+            option.whereEqual("ssn", personalData.getSsn());
             CustomerPersonalData dbPersonalData = customerReader.findByOptions(CustomerPersonalData.class, option.toString());
-            if (Objects.nonNull(dbPersonalData)){
+            if (Objects.nonNull(dbPersonalData)) {
                 throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
             }
         }
-
         return customerWriter.save(CustomerPersonalData.class, JSON.toJSONString(personalData));
     }
 
     public CustomerEmploymentData getCustomerEmploymentByCustomerId(Long customerId) {
-        return commonReader.getEntityByLoanId(CustomerEmploymentData.class, customerId);
+        return commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
     }
 
     public void saveCustomerEmployment(CustomerEmploymentData customerEmploymentData) throws ProcedureException {
-
         Long result = commonWriter.save(CustomerEmploymentData.class, JSON.toJSONString(customerEmploymentData));
         CustomerCheckUtil.checkSaveResult(result);
+    }
 
+    public CustomerPayrollData getCustomerPayrollByCustomerId(Long customerId) {
+        return commonReader.getEntityByCustomerId(CustomerPayrollData.class, customerId);
+    }
+
+    public void saveCustomerPayroll(CustomerPayrollData payrollData) throws ProcedureException {
+        Long result = commonWriter.save(payrollData);
+        CustomerCheckUtil.checkSaveResult(result);
     }
 
 
-    public List<CustomerBankAccountData> listBankAccountByCustomerId(Long customerId){
+    public List<CustomerBankAccountData> listBankAccountByCustomerId(Long customerId) {
         SqlOption instance = SqlOption.getInstance();
         instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
         return customerReader.findAllByOptions(CustomerBankAccountData.class, instance.toString());
     }
 
-    public Long saveBankAccount(CustomerBankAccountData bankAccountData){
-        return customerWriter.save(CustomerBankAccountData.class,JSON.toJSONString(bankAccountData));
+    public Long saveBankAccount(CustomerBankAccountData bankAccountData) throws ProcedureException {
+        Long result = customerWriter.save(CustomerBankAccountData.class, JSON.toJSONString(bankAccountData));
+        CustomerCheckUtil.checkSaveResult(result);
+        return result;
     }
 
-    public CustomerBankAccountData getBankAccountById(Long id){
+    public CustomerBankAccountData getBankAccountById(Long id) {
         return customerReader.findById(CustomerBankAccountData.class, id, null);
     }
 }

@@ -24,7 +24,7 @@ public interface CustomerGeneralApi {
 
     @GetMapping(CustomerAction.GET_PERSONAL)
     GetCustomerPersonalResponse getCustomerPersonalData(
-            GetCustomerPersonalDataRequest request
+            @SpringQueryMap GetCustomerPersonalRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_PERSONAL)
@@ -34,7 +34,7 @@ public interface CustomerGeneralApi {
 
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
     ListBankAccountResponse listBankAccount(
-            ListBankAccountRequest request
+            @SpringQueryMap ListBankAccountRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
@@ -49,6 +49,16 @@ public interface CustomerGeneralApi {
     @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
     SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
+    );
+
+    @GetMapping(CustomerAction.GET_PAYROLL)
+    GetCustomerPayrollResponse getCustomerPayroll(
+            @SpringQueryMap GetCustomerPayrollRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_PAYROLL)
+    SaveCustomerPayrollResponse saveCustomerPayroll(
+            @RequestBody SaveCustomerPayrollRequest request
     );
 
 }

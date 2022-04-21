@@ -16,4 +16,7 @@ public interface CustomerAction {
     String GET_EMPLOYMENT = "/general/employment/get";
     String SAVE_EMPLOYMENT = "/general/employment/save";
 
+    String GET_PAYROLL = "/general/payroll/get";
+    String SAVE_PAYROLL = "/general/payroll/save";
+
 }
