@@ -2,16 +2,12 @@ package com.sztus.dalaran.microservice.customer.server.controller;
 
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerPersonalDataRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerEmploymentData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralService;
 import com.sztus.framework.component.core.type.ProcedureException;
@@ -92,4 +88,29 @@ public class CustomerGeneralController {
 
         return generalService.saveCustomerPersonal(personalData);
     }
+
+    @GetMapping(CustomerAction.GET_EMPLOYMENT)
+    public GetCustomerEmploymentResponse getCustomerEmployment(
+            GetCustomerEmploymentRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        CustomerEmploymentData employmentData = generalService.getCustomerEmploymentByCustomerId(customerId);
+
+        return CustomerConverter.INSTANCE.CusEmploymentToView(employmentData);
+    }
+
+    @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
+    public SaveCustomerEmploymentResponse saveCustomerEmployment(
+            @RequestBody SaveCustomerEmploymentRequest request
+    ) throws ProcedureException {
+        CustomerEmploymentData employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
+        generalService.saveCustomerEmployment(employmentData);
+
+        return CustomerConverter.INSTANCE.CusEmploymentToToSaveCusEmploymentResponse(employmentData);
+    }
+
 }
