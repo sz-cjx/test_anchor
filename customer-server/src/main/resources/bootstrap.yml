@@ -16,10 +16,10 @@ spring:
 spring:
   config:
     activate:
-      on-profile: phoenix-local
+      on-profile: phoenix-office
 szt:
   nacos:
     addr: 47.108.72.215:8848
     application-name: microservice-customer
-    namespace: phoenix-local
-    group: phoenix-local
+    namespace: phoenix-office
+    group: phoenix-office
