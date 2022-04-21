@@ -6,6 +6,6 @@ public interface CustomerAction {
     String SAVE_CUSTOMER = "/general/customer/save";
 
 
-    String SAVE_CUSTOMER_PERSONAL_DATA = "/general/personal/save";
-    String GET_CUSTOMER_PERSONAL_DATA = "/general/personal/get";
+    String SAVE_PERSONAL = "/general/personal/save";
+    String GET_PERSONAL = "/general/personal/get";
 }

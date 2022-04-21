@@ -56,19 +56,13 @@ public class CustomerGeneralService {
     }
 
 
-    public CustomerPersonalData getCustomerPersonalDataByCustomerId(Long customerId) throws ProcedureException {
-        if (Objects.isNull(customerId)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
+    public CustomerPersonalData getPersonalByCustomerId(Long customerId) {
         SqlOption instance = SqlOption.getInstance();
         instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
         return customerReader.findByOptions(CustomerPersonalData.class, instance.toString());
     }
 
-    public Long saveCustomerPersonalData(CustomerPersonalData personalData) throws ProcedureException {
-        if (Objects.isNull(personalData.getCustomerId())) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
+    public Long saveCustomerPersonal(CustomerPersonalData personalData) {
         return customerWriter.save(CustomerPersonalData.class, JSON.toJSONString(personalData));
     }
 }

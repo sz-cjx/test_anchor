@@ -3,9 +3,9 @@ package com.sztus.dalaran.microservice.customer.client.api;
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerPersonalDataRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalDataRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalDataResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,7 +13,6 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(value = "microservice-customer", path = "/v4", contextId = "customer-api")
 public interface CustomerGeneralApi {
@@ -23,18 +22,19 @@ public interface CustomerGeneralApi {
             @SpringQueryMap GetCustomerRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_PERSONAL_DATA)
-    GetCustomerPersonalDataResponse getCustomerPersonalData(
+    @PostMapping(CustomerAction.SAVE_CUSTOMER)
+    SaveCustomerResponse saveCustomer(
+            @RequestBody SaveCustomerRequest request
+    );
+
+    @GetMapping(CustomerAction.GET_PERSONAL)
+    GetCustomerPersonalResponse getCustomerPersonalData(
             GetCustomerPersonalDataRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER_PERSONAL_DATA)
+    @PostMapping(CustomerAction.SAVE_PERSONAL)
     Long saveCustomerPersonalData(
-            @RequestBody SaveCustomerPersonalDataRequest request
-    );
-    @PostMapping(CustomerAction.SAVE_CUSTOMER)
-    SaveCustomerResponse saveCustomer(
-            @SpringQueryMap SaveCustomerRequest request
+            @RequestBody SaveCustomerPersonalRequest request
     );
 
 }

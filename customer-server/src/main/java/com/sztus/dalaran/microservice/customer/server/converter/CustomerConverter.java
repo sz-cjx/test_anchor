@@ -1,9 +1,8 @@
 package com.sztus.dalaran.microservice.customer.server.converter;
 
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalDataRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalDataResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.view.CustomerPersonalDataView;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerPersonalView;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerView;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
@@ -18,11 +17,12 @@ public interface CustomerConverter {
 
     GetCustomerResponse CustomerToCustomerView(Customer customer);
 
-    GetCustomerPersonalDataResponse PersonalDataToPersonalDataView(CustomerPersonalData customerPersonalData);
-
-    CustomerPersonalData PersonalDataViewToPersonalData(CustomerPersonalDataView view);
     Customer CustomerViewToCustomer(CustomerView customerView);
 
     SaveCustomerResponse CustomerToSaveCustomerResponse(Customer customer);
+
+    GetCustomerPersonalResponse PersonalToPersonalView(CustomerPersonalData customerPersonalData);
+
+    CustomerPersonalData PersonalViewToPersonal(CustomerPersonalView view);
 
 }
