@@ -64,7 +64,7 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.GET_PERSONAL)
     public GetCustomerPersonalResponse getCustomerPersonalData(
-            GetCustomerPersonalDataRequest request
+            GetCustomerPersonalRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         if (Objects.isNull(customerId)) {
@@ -91,8 +91,12 @@ public class CustomerGeneralController {
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
     public ListBankAccountResponse listBankAccount(
             ListBankAccountRequest request
-    ) {
+    ) throws ProcedureException {
         Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
         List<CustomerBankAccountData> bankAccountDataList = generalService.listBankAccountByCustomerId(customerId);
         List<CustomerBankAccountDataView> items = CustomerConverter.INSTANCE.BankAccountListToViewList(bankAccountDataList);
         ListBankAccountResponse response = new ListBankAccountResponse();
@@ -105,12 +109,15 @@ public class CustomerGeneralController {
     public CustomerBankAccountDataView saveBankAccount(
             @RequestBody SaveBankAccountRequest request
     ) throws ProcedureException {
-        if (Objects.isNull(request) || Objects.isNull(request.getCustomerId())) {
+        if (Objects.isNull(request.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
+
         CustomerBankAccountData bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
         Long result = generalService.saveBankAccount(bankAccountData);
-        bankAccountData.setId(result);
+        if (Objects.isNull(request.getId())) {
+            bankAccountData.setId(result);
+        }
         return CustomerConverter.INSTANCE.BankAccountDataToView(bankAccountData);
     }
 

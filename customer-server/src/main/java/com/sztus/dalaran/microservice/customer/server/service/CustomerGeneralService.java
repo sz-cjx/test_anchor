@@ -76,23 +76,20 @@ public class CustomerGeneralService {
                 throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
             }
         }
-
         return customerWriter.save(CustomerPersonalData.class, JSON.toJSONString(personalData));
     }
 
     public CustomerEmploymentData getCustomerEmploymentByCustomerId(Long customerId) {
-        return commonReader.getEntityByLoanId(CustomerEmploymentData.class, customerId);
+        return commonReader.getEntityByCustomerId(CustomerEmploymentData.class, customerId);
     }
 
     public void saveCustomerEmployment(CustomerEmploymentData customerEmploymentData) throws ProcedureException {
-
         Long result = commonWriter.save(CustomerEmploymentData.class, JSON.toJSONString(customerEmploymentData));
         CustomerCheckUtil.checkSaveResult(result);
-
     }
 
     public CustomerPayrollData getCustomerPayrollByCustomerId(Long customerId) {
-        return commonReader.getEntityByLoanId(CustomerPayrollData.class, customerId);
+        return commonReader.getEntityByCustomerId(CustomerPayrollData.class, customerId);
     }
 
     public void saveCustomerPayroll(CustomerPayrollData payrollData) throws ProcedureException {
@@ -107,8 +104,10 @@ public class CustomerGeneralService {
         return customerReader.findAllByOptions(CustomerBankAccountData.class, instance.toString());
     }
 
-    public Long saveBankAccount(CustomerBankAccountData bankAccountData) {
-        return customerWriter.save(CustomerBankAccountData.class, JSON.toJSONString(bankAccountData));
+    public Long saveBankAccount(CustomerBankAccountData bankAccountData) throws ProcedureException {
+        Long result = customerWriter.save(CustomerBankAccountData.class, JSON.toJSONString(bankAccountData));
+        CustomerCheckUtil.checkSaveResult(result);
+        return result;
     }
 
     public CustomerBankAccountData getBankAccountById(Long id) {
