@@ -1,13 +1,8 @@
 package com.sztus.dalaran.microservice.customer.client.api;
 
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerPersonalDataRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,4 +32,13 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPersonalRequest request
     );
 
+    @GetMapping(CustomerAction.LIST_BANK_ACOUNT)
+    ListBankAcountResponse listBankAcount(
+            ListBankAcountRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_BANK_ACOUNT)
+    SaveBankAcountResponse saveBankAcount(
+            @RequestBody  SaveBankAcountRequest request
+    );
 }
