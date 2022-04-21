@@ -6,7 +6,9 @@ import com.sztus.dalaran.microservice.customer.client.object.parameter.request.G
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalDataRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalDataResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerView;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
@@ -71,5 +73,15 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         CustomerPersonalData personalData = CustomerConverter.INSTANCE.PersonalDataViewToPersonalData(request);
         return generalService.saveCustomerPersonalData(personalData);
+    }
+
+    @PostMapping(CustomerAction.SAVE_CUSTOMER)
+    public SaveCustomerResponse saveCustomer(
+            @RequestBody SaveCustomerRequest request
+    ) throws ProcedureException {
+        Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
+        generalService.saveCustomer(customer);
+
+        return CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customer);
     }
 }

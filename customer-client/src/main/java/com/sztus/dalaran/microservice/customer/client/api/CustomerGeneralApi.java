@@ -5,12 +5,15 @@ import com.sztus.dalaran.microservice.customer.client.object.parameter.request.G
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalDataRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalDataResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(value = "microservice-customer", path = "/v4", contextId = "customer-api")
 public interface CustomerGeneralApi {
@@ -29,4 +32,9 @@ public interface CustomerGeneralApi {
     Long saveCustomerPersonalData(
             @RequestBody SaveCustomerPersonalDataRequest request
     );
+    @PostMapping(CustomerAction.SAVE_CUSTOMER)
+    SaveCustomerResponse saveCustomer(
+            @SpringQueryMap SaveCustomerRequest request
+    );
+
 }
