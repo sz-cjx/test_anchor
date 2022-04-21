@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
 
+import com.sztus.dalaran.microservice.customer.server.respository.reader.CustomerReader;
 import com.sztus.dalaran.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
@@ -19,6 +20,9 @@ import java.util.Objects;
 public class CustomerGeneralService {
 
     @Autowired
+    private CustomerReader customerReader;
+
+    @Autowired
     private SimpleProcedure simpleProcedure;
 
     public Customer getCustomerByCustomerId(Long customerId) {
@@ -32,6 +36,15 @@ public class CustomerGeneralService {
     }
 
     public void saveCustomer(Customer customer) throws ProcedureException {
+        Long id = customer.getId();
+        String openId = customer.getOpenId();
+
+        Customer customerDb = customerReader.getCustomerByCondition(id, openId);
+        if (Objects.nonNull(customerDb)) {
+            customer.setId(customerDb.getId());
+            customer.setOpenId(customerDb.getOpenId());
+        }
+
         Long result = simpleProcedure.save(Customer.class, JSON.toJSONString(customer));
         CustomerCheckUtil.checkSaveResult(result);
         if (!Objects.equals(result, 1L)) {
