@@ -14,6 +14,9 @@ public class CustomerReader extends BaseJdbcReader {
 
     public Customer getCustomerByCondition(Long id, String openId) {
         SqlOption sqlOption = SqlOption.getInstance();
+        if (Objects.isNull(id) && Objects.isNull(openId)){
+            return null;
+        }
         if (Objects.nonNull(id)) {
             sqlOption.whereFormat(ConditionTypeConst.AND, "id = '%s'", id);
         }

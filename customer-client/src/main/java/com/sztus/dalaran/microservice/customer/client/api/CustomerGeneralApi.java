@@ -3,6 +3,7 @@ package com.sztus.dalaran.microservice.customer.client.api;
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public interface CustomerGeneralApi {
     );
 
     @PostMapping(CustomerAction.SAVE_PERSONAL)
-    Long saveCustomerPersonalData(
+    SaveCustomerPersonalResponse saveCustomerPersonalData(
             @RequestBody SaveCustomerPersonalRequest request
     );
 
@@ -39,8 +40,9 @@ public interface CustomerGeneralApi {
 
     @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
     SaveBankAccountResponse saveBankAccount(
-            @RequestBody  SaveBankAccountRequest request
+            @RequestBody SaveBankAccountRequest request
     );
+
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
     GetCustomerEmploymentResponse getCustomerEmployment(
             @SpringQueryMap GetCustomerEmploymentRequest request
@@ -61,4 +63,8 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPayrollRequest request
     );
 
+    @GetMapping(CustomerAction.GET_BANK_ACCOUNT)
+    CustomerBankAccountDataView getBankAccount(
+            @SpringQueryMap GetBankAccountRequest request
+    );
 }
