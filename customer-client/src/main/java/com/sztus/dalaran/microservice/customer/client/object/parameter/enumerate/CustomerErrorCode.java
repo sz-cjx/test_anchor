@@ -5,6 +5,7 @@ import com.sztus.framework.component.core.base.BaseError;
 public enum CustomerErrorCode implements BaseError {
 
     PARAMETER_IS_INCOMPLETE(95090001, "parameter is incomplete"),
+    FAILURE_TO_SAVE_DATA(95090002, "failed to save data"),
     ;
 
     CustomerErrorCode(Integer code, String message) {
