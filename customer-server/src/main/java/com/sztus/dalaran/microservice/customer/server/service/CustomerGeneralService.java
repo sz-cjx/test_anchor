@@ -1,6 +1,7 @@
 package com.sztus.dalaran.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
