@@ -2,15 +2,12 @@ package com.sztus.dalaran.microservice.customer.server.controller;
 
 import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerPersonalDataRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.GetCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerPersonalRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveCustomerRequest;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralService;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -81,7 +79,7 @@ public class CustomerGeneralController {
     }
 
     @PostMapping(CustomerAction.SAVE_PERSONAL)
-    public Long saveCustomerPersonalData(
+    public SaveCustomerPersonalResponse saveCustomerPersonalData(
             @RequestBody SaveCustomerPersonalRequest request
     ) throws ProcedureException {
         CustomerPersonalData personalData = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
@@ -89,7 +87,33 @@ public class CustomerGeneralController {
         if (Objects.isNull(personalData.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
+        generalService.saveCustomerPersonal(personalData);
+        return CustomerConverter.INSTANCE.PersonalDataToSaveResponse(personalData) ;
+    }
 
-        return generalService.saveCustomerPersonal(personalData);
+    @GetMapping(CustomerAction.LIST_BANK_ACOUNT)
+    public ListBankAcountResponse listBankAcount(
+            ListBankAcountRequest request
+    ){
+        Long customerId = request.getCustomerId();
+        List<CustomerBankAccountData> bankAccountDataList = generalService.listBankAcountByCustomerId(customerId);
+        List<CustomerBankAccountDataView> items = CustomerConverter.INSTANCE.BankAccountListToViewList(bankAccountDataList);
+        ListBankAcountResponse response = new ListBankAcountResponse();
+        response.setCount(items.size());
+        response.setItems(items);
+        return response;
+    }
+
+    @PostMapping(CustomerAction.SAVE_BANK_ACOUNT)
+    public SaveBankAcountResponse saveBankAcount(
+          @RequestBody  SaveBankAcountRequest request
+    ) throws ProcedureException {
+        if (Objects.isNull(request) || Objects.isNull(request.getCustomerId())){
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+        CustomerBankAccountData bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
+        Long result = generalService.saveBankAcount(bankAccountData);
+        bankAccountData.setId(result);
+        return CustomerConverter.INSTANCE.BankAccountDataToSaveResponse(bankAccountData);
     }
 }

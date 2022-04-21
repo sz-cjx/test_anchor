@@ -3,6 +3,7 @@ package com.sztus.dalaran.microservice.customer.server.service;
 import com.alibaba.fastjson.JSON;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CustomerReader;
@@ -16,6 +17,7 @@ import com.sztus.framework.component.database.type.SqlOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -62,7 +64,27 @@ public class CustomerGeneralService {
         return customerReader.findByOptions(CustomerPersonalData.class, instance.toString());
     }
 
-    public Long saveCustomerPersonal(CustomerPersonalData personalData) {
+    public Long saveCustomerPersonal(CustomerPersonalData personalData) throws ProcedureException {
+        if (Objects.nonNull(personalData.getSsn())){
+            SqlOption option = SqlOption.getInstance();
+            option.whereNotEqual("customer_id",personalData.getCustomerId());
+            option.whereEqual("ssn",personalData.getSsn());
+            CustomerPersonalData dbPersonalData = customerReader.findByOptions(CustomerPersonalData.class, option.toString());
+            if (Objects.nonNull(dbPersonalData)){
+                throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
+            }
+        }
+
         return customerWriter.save(CustomerPersonalData.class, JSON.toJSONString(personalData));
+    }
+
+    public List<CustomerBankAccountData> listBankAcountByCustomerId(Long customerId){
+        SqlOption instance = SqlOption.getInstance();
+        instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
+        return customerReader.findAllByOptions(CustomerBankAccountData.class, instance.toString());
+    }
+
+    public Long saveBankAcount(CustomerBankAccountData bankAccountData){
+        return customerWriter.save(CustomerBankAccountData.class,JSON.toJSONString(bankAccountData));
     }
 }
