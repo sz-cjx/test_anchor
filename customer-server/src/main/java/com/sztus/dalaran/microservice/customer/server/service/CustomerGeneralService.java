@@ -96,13 +96,17 @@ public class CustomerGeneralService {
     }
 
 
-    public List<CustomerBankAccountData> listBankAcountByCustomerId(Long customerId){
+    public List<CustomerBankAccountData> listBankAccountByCustomerId(Long customerId){
         SqlOption instance = SqlOption.getInstance();
         instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
         return customerReader.findAllByOptions(CustomerBankAccountData.class, instance.toString());
     }
 
-    public Long saveBankAcount(CustomerBankAccountData bankAccountData){
+    public Long saveBankAccount(CustomerBankAccountData bankAccountData){
         return customerWriter.save(CustomerBankAccountData.class,JSON.toJSONString(bankAccountData));
+    }
+
+    public CustomerBankAccountData getBankAccountById(Long id){
+        return customerReader.findById(CustomerBankAccountData.class, id, null);
     }
 }

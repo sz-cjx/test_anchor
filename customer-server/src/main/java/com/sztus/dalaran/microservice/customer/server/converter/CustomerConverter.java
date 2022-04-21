@@ -1,6 +1,6 @@
 package com.sztus.dalaran.microservice.customer.server.converter;
 
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveBankAcountRequest;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveBankAccountRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
@@ -39,13 +39,13 @@ public interface CustomerConverter {
 
     CustomerBankAccountData ViewToBankAccountData(CustomerBankAccountDataView view);
 
-    SaveBankAcountResponse BankAccountDataToSaveResponse(CustomerBankAccountData bankAccountData);
+    CustomerBankAccountDataView BankAccountDataToView(CustomerBankAccountData bankAccountData);
 
     SaveCustomerPersonalResponse PersonalDataToSaveResponse(CustomerPersonalData personalData);
+
     GetCustomerEmploymentResponse CusEmploymentToView(CustomerEmploymentData employmentData);
 
     CustomerEmploymentData CusEmploymentViewToData(CustomerEmploymentView customerEmploymentView);
 
     SaveCustomerEmploymentResponse CusEmploymentToToSaveCusEmploymentResponse(CustomerEmploymentData customerEmploymentData);
-
 }

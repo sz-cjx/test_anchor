@@ -5,8 +5,6 @@ import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
-import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
@@ -94,30 +92,42 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.PersonalDataToSaveResponse(personalData) ;
     }
 
-    @GetMapping(CustomerAction.LIST_BANK_ACOUNT)
-    public ListBankAcountResponse listBankAcount(
-            ListBankAcountRequest request
+    @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
+    public ListBankAccountResponse listBankAccount(
+            ListBankAccountRequest request
     ){
         Long customerId = request.getCustomerId();
-        List<CustomerBankAccountData> bankAccountDataList = generalService.listBankAcountByCustomerId(customerId);
+        List<CustomerBankAccountData> bankAccountDataList = generalService.listBankAccountByCustomerId(customerId);
         List<CustomerBankAccountDataView> items = CustomerConverter.INSTANCE.BankAccountListToViewList(bankAccountDataList);
-        ListBankAcountResponse response = new ListBankAcountResponse();
+        ListBankAccountResponse response = new ListBankAccountResponse();
         response.setCount(items.size());
         response.setItems(items);
         return response;
     }
 
-    @PostMapping(CustomerAction.SAVE_BANK_ACOUNT)
-    public SaveBankAcountResponse saveBankAcount(
-          @RequestBody  SaveBankAcountRequest request
+    @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
+    public CustomerBankAccountDataView saveBankAccount(
+          @RequestBody  SaveBankAccountRequest request
     ) throws ProcedureException {
         if (Objects.isNull(request) || Objects.isNull(request.getCustomerId())){
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
         CustomerBankAccountData bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
-        Long result = generalService.saveBankAcount(bankAccountData);
+        Long result = generalService.saveBankAccount(bankAccountData);
         bankAccountData.setId(result);
-        return CustomerConverter.INSTANCE.BankAccountDataToSaveResponse(bankAccountData);
+        return CustomerConverter.INSTANCE.BankAccountDataToView(bankAccountData);
+    }
+
+    @GetMapping(CustomerAction.GET_BANK_ACCOUNT)
+    public CustomerBankAccountDataView getBankAccount(
+            GetBankAccountRequest request
+    ) throws ProcedureException {
+        Long id = request.getId();
+        if (Objects.isNull(id)){
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+        CustomerBankAccountData dbBankAccountData = generalService.getBankAccountById(id);
+        return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
     @GetMapping(CustomerAction.GET_EMPLOYMENT)

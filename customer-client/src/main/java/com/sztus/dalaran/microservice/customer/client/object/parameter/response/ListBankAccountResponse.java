@@ -4,7 +4,7 @@ import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAc
 
 import java.util.List;
 
-public class ListBankAcountResponse {
+public class ListBankAccountResponse {
     Integer count;
     List<CustomerBankAccountDataView> items;
 

@@ -9,8 +9,9 @@ public interface CustomerAction {
     String SAVE_PERSONAL = "/general/personal/save";
     String GET_PERSONAL = "/general/personal/get";
 
-    String LIST_BANK_ACOUNT = "/general/bank-acount/list";
-    String SAVE_BANK_ACOUNT = "/general/bank-acount/save";
+    String GET_BANK_ACCOUNT = "/general/bank-account/get";
+    String LIST_BANK_ACCOUNT = "/general/bank-account/list";
+    String SAVE_BANK_ACCOUNT = "/general/bank-account/save";
 
     String GET_EMPLOYMENT = "/general/employment/get";
     String SAVE_EMPLOYMENT = "/general/employment/save";
