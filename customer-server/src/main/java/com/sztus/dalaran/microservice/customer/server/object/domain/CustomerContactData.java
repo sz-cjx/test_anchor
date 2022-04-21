@@ -1,22 +1,17 @@
-package com.sztus.dalaran.microservice.customer.server.domain;
+package com.sztus.dalaran.microservice.customer.server.object.domain;
 
 import com.sztus.framework.component.database.annotation.Column;
 import com.sztus.framework.component.database.annotation.Entity;
-import com.sztus.framework.component.database.annotation.GeneratedValue;
 import com.sztus.framework.component.database.annotation.Id;
-import com.sztus.framework.component.database.enumerate.GenerationType;
 
 @Entity
 public class CustomerContactData {
 
   @Id
   @Column
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
-
-  @Column
   private Long customerId;
 
+  @Id
   @Column
   private Integer contactType;
 
@@ -30,15 +25,16 @@ public class CustomerContactData {
   private Long verifiedAt;
 
   @Column
-  private Integer primary;
+  private Boolean marketingToggle;
 
-  public Long getId() {
-    return id;
-  }
+  @Column
+  private Boolean operationToggle;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+  @Column
+  private Long createdAt;
+
+  @Column
+  private Long updatedAt;
 
   public Long getCustomerId() {
     return customerId;
@@ -80,11 +76,35 @@ public class CustomerContactData {
     this.verifiedAt = verifiedAt;
   }
 
-  public Integer getPrimary() {
-    return primary;
+  public Boolean getMarketingToggle() {
+    return marketingToggle;
   }
 
-  public void setPrimary(Integer primary) {
-    this.primary = primary;
+  public void setMarketingToggle(Boolean marketingToggle) {
+    this.marketingToggle = marketingToggle;
+  }
+
+  public Boolean getOperationToggle() {
+    return operationToggle;
+  }
+
+  public void setOperationToggle(Boolean operationToggle) {
+    this.operationToggle = operationToggle;
+  }
+
+  public Long getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Long createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Long getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Long updatedAt) {
+    this.updatedAt = updatedAt;
   }
 }

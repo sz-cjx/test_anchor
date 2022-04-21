@@ -19,4 +19,10 @@ public interface CustomerAction {
     String GET_PAYROLL = "/general/payroll/get";
     String SAVE_PAYROLL = "/general/payroll/save";
 
+    /**
+     * customer contact data
+     */
+    String GET_CUSTOMER_CONTACT = "/general/contact/list";
+    String SAVE_CUSTOMER_CONTACT = "/general/contact/save";
+
 }

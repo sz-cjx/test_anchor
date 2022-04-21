@@ -61,4 +61,14 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerPayrollRequest request
     );
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
+    GetCustomerContactDataAsListResponse getCustomerContactDataAsList(
+            @SpringQueryMap GetCustomerContactDataRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
+    void saveCustomerContactData(
+            @RequestBody SaveCustomerContactDataRequest request
+    );
+
 }

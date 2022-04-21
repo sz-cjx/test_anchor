@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sztus.dalaran.microservice.customer.server.domain.Customer;
+import com.sztus.dalaran.microservice.customer.server.object.domain.Customer;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.core.BaseJdbcWriter;
 import com.sztus.framework.component.database.kit.SqlBuilder;
