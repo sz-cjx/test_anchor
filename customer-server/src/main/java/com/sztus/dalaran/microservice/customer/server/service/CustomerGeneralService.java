@@ -117,11 +117,7 @@ public class CustomerGeneralService {
         return customerReader.findById(CustomerBankAccountData.class, id, null);
     }
 
-    public List<CustomerContactData> getCustomerContactDataAsList(Long customerId) throws ProcedureException {
-        if (Objects.isNull(customerId)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
-
+    public List<CustomerContactData> getCustomerContactDataAsList(Long customerId) {
         return customerReader.findAllByOptions(CustomerContactData.class, SqlOption.getInstance().whereEqual(DbKey.CUSTOMER_ID, customerId).toString());
     }
 

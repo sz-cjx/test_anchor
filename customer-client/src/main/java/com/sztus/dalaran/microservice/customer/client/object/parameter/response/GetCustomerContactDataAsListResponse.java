@@ -6,13 +6,13 @@ import java.util.List;
 
 public class GetCustomerContactDataAsListResponse {
 
-    private List<CustomerContactDataView> items;
+    private List<CustomerContactDataView> list;
 
-    public List<CustomerContactDataView> getItems() {
-        return items;
+    public List<CustomerContactDataView> getList() {
+        return list;
     }
 
-    public void setItems(List<CustomerContactDataView> items) {
-        this.items = items;
+    public void setList(List<CustomerContactDataView> list) {
+        this.list = list;
     }
 }

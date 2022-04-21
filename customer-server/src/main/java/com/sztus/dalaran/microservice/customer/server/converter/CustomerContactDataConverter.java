@@ -12,7 +12,7 @@ public interface CustomerContactDataConverter {
 
     CustomerContactDataConverter INSTANCE = Mappers.getMapper(CustomerContactDataConverter.class);
 
-    List<CustomerContactDataView> CustomerContactDataListToView(List<CustomerContactData> customerContactDataList);
+    List<CustomerContactDataView> ListCustomerContactDataToView(List<CustomerContactData> customerContactDataList);
 
     List<CustomerContactData> CustomerContactDataViewToList(List<CustomerContactDataView> customerContactDataViewList);
 

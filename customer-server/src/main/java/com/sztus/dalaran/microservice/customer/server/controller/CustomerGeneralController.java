@@ -187,12 +187,16 @@ public class CustomerGeneralController {
             GetCustomerContactDataRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
 
         List<CustomerContactData> customerContactDataAsList = generalService.getCustomerContactDataAsList(customerId);
-        List<CustomerContactDataView> customerContactDataViewAsList = CustomerContactDataConverter.INSTANCE.CustomerContactDataListToView(customerContactDataAsList);
+        List<CustomerContactDataView> customerContactDataViewAsList =
+                CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(customerContactDataAsList);
 
         GetCustomerContactDataAsListResponse response = new GetCustomerContactDataAsListResponse();
-        response.setItems(customerContactDataViewAsList);
+        response.setList(customerContactDataViewAsList);
 
         return response;
     }
