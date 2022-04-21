@@ -3,11 +3,18 @@ package com.sztus.dalaran.microservice.customer.server.converter;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.SaveBankAcountRequest;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerPersonalResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerEmploymentResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.GetCustomerResponse;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerPersonalView;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerEmploymentResponse;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.SaveCustomerResponse;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerEmploymentView;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerView;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerEmploymentData;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -35,4 +42,10 @@ public interface CustomerConverter {
     SaveBankAcountResponse BankAccountDataToSaveResponse(CustomerBankAccountData bankAccountData);
 
     SaveCustomerPersonalResponse PersonalDataToSaveResponse(CustomerPersonalData personalData);
+    GetCustomerEmploymentResponse CusEmploymentToView(CustomerEmploymentData employmentData);
+
+    CustomerEmploymentData CusEmploymentViewToData(CustomerEmploymentView customerEmploymentView);
+
+    SaveCustomerEmploymentResponse CusEmploymentToToSaveCusEmploymentResponse(CustomerEmploymentData customerEmploymentData);
+
 }

@@ -41,4 +41,14 @@ public interface CustomerGeneralApi {
     SaveBankAcountResponse saveBankAcount(
             @RequestBody  SaveBankAcountRequest request
     );
+    @GetMapping(CustomerAction.GET_EMPLOYMENT)
+    GetCustomerEmploymentResponse getCustomerEmployment(
+            @SpringQueryMap GetCustomerEmploymentRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
+    SaveCustomerEmploymentResponse saveCustomerEmployment(
+            @RequestBody SaveCustomerEmploymentRequest request
+    );
+
 }

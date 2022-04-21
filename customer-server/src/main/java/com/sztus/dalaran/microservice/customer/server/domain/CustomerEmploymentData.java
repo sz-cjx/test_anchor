@@ -2,16 +2,13 @@ package com.sztus.dalaran.microservice.customer.server.domain;
 
 import com.sztus.framework.component.database.annotation.Column;
 import com.sztus.framework.component.database.annotation.Entity;
-import com.sztus.framework.component.database.annotation.GeneratedValue;
 import com.sztus.framework.component.database.annotation.Id;
-import com.sztus.framework.component.database.enumerate.GenerationType;
 
 @Entity
 public class CustomerEmploymentData {
 
   @Id
   @Column
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long customerId;
 
   @Column

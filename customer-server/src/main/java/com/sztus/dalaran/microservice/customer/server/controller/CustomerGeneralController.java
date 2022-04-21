@@ -5,10 +5,13 @@ import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
+import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.domain.Customer;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerBankAccountData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
+import com.sztus.dalaran.microservice.customer.server.domain.CustomerEmploymentData;
 import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralService;
 import com.sztus.framework.component.core.type.ProcedureException;
@@ -116,4 +119,29 @@ public class CustomerGeneralController {
         bankAccountData.setId(result);
         return CustomerConverter.INSTANCE.BankAccountDataToSaveResponse(bankAccountData);
     }
+
+    @GetMapping(CustomerAction.GET_EMPLOYMENT)
+    public GetCustomerEmploymentResponse getCustomerEmployment(
+            GetCustomerEmploymentRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        CustomerEmploymentData employmentData = generalService.getCustomerEmploymentByCustomerId(customerId);
+
+        return CustomerConverter.INSTANCE.CusEmploymentToView(employmentData);
+    }
+
+    @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
+    public SaveCustomerEmploymentResponse saveCustomerEmployment(
+            @RequestBody SaveCustomerEmploymentRequest request
+    ) throws ProcedureException {
+        CustomerEmploymentData employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
+        generalService.saveCustomerEmployment(employmentData);
+
+        return CustomerConverter.INSTANCE.CusEmploymentToToSaveCusEmploymentResponse(employmentData);
+    }
+
 }

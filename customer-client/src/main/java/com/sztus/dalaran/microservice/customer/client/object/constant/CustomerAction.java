@@ -11,4 +11,8 @@ public interface CustomerAction {
 
     String LIST_BANK_ACOUNT = "/general/bank-acount/list";
     String SAVE_BANK_ACOUNT = "/general/bank-acount/save";
+
+    String GET_EMPLOYMENT = "/general/employment/get";
+    String SAVE_EMPLOYMENT = "/general/employment/save";
+
 }
