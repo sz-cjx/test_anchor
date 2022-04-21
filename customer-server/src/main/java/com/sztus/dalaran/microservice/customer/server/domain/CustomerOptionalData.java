@@ -7,27 +7,15 @@ import com.sztus.framework.component.database.annotation.Id;
 import com.sztus.framework.component.database.enumerate.GenerationType;
 
 @Entity
-public class Customer {
+public class CustomerOptionalData {
 
   @Id
   @Column
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private Long customerId;
 
   @Column
-  private String username;
-
-  @Column
-  private String nickname;
-
-  @Column
-  private String avatarUrl;
-
-  @Column
-  private String introduction;
-
-  @Column
-  private String openId;
+  private Integer type;
 
   @Column
   private Integer status;
@@ -38,52 +26,20 @@ public class Customer {
   @Column
   private Long updatedAt;
 
-  public Long getId() {
-    return id;
+  public Long getCustomerId() {
+    return customerId;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setCustomerId(Long customerId) {
+    this.customerId = customerId;
   }
 
-  public String getUsername() {
-    return username;
+  public Integer getType() {
+    return type;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getNickname() {
-    return nickname;
-  }
-
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
-  }
-
-  public String getAvatarUrl() {
-    return avatarUrl;
-  }
-
-  public void setAvatarUrl(String avatarUrl) {
-    this.avatarUrl = avatarUrl;
-  }
-
-  public String getIntroduction() {
-    return introduction;
-  }
-
-  public void setIntroduction(String introduction) {
-    this.introduction = introduction;
-  }
-
-  public String getOpenId() {
-    return openId;
-  }
-
-  public void setOpenId(String openId) {
-    this.openId = openId;
+  public void setType(Integer type) {
+    this.type = type;
   }
 
   public Integer getStatus() {

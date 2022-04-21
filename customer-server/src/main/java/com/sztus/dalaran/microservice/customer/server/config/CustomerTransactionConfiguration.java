@@ -9,10 +9,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
-/**
- * @author Baron
- * @date 2021/5/14
- */
 @Configuration
 public class CustomerTransactionConfiguration {
     @Bean

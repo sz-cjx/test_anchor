@@ -2,178 +2,166 @@ package com.sztus.dalaran.microservice.customer.server.domain;
 
 import com.sztus.framework.component.database.annotation.Column;
 import com.sztus.framework.component.database.annotation.Entity;
+import com.sztus.framework.component.database.annotation.GeneratedValue;
 import com.sztus.framework.component.database.annotation.Id;
+import com.sztus.framework.component.database.enumerate.GenerationType;
 
-/**
- * @author Fly_Roushan
- * @date 2021/1/4
- */
 @Entity
 public class CustomerPersonalData {
 
-    @Id
-    @Column
-    private Long customerId;
+  @Id
+  @Column
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long customerId;
 
-    @Column
-    private String ssn;
+  @Column
+  private String firstName;
 
-    @Column
-    private String firstName;
+  @Column
+  private String middleName;
 
-    @Column
-    private String middleName;
+  @Column
+  private String lastName;
 
-    @Column
-    private String lastName;
+  @Column
+  private String ssn;
 
-    @Column
-    private Integer gender;
+  @Column
+  private String birthday;
 
-    @Column
-    private String birthday;
+  @Column
+  private Integer gender;
 
-    @Column
-    private String address;
+  @Column
+  private String city;
 
-    @Column
-    private String city;
+  @Column
+  private String state;
 
-    @Column
-    private String state;
+  @Column
+  private String zip;
 
-    @Column
-    private String zip;
+  @Column
+  private String address;
 
-    @Column
-    private Integer military;
+  @Column
+  private Integer language;
 
-    @Column
-    private Integer language;
+  @Column
+  private Long createdAt;
 
-    @Column
-    private Long createdAt;
+  @Column
+  private Long updatedAt;
 
-    @Column
-    private Long updatedAt;
+  public Long getCustomerId() {
+    return customerId;
+  }
 
-    public Long getCustomerId() {
-        return customerId;
-    }
+  public void setCustomerId(Long customerId) {
+    this.customerId = customerId;
+  }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public String getSsn() {
-        return ssn;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public void setSsn(String ssn) {
-        this.ssn = ssn;
-    }
+  public String getMiddleName() {
+    return middleName;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public void setMiddleName(String middleName) {
+    this.middleName = middleName;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public String getMiddleName() {
-        return middleName;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
+  public String getSsn() {
+    return ssn;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public void setSsn(String ssn) {
+    this.ssn = ssn;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public String getBirthday() {
+    return birthday;
+  }
 
-    public Integer getGender() {
-        return gender;
-    }
+  public void setBirthday(String birthday) {
+    this.birthday = birthday;
+  }
 
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
+  public Integer getGender() {
+    return gender;
+  }
 
-    public String getBirthday() {
-        return birthday;
-    }
+  public void setGender(Integer gender) {
+    this.gender = gender;
+  }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
+  public String getCity() {
+    return city;
+  }
 
-    public String getAddress() {
-        return address;
-    }
+  public void setCity(String city) {
+    this.city = city;
+  }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+  public String getState() {
+    return state;
+  }
 
-    public String getCity() {
-        return city;
-    }
+  public void setState(String state) {
+    this.state = state;
+  }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+  public String getZip() {
+    return zip;
+  }
 
-    public String getState() {
-        return state;
-    }
+  public void setZip(String zip) {
+    this.zip = zip;
+  }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+  public String getAddress() {
+    return address;
+  }
 
-    public String getZip() {
-        return zip;
-    }
+  public void setAddress(String address) {
+    this.address = address;
+  }
 
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
+  public Integer getLanguage() {
+    return language;
+  }
 
-    public Integer getMilitary() {
-        return military;
-    }
+  public void setLanguage(Integer language) {
+    this.language = language;
+  }
 
-    public void setMilitary(Integer military) {
-        this.military = military;
-    }
+  public Long getCreatedAt() {
+    return createdAt;
+  }
 
-    public Integer getLanguage() {
-        return language;
-    }
+  public void setCreatedAt(Long createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public void setLanguage(Integer language) {
-        this.language = language;
-    }
+  public Long getUpdatedAt() {
+    return updatedAt;
+  }
 
-    public Long getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Long getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Long updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+  public void setUpdatedAt(Long updatedAt) {
+    this.updatedAt = updatedAt;
+  }
 }
