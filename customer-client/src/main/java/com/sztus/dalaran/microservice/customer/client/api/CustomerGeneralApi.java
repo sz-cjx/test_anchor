@@ -42,4 +42,14 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerEmploymentRequest request
     );
 
+    @GetMapping(CustomerAction.GET_PAYROLL)
+    GetCustomerPayrollResponse getCustomerPayroll(
+            @SpringQueryMap GetCustomerPayrollRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_PAYROLL)
+    SaveCustomerPayrollResponse saveCustomerPayroll(
+            @RequestBody SaveCustomerPayrollRequest request
+    );
+
 }

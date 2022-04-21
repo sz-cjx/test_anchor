@@ -1,10 +1,7 @@
 package com.sztus.dalaran.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
-import com.sztus.dalaran.microservice.customer.server.domain.Customer;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerContactData;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerEmploymentData;
-import com.sztus.dalaran.microservice.customer.server.domain.CustomerPersonalData;
+import com.sztus.dalaran.microservice.customer.server.domain.*;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.dalaran.microservice.customer.server.respository.reader.CustomerReader;
 import com.sztus.dalaran.microservice.customer.server.respository.writer.CommonWriter;
@@ -16,6 +13,7 @@ import com.sztus.framework.component.database.type.SqlOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -80,6 +78,15 @@ public class CustomerGeneralService {
         Long result = commonWriter.save(CustomerEmploymentData.class, JSON.toJSONString(customerEmploymentData));
         CustomerCheckUtil.checkSaveResult(result);
 
+    }
+
+    public CustomerPayrollData getCustomerPayrollByCustomerId(Long customerId) {
+        return commonReader.getEntityByLoanId(CustomerPayrollData.class, customerId);
+    }
+
+    public void saveCustomerPayroll(CustomerPayrollData payrollData) throws ProcedureException {
+        Long result = commonWriter.save(payrollData);
+        CustomerCheckUtil.checkSaveResult(result);
     }
 
 }
