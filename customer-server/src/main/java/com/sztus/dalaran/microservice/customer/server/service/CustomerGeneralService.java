@@ -162,8 +162,7 @@ public class CustomerGeneralService {
         }
         contactData.setUpdatedAt(currentTimestamp);
 
-
-        Long result = customerWriter.saveEntity(contactData);
+        Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
     }
 }
