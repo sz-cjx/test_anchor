@@ -4,7 +4,7 @@ import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContac
 
 import java.util.List;
 
-public class GetCustomerContactDataAsListResponse {
+public class ListCustomerContactResponse {
 
     private List<CustomerContactDataView> list;
 

@@ -12,6 +12,8 @@ public interface CustomerContactDataConverter {
 
     CustomerContactDataConverter INSTANCE = Mappers.getMapper(CustomerContactDataConverter.class);
 
+    CustomerContactData CustomerContactViewToData(CustomerContactDataView customerContactDataView);
+
     List<CustomerContactDataView> ListCustomerContactDataToView(List<CustomerContactData> customerContactDataList);
 
     List<CustomerContactData> CustomerContactDataViewToList(List<CustomerContactDataView> customerContactDataViewList);

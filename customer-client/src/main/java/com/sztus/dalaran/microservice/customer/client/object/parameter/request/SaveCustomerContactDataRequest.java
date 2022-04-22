@@ -4,15 +4,5 @@ import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContac
 
 import java.util.List;
 
-public class SaveCustomerContactDataRequest {
-
-    private List<CustomerContactDataView> contactDataList;
-
-    public List<CustomerContactDataView> getContactDataList() {
-        return contactDataList;
-    }
-
-    public void setContactDataList(List<CustomerContactDataView> contactDataList) {
-        this.contactDataList = contactDataList;
-    }
+public class SaveCustomerContactDataRequest extends CustomerContactDataView{
 }
