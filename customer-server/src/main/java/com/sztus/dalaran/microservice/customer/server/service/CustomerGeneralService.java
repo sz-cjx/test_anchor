@@ -11,8 +11,10 @@ import com.sztus.dalaran.microservice.customer.server.respository.writer.Custome
 import com.sztus.dalaran.microservice.customer.server.type.constant.DbKey;
 import com.sztus.dalaran.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
+import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.type.SqlOption;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -49,10 +51,15 @@ public class CustomerGeneralService {
         Long id = customer.getId();
         String openId = customer.getOpenId();
 
-        Customer customerDb = customerReader.getCustomerByCondition(id, openId);
+        Customer customerDb = null;
+        if (Objects.nonNull(id) || StringUtils.isNotBlank(openId)) {
+            customerDb = customerReader.getCustomerByCondition(id, openId);
+        }
         if (Objects.nonNull(customerDb)) {
             customer.setId(customerDb.getId());
             customer.setOpenId(customerDb.getOpenId());
+        } else {
+            customer.setOpenId(UuidUtil.getUuid());
         }
 
         Long result = customerWriter.save(Customer.class, JSON.toJSONString(customer));
