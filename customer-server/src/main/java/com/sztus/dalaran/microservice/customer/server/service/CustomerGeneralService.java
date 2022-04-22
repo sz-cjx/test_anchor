@@ -44,7 +44,7 @@ public class CustomerGeneralService {
 
     public CustomerContactData getCustomerContactByContact(String contactInformation) {
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereFormat(ConditionTypeConst.AND, "contact_information = '%s'", contactInformation);
+        sqlOption.whereEqual(DbKey.CONTACT_INFORMATION, contactInformation);
         return customerReader.findByOptions(CustomerContactData.class, sqlOption.toString());
     }
 
@@ -82,17 +82,17 @@ public class CustomerGeneralService {
     }
 
     public CustomerPersonalData getPersonalByCustomerId(Long customerId) {
-        SqlOption instance = SqlOption.getInstance();
-        instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
-        return customerReader.findByOptions(CustomerPersonalData.class, instance.toString());
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        return customerReader.findByOptions(CustomerPersonalData.class, sqlOption.toString());
     }
 
     public Long saveCustomerPersonal(CustomerPersonalData personalData) throws ProcedureException {
         if (Objects.nonNull(personalData.getSsn())) {
-            SqlOption option = SqlOption.getInstance();
-            option.whereNotEqual("customer_id", personalData.getCustomerId());
-            option.whereEqual("ssn", personalData.getSsn());
-            CustomerPersonalData dbPersonalData = customerReader.findByOptions(CustomerPersonalData.class, option.toString());
+            SqlOption sqlOption = SqlOption.getInstance();
+            sqlOption.whereEqual(DbKey.CUSTOMER_ID, personalData.getCustomerId());
+            sqlOption.whereEqual(DbKey.SSN, personalData.getSsn());
+            CustomerPersonalData dbPersonalData = customerReader.findByOptions(CustomerPersonalData.class, sqlOption.toString());
             if (Objects.nonNull(dbPersonalData)) {
                 throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
             }
@@ -126,9 +126,9 @@ public class CustomerGeneralService {
 
 
     public List<CustomerBankAccountData> listBankAccountByCustomerId(Long customerId) {
-        SqlOption instance = SqlOption.getInstance();
-        instance.whereFormat(ConditionTypeConst.AND, "customer_id= %d", customerId);
-        return customerReader.findAllByOptions(CustomerBankAccountData.class, instance.toString());
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        return customerReader.findAllByOptions(CustomerBankAccountData.class, sqlOption.toString());
     }
 
     public Long saveBankAccount(CustomerBankAccountData bankAccountData) throws ProcedureException {
@@ -149,6 +149,19 @@ public class CustomerGeneralService {
         if (Objects.isNull(contactData) || Objects.isNull(contactData.getCustomerId()) || Objects.isNull(contactData.getContactType())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
+
+        SqlOption sqlOption = SqlOption.getInstance();
+        Integer contactType = contactData.getContactType();
+        Long customerId = contactData.getCustomerId();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        sqlOption.whereEqual(DbKey.CONTACT_TYPE, contactType);
+        CustomerContactData contactDataDb = customerReader.findByOptions(CustomerContactData.class, sqlOption.toString());
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        if (Objects.isNull(contactDataDb)) {
+            contactData.setCreatedAt(currentTimestamp);
+        }
+        contactData.setUpdatedAt(currentTimestamp);
+
 
         Long result = customerWriter.save(CustomerContactData.class, JSON.toJSONString(contactData));
         CustomerCheckUtil.checkSaveResult(result);

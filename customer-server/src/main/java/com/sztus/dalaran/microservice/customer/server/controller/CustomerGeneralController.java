@@ -13,6 +13,7 @@ import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralSer
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -208,6 +209,21 @@ public class CustomerGeneralController {
         CustomerContactData customerContactData = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
         generalService.saveCustomerContactData(customerContactData);
+    }
+
+    @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
+    public void batchSaveCustomerContact(
+            @RequestBody BatchSaveContactRequest request
+    ) throws ProcedureException {
+        List<CustomerContactDataView> list = request.getList();
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+        List<CustomerContactData> customerContactList = CustomerContactDataConverter.INSTANCE.ListCustomerContactViewToDate(list);
+
+        for (CustomerContactData customerContactData : customerContactList) {
+            generalService.saveCustomerContactData(customerContactData);
+        }
     }
 
 }
