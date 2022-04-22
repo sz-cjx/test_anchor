@@ -11,6 +11,7 @@ import com.sztus.dalaran.microservice.customer.server.respository.writer.Custome
 import com.sztus.dalaran.microservice.customer.server.type.constant.DbKey;
 import com.sztus.dalaran.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
+import com.sztus.framework.component.core.util.DateUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.type.SqlOption;
@@ -96,6 +97,12 @@ public class CustomerGeneralService {
                 throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
             }
         }
+        CustomerPersonalData personalDataDb = commonReader.getEntityByCustomerId(CustomerPersonalData.class, personalData.getCustomerId());
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        if (Objects.isNull(personalDataDb)) {
+            personalData.setCreatedAt(currentTimestamp);
+        }
+        personalData.setUpdatedAt(currentTimestamp);
         return customerWriter.save(CustomerPersonalData.class, JSON.toJSONString(personalData));
     }
 
