@@ -1,6 +1,5 @@
 package com.sztus.dalaran.microservice.customer.server.type.enumeration;
 
-
 import com.sztus.framework.component.core.base.BaseEnum;
 
 public enum CustomerContactTypeEnum implements BaseEnum {
