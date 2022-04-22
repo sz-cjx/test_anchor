@@ -61,7 +61,7 @@ public class CustomerGeneralService {
         } else {
             // 校验username是否存在
             if (Objects.nonNull(getCustomerByUsername(customer.getUsername()))) {
-                throw new ProcedureException(CustomerErrorCode.FAILURE_TO_SAVE_DATA);
+                throw new ProcedureException(CustomerErrorCode.FAILURE_ADD_CUSTOMER_USERNAME_HAS_EXISTS);
             }
             customer.setOpenId(UuidUtil.getUuid());
         }
