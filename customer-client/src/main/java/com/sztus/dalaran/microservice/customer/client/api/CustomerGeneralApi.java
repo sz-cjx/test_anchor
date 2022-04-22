@@ -76,4 +76,9 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerContactDataRequest request
     );
 
+    @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
+    void batchSaveCustomerContact(
+            @RequestBody BatchSaveContactRequest request
+    );
+
 }
