@@ -163,7 +163,7 @@ public class CustomerGeneralService {
         contactData.setUpdatedAt(currentTimestamp);
 
 
-        Long result = customerWriter.save(CustomerContactData.class, JSON.toJSONString(contactData));
+        Long result = customerWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
     }
 }
