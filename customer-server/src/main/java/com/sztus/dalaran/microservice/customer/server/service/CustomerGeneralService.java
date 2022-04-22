@@ -59,6 +59,10 @@ public class CustomerGeneralService {
             customer.setId(customerDb.getId());
             customer.setOpenId(customerDb.getOpenId());
         } else {
+            // 校验username是否存在
+            if (Objects.nonNull(getCustomerByUsername(customer.getUsername()))) {
+                throw new ProcedureException(CustomerErrorCode.FAILURE_TO_SAVE_DATA);
+            }
             customer.setOpenId(UuidUtil.getUuid());
         }
 
@@ -69,6 +73,12 @@ public class CustomerGeneralService {
         }
     }
 
+    public Customer getCustomerByUsername(String username) {
+        if (StringUtils.isBlank(username)) {
+            return null;
+        }
+        return customerReader.findByOptions(Customer.class, SqlOption.getInstance().whereEqual(DbKey.USERNAME, username).toString());
+    }
 
     public CustomerPersonalData getPersonalByCustomerId(Long customerId) {
         SqlOption instance = SqlOption.getInstance();
