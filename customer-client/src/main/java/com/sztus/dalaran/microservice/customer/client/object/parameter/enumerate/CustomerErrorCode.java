@@ -6,7 +6,8 @@ public enum CustomerErrorCode implements BaseError {
 
     PARAMETER_IS_INCOMPLETE(95090001, "parameter is incomplete"),
     FAILURE_TO_SAVE_DATA(95090002, "failed to save data"),
-    SSN_ALREADY_EXISTS(95090003,"ssn already exists")
+    FAILURE_ADD_CUSTOMER_USERNAME_HAS_EXISTS(95090003, "username already exists"),
+    SSN_ALREADY_EXISTS(95090004,"ssn already exists")
     ;
 
     CustomerErrorCode(Integer code, String message) {

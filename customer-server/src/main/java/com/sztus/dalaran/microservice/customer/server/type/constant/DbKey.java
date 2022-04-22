@@ -14,5 +14,6 @@ public interface DbKey {
     String OPEN_ID = "open_id";
 
     String UNIQUE_CODE = "unique_code";
+    String USERNAME = "username";
 
 }
