@@ -12,7 +12,7 @@ public class CustomerEmploymentView {
 
     private String employerFax;
 
-    private Integer employerCity;
+    private String employerCity;
 
     private String employerState;
 
@@ -68,11 +68,11 @@ public class CustomerEmploymentView {
         this.employerFax = employerFax;
     }
 
-    public Integer getEmployerCity() {
+    public String getEmployerCity() {
         return employerCity;
     }
 
-    public void setEmployerCity(Integer employerCity) {
+    public void setEmployerCity(String employerCity) {
         this.employerCity = employerCity;
     }
 

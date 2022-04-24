@@ -24,7 +24,7 @@ public class CustomerEmploymentData {
   private String employerFax;
 
   @Column
-  private Integer employerCity;
+  private String employerCity;
 
   @Column
   private String employerState;
@@ -87,11 +87,11 @@ public class CustomerEmploymentData {
     this.employerFax = employerFax;
   }
 
-  public Integer getEmployerCity() {
+  public String getEmployerCity() {
     return employerCity;
   }
 
-  public void setEmployerCity(Integer employerCity) {
+  public void setEmployerCity(String employerCity) {
     this.employerCity = employerCity;
   }
 
