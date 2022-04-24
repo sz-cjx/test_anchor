@@ -16,6 +16,6 @@ public interface CustomerContactDataConverter {
 
     List<CustomerContactDataView> ListCustomerContactDataToView(List<CustomerContactData> customerContactDataList);
 
-    List<CustomerContactData> CustomerContactDataViewToList(List<CustomerContactDataView> customerContactDataViewList);
+    List<CustomerContactData> ListCustomerContactViewToDate(List<CustomerContactDataView> customerContactDataViewList);
 
 }

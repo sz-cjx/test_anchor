@@ -82,4 +82,9 @@ public interface CustomerGeneralApi {
     CustomerBankAccountDataView getBankAccount(
             @SpringQueryMap GetBankAccountRequest request
     );
+    @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
+    void batchSaveCustomerContact(
+            @RequestBody BatchSaveContactRequest request
+    );
+
 }
