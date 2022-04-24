@@ -3,6 +3,7 @@ package com.sztus.dalaran.microservice.customer.client.object.constant;
 public interface CustomerAction {
 
     String GET_CUSTOMER = "/general/customer/get";
+    String GET_CUSTOMER_BY_OPENID = "/general/customer/get-by-openid";
     String SAVE_CUSTOMER = "/general/customer/save";
 
 

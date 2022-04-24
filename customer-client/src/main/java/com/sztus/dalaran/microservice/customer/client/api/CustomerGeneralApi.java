@@ -18,6 +18,11 @@ public interface CustomerGeneralApi {
             @SpringQueryMap GetCustomerRequest request
     );
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_BY_OPENID)
+    GetCustomerResponse getCustomerByOpenId(
+            @SpringQueryMap GetCustomerByOpenIdRequest request
+    );
+
     @PostMapping(CustomerAction.SAVE_CUSTOMER)
     SaveCustomerResponse saveCustomer(
             @RequestBody SaveCustomerRequest request
