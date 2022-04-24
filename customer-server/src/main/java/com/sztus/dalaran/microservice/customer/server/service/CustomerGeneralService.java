@@ -97,7 +97,6 @@ public class CustomerGeneralService {
         Long customerId = personalData.getCustomerId();
         if (Objects.nonNull(personalData.getSsn())) {
             SqlOption sqlOption = SqlOption.getInstance();
-            sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
             sqlOption.whereEqual(DbKey.SSN, personalData.getSsn());
             CustomerPersonalData dbPersonalData = customerReader.findByOptions(CustomerPersonalData.class, sqlOption.toString());
             if (Objects.nonNull(dbPersonalData) && !Objects.equals(customerId, dbPersonalData.getCustomerId())) {
