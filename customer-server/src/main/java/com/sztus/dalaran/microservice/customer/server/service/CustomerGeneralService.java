@@ -48,6 +48,12 @@ public class CustomerGeneralService {
         return customerReader.findByOptions(CustomerContactData.class, sqlOption.toString());
     }
 
+    public Customer getCustomerByOpenId(String openId) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.OPEN_ID, openId);
+        return customerReader.findByOptions(Customer.class, sqlOption.toString());
+    }
+
     public void saveCustomer(Customer customer) throws ProcedureException {
         Long id = customer.getId();
         String openId = customer.getOpenId();

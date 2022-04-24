@@ -6,6 +6,8 @@ public class GetCustomerRequest {
 
     private String contactInformation;
 
+    private String openId;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -20,5 +22,13 @@ public class GetCustomerRequest {
 
     public void setContactInformation(String contactInformation) {
         this.contactInformation = contactInformation;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

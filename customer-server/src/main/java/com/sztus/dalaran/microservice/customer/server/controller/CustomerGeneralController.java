@@ -34,8 +34,9 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         String contactInformation = request.getContactInformation();
+        String openId = request.getOpenId();
 
-        if (Objects.isNull(customerId) && StringUtils.isBlank(contactInformation)) {
+        if (Objects.isNull(customerId) && StringUtils.isBlank(contactInformation) && StringUtils.isBlank(openId)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
@@ -51,6 +52,13 @@ public class CustomerGeneralController {
             }
         }
 
+        if (Objects.isNull(customer) && StringUtils.isNotBlank(openId)) {
+            customer = generalService.getCustomerByOpenId(openId);
+        }
+
+        if (Objects.isNull(customer)) {
+            throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
+        }
         return CustomerConverter.INSTANCE.CustomerToCustomerView(customer);
 
     }
