@@ -13,7 +13,7 @@ public class CustomerContactInfoView {
 
     private Long verifiedAt;
 
-    private Integer combination;
+    private Integer optionCombination;
 
     private Long createdAt;
 
@@ -59,12 +59,12 @@ public class CustomerContactInfoView {
         this.verifiedAt = verifiedAt;
     }
 
-    public Integer getCombination() {
-        return combination;
+    public Integer getOptionCombination() {
+        return optionCombination;
     }
 
-    public void setCombination(Integer combination) {
-        this.combination = combination;
+    public void setOptionCombination(Integer optionCombination) {
+        this.optionCombination = optionCombination;
     }
 
     public Long getCreatedAt() {

@@ -25,7 +25,7 @@ public class CustomerContactInfo {
   private Long verifiedAt;
 
   @Column
-  private Integer combination;
+  private Integer optionCombination;
 
   @Column
   private Long createdAt;
@@ -73,12 +73,12 @@ public class CustomerContactInfo {
     this.verifiedAt = verifiedAt;
   }
 
-  public Integer getCombination() {
-    return combination;
+  public Integer getOptionCombination() {
+    return optionCombination;
   }
 
-  public void setCombination(Integer combination) {
-    this.combination = combination;
+  public void setOptionCombination(Integer optionCombination) {
+    this.optionCombination = optionCombination;
   }
 
   public Long getCreatedAt() {
