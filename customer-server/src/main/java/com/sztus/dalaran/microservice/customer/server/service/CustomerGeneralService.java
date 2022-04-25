@@ -42,7 +42,7 @@ public class CustomerGeneralService {
 
     public CustomerContactInfo getCustomerContactByContact(String contactInformation) {
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CONTACT_INFORMATION, contactInformation);
+        sqlOption.whereEqual(DbKey.VALUE, contactInformation);
         return customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
     }
 
