@@ -1,16 +1,22 @@
 package com.sztus.dalaran.microservice.customer.client.object.view;
 
 
-public class CustomerContactDataView {
+public class CustomerContactInfoView {
 
     private Long customerId;
-    private Integer contactType;
-    private String contactInformation;
+
+    private Integer type;
+
+    private String value;
+
     private Integer verifiedStatus;
+
     private Long verifiedAt;
-    private Boolean marketingToggle;
-    private Boolean operationToggle;
+
+    private Integer optionCombination;
+
     private Long createdAt;
+
     private Long updatedAt;
 
     public Long getCustomerId() {
@@ -21,20 +27,20 @@ public class CustomerContactDataView {
         this.customerId = customerId;
     }
 
-    public Integer getContactType() {
-        return contactType;
+    public Integer getType() {
+        return type;
     }
 
-    public void setContactType(Integer contactType) {
-        this.contactType = contactType;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
-    public String getContactInformation() {
-        return contactInformation;
+    public String getValue() {
+        return value;
     }
 
-    public void setContactInformation(String contactInformation) {
-        this.contactInformation = contactInformation;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Integer getVerifiedStatus() {
@@ -53,20 +59,12 @@ public class CustomerContactDataView {
         this.verifiedAt = verifiedAt;
     }
 
-    public Boolean getMarketingToggle() {
-        return marketingToggle;
+    public Integer getOptionCombination() {
+        return optionCombination;
     }
 
-    public void setMarketingToggle(Boolean marketingToggle) {
-        this.marketingToggle = marketingToggle;
-    }
-
-    public Boolean getOperationToggle() {
-        return operationToggle;
-    }
-
-    public void setOperationToggle(Boolean operationToggle) {
-        this.operationToggle = operationToggle;
+    public void setOptionCombination(Integer optionCombination) {
+        this.optionCombination = optionCombination;
     }
 
     public Long getCreatedAt() {

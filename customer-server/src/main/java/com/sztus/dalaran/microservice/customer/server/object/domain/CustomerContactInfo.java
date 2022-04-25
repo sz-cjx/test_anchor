@@ -5,7 +5,7 @@ import com.sztus.framework.component.database.annotation.Entity;
 import com.sztus.framework.component.database.annotation.Id;
 
 @Entity
-public class CustomerContactData {
+public class CustomerContactInfo {
 
   @Id
   @Column
@@ -13,10 +13,10 @@ public class CustomerContactData {
 
   @Id
   @Column
-  private Integer contactType;
+  private Integer type;
 
   @Column
-  private String contactInformation;
+  private String value;
 
   @Column
   private Integer verifiedStatus;
@@ -25,10 +25,7 @@ public class CustomerContactData {
   private Long verifiedAt;
 
   @Column
-  private Boolean marketingToggle;
-
-  @Column
-  private Boolean operationToggle;
+  private Integer optionCombination;
 
   @Column
   private Long createdAt;
@@ -44,20 +41,20 @@ public class CustomerContactData {
     this.customerId = customerId;
   }
 
-  public Integer getContactType() {
-    return contactType;
+  public Integer getType() {
+    return type;
   }
 
-  public void setContactType(Integer contactType) {
-    this.contactType = contactType;
+  public void setType(Integer type) {
+    this.type = type;
   }
 
-  public String getContactInformation() {
-    return contactInformation;
+  public String getValue() {
+    return value;
   }
 
-  public void setContactInformation(String contactInformation) {
-    this.contactInformation = contactInformation;
+  public void setValue(String value) {
+    this.value = value;
   }
 
   public Integer getVerifiedStatus() {
@@ -76,20 +73,12 @@ public class CustomerContactData {
     this.verifiedAt = verifiedAt;
   }
 
-  public Boolean getMarketingToggle() {
-    return marketingToggle;
+  public Integer getOptionCombination() {
+    return optionCombination;
   }
 
-  public void setMarketingToggle(Boolean marketingToggle) {
-    this.marketingToggle = marketingToggle;
-  }
-
-  public Boolean getOperationToggle() {
-    return operationToggle;
-  }
-
-  public void setOperationToggle(Boolean operationToggle) {
-    this.operationToggle = operationToggle;
+  public void setOptionCombination(Integer optionCombination) {
+    this.optionCombination = optionCombination;
   }
 
   public Long getCreatedAt() {

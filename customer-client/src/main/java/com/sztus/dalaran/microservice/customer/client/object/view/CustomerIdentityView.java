@@ -1,6 +1,6 @@
 package com.sztus.dalaran.microservice.customer.client.object.view;
 
-public class CustomerPersonalView {
+public class CustomerIdentityView {
 
     private Long customerId;
 

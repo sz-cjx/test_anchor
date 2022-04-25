@@ -1,7 +1,7 @@
 package com.sztus.dalaran.microservice.customer.server.converter;
 
-import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactDataView;
-import com.sztus.dalaran.microservice.customer.server.object.domain.CustomerContactData;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactInfoView;
+import com.sztus.dalaran.microservice.customer.server.object.domain.CustomerContactInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -12,10 +12,10 @@ public interface CustomerContactDataConverter {
 
     CustomerContactDataConverter INSTANCE = Mappers.getMapper(CustomerContactDataConverter.class);
 
-    CustomerContactData CustomerContactViewToData(CustomerContactDataView customerContactDataView);
+    CustomerContactInfo CustomerContactViewToData(CustomerContactInfoView customerContactInfoView);
 
-    List<CustomerContactDataView> ListCustomerContactDataToView(List<CustomerContactData> customerContactDataList);
+    List<CustomerContactInfoView> ListCustomerContactDataToView(List<CustomerContactInfo> customerContactInfoList);
 
-    List<CustomerContactData> ListCustomerContactViewToDate(List<CustomerContactDataView> customerContactDataViewList);
+    List<CustomerContactInfo> ListCustomerContactViewToDate(List<CustomerContactInfoView> customerContactInfoViewList);
 
 }

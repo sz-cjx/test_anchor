@@ -7,7 +7,7 @@ import com.sztus.framework.component.database.annotation.Id;
 import java.math.BigDecimal;
 
 @Entity
-public class CustomerPayrollData {
+public class CustomerPayrollInfo {
 
     @Id
     @Column

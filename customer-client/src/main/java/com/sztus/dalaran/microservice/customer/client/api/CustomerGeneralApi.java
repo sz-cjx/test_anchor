@@ -24,13 +24,13 @@ public interface CustomerGeneralApi {
     );
 
     @GetMapping(CustomerAction.GET_PERSONAL)
-    GetCustomerPersonalResponse getCustomerPersonalData(
+    GetCustomerIdentityResponse getCustomerPersonalData(
             @SpringQueryMap GetCustomerPersonalRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_PERSONAL)
-    SaveCustomerPersonalResponse saveCustomerPersonalData(
-            @RequestBody SaveCustomerPersonalRequest request
+    SaveCustomerIdentityResponse saveCustomerPersonalData(
+            @RequestBody SaveCustomerIdentityRequest request
     );
 
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
@@ -70,7 +70,7 @@ public interface CustomerGeneralApi {
 
     @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
     void saveCustomerContactData(
-            @RequestBody SaveCustomerContactDataRequest request
+            @RequestBody SaveCustomerContactInfoRequest request
     );
 
     @GetMapping(CustomerAction.GET_BANK_ACCOUNT)

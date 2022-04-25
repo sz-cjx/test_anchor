@@ -8,6 +8,12 @@ public class GetCustomerRequest {
 
     private String openId;
 
+    private String ssn;
+
+    private String routingNo;
+
+    private String accountNo;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -30,5 +36,29 @@ public class GetCustomerRequest {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
+
+    public String getRoutingNo() {
+        return routingNo;
+    }
+
+    public void setRoutingNo(String routingNo) {
+        this.routingNo = routingNo;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
     }
 }

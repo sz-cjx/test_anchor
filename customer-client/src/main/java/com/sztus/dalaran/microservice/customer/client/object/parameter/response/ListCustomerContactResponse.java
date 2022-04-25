@@ -1,18 +1,18 @@
 package com.sztus.dalaran.microservice.customer.client.object.parameter.response;
 
-import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactDataView;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactInfoView;
 
 import java.util.List;
 
 public class ListCustomerContactResponse {
 
-    private List<CustomerContactDataView> list;
+    private List<CustomerContactInfoView> list;
 
-    public List<CustomerContactDataView> getList() {
+    public List<CustomerContactInfoView> getList() {
         return list;
     }
 
-    public void setList(List<CustomerContactDataView> list) {
+    public void setList(List<CustomerContactInfoView> list) {
         this.list = list;
     }
 }

@@ -21,6 +21,8 @@ public class CustomerView {
 
   private Long updatedAt;
 
+  private String uniqueCode;
+
   public Long getId() {
     return id;
   }
@@ -91,5 +93,13 @@ public class CustomerView {
 
   public void setUpdatedAt(Long updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public String getUniqueCode() {
+    return uniqueCode;
+  }
+
+  public void setUniqueCode(String uniqueCode) {
+    this.uniqueCode = uniqueCode;
   }
 }
