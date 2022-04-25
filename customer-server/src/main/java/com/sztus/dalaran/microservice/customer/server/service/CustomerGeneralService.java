@@ -225,4 +225,24 @@ public class CustomerGeneralService {
         customer.setUniqueCode(uniqueCode);
         customerWriter.save(customer);
     }
+
+    public Customer getCustomerByCondition(String phone, String email) throws ProcedureException {
+
+        if (StringUtils.isEmpty(phone)&&StringUtils.isEmpty(email)){
+            throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
+        }
+
+        SqlOption sqlOption = SqlOption.getInstance();
+
+        if (!StringUtils.isEmpty(phone)) {
+            sqlOption.whereEqual(DbKey.PHONE, phone);
+        }
+
+        if (!StringUtils.isEmpty(phone)) {
+            sqlOption.whereEqual(DbKey.EMAIL, email);
+        }
+
+        return commonReader.findByOptions(Customer.class, sqlOption.toString());
+    }
+
 }

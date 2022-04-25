@@ -19,6 +19,10 @@ public class CustomerContactInfoView {
 
     private Long updatedAt;
 
+    private String email;
+
+    private String phone;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -81,5 +85,21 @@ public class CustomerContactInfoView {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

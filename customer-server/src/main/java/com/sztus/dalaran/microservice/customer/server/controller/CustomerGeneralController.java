@@ -64,9 +64,9 @@ public class CustomerGeneralController {
 
         if (Objects.isNull(customer) && (
                 StringUtils.isNotBlank(ssn)
-                || StringUtils.isNotBlank(routingNo)
-                || StringUtils.isNotBlank(accountNo)
-                )) {
+                        || StringUtils.isNotBlank(routingNo)
+                        || StringUtils.isNotBlank(accountNo)
+        )) {
             CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo);
             customer = generalService.getCustomerByUniqueCode(openId);
         }
@@ -261,4 +261,14 @@ public class CustomerGeneralController {
         return CustomerContactDataConverter.INSTANCE.CustomerContactDataToView(customerContactData);
     }
 
+
+    @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITION)
+    public GetCustomerByConditionResponse getCustomerByCondition(
+            GetCustomerByConditionRequest request
+    ) throws ProcedureException {
+        String phone = request.getPhone();
+        String email = request.getEmail();
+        Customer customer = generalService.getCustomerByCondition(phone, email);
+        return CustomerConverter.INSTANCE.customerToGetCustomerByConditionResponse(customer);
+    }
 }

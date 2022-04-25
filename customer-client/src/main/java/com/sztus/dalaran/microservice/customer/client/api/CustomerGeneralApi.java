@@ -4,6 +4,7 @@ import com.sztus.dalaran.microservice.customer.client.object.constant.CustomerAc
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
+import com.sztus.framework.component.core.type.ProcedureException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,4 +89,8 @@ public interface CustomerGeneralApi {
             @RequestBody BatchSaveContactRequest request
     );
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITION)
+    GetCustomerByConditionResponse getCustomerByCondition(
+            @SpringQueryMap GetCustomerByConditionRequest request
+    );
 }
