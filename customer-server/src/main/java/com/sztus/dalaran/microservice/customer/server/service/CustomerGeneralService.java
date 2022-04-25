@@ -42,7 +42,7 @@ public class CustomerGeneralService {
 
     public CustomerContactInfo getCustomerContactByContact(String contactInformation) {
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CONTACT_INFORMATION, contactInformation);
+        sqlOption.whereEqual(DbKey.VALUE, contactInformation);
         return customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
     }
 
@@ -179,7 +179,7 @@ public class CustomerGeneralService {
         Integer contactType = contactData.getType();
         Long customerId = contactData.getCustomerId();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
-        sqlOption.whereEqual(DbKey.CONTACT_TYPE, contactType);
+        sqlOption.whereEqual(DbKey.TYPE, contactType);
         CustomerContactInfo contactDataDb = customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(contactDataDb)) {
@@ -189,6 +189,17 @@ public class CustomerGeneralService {
 
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
+    }
+
+    public CustomerContactInfo getCustomerContactData(Long customerId, Integer type) throws ProcedureException {
+        if (Objects.isNull(customerId) || Objects.isNull(type)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        SqlOption option = SqlOption.getInstance();
+        option.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        option.whereEqual(DbKey.TYPE, type);
+        return commonReader.findByOptions(CustomerContactInfo.class, option.toString());
     }
 
     private void syncCustomerUniqueCode(Long customerId, String ssn, String routingNo, String accountNo) {

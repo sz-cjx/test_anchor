@@ -73,6 +73,11 @@ public interface CustomerGeneralApi {
             @RequestBody SaveCustomerContactInfoRequest request
     );
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
+    GetCustomerContactDataResponse getCustomerContact(
+            @SpringQueryMap GetCustomerContactDataRequest request
+    );
+
     @GetMapping(CustomerAction.GET_BANK_ACCOUNT)
     CustomerBankAccountDataView getBankAccount(
             @SpringQueryMap GetBankAccountRequest request

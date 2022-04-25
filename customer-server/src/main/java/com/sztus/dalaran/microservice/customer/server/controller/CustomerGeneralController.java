@@ -250,4 +250,15 @@ public class CustomerGeneralController {
         }
     }
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
+    public GetCustomerContactDataResponse getCustomerContactData(
+            GetCustomerContactDataRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        Integer type = request.getType();
+
+        CustomerContactInfo customerContactData = generalService.getCustomerContactData(customerId, type);
+        return CustomerContactDataConverter.INSTANCE.CustomerContactDataToView(customerContactData);
+    }
+
 }
