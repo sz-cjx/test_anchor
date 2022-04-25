@@ -22,6 +22,7 @@ public interface CustomerAction {
     /**
      * customer contact data
      */
+    String GET_CUSTOMER_CONTACT = "/general/contact/get";
     String LIST_CUSTOMER_CONTACT = "/general/contact/list";
     String SAVE_CUSTOMER_CONTACT = "/general/contact/save";
     String BATCH_SAVE_CUSTOMER_CONTACT = "/general/contact/batch-save";

@@ -5,7 +5,6 @@ package com.sztus.dalaran.microservice.customer.server.type.constant;
  */
 public interface DbKey {
 
-    String CONTACT_TYPE = "contact_type";
     String CUSTOMER_ID = "customer_id";
 
     String EMAIL = "email";
@@ -13,6 +12,8 @@ public interface DbKey {
     String ID = "id";
 
     String OPEN_ID = "open_id";
+
+    String TYPE = "type";
 
     String UNIQUE_CODE = "unique_code";
     String USERNAME = "username";
