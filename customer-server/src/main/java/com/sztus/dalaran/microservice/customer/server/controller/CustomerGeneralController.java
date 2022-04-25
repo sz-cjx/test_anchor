@@ -5,11 +5,12 @@ import com.sztus.dalaran.microservice.customer.client.object.parameter.enumerate
 import com.sztus.dalaran.microservice.customer.client.object.parameter.request.*;
 import com.sztus.dalaran.microservice.customer.client.object.parameter.response.*;
 import com.sztus.dalaran.microservice.customer.client.object.view.CustomerBankAccountDataView;
-import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactDataView;
+import com.sztus.dalaran.microservice.customer.client.object.view.CustomerContactInfoView;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerContactDataConverter;
 import com.sztus.dalaran.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.dalaran.microservice.customer.server.object.domain.*;
 import com.sztus.dalaran.microservice.customer.server.service.CustomerGeneralService;
+import com.sztus.dalaran.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,13 @@ public class CustomerGeneralController {
         Long customerId = request.getCustomerId();
         String contactInformation = request.getContactInformation();
         String openId = request.getOpenId();
+        String ssn = request.getSsn();
+        String routingNo = request.getRoutingNo();
+        String accountNo = request.getAccountNo();
 
-        if (Objects.isNull(customerId) && StringUtils.isBlank(contactInformation) && StringUtils.isBlank(openId)) {
+        if (Objects.isNull(customerId) && StringUtils.isBlank(contactInformation)
+                && StringUtils.isBlank(openId) && StringUtils.isBlank(ssn)
+                && StringUtils.isBlank(routingNo) && StringUtils.isBlank(accountNo)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
@@ -46,9 +52,9 @@ public class CustomerGeneralController {
         }
 
         if (Objects.isNull(customer) && StringUtils.isNotBlank(contactInformation)) {
-            CustomerContactData customerContactData = generalService.getCustomerContactByContact(contactInformation);
-            if (Objects.nonNull(customerContactData)) {
-                customer = generalService.getCustomerByCustomerId(customerContactData.getCustomerId());
+            CustomerContactInfo customerContactInfo = generalService.getCustomerContactByContact(contactInformation);
+            if (Objects.nonNull(customerContactInfo)) {
+                customer = generalService.getCustomerByCustomerId(customerContactInfo.getCustomerId());
             }
         }
 
@@ -56,9 +62,19 @@ public class CustomerGeneralController {
             customer = generalService.getCustomerByOpenId(openId);
         }
 
+        if (Objects.isNull(customer) && (
+                StringUtils.isNotBlank(ssn)
+                || StringUtils.isNotBlank(routingNo)
+                || StringUtils.isNotBlank(accountNo)
+                )) {
+            CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo);
+            customer = generalService.getCustomerByUniqueCode(openId);
+        }
+
         if (Objects.isNull(customer)) {
             throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
         }
+
         return CustomerConverter.INSTANCE.CustomerToCustomerView(customer);
 
     }
@@ -74,7 +90,7 @@ public class CustomerGeneralController {
     }
 
     @GetMapping(CustomerAction.GET_PERSONAL)
-    public GetCustomerPersonalResponse getCustomerPersonalData(
+    public GetCustomerIdentityResponse getCustomerPersonalData(
             GetCustomerPersonalRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
@@ -82,21 +98,21 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        CustomerPersonalData customerPersonalData = generalService.getPersonalByCustomerId(customerId);
-        return CustomerConverter.INSTANCE.PersonalToPersonalView(customerPersonalData);
+        CustomerIdentityInfo customerIdentityInfo = generalService.getPersonalByCustomerId(customerId);
+        return CustomerConverter.INSTANCE.PersonalToPersonalView(customerIdentityInfo);
     }
 
     @PostMapping(CustomerAction.SAVE_PERSONAL)
-    public SaveCustomerPersonalResponse saveCustomerPersonalData(
-            @RequestBody SaveCustomerPersonalRequest request
+    public SaveCustomerIdentityResponse saveCustomerIdentity(
+            @RequestBody SaveCustomerIdentityRequest request
     ) throws ProcedureException {
-        CustomerPersonalData personalData = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
+        CustomerIdentityInfo identityInfo = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
 
-        if (Objects.isNull(personalData.getCustomerId())) {
+        if (Objects.isNull(identityInfo.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
-        generalService.saveCustomerPersonal(personalData);
-        return CustomerConverter.INSTANCE.PersonalDataToSaveResponse(personalData);
+        generalService.saveCustomerPersonal(identityInfo);
+        return CustomerConverter.INSTANCE.PersonalDataToSaveResponse(identityInfo);
     }
 
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
@@ -108,7 +124,7 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        List<CustomerBankAccountData> bankAccountDataList = generalService.listBankAccountByCustomerId(customerId);
+        List<CustomerBankAccount> bankAccountDataList = generalService.listBankAccountByCustomerId(customerId);
         List<CustomerBankAccountDataView> items = CustomerConverter.INSTANCE.BankAccountListToViewList(bankAccountDataList);
         ListBankAccountResponse response = new ListBankAccountResponse();
         response.setCount(items.size());
@@ -124,7 +140,7 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        CustomerBankAccountData bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
+        CustomerBankAccount bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
         Long result = generalService.saveBankAccount(bankAccountData);
         if (Objects.isNull(request.getId())) {
             bankAccountData.setId(result);
@@ -140,7 +156,7 @@ public class CustomerGeneralController {
         if (Objects.isNull(id)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
-        CustomerBankAccountData dbBankAccountData = generalService.getBankAccountById(id);
+        CustomerBankAccount dbBankAccountData = generalService.getBankAccountById(id);
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
@@ -153,7 +169,7 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        CustomerEmploymentData employmentData = generalService.getCustomerEmploymentByCustomerId(customerId);
+        CustomerEmploymentInfo employmentData = generalService.getCustomerEmploymentByCustomerId(customerId);
 
         return CustomerConverter.INSTANCE.CusEmploymentToView(employmentData);
     }
@@ -162,7 +178,7 @@ public class CustomerGeneralController {
     public SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
     ) throws ProcedureException {
-        CustomerEmploymentData employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
+        CustomerEmploymentInfo employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
         generalService.saveCustomerEmployment(employmentData);
 
         return CustomerConverter.INSTANCE.CusEmploymentToSaveCusEmploymentResponse(employmentData);
@@ -177,7 +193,7 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        CustomerPayrollData payrollData = generalService.getCustomerPayrollByCustomerId(customerId);
+        CustomerPayrollInfo payrollData = generalService.getCustomerPayrollByCustomerId(customerId);
         return CustomerConverter.INSTANCE.CusPayrollToView(payrollData);
     }
 
@@ -185,7 +201,7 @@ public class CustomerGeneralController {
     public SaveCustomerPayrollResponse saveCustomerPayroll(
             @RequestBody SaveCustomerPayrollRequest request
     ) throws ProcedureException {
-        CustomerPayrollData payrollData = CustomerConverter.INSTANCE.CusPayrollViewToData(request);
+        CustomerPayrollInfo payrollData = CustomerConverter.INSTANCE.CusPayrollViewToData(request);
         generalService.saveCustomerPayroll(payrollData);
 
         return CustomerConverter.INSTANCE.CusPayrollToSaveCusPayrollResponse(payrollData);
@@ -200,8 +216,8 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        List<CustomerContactData> list = generalService.listCustomerContact(customerId);
-        List<CustomerContactDataView> viewList =
+        List<CustomerContactInfo> list = generalService.listCustomerContact(customerId);
+        List<CustomerContactInfoView> viewList =
                 CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(list);
 
         ListCustomerContactResponse response = new ListCustomerContactResponse();
@@ -212,25 +228,25 @@ public class CustomerGeneralController {
 
     @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
     public void saveCustomerContactData(
-            @RequestBody SaveCustomerContactDataRequest request
+            @RequestBody SaveCustomerContactInfoRequest request
     ) throws ProcedureException {
-        CustomerContactData customerContactData = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
+        CustomerContactInfo customerContactInfo = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
-        generalService.saveCustomerContactData(customerContactData);
+        generalService.saveCustomerContactData(customerContactInfo);
     }
 
     @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
     public void batchSaveCustomerContact(
             @RequestBody BatchSaveContactRequest request
     ) throws ProcedureException {
-        List<CustomerContactDataView> list = request.getList();
+        List<CustomerContactInfoView> list = request.getList();
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
-        List<CustomerContactData> customerContactList = CustomerContactDataConverter.INSTANCE.ListCustomerContactViewToDate(list);
+        List<CustomerContactInfo> customerContactList = CustomerContactDataConverter.INSTANCE.ListCustomerContactViewToDate(list);
 
-        for (CustomerContactData customerContactData : customerContactList) {
-            generalService.saveCustomerContactData(customerContactData);
+        for (CustomerContactInfo customerContactInfo : customerContactList) {
+            generalService.saveCustomerContactData(customerContactInfo);
         }
     }
 

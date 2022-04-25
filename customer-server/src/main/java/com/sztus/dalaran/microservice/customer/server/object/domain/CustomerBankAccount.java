@@ -7,7 +7,7 @@ import com.sztus.framework.component.database.annotation.Id;
 import com.sztus.framework.component.database.enumerate.GenerationType;
 
 @Entity
-public class CustomerBankAccountData {
+public class CustomerBankAccount {
 
   @Id
   @Column

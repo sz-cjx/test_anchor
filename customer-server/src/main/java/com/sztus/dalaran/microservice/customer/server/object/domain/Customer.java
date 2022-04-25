@@ -38,6 +38,9 @@ public class Customer {
   @Column
   private Long updatedAt;
 
+  @Column
+  private String uniqueCode;
+
   public Long getId() {
     return id;
   }
@@ -108,5 +111,13 @@ public class Customer {
 
   public void setUpdatedAt(Long updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public String getUniqueCode() {
+    return uniqueCode;
+  }
+
+  public void setUniqueCode(String uniqueCode) {
+    this.uniqueCode = uniqueCode;
   }
 }

@@ -19,29 +19,29 @@ public interface CustomerConverter {
 
     SaveCustomerResponse CustomerToSaveCustomerResponse(Customer customer);
 
-    GetCustomerPersonalResponse PersonalToPersonalView(CustomerPersonalData customerPersonalData);
+    GetCustomerIdentityResponse PersonalToPersonalView(CustomerIdentityInfo customerIdentityInfo);
 
-    CustomerPersonalData PersonalViewToPersonal(CustomerPersonalView view);
+    CustomerIdentityInfo PersonalViewToPersonal(CustomerIdentityView view);
 
-    List<CustomerBankAccountDataView> BankAccountListToViewList(List<CustomerBankAccountData> list);
+    List<CustomerBankAccountDataView> BankAccountListToViewList(List<CustomerBankAccount> list);
 
-    CustomerBankAccountData ViewToBankAccountData(CustomerBankAccountDataView view);
+    CustomerBankAccount ViewToBankAccountData(CustomerBankAccountDataView view);
 
-    CustomerBankAccountDataView BankAccountDataToView(CustomerBankAccountData bankAccountData);
+    CustomerBankAccountDataView BankAccountDataToView(CustomerBankAccount bankAccountData);
 
-    SaveCustomerPersonalResponse PersonalDataToSaveResponse(CustomerPersonalData personalData);
+    SaveCustomerIdentityResponse PersonalDataToSaveResponse(CustomerIdentityInfo personalData);
 
-    GetCustomerEmploymentResponse CusEmploymentToView(CustomerEmploymentData employmentData);
+    GetCustomerEmploymentResponse CusEmploymentToView(CustomerEmploymentInfo employmentData);
 
-    CustomerEmploymentData CusEmploymentViewToData(CustomerEmploymentView customerEmploymentView);
+    CustomerEmploymentInfo CusEmploymentViewToData(CustomerEmploymentView customerEmploymentView);
 
-    SaveCustomerEmploymentResponse CusEmploymentToSaveCusEmploymentResponse(CustomerEmploymentData customerEmploymentData);
+    SaveCustomerEmploymentResponse CusEmploymentToSaveCusEmploymentResponse(CustomerEmploymentInfo customerEmploymentInfo);
 
-    GetCustomerPayrollResponse CusPayrollToView(CustomerPayrollData payrollData);
+    GetCustomerPayrollResponse CusPayrollToView(CustomerPayrollInfo payrollData);
 
-    CustomerPayrollData CusPayrollViewToData(CustomerPayrollView payrollView);
+    CustomerPayrollInfo CusPayrollViewToData(CustomerPayrollView payrollView);
 
-    SaveCustomerPayrollResponse CusPayrollToSaveCusPayrollResponse(CustomerPayrollData payrollData);
+    SaveCustomerPayrollResponse CusPayrollToSaveCusPayrollResponse(CustomerPayrollInfo payrollData);
 
-    SaveCustomerEmploymentResponse CusEmploymentToToSaveCusEmploymentResponse(CustomerEmploymentData customerEmploymentData);
+    SaveCustomerEmploymentResponse CusEmploymentToToSaveCusEmploymentResponse(CustomerEmploymentInfo customerEmploymentInfo);
 }

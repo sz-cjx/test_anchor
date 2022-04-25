@@ -5,7 +5,7 @@ import com.sztus.framework.component.database.annotation.Entity;
 import com.sztus.framework.component.database.annotation.Id;
 
 @Entity
-public class CustomerEmploymentData {
+public class CustomerEmploymentInfo {
 
   @Id
   @Column
