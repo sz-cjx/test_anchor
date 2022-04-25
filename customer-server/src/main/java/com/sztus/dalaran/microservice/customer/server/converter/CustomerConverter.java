@@ -44,4 +44,6 @@ public interface CustomerConverter {
     SaveCustomerPayrollResponse CusPayrollToSaveCusPayrollResponse(CustomerPayrollInfo payrollData);
 
     SaveCustomerEmploymentResponse CusEmploymentToToSaveCusEmploymentResponse(CustomerEmploymentInfo customerEmploymentInfo);
+
+    GetCustomerByConditionResponse customerToGetCustomerByConditionResponse(Customer customer);
 }

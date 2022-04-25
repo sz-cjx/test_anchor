@@ -19,6 +19,8 @@ public interface CustomerAction {
     String GET_PAYROLL = "/general/payroll/get";
     String SAVE_PAYROLL = "/general/payroll/save";
 
+    String GET_CUSTOMER_BY_CONDITION = "/general/customer/get/condition";
+
     /**
      * customer contact data
      */
@@ -26,5 +28,6 @@ public interface CustomerAction {
     String LIST_CUSTOMER_CONTACT = "/general/contact/list";
     String SAVE_CUSTOMER_CONTACT = "/general/contact/save";
     String BATCH_SAVE_CUSTOMER_CONTACT = "/general/contact/batch-save";
+
 
 }

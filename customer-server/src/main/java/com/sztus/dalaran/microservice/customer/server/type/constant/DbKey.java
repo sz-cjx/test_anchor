@@ -9,6 +9,8 @@ public interface DbKey {
 
     String EMAIL = "email";
 
+    String PHONE = "phone";
+
     String ID = "id";
 
     String OPEN_ID = "open_id";
