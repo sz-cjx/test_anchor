@@ -13,10 +13,10 @@ import java.util.TimeZone;
 @EnableFeignClients(basePackages = GlobalConst.SCAN_BASE_PACKAGE)
 @SpringBootApplication(scanBasePackages = GlobalConst.SCAN_BASE_PACKAGE)
 @EnableTransactionManagement
-public class CustomerApplication {
+public class CustomerExtApplication {
 
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
-        SpringApplication.run(CustomerApplication.class, args);
+        SpringApplication.run(CustomerExtApplication.class, args);
     }
 }

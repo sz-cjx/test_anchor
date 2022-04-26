@@ -8,8 +8,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>customer-client</module>
-        <module>customer-server</module>
+        <module>customer-ext-client</module>
+        <module>customer-ext-server</module>
     </modules>
 
     <parent>

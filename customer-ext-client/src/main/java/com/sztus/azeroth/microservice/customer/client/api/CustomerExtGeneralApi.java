@@ -4,15 +4,14 @@ import com.sztus.azeroth.microservice.customer.client.object.constant.CustomerAc
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.*;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.*;
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerBankAccountDataView;
-import com.sztus.framework.component.core.type.ProcedureException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "microservice-customer", path = "/v4", contextId = "customer-api")
-public interface CustomerGeneralApi {
+@FeignClient(value = "microservice-customer-ext", path = "/v4", contextId = "customer-ext-api")
+public interface CustomerExtGeneralApi {
 
     @GetMapping(CustomerAction.GET_CUSTOMER)
     GetCustomerResponse getCustomer(
