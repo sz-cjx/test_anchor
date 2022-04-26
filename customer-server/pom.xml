@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.sztus.dalaran.microservice</groupId>
-        <artifactId>microservice-customer</artifactId>
+        <groupId>com.sztus.azeroth.microservice</groupId>
+        <artifactId>microservice-customer-ext</artifactId>
         <version>4.1.0</version>
     </parent>
 
-    <artifactId>customer-server</artifactId>
+    <artifactId>customer-ext-server</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -19,15 +19,10 @@
             <artifactId>component-database</artifactId>
             <version>${parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.sztus.framework</groupId>
-            <artifactId>component-cache</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
 
         <dependency>
-            <groupId>com.sztus.dalaran.microservice</groupId>
-            <artifactId>customer-client</artifactId>
+            <groupId>com.sztus.azeroth.microservice</groupId>
+            <artifactId>customer-ext-client</artifactId>
             <version>${parent.version}</version>
         </dependency>
     </dependencies>

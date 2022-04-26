@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.sztus.dalaran.microservice</groupId>
-        <artifactId>microservice-customer</artifactId>
+        <groupId>com.sztus.azeroth.microservice</groupId>
+        <artifactId>microservice-customer-ext</artifactId>
         <version>4.1.0</version>
     </parent>
 
-    <artifactId>customer-client</artifactId>
+    <artifactId>customer-ext-client</artifactId>
     <packaging>jar</packaging>
 </project>
