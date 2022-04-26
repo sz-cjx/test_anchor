@@ -238,7 +238,7 @@ public class CustomerGeneralService {
             sqlOption.whereEqual(DbKey.PHONE, phone);
         }
 
-        if (!StringUtils.isEmpty(phone)) {
+        if (!StringUtils.isEmpty(email)) {
             sqlOption.whereEqual(DbKey.EMAIL, email);
         }
 
