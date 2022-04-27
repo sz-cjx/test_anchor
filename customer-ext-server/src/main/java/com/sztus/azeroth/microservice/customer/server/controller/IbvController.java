@@ -12,6 +12,7 @@ import com.sztus.azeroth.microservice.customer.server.object.domain.CustomerIbvA
 import com.sztus.azeroth.microservice.customer.server.service.IbvService;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,9 +41,9 @@ public class IbvController {
         return CustomerIbvAuthorizationConverter.INSTANCE.ibvViewToResponse(ibvAuthorizationRecord);
     }
 
-    @PostMapping(CustomerAction.LIST_IBV_AUTHORIZATION)
+    @GetMapping(CustomerAction.LIST_IBV_AUTHORIZATION)
     public ListIbvAuthorizationResponse saveIbvAuthorization(
-            @RequestBody ListIbvAuthorizationRequest request
+            ListIbvAuthorizationRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         Long portfolioId = request.getPortfolioId();

@@ -6,6 +6,8 @@ import com.sztus.azeroth.microservice.customer.client.object.parameter.request.S
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.ListIbvAuthorizationResponse;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.SaveIbvAuthorizationResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -17,9 +19,9 @@ public interface CustomerIbvApi {
             @RequestBody SaveIbvAuthorizationRequest request
     );
 
-    @PostMapping(CustomerAction.LIST_IBV_AUTHORIZATION)
+    @GetMapping(CustomerAction.LIST_IBV_AUTHORIZATION)
     ListIbvAuthorizationResponse listIbvAuthorization(
-            @RequestBody ListIbvAuthorizationRequest request
+            @SpringQueryMap ListIbvAuthorizationRequest request
     );
 
 
