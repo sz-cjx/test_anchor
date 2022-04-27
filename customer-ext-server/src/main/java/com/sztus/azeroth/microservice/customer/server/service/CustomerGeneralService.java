@@ -177,6 +177,8 @@ public class CustomerGeneralService {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
+        contactData = formatContactInfo(contactData);
+
         SqlOption sqlOption = SqlOption.getInstance();
         Integer contactType = contactData.getType();
         Long customerId = contactData.getCustomerId();
@@ -273,4 +275,15 @@ public class CustomerGeneralService {
         return commonReader.findByOptions(Customer.class, sqlOption.toString());
     }
 
+    private CustomerContactInfo formatContactInfo(CustomerContactInfo contactData) throws ProcedureException {
+        Integer type = contactData.getType();
+        if (CustomerContactTypeEnum.HOME_PHONE.getValue().equals(type) || CustomerContactTypeEnum.CELL_PHONE.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_PHONE.getValue().equals(type)) {
+            contactData.setValue(CustomerUtil.formatNumber(contactData.getValue()));
+        } else if (CustomerContactTypeEnum.EMAIL.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue().equals(type)) {
+            contactData.setValue(CustomerUtil.formatString(contactData.getValue()));
+        } else {
+            throw new ProcedureException(CustomerErrorCode.UNKNOWN_CONTACT_TYPE);
+        }
+        return contactData;
+    }
 }

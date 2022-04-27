@@ -10,7 +10,6 @@ import com.sztus.azeroth.microservice.customer.server.converter.CustomerContactD
 import com.sztus.azeroth.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.service.CustomerGeneralService;
-import com.sztus.azeroth.microservice.customer.server.type.enumeration.CustomerContactTypeEnum;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
@@ -246,15 +245,6 @@ public class CustomerGeneralController {
     public void saveCustomerContactData(
             @RequestBody SaveCustomerContactInfoRequest request
     ) throws ProcedureException {
-        Integer type = request.getType();
-        if (CustomerContactTypeEnum.HOME_PHONE.getValue().equals(type) || CustomerContactTypeEnum.CELL_PHONE.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_PHONE.getValue().equals(type)){
-            request.setValue(CustomerUtil.formatNumber(request.getValue()));
-        }
-        else if (CustomerContactTypeEnum.EMAIL.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue().equals(type)){
-            request.setValue(CustomerUtil.formatString(request.getValue()));
-        }else {
-            throw new ProcedureException(CustomerErrorCode.UNKNOWN_CONTACT_TYPE);
-        }
         CustomerContactInfo customerContactInfo = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
         generalService.saveCustomerContactData(customerContactInfo);
