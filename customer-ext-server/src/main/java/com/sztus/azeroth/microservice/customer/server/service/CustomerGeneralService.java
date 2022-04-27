@@ -8,6 +8,7 @@ import com.sztus.azeroth.microservice.customer.server.respository.reader.Custome
 import com.sztus.azeroth.microservice.customer.server.respository.writer.CommonWriter;
 import com.sztus.azeroth.microservice.customer.server.respository.writer.CustomerWriter;
 import com.sztus.azeroth.microservice.customer.server.type.constant.DbKey;
+import com.sztus.azeroth.microservice.customer.server.type.enumeration.CustomerContactTypeEnum;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
@@ -77,10 +78,28 @@ public class CustomerGeneralService {
             customer.setOpenId(UuidUtil.getUuid());
         }
 
-        Long result = customerWriter.save(Customer.class, JSON.toJSONString(customer));
-        CustomerCheckUtil.checkSaveResult(result);
-        if (!Objects.equals(result, 1L)) {
-            customer.setId(result);
+        Long customerId = customerWriter.save(Customer.class, JSON.toJSONString(customer));
+        CustomerCheckUtil.checkSaveResult(customerId);
+        if (!Objects.equals(customerId, 1L)) {
+            customer.setId(customerId);
+        }
+
+        String email = customer.getEmail();
+        String phone = customer.getPhone();
+        if (StringUtils.isNotBlank(email)) {
+            CustomerContactInfo emailInfo = new CustomerContactInfo();
+            emailInfo.setCustomerId(customerId);
+            emailInfo.setType(CustomerContactTypeEnum.EMAIL.getValue());
+            emailInfo.setValue(email);
+            saveCustomerContactData(emailInfo);
+        }
+
+        if (StringUtils.isNotBlank(phone)) {
+            CustomerContactInfo phoneInfo = new CustomerContactInfo();
+            phoneInfo.setCustomerId(customerId);
+            phoneInfo.setType(CustomerContactTypeEnum.CELL_PHONE.getValue());
+            phoneInfo.setValue(phone);
+            saveCustomerContactData(phoneInfo);
         }
     }
 
