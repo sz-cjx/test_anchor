@@ -277,6 +277,9 @@ public class CustomerGeneralService {
 
     private CustomerContactInfo formatContactInfo(CustomerContactInfo contactData) throws ProcedureException {
         Integer type = contactData.getType();
+        if (Objects.isNull(contactData.getValue())){
+            return contactData;
+        }
         if (CustomerContactTypeEnum.HOME_PHONE.getValue().equals(type) || CustomerContactTypeEnum.CELL_PHONE.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_PHONE.getValue().equals(type)) {
             contactData.setValue(CustomerUtil.formatNumber(contactData.getValue()));
         } else if (CustomerContactTypeEnum.EMAIL.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue().equals(type)) {

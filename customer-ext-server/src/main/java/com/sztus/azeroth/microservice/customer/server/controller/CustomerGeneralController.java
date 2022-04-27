@@ -1,5 +1,7 @@
 package com.sztus.azeroth.microservice.customer.server.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sztus.azeroth.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.*;
@@ -83,9 +85,8 @@ public class CustomerGeneralController {
     public SaveCustomerResponse saveCustomer(
             @RequestBody SaveCustomerRequest request
     ) throws ProcedureException {
-        request.setEmail(CustomerUtil.formatString(request.getEmail()));
-        request.setPhone(CustomerUtil.formatNumber(request.getPhone()));
-
+        JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
+        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveCustomerRequest.class);
         Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
         generalService.saveCustomer(customer);
 
@@ -109,11 +110,8 @@ public class CustomerGeneralController {
     public SaveCustomerIdentityResponse saveCustomerIdentity(
             @RequestBody SaveCustomerIdentityRequest request
     ) throws ProcedureException {
-        request.setFirstName(request.getFirstName().toLowerCase());
-        request.setMiddleName(request.getMiddleName().toLowerCase());
-        request.setLastName(request.getLastName().toLowerCase());
-        request.setSsn(CustomerUtil.formatNumber(request.getSsn()));
-
+        JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
+        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveCustomerIdentityRequest.class);
         CustomerIdentityInfo identityInfo = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
 
         if (Objects.isNull(identityInfo.getCustomerId())) {
@@ -147,10 +145,9 @@ public class CustomerGeneralController {
         if (Objects.isNull(request.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
+        JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
+        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveBankAccountRequest.class);
 
-        request.setBankPhone(CustomerUtil.formatNumber(request.getBankPhone()));
-        request.setBankAccountNo(CustomerUtil.formatNumber(request.getBankAccountNo()));
-        request.setBankRoutingNo(CustomerUtil.formatNumber(request.getBankRoutingNo()));
         CustomerBankAccount bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
         Long result = generalService.saveBankAccount(bankAccountData);
         if (Objects.isNull(request.getId())) {
@@ -189,9 +186,8 @@ public class CustomerGeneralController {
     public SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
     ) throws ProcedureException {
-        request.setEmployerEmail(CustomerUtil.formatString(request.getEmployerEmail()));
-        request.setEmployerPhone(CustomerUtil.formatNumber(request.getEmployerPhone()));
-        request.setSupervisorPhone(CustomerUtil.formatNumber(request.getSupervisorPhone()));
+        JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
+        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveCustomerEmploymentRequest.class);
 
         CustomerEmploymentInfo employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
         generalService.saveCustomerEmployment(employmentData);

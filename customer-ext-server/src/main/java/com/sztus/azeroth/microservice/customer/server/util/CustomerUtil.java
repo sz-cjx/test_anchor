@@ -1,9 +1,11 @@
 package com.sztus.azeroth.microservice.customer.server.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sztus.framework.component.core.constant.GlobalConst;
 import com.sztus.framework.component.core.util.CryptUtil;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class CustomerUtil {
@@ -32,4 +34,34 @@ public class CustomerUtil {
         String result = Pattern.compile(REGEX).matcher(data).replaceAll("").trim();
        return result;
     }
+
+    public static JSONObject pretreatment(JSONObject dataJson){
+        for (String key : CustomerFeildKey.getFormatStringList()) {
+
+            if (dataJson.containsKey(key)) {
+                if (Objects.nonNull(dataJson.getString(key))){
+                    dataJson.put(key,formatString(dataJson.getString(key)));
+                }
+            }
+        }
+
+        for (String key : CustomerFeildKey.getFormatNumberList()){
+            if (dataJson.containsKey(key)) {
+                if (Objects.nonNull(dataJson.getString(key))){
+                    dataJson.put(key,formatNumber(dataJson.getString(key)));
+                }
+            }
+        }
+
+        for (String key : CustomerFeildKey.getLowerCaseList()){
+            if (dataJson.containsKey(key)) {
+                if (Objects.nonNull(dataJson.getString(key))){
+                    dataJson.put(key,dataJson.getString(key).toLowerCase());
+                }
+            }
+        }
+
+        return dataJson;
+    }
+
 }
