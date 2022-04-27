@@ -10,6 +10,7 @@ import com.sztus.azeroth.microservice.customer.server.converter.CustomerContactD
 import com.sztus.azeroth.microservice.customer.server.converter.CustomerConverter;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.service.CustomerGeneralService;
+import com.sztus.azeroth.microservice.customer.server.type.enumeration.CustomerContactTypeEnum;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
@@ -83,6 +84,9 @@ public class CustomerGeneralController {
     public SaveCustomerResponse saveCustomer(
             @RequestBody SaveCustomerRequest request
     ) throws ProcedureException {
+        request.setEmail(CustomerUtil.formatString(request.getEmail()));
+        request.setPhone(CustomerUtil.formatNumber(request.getPhone()));
+
         Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
         generalService.saveCustomer(customer);
 
@@ -106,6 +110,11 @@ public class CustomerGeneralController {
     public SaveCustomerIdentityResponse saveCustomerIdentity(
             @RequestBody SaveCustomerIdentityRequest request
     ) throws ProcedureException {
+        request.setFirstName(request.getFirstName().toLowerCase());
+        request.setMiddleName(request.getMiddleName().toLowerCase());
+        request.setLastName(request.getLastName().toLowerCase());
+        request.setSsn(CustomerUtil.formatNumber(request.getSsn()));
+
         CustomerIdentityInfo identityInfo = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
 
         if (Objects.isNull(identityInfo.getCustomerId())) {
@@ -140,6 +149,9 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
+        request.setBankPhone(CustomerUtil.formatNumber(request.getBankPhone()));
+        request.setBankAccountNo(CustomerUtil.formatNumber(request.getBankAccountNo()));
+        request.setBankRoutingNo(CustomerUtil.formatNumber(request.getBankRoutingNo()));
         CustomerBankAccount bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
         Long result = generalService.saveBankAccount(bankAccountData);
         if (Objects.isNull(request.getId())) {
@@ -178,6 +190,10 @@ public class CustomerGeneralController {
     public SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
     ) throws ProcedureException {
+        request.setEmployerEmail(CustomerUtil.formatString(request.getEmployerEmail()));
+        request.setEmployerPhone(CustomerUtil.formatNumber(request.getEmployerPhone()));
+        request.setSupervisorPhone(CustomerUtil.formatNumber(request.getSupervisorPhone()));
+
         CustomerEmploymentInfo employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
         generalService.saveCustomerEmployment(employmentData);
 
@@ -230,6 +246,15 @@ public class CustomerGeneralController {
     public void saveCustomerContactData(
             @RequestBody SaveCustomerContactInfoRequest request
     ) throws ProcedureException {
+        Integer type = request.getType();
+        if (CustomerContactTypeEnum.HOME_PHONE.getValue().equals(type) || CustomerContactTypeEnum.CELL_PHONE.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_PHONE.getValue().equals(type)){
+            request.setValue(CustomerUtil.formatNumber(request.getValue()));
+        }
+        else if (CustomerContactTypeEnum.EMAIL.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue().equals(type)){
+            request.setValue(CustomerUtil.formatString(request.getValue()));
+        }else {
+            throw new ProcedureException(CustomerErrorCode.UNKNOWN_CONTACT_TYPE);
+        }
         CustomerContactInfo customerContactInfo = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
         generalService.saveCustomerContactData(customerContactInfo);

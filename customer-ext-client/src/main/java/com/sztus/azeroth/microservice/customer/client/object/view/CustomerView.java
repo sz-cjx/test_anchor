@@ -3,103 +3,124 @@ package com.sztus.azeroth.microservice.customer.client.object.view;
 
 public class CustomerView {
 
-  private Long id;
+    private Long id;
 
-  private String username;
+    private String username;
 
-  private String nickname;
+    private String nickname;
 
-  private String avatarUrl;
+    private String avatarUrl;
 
-  private String introduction;
+    private String introduction;
 
-  private String openId;
+    private String openId;
 
-  private Integer status;
+    private Integer status;
 
-  private Long createdAt;
+    private Long createdAt;
 
-  private Long updatedAt;
+    private Long updatedAt;
 
-  private String uniqueCode;
+    private String uniqueCode;
 
-  public Long getId() {
-    return id;
-  }
+    private String email;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    private String phone;
 
-  public String getUsername() {
-    return username;
-  }
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public String getNickname() {
-    return nickname;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
-  }
+    public String getUsername() {
+        return username;
+    }
 
-  public String getAvatarUrl() {
-    return avatarUrl;
-  }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-  public void setAvatarUrl(String avatarUrl) {
-    this.avatarUrl = avatarUrl;
-  }
+    public String getNickname() {
+        return nickname;
+    }
 
-  public String getIntroduction() {
-    return introduction;
-  }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
-  public void setIntroduction(String introduction) {
-    this.introduction = introduction;
-  }
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
 
-  public String getOpenId() {
-    return openId;
-  }
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
-  public void setOpenId(String openId) {
-    this.openId = openId;
-  }
+    public String getIntroduction() {
+        return introduction;
+    }
 
-  public Integer getStatus() {
-    return status;
-  }
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
+    public String getOpenId() {
+        return openId;
+    }
 
-  public Long getCreatedAt() {
-    return createdAt;
-  }
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 
-  public void setCreatedAt(Long createdAt) {
-    this.createdAt = createdAt;
-  }
+    public Integer getStatus() {
+        return status;
+    }
 
-  public Long getUpdatedAt() {
-    return updatedAt;
-  }
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
-  public void setUpdatedAt(Long updatedAt) {
-    this.updatedAt = updatedAt;
-  }
+    public Long getCreatedAt() {
+        return createdAt;
+    }
 
-  public String getUniqueCode() {
-    return uniqueCode;
-  }
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
 
-  public void setUniqueCode(String uniqueCode) {
-    this.uniqueCode = uniqueCode;
-  }
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUniqueCode() {
+        return uniqueCode;
+    }
+
+    public void setUniqueCode(String uniqueCode) {
+        this.uniqueCode = uniqueCode;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

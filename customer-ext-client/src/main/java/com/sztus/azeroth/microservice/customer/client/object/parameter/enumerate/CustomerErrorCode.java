@@ -8,7 +8,8 @@ public enum CustomerErrorCode implements BaseError {
     FAILURE_TO_SAVE_DATA(95090002, "failed to save data"),
     FAILURE_ADD_CUSTOMER_USERNAME_HAS_EXISTS(95090003, "username already exists"),
     SSN_ALREADY_EXISTS(95090004,"ssn already exists"),
-    CUSTOMER_IS_NOT_EXISTED(95090005,"customer is not existed")
+    CUSTOMER_IS_NOT_EXISTED(95090005,"customer is not existed"),
+    UNKNOWN_CONTACT_TYPE (95090006,"unknown contact type")
     ;
 
     CustomerErrorCode(Integer code, String message) {
