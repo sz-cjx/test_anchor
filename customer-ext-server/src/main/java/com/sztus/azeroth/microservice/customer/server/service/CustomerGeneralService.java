@@ -8,10 +8,12 @@ import com.sztus.azeroth.microservice.customer.server.respository.reader.Custome
 import com.sztus.azeroth.microservice.customer.server.respository.writer.CommonWriter;
 import com.sztus.azeroth.microservice.customer.server.respository.writer.CustomerWriter;
 import com.sztus.azeroth.microservice.customer.server.type.constant.DbKey;
+import com.sztus.azeroth.microservice.customer.server.type.enumeration.CustomerContactTypeEnum;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.core.util.DateUtil;
+import com.sztus.framework.component.core.util.EnumUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
@@ -77,10 +79,10 @@ public class CustomerGeneralService {
             customer.setOpenId(UuidUtil.getUuid());
         }
 
-        Long result = customerWriter.save(Customer.class, JSON.toJSONString(customer));
-        CustomerCheckUtil.checkSaveResult(result);
-        if (!Objects.equals(result, 1L)) {
-            customer.setId(result);
+        Long customerId = customerWriter.save(Customer.class, JSON.toJSONString(customer));
+        CustomerCheckUtil.checkSaveResult(customerId);
+        if (!Objects.equals(customerId, 1L)) {
+            customer.setId(customerId);
         }
     }
 
@@ -189,6 +191,32 @@ public class CustomerGeneralService {
 
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
+
+        String value = contactData.getValue();
+        if (StringUtils.isNotBlank(value)) {
+            Customer customer = getCustomerByCustomerId(customerId);
+
+            if (Objects.isNull(customer)) {
+                throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
+            }
+
+            CustomerContactTypeEnum customerContactTypeEnum = EnumUtil.getByValue(CustomerContactTypeEnum.class, contactType);
+            switch (customerContactTypeEnum) {
+                case EMAIL: {
+                    customer.setEmail(value);
+                    saveCustomer(customer);
+                    break;
+                }
+                case CELL_PHONE: {
+                    customer.setPhone(value);
+                    saveCustomer(customer);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
     }
 
     public CustomerContactInfo getCustomerContactData(Long customerId, Integer type) throws ProcedureException {
@@ -228,7 +256,7 @@ public class CustomerGeneralService {
 
     public Customer getCustomerByCondition(String phone, String email) throws ProcedureException {
 
-        if (StringUtils.isEmpty(phone)&&StringUtils.isEmpty(email)){
+        if (StringUtils.isEmpty(phone) && StringUtils.isEmpty(email)) {
             throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
         }
 
