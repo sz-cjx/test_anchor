@@ -1,7 +1,7 @@
 szt:
   service:
     name: microservice-customer-ext
-    port: 9527
+    port: 9528
 server:
   port: ${szt.service.port}
   servlet:
