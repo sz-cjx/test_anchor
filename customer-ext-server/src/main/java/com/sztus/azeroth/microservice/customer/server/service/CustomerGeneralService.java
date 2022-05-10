@@ -289,4 +289,22 @@ public class CustomerGeneralService {
         }
         return contactData;
     }
+
+    public <T> T getEntity(Class<T> tClass, Long id) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        if (tClass.equals(Customer.class) ||
+                tClass.equals(CustomerBankAccount.class) ||
+                tClass.equals(CustomerIbvAuthorizationRecord.class)) {
+            sqlOption.whereEqual(DbKey.ID, id);
+        } else {
+            sqlOption.whereEqual(DbKey.CUSTOMER_ID, id);
+        }
+        return customerReader.findByOptions(tClass, sqlOption.toString());
+    }
+
+    public void saveCreditEvaluation(CustomerCreditEvaluation creditEvaluation) throws ProcedureException {
+        creditEvaluation.setUpdatedAt(DateUtil.getCurrentTimestamp());
+        Long result = commonWriter.saveEntity(creditEvaluation);
+        CustomerCheckUtil.checkSaveResult(result);
+    }
 }

@@ -45,5 +45,9 @@ public interface CustomerConverter {
 
     SaveCustomerEmploymentResponse CusEmploymentToToSaveCusEmploymentResponse(CustomerEmploymentInfo customerEmploymentInfo);
 
-    GetCustomerByConditionResponse customerToGetCustomerByConditionResponse(Customer customer);
+    GetCustomerByConditionResponse CustomerToGetCustomerByConditionResponse(Customer customer);
+
+    GetCreditEvaluationResponse CustomerCreditEvaluationToView(CustomerCreditEvaluation customerCreditEvaluation);
+
+    CustomerCreditEvaluation CustomerCreditEvaluationViewToData(CustomerCreditEvaluationView creditEvaluationView);
 }
