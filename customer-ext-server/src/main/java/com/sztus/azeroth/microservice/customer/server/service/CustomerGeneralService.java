@@ -93,12 +93,6 @@ public class CustomerGeneralService {
         return customerReader.findByOptions(Customer.class, SqlOption.getInstance().whereEqual(DbKey.USERNAME, username).toString());
     }
 
-    public CustomerIdentityInfo getPersonalByCustomerId(Long customerId) {
-        SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
-        return customerReader.findByOptions(CustomerIdentityInfo.class, sqlOption.toString());
-    }
-
     public Long saveCustomerPersonal(CustomerIdentityInfo personalData) throws ProcedureException {
         Long customerId = personalData.getCustomerId();
         String ssn = personalData.getSsn();
@@ -125,24 +119,15 @@ public class CustomerGeneralService {
         return customerWriter.save(CustomerIdentityInfo.class, JSON.toJSONString(personalData));
     }
 
-    public CustomerEmploymentInfo getCustomerEmploymentByCustomerId(Long customerId) {
-        return commonReader.getEntityByCustomerId(CustomerEmploymentInfo.class, customerId);
-    }
-
     public void saveCustomerEmployment(CustomerEmploymentInfo customerEmploymentInfo) throws ProcedureException {
         Long result = commonWriter.save(CustomerEmploymentInfo.class, JSON.toJSONString(customerEmploymentInfo));
         CustomerCheckUtil.checkSaveResult(result);
-    }
-
-    public CustomerPayrollInfo getCustomerPayrollByCustomerId(Long customerId) {
-        return commonReader.getEntityByCustomerId(CustomerPayrollInfo.class, customerId);
     }
 
     public void saveCustomerPayroll(CustomerPayrollInfo payrollData) throws ProcedureException {
         Long result = commonWriter.save(payrollData);
         CustomerCheckUtil.checkSaveResult(result);
     }
-
 
     public List<CustomerBankAccount> listBankAccountByCustomerId(Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
@@ -162,10 +147,6 @@ public class CustomerGeneralService {
         Long result = customerWriter.save(CustomerBankAccount.class, JSON.toJSONString(bankAccount));
         CustomerCheckUtil.checkSaveResult(result);
         return result;
-    }
-
-    public CustomerBankAccount getBankAccountById(Long id) {
-        return customerReader.findById(CustomerBankAccount.class, id, null);
     }
 
     public List<CustomerContactInfo> listCustomerContact(Long customerId) {
@@ -290,8 +271,13 @@ public class CustomerGeneralService {
         return contactData;
     }
 
-    public <T> T getEntity(Class<T> tClass, Long id) {
+    public <T> T getEntity(Class<T> tClass, Long id) throws ProcedureException {
+        if (Objects.isNull(id)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
         SqlOption sqlOption = SqlOption.getInstance();
+
         if (tClass.equals(Customer.class) ||
                 tClass.equals(CustomerBankAccount.class) ||
                 tClass.equals(CustomerIbvAuthorizationRecord.class)) {

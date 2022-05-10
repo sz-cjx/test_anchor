@@ -25,7 +25,7 @@ public interface CustomerExtGeneralApi {
 
     @GetMapping(CustomerAction.GET_PERSONAL)
     GetCustomerIdentityResponse getCustomerPersonalData(
-            @SpringQueryMap GetCustomerPersonalRequest request
+            @SpringQueryMap GetCustomerRelatedRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_PERSONAL)
@@ -35,7 +35,7 @@ public interface CustomerExtGeneralApi {
 
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
     ListBankAccountResponse listBankAccount(
-            @SpringQueryMap ListBankAccountRequest request
+            @SpringQueryMap GetCustomerRelatedRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
@@ -45,7 +45,7 @@ public interface CustomerExtGeneralApi {
 
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
     GetCustomerEmploymentResponse getCustomerEmployment(
-            @SpringQueryMap GetCustomerEmploymentRequest request
+            @SpringQueryMap GetCustomerRelatedRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
@@ -55,7 +55,7 @@ public interface CustomerExtGeneralApi {
 
     @GetMapping(CustomerAction.GET_PAYROLL)
     GetCustomerPayrollResponse getCustomerPayroll(
-            @SpringQueryMap GetCustomerPayrollRequest request
+            @SpringQueryMap GetCustomerRelatedRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_PAYROLL)
@@ -65,7 +65,7 @@ public interface CustomerExtGeneralApi {
 
     @GetMapping(CustomerAction.LIST_CUSTOMER_CONTACT)
     ListCustomerContactResponse listCustomerContact(
-            @SpringQueryMap ListCustomerContactRequest request
+            @SpringQueryMap GetCustomerRelatedRequest request
     );
 
     @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
