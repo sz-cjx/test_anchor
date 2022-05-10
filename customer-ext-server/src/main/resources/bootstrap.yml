@@ -23,4 +23,14 @@ szt:
     application-name: microservice-customer-ext
     namespace: phoenix-office
     group: phoenix-office
-
+---
+spring:
+  config:
+    activate:
+      on-profile: aze-8
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    application-name: microservice-customer-ext
+    namespace: AZE-8
+    group: aze-8
