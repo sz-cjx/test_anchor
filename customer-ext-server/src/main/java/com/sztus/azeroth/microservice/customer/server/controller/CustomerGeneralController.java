@@ -14,6 +14,7 @@ import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.service.CustomerGeneralService;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
+import com.sztus.framework.component.core.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -261,6 +262,33 @@ public class CustomerGeneralController {
         }
     }
 
+    @GetMapping(CustomerAction.GET_CREDIT_EVALUATION)
+    public GetCreditEvaluationResponse getCreditEvaluation(
+            @RequestBody GetCustomerRelatedRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        CustomerCreditEvaluation creditEvaluation = generalService.getEntity(CustomerCreditEvaluation.class, customerId);
+
+        return CustomerConverter.INSTANCE.CustomerCreditEvaluationToView(creditEvaluation);
+    }
+
+    @PostMapping(CustomerAction.SAVE_CREDIT_EVALUATION)
+    public void saveCreditEvaluation(
+            @RequestBody SaveCreditEvaluationRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        CustomerCreditEvaluation customerCreditEvaluation = CustomerConverter.INSTANCE.CustomerCreditEvaluationViewToData(request);
+        generalService.saveCreditEvaluation(customerCreditEvaluation);
+    }
+
     @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
     public GetCustomerContactDataResponse getCustomerContactData(
             GetCustomerContactDataRequest request
@@ -272,7 +300,6 @@ public class CustomerGeneralController {
         return CustomerContactDataConverter.INSTANCE.CustomerContactDataToView(customerContactData);
     }
 
-
     @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITION)
     public GetCustomerByConditionResponse getCustomerByCondition(
             GetCustomerByConditionRequest request
@@ -280,6 +307,6 @@ public class CustomerGeneralController {
         String phone = request.getPhone();
         String email = request.getEmail();
         Customer customer = generalService.getCustomerByCondition(phone, email);
-        return CustomerConverter.INSTANCE.customerToGetCustomerByConditionResponse(customer);
+        return CustomerConverter.INSTANCE.CustomerToGetCustomerByConditionResponse(customer);
     }
 }

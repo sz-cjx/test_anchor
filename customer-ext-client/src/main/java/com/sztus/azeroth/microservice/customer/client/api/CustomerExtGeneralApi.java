@@ -92,4 +92,15 @@ public interface CustomerExtGeneralApi {
     GetCustomerByConditionResponse getCustomerByCondition(
             @SpringQueryMap GetCustomerByConditionRequest request
     );
+
+    @GetMapping(CustomerAction.GET_CREDIT_EVALUATION)
+    GetCreditEvaluationResponse getCreditEvaluation(
+            @SpringQueryMap GetCustomerRelatedRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_CREDIT_EVALUATION)
+    void saveCreditEvaluation(
+            @RequestBody SaveCreditEvaluationRequest request
+    );
+
 }

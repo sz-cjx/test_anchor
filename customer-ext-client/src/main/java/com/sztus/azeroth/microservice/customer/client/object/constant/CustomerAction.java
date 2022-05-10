@@ -19,6 +19,9 @@ public interface CustomerAction {
     String GET_PAYROLL = "/general/payroll/get";
     String SAVE_PAYROLL = "/general/payroll/save";
 
+    String GET_CREDIT_EVALUATION = "/general/credit-evaluation/get";
+    String SAVE_CREDIT_EVALUATION = "/general/credit-evaluation/save";
+
     String GET_CUSTOMER_BY_CONDITION = "/general/customer/get/condition";
 
     /**
