@@ -14,7 +14,6 @@ import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.service.CustomerGeneralService;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.framework.component.core.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -96,14 +95,11 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.GET_PERSONAL)
     public GetCustomerIdentityResponse getCustomerPersonalData(
-            GetCustomerPersonalRequest request
+            GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        if (Objects.isNull(customerId)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
 
-        CustomerIdentityInfo customerIdentityInfo = generalService.getPersonalByCustomerId(customerId);
+        CustomerIdentityInfo customerIdentityInfo = generalService.getEntity(CustomerIdentityInfo.class, customerId);
         return CustomerConverter.INSTANCE.PersonalToPersonalView(customerIdentityInfo);
     }
 
@@ -124,7 +120,7 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
     public ListBankAccountResponse listBankAccount(
-            ListBankAccountRequest request
+            GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         if (Objects.isNull(customerId)) {
@@ -162,24 +158,16 @@ public class CustomerGeneralController {
             GetBankAccountRequest request
     ) throws ProcedureException {
         Long id = request.getId();
-        if (Objects.isNull(id)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
-        CustomerBankAccount dbBankAccountData = generalService.getBankAccountById(id);
+        CustomerBankAccount dbBankAccountData = generalService.getEntity(CustomerBankAccount.class, id);
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
     public GetCustomerEmploymentResponse getCustomerEmployment(
-            GetCustomerEmploymentRequest request
+            GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        if (Objects.isNull(customerId)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
-
-        CustomerEmploymentInfo employmentData = generalService.getCustomerEmploymentByCustomerId(customerId);
-
+        CustomerEmploymentInfo employmentData = generalService.getEntity(CustomerEmploymentInfo.class, customerId);
         return CustomerConverter.INSTANCE.CusEmploymentToView(employmentData);
     }
 
@@ -198,14 +186,10 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.GET_PAYROLL)
     public GetCustomerPayrollResponse getCustomerPayroll(
-            GetCustomerPayrollRequest request
+            GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        if (Objects.isNull(customerId)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
-
-        CustomerPayrollInfo payrollData = generalService.getCustomerPayrollByCustomerId(customerId);
+        CustomerPayrollInfo payrollData = generalService.getEntity(CustomerPayrollInfo.class, customerId);
         return CustomerConverter.INSTANCE.CusPayrollToView(payrollData);
     }
 
@@ -221,7 +205,7 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.LIST_CUSTOMER_CONTACT)
     public ListCustomerContactResponse listCustomerContact(
-            ListCustomerContactRequest request
+            GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         if (Objects.isNull(customerId)) {
@@ -267,9 +251,6 @@ public class CustomerGeneralController {
             @RequestBody GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        if (Objects.isNull(customerId)) {
-            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
-        }
 
         CustomerCreditEvaluation creditEvaluation = generalService.getEntity(CustomerCreditEvaluation.class, customerId);
 
