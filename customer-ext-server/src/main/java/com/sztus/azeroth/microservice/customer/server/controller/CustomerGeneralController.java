@@ -248,7 +248,7 @@ public class CustomerGeneralController {
 
     @GetMapping(CustomerAction.GET_CREDIT_EVALUATION)
     public GetCreditEvaluationResponse getCreditEvaluation(
-            @RequestBody GetCustomerRelatedRequest request
+            GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
 
