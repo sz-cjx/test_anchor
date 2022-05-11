@@ -12,7 +12,7 @@ public class CustomerPayrollView {
     private Integer dayOfWeekPaid;
     private Integer firstDayOfMonth;
     private Integer secondDayOfMonth;
-    private Long lastPayday;
+    private String lastPayday;
     private Integer incomeType;
     private BigDecimal monthlyIncome;
 
@@ -80,11 +80,11 @@ public class CustomerPayrollView {
         this.secondDayOfMonth = secondDayOfMonth;
     }
 
-    public Long getLastPayday() {
+    public String getLastPayday() {
         return lastPayday;
     }
 
-    public void setLastPayday(Long lastPayday) {
+    public void setLastPayday(String lastPayday) {
         this.lastPayday = lastPayday;
     }
 
