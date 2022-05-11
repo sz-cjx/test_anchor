@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
@@ -187,7 +188,7 @@ public class CustomerGeneralController {
     @GetMapping(CustomerAction.GET_PAYROLL)
     public GetCustomerPayrollResponse getCustomerPayroll(
             GetCustomerRelatedRequest request
-    ) throws ProcedureException {
+    ) throws ProcedureException, ParseException {
         Long customerId = request.getCustomerId();
         CustomerPayrollInfo payrollData = generalService.getEntity(CustomerPayrollInfo.class, customerId);
         return CustomerConverter.INSTANCE.CusPayrollToView(payrollData);
@@ -196,7 +197,7 @@ public class CustomerGeneralController {
     @PostMapping(CustomerAction.SAVE_PAYROLL)
     public SaveCustomerPayrollResponse saveCustomerPayroll(
             @RequestBody SaveCustomerPayrollRequest request
-    ) throws ProcedureException {
+    ) throws ProcedureException, ParseException {
         CustomerPayrollInfo payrollData = CustomerConverter.INSTANCE.CusPayrollViewToData(request);
         generalService.saveCustomerPayroll(payrollData);
 
