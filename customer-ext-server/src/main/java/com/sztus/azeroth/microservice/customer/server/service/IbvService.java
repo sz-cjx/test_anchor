@@ -1,11 +1,13 @@
 package com.sztus.azeroth.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
+import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.IBVStatusConst;
 import com.sztus.azeroth.microservice.customer.server.object.domain.CustomerIbvAuthorizationRecord;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.azeroth.microservice.customer.server.respository.writer.CommonWriter;
 import com.sztus.azeroth.microservice.customer.server.type.constant.DbKey;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
+import com.sztus.framework.component.core.constant.StatusConst;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.core.util.DateUtil;
 import com.sztus.framework.component.database.type.SqlOption;
@@ -24,11 +26,15 @@ public class IbvService {
     @Autowired
     private CommonReader commonReader;
 
-
-    public void saveIbvAuthorization(CustomerIbvAuthorizationRecord ibvAuthorizationRecord) throws ProcedureException {
-        ibvAuthorizationRecord.setAuthorizedAt(DateUtil.getCurrentTimestamp());
+    public Long saveIbvAuthorization(CustomerIbvAuthorizationRecord ibvAuthorizationRecord) throws ProcedureException {
+        if (Objects.isNull(ibvAuthorizationRecord.getAuthorizedAt())
+                && (Objects.equals(IBVStatusConst.LOGIN_VERIFIED, ibvAuthorizationRecord.getRequestStatus())
+                || Objects.equals(IBVStatusConst.SUCCESSFUL, ibvAuthorizationRecord.getRequestStatus()))) {
+            ibvAuthorizationRecord.setAuthorizedAt(DateUtil.getCurrentTimestamp());
+        }
         Long result = commonWriter.save(CustomerIbvAuthorizationRecord.class, JSON.toJSONString(ibvAuthorizationRecord));
         CustomerCheckUtil.checkSaveResult(result);
+        return result;
     }
 
     public List<CustomerIbvAuthorizationRecord> listIbvAuthorization(Long customerId, Long portfolioId) throws ProcedureException {
