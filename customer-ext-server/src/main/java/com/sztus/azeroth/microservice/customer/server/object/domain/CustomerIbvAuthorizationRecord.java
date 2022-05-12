@@ -30,6 +30,9 @@ public class CustomerIbvAuthorizationRecord {
     private String requestCode;
 
     @Column
+    private Integer requestStatus;
+
+    @Column
     private Long authorizedAt;
 
     public Long getId() {
@@ -78,6 +81,14 @@ public class CustomerIbvAuthorizationRecord {
 
     public void setRequestCode(String requestCode) {
         this.requestCode = requestCode;
+    }
+
+    public Integer getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(Integer requestStatus) {
+        this.requestStatus = requestStatus;
     }
 
     public Long getAuthorizedAt() {
