@@ -36,7 +36,10 @@ public class IbvController {
         }
 
         CustomerIbvAuthorizationRecord ibvAuthorizationRecord = CustomerIbvAuthorizationConverter.INSTANCE.ibvRequestToData(request);
-        ibvService.saveIbvAuthorization(ibvAuthorizationRecord);
+        Long result = ibvService.saveIbvAuthorization(ibvAuthorizationRecord);
+        if (result > 1) {
+            ibvAuthorizationRecord.setId(result);
+        }
 
         return CustomerIbvAuthorizationConverter.INSTANCE.ibvViewToResponse(ibvAuthorizationRecord);
     }

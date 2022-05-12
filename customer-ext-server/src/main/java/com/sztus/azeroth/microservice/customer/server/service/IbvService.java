@@ -25,10 +25,13 @@ public class IbvService {
     private CommonReader commonReader;
 
 
-    public void saveIbvAuthorization(CustomerIbvAuthorizationRecord ibvAuthorizationRecord) throws ProcedureException {
-        ibvAuthorizationRecord.setAuthorizedAt(DateUtil.getCurrentTimestamp());
+    public Long saveIbvAuthorization(CustomerIbvAuthorizationRecord ibvAuthorizationRecord) throws ProcedureException {
+        if (Objects.isNull(ibvAuthorizationRecord.getAuthorizedAt())) {
+            ibvAuthorizationRecord.setAuthorizedAt(DateUtil.getCurrentTimestamp());
+        }
         Long result = commonWriter.save(CustomerIbvAuthorizationRecord.class, JSON.toJSONString(ibvAuthorizationRecord));
         CustomerCheckUtil.checkSaveResult(result);
+        return result;
     }
 
     public List<CustomerIbvAuthorizationRecord> listIbvAuthorization(Long customerId, Long portfolioId) throws ProcedureException {
