@@ -9,7 +9,7 @@ public interface DbKey {
 
     String EMAIL = "email";
 
-    String PORTFOLIO_ID = "portfolioId";
+    String PORTFOLIO_ID = "portfolio_id";
     String PHONE = "phone";
 
     String ID = "id";

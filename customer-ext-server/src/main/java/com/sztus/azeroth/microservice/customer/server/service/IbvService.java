@@ -37,12 +37,13 @@ public class IbvService {
         return result;
     }
 
-    public List<CustomerIbvAuthorizationRecord> listIbvAuthorization(Long customerId, Long portfolioId) throws ProcedureException {
+    public List<CustomerIbvAuthorizationRecord> listIbvAuthorization(Long customerId, Long portfolioId) {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
         if (Objects.nonNull(portfolioId)) {
             sqlOption.whereEqual(DbKey.PORTFOLIO_ID, portfolioId);
         }
+        sqlOption.order("authorized_at DESC");
         return commonReader.findAllByOptions(CustomerIbvAuthorizationRecord.class, sqlOption.toString());
     }
 
