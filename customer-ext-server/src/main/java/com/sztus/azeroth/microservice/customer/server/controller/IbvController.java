@@ -45,7 +45,7 @@ public class IbvController {
     }
 
     @GetMapping(CustomerAction.LIST_IBV_AUTHORIZATION)
-    public ListIbvAuthorizationResponse saveIbvAuthorization(
+    public ListIbvAuthorizationResponse listIbvAuthorization(
             ListIbvAuthorizationRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
