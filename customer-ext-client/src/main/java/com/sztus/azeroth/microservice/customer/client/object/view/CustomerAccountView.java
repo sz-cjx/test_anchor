@@ -5,11 +5,17 @@ public class CustomerAccountView {
 
     private Long customerId;
 
+    private String username;
+
     private String nickname;
 
     private String avatarUrl;
 
     private String introduction;
+
+    private Long createdAt;
+
+    private Long updatedAt;
 
     public Long getCustomerId() {
         return customerId;
@@ -41,5 +47,29 @@ public class CustomerAccountView {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
