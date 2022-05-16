@@ -7,12 +7,6 @@ public class CustomerView {
 
     private String username;
 
-    private String nickname;
-
-    private String avatarUrl;
-
-    private String introduction;
-
     private String openId;
 
     private Integer status;
@@ -42,30 +36,6 @@ public class CustomerView {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
     }
 
     public String getOpenId() {

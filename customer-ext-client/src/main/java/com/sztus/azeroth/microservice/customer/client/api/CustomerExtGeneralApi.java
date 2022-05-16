@@ -103,4 +103,14 @@ public interface CustomerExtGeneralApi {
             @RequestBody SaveCreditEvaluationRequest request
     );
 
+    @GetMapping(CustomerAction.GET_CUSTOMER_ACCOUNT)
+    GetCustomerAccountResponse getCustomerAccount(
+            @SpringQueryMap GetCustomerRelatedRequest request
+    );
+
+    @PostMapping(CustomerAction.SAVE_CUSTOMER_ACCOUNT)
+    SaveCustomerAccountResponse saveCustomerAccount(
+            @RequestBody SaveCustomerAccountRequest request
+    );
+
 }

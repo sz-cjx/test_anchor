@@ -291,4 +291,23 @@ public class CustomerGeneralController {
         Customer customer = generalService.getCustomerByCondition(phone, email);
         return CustomerConverter.INSTANCE.CustomerToGetCustomerByConditionResponse(customer);
     }
+
+    @GetMapping(CustomerAction.GET_CUSTOMER_ACCOUNT)
+    public GetCustomerAccountResponse getCustomerAccount(
+            GetCustomerRelatedRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        CustomerAccount customerAccount = generalService.getEntity(CustomerAccount.class, customerId);
+        return CustomerConverter.INSTANCE.CusAccountToView(customerAccount);
+    }
+
+    @PostMapping(CustomerAction.SAVE_CUSTOMER_ACCOUNT)
+    public SaveCustomerAccountResponse saveCustomerAccount(
+            @RequestBody SaveCustomerAccountRequest request
+    ) throws ProcedureException {
+        CustomerAccount customerAccount = CustomerConverter.INSTANCE.CusAccountViewToData(request);
+        generalService.saveCustomerAccount(customerAccount);
+        return CustomerConverter.INSTANCE.CusAccountToSaveCusEmploymentResponse(customerAccount);
+    }
+
 }

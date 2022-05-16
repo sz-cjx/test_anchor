@@ -19,15 +19,6 @@ public class Customer {
   private String username;
 
   @Column
-  private String nickname;
-
-  @Column
-  private String avatarUrl;
-
-  @Column
-  private String introduction;
-
-  @Column
   private String openId;
 
   @Column
@@ -62,30 +53,6 @@ public class Customer {
 
   public void setUsername(String username) {
     this.username = username;
-  }
-
-  public String getNickname() {
-    return nickname;
-  }
-
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
-  }
-
-  public String getAvatarUrl() {
-    return avatarUrl;
-  }
-
-  public void setAvatarUrl(String avatarUrl) {
-    this.avatarUrl = avatarUrl;
-  }
-
-  public String getIntroduction() {
-    return introduction;
-  }
-
-  public void setIntroduction(String introduction) {
-    this.introduction = introduction;
   }
 
   public String getOpenId() {
