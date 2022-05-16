@@ -73,7 +73,8 @@ public class CustomerGeneralService {
             customer.setOpenId(customerDb.getOpenId());
         } else {
             // 校验username是否存在
-            if (Objects.nonNull(getCustomerByUsername(customer.getUsername()))) {
+            CustomerAccount customerAccount = commonReader.getEntityByCustomerId(CustomerAccount.class, id);
+            if (Objects.nonNull(getCustomerByUsername(customerAccount.getUsername()))) {
                 throw new ProcedureException(CustomerErrorCode.FAILURE_ADD_CUSTOMER_USERNAME_HAS_EXISTS);
             }
             customer.setOpenId(UuidUtil.getUuid());
@@ -86,11 +87,11 @@ public class CustomerGeneralService {
         }
     }
 
-    public Customer getCustomerByUsername(String username) {
+    public CustomerAccount getCustomerByUsername(String username) {
         if (StringUtils.isBlank(username)) {
             return null;
         }
-        return customerReader.findByOptions(Customer.class, SqlOption.getInstance().whereEqual(DbKey.USERNAME, username).toString());
+        return customerReader.findByOptions(CustomerAccount.class, SqlOption.getInstance().whereEqual(DbKey.USERNAME, username).toString());
     }
 
     public Long saveCustomerPersonal(CustomerIdentityInfo personalData) throws ProcedureException {

@@ -33,7 +33,10 @@ public class CustomerBankAccount {
   private String bankAccountNo;
 
   @Column
-  private Long addedAt;
+  private Long createdAt;
+
+  @Column
+  private Long updatedAt;
 
   @Column
   private String note;
@@ -94,12 +97,20 @@ public class CustomerBankAccount {
     this.bankAccountNo = bankAccountNo;
   }
 
-  public Long getAddedAt() {
-    return addedAt;
+  public Long getCreatedAt() {
+    return createdAt;
   }
 
-  public void setAddedAt(Long addedAt) {
-    this.addedAt = addedAt;
+  public void setCreatedAt(Long createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Long getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Long updatedAt) {
+    this.updatedAt = updatedAt;
   }
 
   public String getNote() {

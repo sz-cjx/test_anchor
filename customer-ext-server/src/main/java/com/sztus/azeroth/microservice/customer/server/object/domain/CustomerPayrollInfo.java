@@ -43,6 +43,12 @@ public class CustomerPayrollInfo {
     @Column
     private BigDecimal monthlyIncome;
 
+    @Column
+    private Long createdAt;
+
+    @Column
+    private Long updatedAt;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -129,5 +135,21 @@ public class CustomerPayrollInfo {
 
     public void setMonthlyIncome(BigDecimal monthlyIncome) {
         this.monthlyIncome = monthlyIncome;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

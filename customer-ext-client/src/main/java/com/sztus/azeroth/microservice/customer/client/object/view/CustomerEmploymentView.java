@@ -27,6 +27,9 @@ public class CustomerEmploymentView {
     private String supervisorName;
 
     private String supervisorPhone;
+    private Long createdAt;
+
+    private Long updatedAt;
 
     public Long getCustomerId() {
         return customerId;
@@ -130,5 +133,21 @@ public class CustomerEmploymentView {
 
     public void setSupervisorPhone(String supervisorPhone) {
         this.supervisorPhone = supervisorPhone;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
