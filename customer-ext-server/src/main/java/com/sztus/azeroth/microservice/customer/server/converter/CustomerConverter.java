@@ -67,4 +67,11 @@ public interface CustomerConverter {
     GetCreditEvaluationResponse CustomerCreditEvaluationToView(CustomerCreditEvaluation customerCreditEvaluation);
 
     CustomerCreditEvaluation CustomerCreditEvaluationViewToData(CustomerCreditEvaluationView creditEvaluationView);
+
+    GetCustomerAccountResponse CusAccountToView(CustomerAccount customerAccount);
+
+    CustomerAccount CusAccountViewToData(CustomerAccountView customerAccountView);
+
+    SaveCustomerAccountResponse CusAccountToSaveCusEmploymentResponse(CustomerAccount customerAccount);
+
 }

@@ -124,6 +124,11 @@ public class CustomerGeneralService {
         CustomerCheckUtil.checkSaveResult(result);
     }
 
+    public void saveCustomerAccount(CustomerAccount customerAccount) throws ProcedureException {
+        Long result = commonWriter.save(CustomerAccount.class, JSON.toJSONString(customerAccount));
+        CustomerCheckUtil.checkSaveResult(result);
+    }
+
     public void saveCustomerPayroll(CustomerPayrollInfo payrollData) throws ProcedureException {
         Long result = commonWriter.save(payrollData);
         CustomerCheckUtil.checkSaveResult(result);
