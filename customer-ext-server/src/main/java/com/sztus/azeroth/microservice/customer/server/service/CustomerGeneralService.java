@@ -121,16 +121,37 @@ public class CustomerGeneralService {
     }
 
     public void saveCustomerEmployment(CustomerEmploymentInfo customerEmploymentInfo) throws ProcedureException {
+        Long customerId = customerEmploymentInfo.getCustomerId();
+        CustomerEmploymentInfo employmentInfoDb = commonReader.getEntityByCustomerId(CustomerEmploymentInfo.class, customerId);
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        if (Objects.isNull(employmentInfoDb)) {
+            customerEmploymentInfo.setCreatedAt(currentTimestamp);
+        }
+        customerEmploymentInfo.setUpdatedAt(currentTimestamp);
         Long result = commonWriter.save(CustomerEmploymentInfo.class, JSON.toJSONString(customerEmploymentInfo));
         CustomerCheckUtil.checkSaveResult(result);
     }
 
     public void saveCustomerAccount(CustomerAccount customerAccount) throws ProcedureException {
+        Long customerId = customerAccount.getCustomerId();
+        CustomerAccount customerAccountDb = commonReader.getEntityByCustomerId(CustomerAccount.class, customerId);
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        if (Objects.isNull(customerAccountDb)) {
+            customerAccount.setCreatedAt(currentTimestamp);
+        }
+        customerAccount.setUpdatedAt(currentTimestamp);
         Long result = commonWriter.save(CustomerAccount.class, JSON.toJSONString(customerAccount));
         CustomerCheckUtil.checkSaveResult(result);
     }
 
     public void saveCustomerPayroll(CustomerPayrollInfo payrollData) throws ProcedureException {
+        Long customerId = payrollData.getCustomerId();
+        CustomerPayrollInfo payrollDataDb = commonReader.getEntityByCustomerId(CustomerPayrollInfo.class, customerId);
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        if (Objects.isNull(payrollDataDb)) {
+            payrollData.setCreatedAt(currentTimestamp);
+        }
+        payrollData.setUpdatedAt(currentTimestamp);
         Long result = commonWriter.save(payrollData);
         CustomerCheckUtil.checkSaveResult(result);
     }
@@ -144,11 +165,18 @@ public class CustomerGeneralService {
     public Long saveBankAccount(CustomerBankAccount bankAccount) throws ProcedureException {
         Long customerId = bankAccount.getCustomerId();
         CustomerBankAccount bankAccountDb = commonReader.getEntityByCustomerId(CustomerBankAccount.class, customerId);
+
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+
         if (Objects.isNull(bankAccountDb)
                 || (Objects.nonNull(bankAccount.getBankAccountNo()) && !Objects.equals(bankAccountDb.getBankAccountNo(), bankAccount.getBankAccountNo())
-                || (Objects.nonNull(bankAccount.getBankRoutingNo()) && !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo())))) {
+                || (Objects.nonNull(bankAccount.getBankRoutingNo()) && !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo()))))
+        {
             syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankRoutingNo());
+            bankAccount.setCreatedAt(currentTimestamp);
         }
+
+        bankAccount.setUpdatedAt(currentTimestamp);
 
         Long result = customerWriter.save(CustomerBankAccount.class, JSON.toJSONString(bankAccount));
         CustomerCheckUtil.checkSaveResult(result);
