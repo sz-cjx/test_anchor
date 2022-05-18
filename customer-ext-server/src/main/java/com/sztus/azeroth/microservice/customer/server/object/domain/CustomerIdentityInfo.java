@@ -44,6 +44,9 @@ public class CustomerIdentityInfo {
   private String address;
 
   @Column
+  private String addressTwo;
+
+  @Column
   private Integer language;
 
   @Column
@@ -138,6 +141,14 @@ public class CustomerIdentityInfo {
 
   public void setAddress(String address) {
     this.address = address;
+  }
+
+  public String getAddressTwo() {
+    return addressTwo;
+  }
+
+  public void setAddressTwo(String addressTwo) {
+    this.addressTwo = addressTwo;
   }
 
   public Integer getLanguage() {
