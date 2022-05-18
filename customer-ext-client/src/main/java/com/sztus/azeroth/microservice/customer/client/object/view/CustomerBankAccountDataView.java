@@ -22,6 +22,8 @@ public class CustomerBankAccountDataView {
 
     private String note;
 
+    private Integer defaultStatus;
+
     public Long getId() {
         return id;
     }
@@ -100,5 +102,13 @@ public class CustomerBankAccountDataView {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Integer getDefaultStatus() {
+        return defaultStatus;
+    }
+
+    public void setDefaultStatus(Integer defaultStatus) {
+        this.defaultStatus = defaultStatus;
     }
 }
