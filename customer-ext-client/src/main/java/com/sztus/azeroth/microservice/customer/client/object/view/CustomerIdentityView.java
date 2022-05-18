@@ -24,6 +24,8 @@ public class CustomerIdentityView {
 
     private String address;
 
+    private String addressTwo;
+
     private Integer language;
 
     private Long createdAt;
@@ -112,6 +114,14 @@ public class CustomerIdentityView {
 
     public String getAddress() {
         return address;
+    }
+
+    public String getAddressTwo() {
+        return addressTwo;
+    }
+
+    public void setAddressTwo(String addressTwo) {
+        this.addressTwo = addressTwo;
     }
 
     public void setAddress(String address) {
