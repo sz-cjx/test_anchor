@@ -41,6 +41,9 @@ public class CustomerBankAccount {
   @Column
   private String note;
 
+  @Column
+  private Integer defaultStatus;
+
   public Long getId() {
     return id;
   }
@@ -119,5 +122,13 @@ public class CustomerBankAccount {
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  public Integer getDefaultStatus() {
+    return defaultStatus;
+  }
+
+  public void setDefaultStatus(Integer defaultStatus) {
+    this.defaultStatus = defaultStatus;
   }
 }
