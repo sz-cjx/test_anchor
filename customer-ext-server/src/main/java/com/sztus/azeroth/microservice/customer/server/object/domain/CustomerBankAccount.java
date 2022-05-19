@@ -42,7 +42,7 @@ public class CustomerBankAccount {
   private String note;
 
   @Column
-  private Integer defaultStatus;
+  private Integer primary;
 
   public Long getId() {
     return id;
@@ -124,11 +124,11 @@ public class CustomerBankAccount {
     this.note = note;
   }
 
-  public Integer getDefaultStatus() {
-    return defaultStatus;
+  public Integer getPrimary() {
+    return primary;
   }
 
-  public void setDefaultStatus(Integer defaultStatus) {
-    this.defaultStatus = defaultStatus;
+  public void setPrimary(Integer primary) {
+    this.primary = primary;
   }
 }
