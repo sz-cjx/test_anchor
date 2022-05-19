@@ -172,7 +172,10 @@ public class CustomerGeneralService {
 
     public Long saveBankAccount(CustomerBankAccount bankAccount) throws ProcedureException {
         Long customerId = bankAccount.getCustomerId();
-        CustomerBankAccount bankAccountDb = commonReader.getEntityByCustomerId(CustomerBankAccount.class, customerId);
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        sqlOption.whereEqual(DbKey.PRIMARY, 1);
+        CustomerBankAccount bankAccountDb = customerReader.findByOptions(CustomerBankAccount.class, sqlOption.toString());
 
         String routingNo = bankAccount.getBankRoutingNo();
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
