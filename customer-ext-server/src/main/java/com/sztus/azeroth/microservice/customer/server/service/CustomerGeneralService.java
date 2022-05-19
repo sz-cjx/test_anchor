@@ -1,6 +1,7 @@
 package com.sztus.azeroth.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
@@ -11,6 +12,7 @@ import com.sztus.azeroth.microservice.customer.server.type.constant.DbKey;
 import com.sztus.azeroth.microservice.customer.server.type.enumeration.CustomerContactTypeEnum;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
+import com.sztus.azeroth.microservice.customer.server.util.HttpClientUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.core.util.DateUtil;
 import com.sztus.framework.component.core.util.EnumUtil;
@@ -18,6 +20,7 @@ import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +40,11 @@ public class CustomerGeneralService {
 
     @Autowired
     private CommonWriter commonWriter;
+
+    @Value("${spring.config.activate.on-profile}")
+    private String profiles;
+
+    private static String BANK_INFO_URL = "https://www.routingnumbers.info/api/data.json";
 
     public Customer getCustomerByCustomerId(Long customerId) {
         return customerReader.findById(Customer.class, customerId, null);
@@ -166,13 +174,33 @@ public class CustomerGeneralService {
         Long customerId = bankAccount.getCustomerId();
         CustomerBankAccount bankAccountDb = commonReader.getEntityByCustomerId(CustomerBankAccount.class, customerId);
 
+        String routingNo = bankAccount.getBankRoutingNo();
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
+
+        if (StringUtils.isNotBlank(routingNo)) {
+            BANK_INFO_URL = BANK_INFO_URL + "?rn=" + routingNo;
+            String response = HttpClientUtil.getRequest(null, BANK_INFO_URL, null, false);
+            JSONObject bankInfoJSon = JSON.parseObject(response);
+            bankAccount.setBankName(bankInfoJSon.getString("customer_name"));
+
+            if (bankInfoJSon.getInteger("code") != 200 && !profiles.contains("release")) {
+                bankAccount.setBankName("FIRST CITIZENS BANK");
+                bankAccount.setBankPhone("8883234732");
+            }
+
+            String bankPhone = bankAccount.getBankPhone();
+            if (StringUtils.isBlank(bankPhone)) {
+                String telephone = bankInfoJSon.getString("telephone");
+                if (StringUtils.isNotBlank(telephone)) {
+                    bankAccount.setBankPhone(telephone.replaceAll("[^\\d]", ""));
+                }
+            }
+        }
 
         if (Objects.isNull(bankAccountDb)
                 || (Objects.nonNull(bankAccount.getBankAccountNo()) && !Objects.equals(bankAccountDb.getBankAccountNo(), bankAccount.getBankAccountNo())
-                || (Objects.nonNull(bankAccount.getBankRoutingNo()) && !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo()))))
-        {
-            syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankRoutingNo());
+                || (Objects.nonNull(bankAccount.getBankRoutingNo()) && !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo())))) {
+            syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
             bankAccount.setCreatedAt(currentTimestamp);
         }
 
@@ -292,7 +320,7 @@ public class CustomerGeneralService {
 
     private CustomerContactInfo formatContactInfo(CustomerContactInfo contactData) throws ProcedureException {
         Integer type = contactData.getType();
-        if (Objects.isNull(contactData.getValue())){
+        if (Objects.isNull(contactData.getValue())) {
             return contactData;
         }
         if (CustomerContactTypeEnum.HOME_PHONE.getValue().equals(type) || CustomerContactTypeEnum.CELL_PHONE.getValue().equals(type) || CustomerContactTypeEnum.ALTERNATIVE_PHONE.getValue().equals(type)) {
