@@ -44,7 +44,7 @@ public class CustomerGeneralService {
     @Value("${spring.config.activate.on-profile}")
     private String profiles;
 
-    private static String BANK_INFO_URL = "https://www.routingnumbers.info/api/data.json";
+    private static final String BANK_INFO_URL = "https://www.routingnumbers.info/api/data.json";
 
     public Customer getCustomerByCustomerId(Long customerId) {
         return customerReader.findById(Customer.class, customerId, null);
@@ -181,8 +181,8 @@ public class CustomerGeneralService {
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
 
         if (StringUtils.isNotBlank(routingNo)) {
-            BANK_INFO_URL = BANK_INFO_URL + "?rn=" + routingNo;
-            String response = HttpClientUtil.getRequest(null, BANK_INFO_URL, null, false);
+            String request = BANK_INFO_URL + "?rn=" + routingNo;
+            String response = HttpClientUtil.getRequest(null, request, null, false);
             JSONObject bankInfoJSon = JSON.parseObject(response);
             bankAccount.setBankName(bankInfoJSon.getString("customer_name"));
 
