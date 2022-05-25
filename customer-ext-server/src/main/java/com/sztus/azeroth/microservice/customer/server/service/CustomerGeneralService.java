@@ -105,14 +105,6 @@ public class CustomerGeneralService {
     public Long saveCustomerPersonal(CustomerIdentityInfo personalData) throws ProcedureException {
         Long customerId = personalData.getCustomerId();
         String ssn = personalData.getSsn();
-        if (Objects.nonNull(ssn)) {
-            SqlOption sqlOption = SqlOption.getInstance();
-            sqlOption.whereEqual(DbKey.SSN, ssn);
-            CustomerIdentityInfo dbPersonalData = customerReader.findByOptions(CustomerIdentityInfo.class, sqlOption.toString());
-            if (Objects.nonNull(dbPersonalData) && !Objects.equals(customerId, dbPersonalData.getCustomerId())) {
-                throw new ProcedureException(CustomerErrorCode.SSN_ALREADY_EXISTS);
-            }
-        }
         CustomerIdentityInfo identityInfoDb = commonReader.getEntityByCustomerId(CustomerIdentityInfo.class, customerId);
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(identityInfoDb)) {
