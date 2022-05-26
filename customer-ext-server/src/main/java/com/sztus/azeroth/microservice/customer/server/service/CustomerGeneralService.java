@@ -2,6 +2,7 @@ package com.sztus.azeroth.microservice.customer.server.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
@@ -53,6 +54,7 @@ public class CustomerGeneralService {
     public CustomerContactInfo getCustomerContactByContact(String contactInformation) {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.VALUE, contactInformation);
+        sqlOption.whereIN(DbKey.TYPE, Lists.newArrayList(CustomerContactTypeEnum.CELL_PHONE.getValue(), CustomerContactTypeEnum.EMAIL.getValue()));
         return customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
     }
 
@@ -215,10 +217,16 @@ public class CustomerGeneralService {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
+        Integer contactType = contactData.getType();
+        String value = contactData.getValue();
+        boolean isUnique = checkContactData(contactType, value);
+        if (isUnique) {
+            throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_EXISTED);
+        }
+
         contactData = formatContactInfo(contactData);
 
         SqlOption sqlOption = SqlOption.getInstance();
-        Integer contactType = contactData.getType();
         Long customerId = contactData.getCustomerId();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
         sqlOption.whereEqual(DbKey.TYPE, contactType);
@@ -232,7 +240,6 @@ public class CustomerGeneralService {
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
 
-        String value = contactData.getValue();
         if (StringUtils.isNotBlank(value)) {
             Customer customer = getCustomerByCustomerId(customerId);
 
@@ -257,6 +264,17 @@ public class CustomerGeneralService {
             }
         }
 
+    }
+
+    private boolean checkContactData(Integer contactType, String contactInfo) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        if (CustomerContactTypeEnum.CELL_PHONE.getValue().equals(contactType) || CustomerContactTypeEnum.EMAIL.getValue().equals(contactType)) {
+            sqlOption.whereEqual(DbKey.VALUE, contactInfo);
+            CustomerContactInfo contactInfoDb = commonReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
+            return Objects.nonNull(contactInfoDb);
+        } else {
+            return false;
+        }
     }
 
     public CustomerContactInfo getCustomerContactData(Long customerId, Integer type) throws ProcedureException {
