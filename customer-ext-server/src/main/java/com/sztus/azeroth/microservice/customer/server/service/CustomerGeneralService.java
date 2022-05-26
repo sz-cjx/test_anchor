@@ -270,7 +270,6 @@ public class CustomerGeneralService {
         SqlOption sqlOption = SqlOption.getInstance();
         if (CustomerContactTypeEnum.CELL_PHONE.getValue().equals(contactType) || CustomerContactTypeEnum.EMAIL.getValue().equals(contactType)) {
             sqlOption.whereEqual(DbKey.VALUE, contactInfo);
-            sqlOption.whereIN(DbKey.TYPE, Lists.newArrayList(CustomerContactTypeEnum.CELL_PHONE.getValue(), CustomerContactTypeEnum.EMAIL.getValue()));
             CustomerContactInfo contactInfoDb = commonReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
             return Objects.nonNull(contactInfoDb);
         } else {
