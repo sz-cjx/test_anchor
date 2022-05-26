@@ -218,7 +218,8 @@ public class CustomerGeneralService {
         }
 
         Integer contactType = contactData.getType();
-        boolean isUnique = checkContactData(contactType);
+        String value = contactData.getValue();
+        boolean isUnique = checkContactData(contactType, value);
         if (isUnique) {
             throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_EXISTED);
         }
@@ -239,7 +240,6 @@ public class CustomerGeneralService {
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
 
-        String value = contactData.getValue();
         if (StringUtils.isNotBlank(value)) {
             Customer customer = getCustomerByCustomerId(customerId);
 
@@ -266,10 +266,11 @@ public class CustomerGeneralService {
 
     }
 
-    private boolean checkContactData(Integer contactType) {
+    private boolean checkContactData(Integer contactType, String contactInfo) {
         SqlOption sqlOption = SqlOption.getInstance();
         if (CustomerContactTypeEnum.CELL_PHONE.getValue().equals(contactType) || CustomerContactTypeEnum.EMAIL.getValue().equals(contactType)) {
-            sqlOption.whereEqual(DbKey.TYPE, contactType);
+            sqlOption.whereEqual(DbKey.VALUE, contactInfo);
+            sqlOption.whereIN(DbKey.TYPE, Lists.newArrayList(CustomerContactTypeEnum.CELL_PHONE.getValue(), CustomerContactTypeEnum.EMAIL.getValue()));
             CustomerContactInfo contactInfoDb = commonReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
             return Objects.nonNull(contactInfoDb);
         } else {
