@@ -138,13 +138,13 @@ public class CustomerGeneralController {
 
     @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
     public CustomerBankAccountDataView saveBankAccount(
-            @RequestBody SaveBankAccountRequest request
+            @RequestBody SaveCustomerBankAccountRequest request
     ) throws ProcedureException {
         if (Objects.isNull(request.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
         JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
-        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveBankAccountRequest.class);
+        request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerBankAccountRequest.class);
 
         CustomerBankAccount bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
         Long result = generalService.saveBankAccount(bankAccountData);

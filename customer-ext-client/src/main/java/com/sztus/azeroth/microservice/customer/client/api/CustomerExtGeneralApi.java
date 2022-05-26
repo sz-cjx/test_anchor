@@ -40,7 +40,7 @@ public interface CustomerExtGeneralApi {
 
     @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
     SaveBankAccountResponse saveBankAccount(
-            @RequestBody SaveBankAccountRequest request
+            @RequestBody SaveCustomerBankAccountRequest request
     );
 
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
