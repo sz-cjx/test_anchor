@@ -1,0 +1,3 @@
+include:
+  - project: 'sztus/maelstrom/devops/ci'
+    file: '/templates/.gitlab-ci-template-microservice.yml'
