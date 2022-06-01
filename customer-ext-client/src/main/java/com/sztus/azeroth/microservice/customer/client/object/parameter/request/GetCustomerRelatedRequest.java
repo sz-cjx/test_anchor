@@ -4,9 +4,19 @@ public class GetCustomerRelatedRequest {
 
     private Long customerId;
 
+    private Long portfolioId;
+
     private String startDate;
 
     private String endDate;
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
 
     public String getStartDate() {
         return startDate;
