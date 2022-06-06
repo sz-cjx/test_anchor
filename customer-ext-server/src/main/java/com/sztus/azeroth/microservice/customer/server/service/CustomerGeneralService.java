@@ -204,6 +204,11 @@ public class CustomerGeneralService {
             bankAccount.setPrecedence(true);
             result = customerWriter.saveEntity(bankAccount);
         } else {
+            if (!Objects.equals(bankAccountDb.getBankAccountNo(), bankAccount.getBankAccountNo())
+                    || !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo())
+            ) {
+                syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
+            }
             bankAccountDb.setBankPhone(bankAccount.getBankPhone());
             bankAccountDb.setUpdatedAt(currentTimestamp);
             bankAccountDb.setBankName(bankAccount.getBankName());
