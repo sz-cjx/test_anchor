@@ -42,7 +42,7 @@ public class CustomerBankAccount {
   private String note;
 
   @Column
-  private Integer primary;
+  private Boolean precedence;
 
   public Long getId() {
     return id;
@@ -124,11 +124,11 @@ public class CustomerBankAccount {
     this.note = note;
   }
 
-  public Integer getPrimary() {
-    return primary;
+  public Boolean getPrecedence() {
+    return precedence;
   }
 
-  public void setPrimary(Integer primary) {
-    this.primary = primary;
+  public void setPrecedence(Boolean precedence) {
+    this.precedence = precedence;
   }
 }

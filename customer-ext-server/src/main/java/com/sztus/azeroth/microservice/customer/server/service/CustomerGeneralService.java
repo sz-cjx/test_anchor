@@ -20,6 +20,7 @@ import com.sztus.framework.component.core.util.EnumUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -168,7 +169,7 @@ public class CustomerGeneralService {
         Long customerId = bankAccount.getCustomerId();
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
-        sqlOption.whereEqual(DbKey.PRIMARY, 1);
+        sqlOption.whereEqual(DbKey.PRECEDENCE, 1);
         CustomerBankAccount bankAccountDb = customerReader.findByOptions(CustomerBankAccount.class, sqlOption.toString());
 
         String routingNo = bankAccount.getBankRoutingNo();
@@ -180,11 +181,6 @@ public class CustomerGeneralService {
             JSONObject bankInfoJSon = JSON.parseObject(response);
             bankAccount.setBankName(bankInfoJSon.getString("customer_name"));
 
-            if (bankInfoJSon.getInteger("code") != 200 && !profiles.contains("release")) {
-                bankAccount.setBankName("FIRST CITIZENS BANK");
-                bankAccount.setBankPhone("8883234732");
-            }
-
             String bankPhone = bankAccount.getBankPhone();
             if (StringUtils.isBlank(bankPhone)) {
                 String telephone = bankInfoJSon.getString("telephone");
@@ -192,18 +188,31 @@ public class CustomerGeneralService {
                     bankAccount.setBankPhone(telephone.replaceAll("[^\\d]", ""));
                 }
             }
+
+            if (bankInfoJSon.getInteger("code") != 200 && !profiles.contains("release")) {
+                bankAccount.setBankName("FIRST CITIZENS BANK");
+                bankAccount.setBankPhone("8883234732");
+            }
+
         }
 
-        if (Objects.isNull(bankAccountDb)
-                || (Objects.nonNull(bankAccount.getBankAccountNo()) && !Objects.equals(bankAccountDb.getBankAccountNo(), bankAccount.getBankAccountNo())
-                || (Objects.nonNull(bankAccount.getBankRoutingNo()) && !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo())))) {
+        Long result;
+
+        if (Objects.isNull(bankAccountDb)) {
             syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
             bankAccount.setCreatedAt(currentTimestamp);
+            bankAccount.setPrecedence(true);
+            result = customerWriter.saveEntity(bankAccount);
+        } else {
+            bankAccountDb.setBankPhone(bankAccount.getBankPhone());
+            bankAccountDb.setUpdatedAt(currentTimestamp);
+            bankAccountDb.setBankName(bankAccount.getBankName());
+            bankAccountDb.setBankAccountType(bankAccount.getBankAccountType());
+            bankAccountDb.setBankAccountNo(bankAccount.getBankAccountNo());
+            bankAccountDb.setBankRoutingNo(bankAccount.getBankRoutingNo());
+            bankAccountDb.setNote(bankAccount.getNote());
+            result = customerWriter.saveEntity(bankAccountDb);
         }
-
-        bankAccount.setUpdatedAt(currentTimestamp);
-
-        Long result = customerWriter.save(CustomerBankAccount.class, JSON.toJSONString(bankAccount));
         CustomerCheckUtil.checkSaveResult(result);
         return result;
     }

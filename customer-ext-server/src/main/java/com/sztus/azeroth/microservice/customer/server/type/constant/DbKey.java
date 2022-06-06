@@ -11,7 +11,7 @@ public interface DbKey {
 
     String PORTFOLIO_ID = "portfolio_id";
     String PHONE = "phone";
-    String PRIMARY = "primary";
+    String PRECEDENCE = "precedence";
 
     String ID = "id";
 
