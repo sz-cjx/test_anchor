@@ -34,11 +34,4 @@ public interface CustomerAction {
     String SAVE_CUSTOMER_CONTACT = "/general/contact/save";
     String BATCH_SAVE_CUSTOMER_CONTACT = "/general/contact/batch-save";
 
-    /**
-     * customer ibv
-     */
-    String SAVE_IBV_AUTHORIZATION = "/ibv-authorization/save";
-    String LIST_IBV_AUTHORIZATION = "/ibv-authorization/list";
-
-
 }

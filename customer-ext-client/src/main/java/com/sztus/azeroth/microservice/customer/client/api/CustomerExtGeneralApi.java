@@ -9,6 +9,7 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "microservice-customer-ext", path = "/v4", contextId = "customer-ext-api")
 public interface CustomerExtGeneralApi {
@@ -41,6 +42,11 @@ public interface CustomerExtGeneralApi {
     @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
     SaveBankAccountResponse saveBankAccount(
             @RequestBody SaveCustomerBankAccountRequest request
+    );
+
+    @GetMapping("/general/bank-account/get-by-precedence")
+    CustomerBankAccountDataView getBankByPrecedence(
+            @RequestParam("customerId") Long customerId
     );
 
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
@@ -93,12 +99,12 @@ public interface CustomerExtGeneralApi {
             @SpringQueryMap GetCustomerByConditionRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CREDIT_EVALUATION)
+    @GetMapping("/general/credit-evaluation/get")
     GetCreditEvaluationResponse getCreditEvaluation(
-            @SpringQueryMap GetCustomerRelatedRequest request
+            @RequestParam("customerId") Long customerId
     );
 
-    @PostMapping(CustomerAction.SAVE_CREDIT_EVALUATION)
+    @PostMapping("/general/credit-evaluation/save")
     void saveCreditEvaluation(
             @RequestBody SaveCreditEvaluationRequest request
     );
