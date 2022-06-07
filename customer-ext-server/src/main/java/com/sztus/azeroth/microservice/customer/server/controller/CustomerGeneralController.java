@@ -17,10 +17,7 @@ import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
@@ -87,7 +84,7 @@ public class CustomerGeneralController {
             @RequestBody SaveCustomerRequest request
     ) throws ProcedureException {
         JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
-        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveCustomerRequest.class);
+        request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerRequest.class);
         Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
         generalService.saveCustomer(customer);
 
@@ -109,7 +106,7 @@ public class CustomerGeneralController {
             @RequestBody SaveCustomerIdentityRequest request
     ) throws ProcedureException {
         JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
-        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveCustomerIdentityRequest.class);
+        request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerIdentityRequest.class);
         CustomerIdentityInfo identityInfo = CustomerConverter.INSTANCE.PersonalViewToPersonal(request);
 
         if (Objects.isNull(identityInfo.getCustomerId())) {
@@ -163,6 +160,14 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
+    @GetMapping("/general/bank-account/get-by-precedence")
+    public CustomerBankAccountDataView getBankByPrecedence(
+            @RequestParam("customerId") Long customerId
+    ) {
+        CustomerBankAccount dbBankAccountData = generalService.getBankByPrecedence(customerId);
+        return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
+    }
+
     @GetMapping(CustomerAction.GET_EMPLOYMENT)
     public GetCustomerEmploymentResponse getCustomerEmployment(
             GetCustomerRelatedRequest request
@@ -177,7 +182,7 @@ public class CustomerGeneralController {
             @RequestBody SaveCustomerEmploymentRequest request
     ) throws ProcedureException {
         JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
-        request = JSON.parseObject(JSON.toJSONString(pretreatment),SaveCustomerEmploymentRequest.class);
+        request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerEmploymentRequest.class);
 
         CustomerEmploymentInfo employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
         generalService.saveCustomerEmployment(employmentData);
