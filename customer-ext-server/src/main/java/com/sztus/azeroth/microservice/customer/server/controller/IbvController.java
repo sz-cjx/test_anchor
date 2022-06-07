@@ -21,7 +21,7 @@ public class IbvController {
     @Autowired
     private IbvService ibvService;
 
-    @PostMapping("/ibv/authorization-record")
+    @PostMapping("/ibv-authorization/save")
     public SaveIbvAuthorizationResponse saveIbvAuthorization(
             @RequestBody SaveIbvAuthorizationRequest request
     ) throws ProcedureException {
