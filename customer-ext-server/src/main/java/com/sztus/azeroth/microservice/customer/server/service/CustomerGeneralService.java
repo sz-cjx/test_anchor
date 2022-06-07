@@ -361,10 +361,10 @@ public class CustomerGeneralService {
         return contactData;
     }
 
-    public CustomerBankAccount getBankByPrecedence(Long customerId){
+    public CustomerBankAccount getBankByPrecedence(Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId).whereEqual(DbKey.PRECEDENCE,1);
-        return customerReader.findByOptions(CustomerBankAccount.class,sqlOption.toString());
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId).whereEqual(DbKey.PRECEDENCE, 1);
+        return customerReader.findByOptions(CustomerBankAccount.class, sqlOption.toString());
     }
 
     public <T> T getEntity(Class<T> tClass, Long id) throws ProcedureException {
