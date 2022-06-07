@@ -252,18 +252,18 @@ public class CustomerGeneralController {
         }
     }
 
-    @GetMapping(CustomerAction.GET_CREDIT_EVALUATION)
+
+    @GetMapping("/general/credit-evaluation/get")
     public GetCreditEvaluationResponse getCreditEvaluation(
-            GetCustomerRelatedRequest request
-    ) throws ProcedureException {
-        Long customerId = request.getCustomerId();
+            @RequestParam("customerId") Long customerId
+    )throws ProcedureException {
 
         CustomerCreditEvaluation creditEvaluation = generalService.getEntity(CustomerCreditEvaluation.class, customerId);
 
         return CustomerConverter.INSTANCE.CustomerCreditEvaluationToView(creditEvaluation);
     }
 
-    @PostMapping(CustomerAction.SAVE_CREDIT_EVALUATION)
+    @PostMapping("/general/credit-evaluation/save")
     public void saveCreditEvaluation(
             @RequestBody SaveCreditEvaluationRequest request
     ) throws ProcedureException {

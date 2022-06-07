@@ -99,12 +99,12 @@ public interface CustomerExtGeneralApi {
             @SpringQueryMap GetCustomerByConditionRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CREDIT_EVALUATION)
+    @GetMapping("/general/credit-evaluation/get")
     GetCreditEvaluationResponse getCreditEvaluation(
-            @SpringQueryMap GetCustomerRelatedRequest request
+            @RequestParam("customerId") Long customerId
     );
 
-    @PostMapping(CustomerAction.SAVE_CREDIT_EVALUATION)
+    @PostMapping("/general/credit-evaluation/save")
     void saveCreditEvaluation(
             @RequestBody SaveCreditEvaluationRequest request
     );
