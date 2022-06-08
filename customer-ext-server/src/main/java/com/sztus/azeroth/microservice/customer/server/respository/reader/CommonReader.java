@@ -41,19 +41,15 @@ public class CommonReader extends BaseJdbcReader {
     public <T> T getEntityWithDecrypt(Class<T> tClass, SqlOption sqlOption) {
 
         T entity = findByOptions(tClass, sqlOption.toString());
-
-        if (CustomerIdentityInfo.class.equals(tClass) || CustomerContactInfo.class.equals(tClass)) {
-            JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
-            if (!CollectionUtils.isEmpty(entityJson)) {
-                for (String field : CustomerEncryptedFieldUtil.getEncodeFieldList()) {
-                    if (entityJson.containsKey(field) && StringUtils.isNotEmpty(entityJson.getString(field))) {
-                        entityJson.put(field, EncryptUtil.AESDecode(entityJson.getString(field)));
-                    }
+        JSONObject entityJson = JSON.parseObject(JSON.toJSONString(entity));
+        if (!CollectionUtils.isEmpty(entityJson)) {
+            for (String field : CustomerEncryptedFieldUtil.getEncodeFieldList()) {
+                if (entityJson.containsKey(field) && StringUtils.isNotEmpty(entityJson.getString(field))) {
+                    entityJson.put(field, EncryptUtil.AESDecode(entityJson.getString(field)));
                 }
             }
-            entity = JSONObject.parseObject(JSON.toJSONString(entityJson), tClass);
         }
-
+        entity = JSONObject.parseObject(JSON.toJSONString(entityJson), tClass);
         return entity;
     }
 

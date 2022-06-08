@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
+import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CustomerReader;
@@ -15,6 +16,7 @@ import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.azeroth.microservice.customer.server.util.HttpClientUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
+import com.sztus.framework.component.core.util.CryptUtil;
 import com.sztus.framework.component.core.util.DateUtil;
 import com.sztus.framework.component.core.util.EnumUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
@@ -108,7 +110,9 @@ public class CustomerGeneralService {
     public Long saveCustomerPersonal(CustomerIdentityInfo personalData) throws ProcedureException {
         Long customerId = personalData.getCustomerId();
         String ssn = personalData.getSsn();
-        CustomerIdentityInfo identityInfoDb = commonReader.getEntityByCustomerId(CustomerIdentityInfo.class, customerId);
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId);
+        CustomerIdentityInfo identityInfoDb = commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class, sqlOption);
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(identityInfoDb)) {
             personalData.setCreatedAt(currentTimestamp);
@@ -120,7 +124,7 @@ public class CustomerGeneralService {
         }
 
         personalData.setUpdatedAt(currentTimestamp);
-        return customerWriter.save(CustomerIdentityInfo.class, JSON.toJSONString(personalData));
+        return commonWriter.saveEncodeEntity(CustomerIdentityInfo.class, JSON.toJSONString(personalData));
     }
 
     public void saveCustomerEmployment(CustomerEmploymentInfo customerEmploymentInfo) throws ProcedureException {
@@ -202,9 +206,11 @@ public class CustomerGeneralService {
             syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
             bankAccount.setCreatedAt(currentTimestamp);
             bankAccount.setPrecedence(true);
+            bankAccount.setBankAccountNo(EncryptUtil.AESEncode(bankAccount.getBankAccountNo()));
             result = customerWriter.saveEntity(bankAccount);
         } else {
-            if (!Objects.equals(bankAccountDb.getBankAccountNo(), bankAccount.getBankAccountNo())
+            String bankAccountNo = EncryptUtil.AESDecode(bankAccountDb.getBankAccountNo());
+            if (!Objects.equals(bankAccountNo, bankAccount.getBankAccountNo())
                     || !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo())
             ) {
                 syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
@@ -213,7 +219,7 @@ public class CustomerGeneralService {
             bankAccountDb.setUpdatedAt(currentTimestamp);
             bankAccountDb.setBankName(bankAccount.getBankName());
             bankAccountDb.setBankAccountType(bankAccount.getBankAccountType());
-            bankAccountDb.setBankAccountNo(bankAccount.getBankAccountNo());
+            bankAccountDb.setBankAccountNo(EncryptUtil.AESEncode(bankAccount.getBankAccountNo()));
             bankAccountDb.setBankRoutingNo(bankAccount.getBankRoutingNo());
             bankAccountDb.setNote(bankAccount.getNote());
             result = customerWriter.saveEntity(bankAccountDb);
@@ -233,6 +239,7 @@ public class CustomerGeneralService {
 
         Integer contactType = contactData.getType();
         String value = contactData.getValue();
+
         Long customerId = contactData.getCustomerId();
         boolean isUnique = checkContactData(contactType, value, customerId);
         if (isUnique) {
@@ -250,11 +257,12 @@ public class CustomerGeneralService {
             contactData.setCreatedAt(currentTimestamp);
         }
         contactData.setUpdatedAt(currentTimestamp);
-
+        contactData.setValue(EncryptUtil.AESEncode(contactData.getValue()));
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
 
         if (StringUtils.isNotBlank(value)) {
+            //todo： customer表同时对email 和 phone 进行加密
             Customer customer = getCustomerByCustomerId(customerId);
 
             if (Objects.isNull(customer)) {
@@ -307,7 +315,7 @@ public class CustomerGeneralService {
         if (StringUtils.isBlank(ssn)) {
             CustomerIdentityInfo identityInfo = commonReader.getEntityByCustomerId(CustomerIdentityInfo.class, customerId);
             if (Objects.nonNull(identityInfo)) {
-                ssn = identityInfo.getSsn();
+                ssn = EncryptUtil.AESDecode(identityInfo.getSsn());
             }
         }
 
@@ -315,7 +323,7 @@ public class CustomerGeneralService {
             CustomerBankAccount bankAccount = commonReader.getEntityByCustomerId(CustomerBankAccount.class, customerId);
             if (Objects.nonNull(bankAccount)) {
                 routingNo = bankAccount.getBankRoutingNo();
-                accountNo = bankAccount.getBankRoutingNo();
+                accountNo = EncryptUtil.AESDecode(bankAccount.getBankAccountNo());
             }
         }
 
@@ -388,5 +396,11 @@ public class CustomerGeneralService {
         creditEvaluation.setUpdatedAt(DateUtil.getCurrentTimestamp());
         Long result = commonWriter.saveEntity(creditEvaluation);
         CustomerCheckUtil.checkSaveResult(result);
+    }
+
+    public CustomerIdentityInfo getCustomerPersonalData(Long customerId){
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId);
+        return commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class,sqlOption);
     }
 }

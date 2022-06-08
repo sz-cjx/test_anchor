@@ -107,4 +107,10 @@ public class EncryptUtil {
 
         return null;
     }
+
+    public static void main(String[] args) {
+        String ssn = "beal@sztus.com";
+        System.out.println(AESEncode(ssn).length());
+        System.out.println(AESEncode(ssn));
+    }
 }

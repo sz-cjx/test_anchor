@@ -6,6 +6,7 @@ import com.sztus.azeroth.microservice.customer.client.object.constant.CustomerAc
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.*;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.*;
+import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerContactInfoView;
 import com.sztus.azeroth.microservice.customer.server.converter.CustomerContactDataConverter;
@@ -97,7 +98,7 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
 
-        CustomerIdentityInfo customerIdentityInfo = generalService.getEntity(CustomerIdentityInfo.class, customerId);
+        CustomerIdentityInfo customerIdentityInfo = generalService.getCustomerPersonalData(customerId);
         return CustomerConverter.INSTANCE.PersonalToPersonalView(customerIdentityInfo);
     }
 
@@ -127,6 +128,9 @@ public class CustomerGeneralController {
 
         List<CustomerBankAccount> bankAccountDataList = generalService.listBankAccountByCustomerId(customerId);
         List<CustomerBankAccountDataView> items = CustomerConverter.INSTANCE.BankAccountListToViewList(bankAccountDataList);
+        for (CustomerBankAccountDataView item : items) {
+            item.setBankAccountNo(EncryptUtil.AESDecode(item.getBankAccountNo()));
+        }
         ListBankAccountResponse response = new ListBankAccountResponse();
         response.setCount(items.size());
         response.setItems(items);
@@ -157,6 +161,9 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         Long id = request.getId();
         CustomerBankAccount dbBankAccountData = generalService.getEntity(CustomerBankAccount.class, id);
+        if (Objects.nonNull(dbBankAccountData)){
+            dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
+        }
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
@@ -165,6 +172,9 @@ public class CustomerGeneralController {
             @RequestParam("customerId") Long customerId
     ) {
         CustomerBankAccount dbBankAccountData = generalService.getBankByPrecedence(customerId);
+        if (Objects.nonNull(dbBankAccountData)){
+            dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
+        }
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
@@ -222,6 +232,12 @@ public class CustomerGeneralController {
         List<CustomerContactInfoView> viewList =
                 CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(list);
 
+        for (CustomerContactInfoView customerContactInfoView : viewList) {
+            if (StringUtils.isNotBlank(customerContactInfoView.getValue())){
+                customerContactInfoView.setValue(EncryptUtil.AESDecode(customerContactInfoView.getValue()));
+            }
+        }
+
         ListCustomerContactResponse response = new ListCustomerContactResponse();
         response.setList(viewList);
 
@@ -256,7 +272,7 @@ public class CustomerGeneralController {
     @GetMapping("/general/credit-evaluation/get")
     public GetCreditEvaluationResponse getCreditEvaluation(
             @RequestParam("customerId") Long customerId
-    )throws ProcedureException {
+    ) throws ProcedureException {
 
         CustomerCreditEvaluation creditEvaluation = generalService.getEntity(CustomerCreditEvaluation.class, customerId);
 
@@ -284,6 +300,10 @@ public class CustomerGeneralController {
         Integer type = request.getType();
 
         CustomerContactInfo customerContactData = generalService.getCustomerContactData(customerId, type);
+        //联系方式解密
+        if (Objects.nonNull(customerContactData)){
+            customerContactData.setValue(EncryptUtil.AESDecode(customerContactData.getValue()));
+        }
         return CustomerContactDataConverter.INSTANCE.CustomerContactDataToView(customerContactData);
     }
 
