@@ -69,6 +69,7 @@ public class CustomerGeneralController {
                         || StringUtils.isNotBlank(accountNo)
         )) {
             CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo);
+            //todo 是openid还是上面的结果
             customer = generalService.getCustomerByUniqueCode(openId);
         }
 

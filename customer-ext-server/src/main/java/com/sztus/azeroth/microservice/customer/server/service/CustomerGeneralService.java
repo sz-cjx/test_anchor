@@ -238,6 +238,7 @@ public class CustomerGeneralService {
         }
 
         Integer contactType = contactData.getType();
+        //todo 加密
         String value = contactData.getValue();
 
         Long customerId = contactData.getCustomerId();
