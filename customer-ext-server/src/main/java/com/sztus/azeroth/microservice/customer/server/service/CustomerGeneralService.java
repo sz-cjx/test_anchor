@@ -15,9 +15,9 @@ import com.sztus.azeroth.microservice.customer.server.type.enumeration.CustomerC
 import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.azeroth.microservice.customer.server.util.HttpClientUtil;
+import com.sztus.framework.component.core.constant.StatusConst;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.core.util.DateUtil;
-import com.sztus.framework.component.core.util.EnumUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
@@ -109,7 +109,7 @@ public class CustomerGeneralService {
         Long customerId = personalData.getCustomerId();
         String ssn = personalData.getSsn();
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId);
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
         CustomerIdentityInfo identityInfoDb = commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class, sqlOption);
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(identityInfoDb)) {
@@ -230,7 +230,7 @@ public class CustomerGeneralService {
         return customerReader.findAllByOptions(CustomerContactInfo.class, SqlOption.getInstance().whereEqual(DbKey.CUSTOMER_ID, customerId).toString());
     }
 
-    public void saveCustomerContactData(CustomerContactInfo contactData) throws ProcedureException {
+    public void saveCustomerContactData(CustomerContactInfo contactData, Boolean isVerified) throws ProcedureException {
         if (Objects.isNull(contactData) || Objects.isNull(contactData.getCustomerId()) || Objects.isNull(contactData.getType())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
@@ -239,9 +239,11 @@ public class CustomerGeneralService {
         String value = EncryptUtil.AESEncode(contactData.getValue());
 
         Long customerId = contactData.getCustomerId();
-        boolean isUnique = checkContactData(contactType, value, customerId);
-        if (isUnique) {
-            throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_EXISTED);
+        if (Objects.nonNull(isVerified) && isVerified ) {
+            boolean isUnique = checkContactData(contactType, value, customerId);
+            if (isUnique) {
+                throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_EXISTED);
+            }
         }
 
         contactData = formatContactInfo(contactData);
@@ -256,6 +258,11 @@ public class CustomerGeneralService {
         }
         contactData.setUpdatedAt(currentTimestamp);
         contactData.setValue(value);
+        if (isVerified) {
+            contactData.setVerifiedStatus(StatusConst.ENABLED);
+        } else {
+            contactData.setVerifiedStatus(StatusConst.DISABLED);
+        }
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
     }
@@ -265,6 +272,7 @@ public class CustomerGeneralService {
         if (CustomerContactTypeEnum.CELL_PHONE.getValue().equals(contactType) || CustomerContactTypeEnum.EMAIL.getValue().equals(contactType)) {
             sqlOption.whereEqual(DbKey.VALUE, contactInfo);
             sqlOption.whereNotEqual(DbKey.CUSTOMER_ID, customerId);
+            sqlOption.whereEqual(DbKey.VERIFIED_STATUS, StatusConst.ENABLED);
             CustomerContactInfo contactInfoDb = commonReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
             return Objects.nonNull(contactInfoDb);
         } else {
@@ -370,9 +378,9 @@ public class CustomerGeneralService {
         CustomerCheckUtil.checkSaveResult(result);
     }
 
-    public CustomerIdentityInfo getCustomerPersonalData(Long customerId){
+    public CustomerIdentityInfo getCustomerPersonalData(Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId);
-        return commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class,sqlOption);
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        return commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class, sqlOption);
     }
 }
