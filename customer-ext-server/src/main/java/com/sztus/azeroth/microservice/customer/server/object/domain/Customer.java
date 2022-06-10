@@ -30,12 +30,6 @@ public class Customer {
   @Column
   private String uniqueCode;
 
-  @Column
-  private String email;
-
-  @Column
-  private String phone;
-
   public Long getId() {
     return id;
   }
@@ -82,21 +76,5 @@ public class Customer {
 
   public void setUniqueCode(String uniqueCode) {
     this.uniqueCode = uniqueCode;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
   }
 }

@@ -16,13 +16,11 @@ import com.sztus.azeroth.microservice.customer.server.util.CustomerCheckUtil;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.azeroth.microservice.customer.server.util.HttpClientUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
-import com.sztus.framework.component.core.util.CryptUtil;
 import com.sztus.framework.component.core.util.DateUtil;
 import com.sztus.framework.component.core.util.EnumUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -238,8 +236,7 @@ public class CustomerGeneralService {
         }
 
         Integer contactType = contactData.getType();
-        //todo 加密
-        String value = contactData.getValue();
+        String value = EncryptUtil.AESEncode(contactData.getValue());
 
         Long customerId = contactData.getCustomerId();
         boolean isUnique = checkContactData(contactType, value, customerId);
@@ -258,35 +255,9 @@ public class CustomerGeneralService {
             contactData.setCreatedAt(currentTimestamp);
         }
         contactData.setUpdatedAt(currentTimestamp);
-        contactData.setValue(EncryptUtil.AESEncode(contactData.getValue()));
+        contactData.setValue(value);
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
-
-        if (StringUtils.isNotBlank(value)) {
-            //todo： customer表同时对email 和 phone 进行加密
-            Customer customer = getCustomerByCustomerId(customerId);
-
-            if (Objects.isNull(customer)) {
-                throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
-            }
-
-            CustomerContactTypeEnum customerContactTypeEnum = EnumUtil.getByValue(CustomerContactTypeEnum.class, contactType);
-            switch (customerContactTypeEnum) {
-                case EMAIL: {
-                    customer.setEmail(value);
-                    saveCustomer(customer);
-                    break;
-                }
-                case CELL_PHONE: {
-                    customer.setPhone(value);
-                    saveCustomer(customer);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-
     }
 
     private boolean checkContactData(Integer contactType, String contactInfo, Long customerId) {
