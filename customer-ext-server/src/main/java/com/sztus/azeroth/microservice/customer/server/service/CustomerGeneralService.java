@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
+import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CustomerReader;
@@ -20,7 +21,6 @@ import com.sztus.framework.component.core.util.EnumUtil;
 import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -108,7 +108,9 @@ public class CustomerGeneralService {
     public Long saveCustomerPersonal(CustomerIdentityInfo personalData) throws ProcedureException {
         Long customerId = personalData.getCustomerId();
         String ssn = personalData.getSsn();
-        CustomerIdentityInfo identityInfoDb = commonReader.getEntityByCustomerId(CustomerIdentityInfo.class, customerId);
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId);
+        CustomerIdentityInfo identityInfoDb = commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class, sqlOption);
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(identityInfoDb)) {
             personalData.setCreatedAt(currentTimestamp);
@@ -120,7 +122,7 @@ public class CustomerGeneralService {
         }
 
         personalData.setUpdatedAt(currentTimestamp);
-        return customerWriter.save(CustomerIdentityInfo.class, JSON.toJSONString(personalData));
+        return commonWriter.saveEncodeEntity(CustomerIdentityInfo.class, JSON.toJSONString(personalData));
     }
 
     public void saveCustomerEmployment(CustomerEmploymentInfo customerEmploymentInfo) throws ProcedureException {
@@ -202,9 +204,11 @@ public class CustomerGeneralService {
             syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
             bankAccount.setCreatedAt(currentTimestamp);
             bankAccount.setPrecedence(true);
+            bankAccount.setBankAccountNo(EncryptUtil.AESEncode(bankAccount.getBankAccountNo()));
             result = customerWriter.saveEntity(bankAccount);
         } else {
-            if (!Objects.equals(bankAccountDb.getBankAccountNo(), bankAccount.getBankAccountNo())
+            String bankAccountNo = EncryptUtil.AESDecode(bankAccountDb.getBankAccountNo());
+            if (!Objects.equals(bankAccountNo, bankAccount.getBankAccountNo())
                     || !Objects.equals(bankAccountDb.getBankRoutingNo(), bankAccount.getBankRoutingNo())
             ) {
                 syncCustomerUniqueCode(customerId, null, bankAccount.getBankRoutingNo(), bankAccount.getBankAccountNo());
@@ -213,7 +217,7 @@ public class CustomerGeneralService {
             bankAccountDb.setUpdatedAt(currentTimestamp);
             bankAccountDb.setBankName(bankAccount.getBankName());
             bankAccountDb.setBankAccountType(bankAccount.getBankAccountType());
-            bankAccountDb.setBankAccountNo(bankAccount.getBankAccountNo());
+            bankAccountDb.setBankAccountNo(EncryptUtil.AESEncode(bankAccount.getBankAccountNo()));
             bankAccountDb.setBankRoutingNo(bankAccount.getBankRoutingNo());
             bankAccountDb.setNote(bankAccount.getNote());
             result = customerWriter.saveEntity(bankAccountDb);
@@ -232,7 +236,8 @@ public class CustomerGeneralService {
         }
 
         Integer contactType = contactData.getType();
-        String value = contactData.getValue();
+        String value = EncryptUtil.AESEncode(contactData.getValue());
+
         Long customerId = contactData.getCustomerId();
         boolean isUnique = checkContactData(contactType, value, customerId);
         if (isUnique) {
@@ -250,34 +255,9 @@ public class CustomerGeneralService {
             contactData.setCreatedAt(currentTimestamp);
         }
         contactData.setUpdatedAt(currentTimestamp);
-
+        contactData.setValue(value);
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
-
-        if (StringUtils.isNotBlank(value)) {
-            Customer customer = getCustomerByCustomerId(customerId);
-
-            if (Objects.isNull(customer)) {
-                throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_NOT_EXISTED);
-            }
-
-            CustomerContactTypeEnum customerContactTypeEnum = EnumUtil.getByValue(CustomerContactTypeEnum.class, contactType);
-            switch (customerContactTypeEnum) {
-                case EMAIL: {
-                    customer.setEmail(value);
-                    saveCustomer(customer);
-                    break;
-                }
-                case CELL_PHONE: {
-                    customer.setPhone(value);
-                    saveCustomer(customer);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-
     }
 
     private boolean checkContactData(Integer contactType, String contactInfo, Long customerId) {
@@ -307,7 +287,7 @@ public class CustomerGeneralService {
         if (StringUtils.isBlank(ssn)) {
             CustomerIdentityInfo identityInfo = commonReader.getEntityByCustomerId(CustomerIdentityInfo.class, customerId);
             if (Objects.nonNull(identityInfo)) {
-                ssn = identityInfo.getSsn();
+                ssn = EncryptUtil.AESDecode(identityInfo.getSsn());
             }
         }
 
@@ -315,7 +295,7 @@ public class CustomerGeneralService {
             CustomerBankAccount bankAccount = commonReader.getEntityByCustomerId(CustomerBankAccount.class, customerId);
             if (Objects.nonNull(bankAccount)) {
                 routingNo = bankAccount.getBankRoutingNo();
-                accountNo = bankAccount.getBankRoutingNo();
+                accountNo = EncryptUtil.AESDecode(bankAccount.getBankAccountNo());
             }
         }
 
@@ -388,5 +368,11 @@ public class CustomerGeneralService {
         creditEvaluation.setUpdatedAt(DateUtil.getCurrentTimestamp());
         Long result = commonWriter.saveEntity(creditEvaluation);
         CustomerCheckUtil.checkSaveResult(result);
+    }
+
+    public CustomerIdentityInfo getCustomerPersonalData(Long customerId){
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID,customerId);
+        return commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class,sqlOption);
     }
 }

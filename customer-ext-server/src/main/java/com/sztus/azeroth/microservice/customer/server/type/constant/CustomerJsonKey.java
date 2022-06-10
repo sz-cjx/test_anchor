@@ -1,9 +1,13 @@
 package com.sztus.azeroth.microservice.customer.server.type.constant;
 
 public interface CustomerJsonKey {
+    String ADDRESS = "address";
+    String ADDRESS_TWO = "addressTwo";
+
     String BANK_ACCOUNT_NO = "bankAccountNo";
 
     String BANK_PHONE = "bankPhone";
+    String BIRTHDAY = "birthday";
 
     String BANK_ROUTING_NO = "bankRoutingNo";
 
@@ -22,4 +26,6 @@ public interface CustomerJsonKey {
 
     String SSN = "ssn";
     String SUPERVISOR_Phone = "supervisorPhone";
+
+    String VALUE = "value";
 }
