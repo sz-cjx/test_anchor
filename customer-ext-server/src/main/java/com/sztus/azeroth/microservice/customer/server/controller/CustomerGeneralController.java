@@ -162,7 +162,7 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         Long id = request.getId();
         CustomerBankAccount dbBankAccountData = generalService.getEntity(CustomerBankAccount.class, id);
-        if (Objects.nonNull(dbBankAccountData)){
+        if (Objects.nonNull(dbBankAccountData)) {
             dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
         }
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
@@ -173,7 +173,7 @@ public class CustomerGeneralController {
             @RequestParam("customerId") Long customerId
     ) {
         CustomerBankAccount dbBankAccountData = generalService.getBankByPrecedence(customerId);
-        if (Objects.nonNull(dbBankAccountData)){
+        if (Objects.nonNull(dbBankAccountData)) {
             dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
         }
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
@@ -234,7 +234,7 @@ public class CustomerGeneralController {
                 CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(list);
 
         for (CustomerContactInfoView customerContactInfoView : viewList) {
-            if (StringUtils.isNotBlank(customerContactInfoView.getValue())){
+            if (StringUtils.isNotBlank(customerContactInfoView.getValue())) {
                 customerContactInfoView.setValue(EncryptUtil.AESDecode(customerContactInfoView.getValue()));
             }
         }
@@ -251,7 +251,7 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         CustomerContactInfo customerContactInfo = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
-        generalService.saveCustomerContactData(customerContactInfo);
+        generalService.saveCustomerContactData(customerContactInfo, request.getVerified());
     }
 
     @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
@@ -262,10 +262,11 @@ public class CustomerGeneralController {
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
+        Boolean isVerified = request.getVerified();
         List<CustomerContactInfo> customerContactList = CustomerContactDataConverter.INSTANCE.ListCustomerContactViewToDate(list);
 
         for (CustomerContactInfo customerContactInfo : customerContactList) {
-            generalService.saveCustomerContactData(customerContactInfo);
+            generalService.saveCustomerContactData(customerContactInfo, isVerified);
         }
     }
 
@@ -302,7 +303,7 @@ public class CustomerGeneralController {
 
         CustomerContactInfo customerContactData = generalService.getCustomerContactData(customerId, type);
         //联系方式解密
-        if (Objects.nonNull(customerContactData)){
+        if (Objects.nonNull(customerContactData)) {
             customerContactData.setValue(EncryptUtil.AESDecode(customerContactData.getValue()));
         }
         return CustomerContactDataConverter.INSTANCE.CustomerContactDataToView(customerContactData);

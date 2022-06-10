@@ -23,6 +23,7 @@ public interface DbKey {
     String USERNAME = "username";
 
     String VALUE = "value";
+    String VERIFIED_STATUS = "verified_status";
 
     String SSN = "ssn";
 
