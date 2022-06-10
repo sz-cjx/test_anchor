@@ -336,4 +336,45 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusAccountToSaveCusEmploymentResponse(customerAccount);
     }
 
+    @PostMapping("/customer/profiles")
+    public void saveCustomerProfiles(
+            @RequestBody SaveCustomerProfilesRequest request
+    ) throws ProcedureException, ParseException {
+        Long customerId = request.getCustomerId();
+
+        SaveCustomerBankAccountRequest bankAccount = request.getBankAccount();
+        if (Objects.nonNull(bankAccount)) {
+            bankAccount.setCustomerId(customerId);
+            saveBankAccount(bankAccount);
+        }
+
+        SaveCustomerEmploymentRequest employment = request.getEmployment();
+        if (Objects.nonNull(employment)) {
+            employment.setCustomerId(customerId);
+            saveCustomerEmployment(employment);
+        }
+
+        SaveCustomerIdentityRequest identity = request.getIdentity();
+        if (Objects.nonNull(identity)) {
+            identity.setCustomerId(customerId);
+            saveCustomerIdentity(identity);
+        }
+
+        SaveCustomerPayrollRequest payroll = request.getPayroll();
+        if (Objects.nonNull(payroll)) {
+            payroll.setCustomerId(customerId);
+            saveCustomerPayroll(payroll);
+        }
+
+        BatchSaveContactRequest contactInfo = request.getContactInfo();
+        if (Objects.nonNull(contactInfo)) {
+            List<CustomerContactInfoView> list = contactInfo.getList();
+            for (CustomerContactInfoView view : list) {
+                view.setCustomerId(customerId);
+            }
+            contactInfo.setList(list);
+            batchSaveCustomerContact(contactInfo);
+        }
+    }
+
 }

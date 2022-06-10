@@ -119,4 +119,9 @@ public interface CustomerExtGeneralApi {
             @RequestBody SaveCustomerAccountRequest request
     );
 
+    @PostMapping("/customer/profiles")
+    void saveCustomerProfiles(
+            @RequestBody SaveCustomerProfilesRequest request
+    );
+
 }
