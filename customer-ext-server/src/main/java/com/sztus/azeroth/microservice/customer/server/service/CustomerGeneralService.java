@@ -237,12 +237,12 @@ public class CustomerGeneralService {
 
         Integer contactType = contactData.getType();
         String value = EncryptUtil.AESEncode(contactData.getValue());
-
+        isVerified = Objects.nonNull(isVerified) ? isVerified : false;
         Long customerId = contactData.getCustomerId();
-        if (Objects.nonNull(isVerified) && isVerified ) {
-            boolean isUnique = checkContactData(contactType, value, customerId);
-            if (isUnique) {
-                throw new ProcedureException(CustomerErrorCode.CUSTOMER_IS_EXISTED);
+        if (isVerified) {
+            boolean isNotUnique = checkContactData(contactType, value, customerId);
+            if (isNotUnique) {
+                throw new ProcedureException(CustomerErrorCode.CONTACT_INFORMATION_USED);
             }
         }
 

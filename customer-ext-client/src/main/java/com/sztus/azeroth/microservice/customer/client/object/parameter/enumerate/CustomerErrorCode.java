@@ -10,7 +10,8 @@ public enum CustomerErrorCode implements BaseError {
     SSN_ALREADY_EXISTS(95090004,"ssn already exists"),
     CUSTOMER_IS_NOT_EXISTED(95090005,"customer is not existed"),
     UNKNOWN_CONTACT_TYPE (95090006,"unknown contact type"),
-    CUSTOMER_IS_EXISTED(95090007,"customer is existed")
+    CUSTOMER_IS_EXISTED(95090007,"customer is existed"),
+    CONTACT_INFORMATION_USED(95090008,"contact information has already been used")
     ;
 
     CustomerErrorCode(Integer code, String message) {
