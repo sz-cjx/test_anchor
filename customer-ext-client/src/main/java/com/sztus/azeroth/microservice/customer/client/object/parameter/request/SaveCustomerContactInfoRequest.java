@@ -5,11 +5,11 @@ import com.sztus.azeroth.microservice.customer.client.object.view.CustomerContac
 public class SaveCustomerContactInfoRequest extends CustomerContactInfoView {
     private Boolean isVerified;
 
-    public Boolean getVerified() {
+    public Boolean getIsVerified() {
         return isVerified;
     }
 
-    public void setVerified(Boolean verified) {
+    public void setIsVerified(Boolean verified) {
         isVerified = verified;
     }
 }
