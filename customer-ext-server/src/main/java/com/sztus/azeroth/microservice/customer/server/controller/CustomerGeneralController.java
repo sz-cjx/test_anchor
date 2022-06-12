@@ -251,7 +251,7 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         CustomerContactInfo customerContactInfo = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
-        generalService.saveCustomerContactData(customerContactInfo, request.getVerified());
+        generalService.saveCustomerContactData(customerContactInfo, request.getIsVerified());
     }
 
     @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
@@ -262,7 +262,7 @@ public class CustomerGeneralController {
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
-        Boolean isVerified = request.getVerified();
+        Boolean isVerified = request.getIsVerified();
         List<CustomerContactInfo> customerContactList = CustomerContactDataConverter.INSTANCE.ListCustomerContactViewToDate(list);
 
         for (CustomerContactInfo customerContactInfo : customerContactList) {
