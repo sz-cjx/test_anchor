@@ -18,7 +18,15 @@ public class CustomerView {
     private String email;
 
     private String phone;
+    private Integer category;
 
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
 
     public Long getId() {
         return id;
