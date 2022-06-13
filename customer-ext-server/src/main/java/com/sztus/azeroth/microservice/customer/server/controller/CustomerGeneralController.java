@@ -35,7 +35,10 @@ public class CustomerGeneralController {
             GetCustomerRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        String contactInformation = request.getContactInformation().toLowerCase();
+        String contactInformation = request.getContactInformation();
+        if (Objects.nonNull(contactInformation)){
+            contactInformation  = contactInformation.toLowerCase();
+        }
         String openId = request.getOpenId();
         String ssn = request.getSsn();
         String routingNo = request.getRoutingNo();
