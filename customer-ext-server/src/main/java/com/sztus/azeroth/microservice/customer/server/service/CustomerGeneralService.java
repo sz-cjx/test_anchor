@@ -56,6 +56,7 @@ public class CustomerGeneralService {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.VALUE, EncryptUtil.AESEncode(contactInformation));
         sqlOption.whereIN(DbKey.TYPE, Lists.newArrayList(CustomerContactTypeEnum.CELL_PHONE.getValue(), CustomerContactTypeEnum.EMAIL.getValue()));
+        sqlOption.whereEqual(DbKey.VERIFIED_STATUS,StatusConst.ENABLED);
         return customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
     }
 
