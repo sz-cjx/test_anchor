@@ -234,6 +234,7 @@ public class CustomerGeneralService {
         if (Objects.isNull(contactData) || Objects.isNull(contactData.getCustomerId()) || Objects.isNull(contactData.getType())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
+        contactData = formatContactInfo(contactData);
 
         Integer contactType = contactData.getType();
         String value = EncryptUtil.AESEncode(contactData.getValue());
@@ -245,8 +246,6 @@ public class CustomerGeneralService {
                 throw new ProcedureException(CustomerErrorCode.CONTACT_INFORMATION_USED);
             }
         }
-
-        contactData = formatContactInfo(contactData);
 
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
