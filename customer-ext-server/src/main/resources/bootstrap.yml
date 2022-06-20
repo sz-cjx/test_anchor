@@ -34,3 +34,38 @@ szt:
     application-name: microservice-customer-ext
     namespace: AZE-8
     group: aze-8
+---
+spring:
+  config:
+    activate:
+      on-profile: feature-azeroth
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    application-name: microservice-customer-ext
+    namespace: feature-azeroth
+    group: feature-azeroth
+
+---
+spring:
+  config:
+    activate:
+      on-profile: feature-dalaran
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    application-name: microservice-customer-ext
+    namespace: feature-dalaran
+    group: feature-dalaran
+
+---
+spring:
+  config:
+    activate:
+      on-profile: feature-pandaria
+szt:
+  nacos:
+    addr: 47.108.72.215:8848
+    application-name: microservice-customer-ext
+    namespace: feature-pandaria
+    group: feature-pandaria
