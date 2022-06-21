@@ -10,6 +10,16 @@ public class BatchSaveContactRequest {
 
     private Boolean isVerified;
 
+    private Long portfolioId;
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
     public List<CustomerContactInfoView> getList() {
         return list;
     }
