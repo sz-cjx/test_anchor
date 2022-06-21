@@ -5,6 +5,16 @@ import com.sztus.azeroth.microservice.customer.client.object.view.CustomerContac
 public class SaveCustomerContactInfoRequest extends CustomerContactInfoView {
     private Boolean isVerified;
 
+    private Long portfolioId;
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
     public Boolean getIsVerified() {
         return isVerified;
     }
