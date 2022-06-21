@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class CustomerGeneralController {
@@ -381,4 +382,20 @@ public class CustomerGeneralController {
         }
     }
 
+    @PostMapping("/emulator/delete")
+    public void emulatorDelete(
+            @RequestBody EmulatorDeleteRequest request
+    ) {
+        String email = request.getEmail();
+        if (StringUtils.isBlank(email)) {
+            return;
+        }
+        List<CustomerContactInfo> list = generalService.listCustomerContact(email);
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+        List<Long> customerIds = list.stream().map(CustomerContactInfo::getCustomerId).collect(Collectors.toList());
+
+        generalService.deleteCustomerInformation(customerIds);
+    }
 }

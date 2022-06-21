@@ -6,10 +6,7 @@ import com.sztus.azeroth.microservice.customer.client.object.parameter.response.
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "microservice-customer-ext", path = "/v4", contextId = "customer-ext-api")
 public interface CustomerExtGeneralApi {
@@ -122,6 +119,11 @@ public interface CustomerExtGeneralApi {
     @PostMapping("/customer/profiles")
     void saveCustomerProfiles(
             @RequestBody SaveCustomerProfilesRequest request
+    );
+
+    @PostMapping("/emulator/delete")
+    void emulatorDeleteCustomer(
+            @RequestBody EmulatorDeleteRequest request
     );
 
 }
