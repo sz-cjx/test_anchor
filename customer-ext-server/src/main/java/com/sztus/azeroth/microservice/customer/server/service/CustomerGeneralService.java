@@ -18,7 +18,6 @@ import com.sztus.azeroth.microservice.customer.server.util.HttpClientUtil;
 import com.sztus.framework.component.core.constant.StatusConst;
 import com.sztus.framework.component.core.type.ProcedureException;
 import com.sztus.framework.component.core.util.DateUtil;
-import com.sztus.framework.component.core.util.UuidUtil;
 import com.sztus.framework.component.database.type.SqlOption;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,14 +82,15 @@ public class CustomerGeneralService {
         if (Objects.nonNull(customerDb)) {
             customer.setId(customerDb.getId());
             customer.setOpenId(customerDb.getOpenId());
-        } else {
-            // 校验username是否存在
-            CustomerAccount customerAccount = commonReader.getEntityByCustomerId(CustomerAccount.class, id);
-            if (Objects.nonNull(getCustomerByUsername(customerAccount.getUsername()))) {
-                throw new ProcedureException(CustomerErrorCode.FAILURE_ADD_CUSTOMER_USERNAME_HAS_EXISTS);
-            }
-            customer.setOpenId(UuidUtil.getUuid());
         }
+//        else {
+//            // 校验username是否存在
+//            CustomerAccount customerAccount = commonReader.getEntityByCustomerId(CustomerAccount.class, id);
+//            if (Objects.nonNull(getCustomerByUsername(customerAccount.getUsername()))) {
+//                throw new ProcedureException(CustomerErrorCode.FAILURE_ADD_CUSTOMER_USERNAME_HAS_EXISTS);
+//            }
+//            customer.setOpenId(UuidUtil.getUuid());
+//        }
 
         Long customerId = customerWriter.save(Customer.class, JSON.toJSONString(customer));
         CustomerCheckUtil.checkSaveResult(customerId);
@@ -382,5 +382,34 @@ public class CustomerGeneralService {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
         return commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class, sqlOption);
+    }
+
+    public List<CustomerContactInfo> listCustomerContact(String email) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.VALUE, EncryptUtil.AESEncode(email));
+        return commonReader.findAllByOptions(CustomerContactInfo.class, sqlOption.toString());
+    }
+
+    public void deleteCustomerInformation(List<Long> customerIds) {
+        if (profiles.contains("release")) {
+            return;
+        }
+        commonWriter.deleteByIdList(Customer.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerAccount.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerBankAccount.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerContactInfo.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerCreditEvaluation.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerEmploymentInfo.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerIbvAuthorizationRecord.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerIdentityInfo.class, customerIds);
+
+        commonWriter.deleteByIdList(CustomerPayrollInfo.class, customerIds);
     }
 }
