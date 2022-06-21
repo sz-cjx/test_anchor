@@ -11,10 +11,14 @@ import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.core.BaseJdbcWriter;
 import com.sztus.framework.component.database.kit.SqlBuilder;
 import com.sztus.framework.component.database.type.SqlOption;
+import com.sztus.framework.component.database.type.SqlTable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CommonWriter extends BaseJdbcWriter {
@@ -30,15 +34,35 @@ public class CommonWriter extends BaseJdbcWriter {
         return save(tClass, entityJson.toJSONString());
     }
 
-    public <T> Long deleteByLoanId(Class<T> tClass, Long loanId) {
+    public <T> Long deleteByCustomerId(Class<T> tClass, Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
         if (tClass.equals(Customer.class)) {
-            sqlOption.whereFormat(ConditionTypeConst.AND, "id = %d", loanId);
+            sqlOption.whereFormat(ConditionTypeConst.AND, "id = %d", customerId);
         } else {
-            sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = %d", loanId);
+            sqlOption.whereFormat(ConditionTypeConst.AND, "customer_id = %d", customerId);
         }
 
         return deleteByOptions(tClass, sqlOption.toString());
+    }
+
+    public <T> Integer deleteByIdList(Class<T> tClass, List<Long> deleteList) {
+        SqlTable sqlTable = SqlTable.getInstance(tClass);
+        StringBuffer sql = new StringBuffer();
+        sql.append("DELETE FROM " + sqlTable.getTableName());
+        if (tClass.equals(Customer.class)) {
+            sql.append(" WHERE id IN (:deleteList) ");
+        } else {
+            sql.append(" WHERE customer_id IN (:deleteList) ");
+        }
+
+        Map<String, Object> paramMap = new HashMap<>(16);
+        paramMap.put("deleteList", deleteList);
+
+        return namedJdbcTemplate().update(
+                sql.toString(),
+                paramMap
+        );
+
     }
 
     public <E> Long batchSaveList(Class<E> entityClass, Collection<E> collection) {
