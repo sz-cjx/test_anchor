@@ -238,7 +238,12 @@ public class CustomerGeneralService {
         contactData = formatContactInfo(contactData);
 
         Integer contactType = contactData.getType();
-        String value = EncryptUtil.AESEncode(contactData.getValue());
+        String contactInformation = contactData.getValue();
+        if (Objects.equals(contactType, CustomerContactTypeEnum.EMAIL.getValue()) ||
+                Objects.equals(contactType, CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue())) {
+            contactInformation = contactInformation.toLowerCase();
+        }
+        String value = EncryptUtil.AESEncode(contactInformation);
         isVerified = Objects.nonNull(isVerified) ? isVerified : false;
         Long customerId = contactData.getCustomerId();
         if (isVerified) {
