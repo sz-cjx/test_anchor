@@ -268,9 +268,7 @@ public class CustomerGeneralService {
         if (isVerified) {
             contactData.setVerifiedStatus(StatusConst.ENABLED);
         } else {
-            if (Objects.nonNull(contactDataDb) && Objects.nonNull(contactDataDb.getVerifiedStatus())){
-                contactData.setVerifiedStatus(contactDataDb.getVerifiedStatus());
-            }else {
+            if (Objects.isNull(contactDataDb) || Objects.isNull(contactDataDb.getVerifiedStatus())){
                 contactData.setVerifiedStatus(StatusConst.DISABLED);
             }
         }
