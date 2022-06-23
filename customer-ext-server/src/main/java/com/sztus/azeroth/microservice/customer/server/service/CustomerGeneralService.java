@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
+import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.OptInValueConst;
 import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
@@ -259,6 +260,7 @@ public class CustomerGeneralService {
         CustomerContactInfo contactDataDb = customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(contactDataDb)) {
+            contactData.setOptionCombination(OptInValueConst.IS_MARKETING | OptInValueConst.IS_OPERATION);
             contactData.setCreatedAt(currentTimestamp);
         }
         contactData.setUpdatedAt(currentTimestamp);
