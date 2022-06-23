@@ -239,8 +239,8 @@ public class CustomerGeneralService {
 
         Integer contactType = contactData.getType();
         String contactInformation = contactData.getValue();
-        if (Objects.equals(contactType, CustomerContactTypeEnum.EMAIL.getValue()) ||
-                Objects.equals(contactType, CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue())) {
+        if ((Objects.equals(contactType, CustomerContactTypeEnum.EMAIL.getValue()) ||
+                Objects.equals(contactType, CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue())) && StringUtils.isNotBlank(contactInformation)) {
             contactInformation = contactInformation.toLowerCase();
         }
         String value = EncryptUtil.AESEncode(contactInformation);
