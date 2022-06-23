@@ -268,7 +268,11 @@ public class CustomerGeneralService {
         if (isVerified) {
             contactData.setVerifiedStatus(StatusConst.ENABLED);
         } else {
-            contactData.setVerifiedStatus(StatusConst.DISABLED);
+            if (Objects.nonNull(contactDataDb) && Objects.nonNull(contactDataDb.getVerifiedStatus())){
+                contactData.setVerifiedStatus(contactDataDb.getVerifiedStatus());
+            }else {
+                contactData.setVerifiedStatus(StatusConst.DISABLED);
+            }
         }
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
