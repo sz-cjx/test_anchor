@@ -55,8 +55,9 @@ public class CustomerUtil {
 
         for (String key : CustomerFeildKey.getLowerCaseList()){
             if (dataJson.containsKey(key)) {
-                if (Objects.nonNull(dataJson.getString(key))){
-                    dataJson.put(key,dataJson.getString(key).toLowerCase());
+                String value = dataJson.getString(key);
+                if (Objects.nonNull(value)){
+                    dataJson.put(key,value.substring(0,1).toUpperCase() + value.substring(1).toLowerCase());
                 }
             }
         }
