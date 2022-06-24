@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
+import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.OptInValueConst;
 import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
 import com.sztus.azeroth.microservice.customer.server.respository.reader.CommonReader;
@@ -238,7 +239,12 @@ public class CustomerGeneralService {
         contactData = formatContactInfo(contactData);
 
         Integer contactType = contactData.getType();
-        String value = EncryptUtil.AESEncode(contactData.getValue());
+        String contactInformation = contactData.getValue();
+        if ((Objects.equals(contactType, CustomerContactTypeEnum.EMAIL.getValue()) ||
+                Objects.equals(contactType, CustomerContactTypeEnum.ALTERNATIVE_EMAIL.getValue())) && StringUtils.isNotBlank(contactInformation)) {
+            contactInformation = contactInformation.toLowerCase();
+        }
+        String value = EncryptUtil.AESEncode(contactInformation);
         isVerified = Objects.nonNull(isVerified) ? isVerified : false;
         Long customerId = contactData.getCustomerId();
         if (isVerified) {
@@ -254,6 +260,7 @@ public class CustomerGeneralService {
         CustomerContactInfo contactDataDb = customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
         Long currentTimestamp = DateUtil.getCurrentTimestamp();
         if (Objects.isNull(contactDataDb)) {
+            contactData.setOptionCombination(OptInValueConst.IS_MARKETING | OptInValueConst.IS_OPERATION);
             contactData.setCreatedAt(currentTimestamp);
         }
         contactData.setUpdatedAt(currentTimestamp);
@@ -261,7 +268,9 @@ public class CustomerGeneralService {
         if (isVerified) {
             contactData.setVerifiedStatus(StatusConst.ENABLED);
         } else {
-            contactData.setVerifiedStatus(StatusConst.DISABLED);
+            if (Objects.isNull(contactDataDb) || Objects.isNull(contactDataDb.getVerifiedStatus())){
+                contactData.setVerifiedStatus(StatusConst.DISABLED);
+            }
         }
         Long result = commonWriter.saveEntity(contactData);
         CustomerCheckUtil.checkSaveResult(result);
