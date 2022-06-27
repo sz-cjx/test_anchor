@@ -165,7 +165,13 @@ public class CustomerGeneralController {
             GetBankAccountRequest request
     ) throws ProcedureException {
         Long id = request.getId();
-        CustomerBankAccount dbBankAccountData = generalService.getEntity(CustomerBankAccount.class, id);
+        Long customerId = request.getCustomerId();
+        CustomerBankAccount dbBankAccountData;
+        if (Objects.nonNull(id)) {
+            dbBankAccountData = generalService.getEntity(CustomerBankAccount.class, id);
+        } else {
+            dbBankAccountData = generalService.getCustomerBankAccountByCustomerId(customerId);
+        }
         if (Objects.nonNull(dbBankAccountData)) {
             dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
         }

@@ -393,6 +393,12 @@ public class CustomerGeneralService {
         return commonReader.getEntityWithDecrypt(CustomerIdentityInfo.class, sqlOption);
     }
 
+    public CustomerBankAccount getCustomerBankAccountByCustomerId(Long customerId) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        return commonReader.getEntityWithDecrypt(CustomerBankAccount.class, sqlOption);
+    }
+
     public List<CustomerContactInfo> listCustomerContact(String email) {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.VALUE, EncryptUtil.AESEncode(email));
