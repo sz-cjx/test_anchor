@@ -170,6 +170,7 @@ public class CustomerGeneralService {
     }
 
     public Long saveBankAccount(CustomerBankAccount bankAccount) throws ProcedureException {
+        bankAccount.setId(null);
         Long customerId = bankAccount.getCustomerId();
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
