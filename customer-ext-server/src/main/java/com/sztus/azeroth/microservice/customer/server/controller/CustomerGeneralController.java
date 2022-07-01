@@ -2,7 +2,6 @@ package com.sztus.azeroth.microservice.customer.server.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.sztus.azeroth.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.*;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.*;
@@ -31,14 +30,14 @@ public class CustomerGeneralController {
     @Autowired
     private CustomerGeneralService generalService;
 
-    @GetMapping(CustomerAction.GET_CUSTOMER)
+    @GetMapping("/general/customer/get")
     public GetCustomerResponse getCustomer(
             GetCustomerRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
         String contactInformation = request.getContactInformation();
-        if (Objects.nonNull(contactInformation)){
-            contactInformation  = contactInformation.toLowerCase();
+        if (Objects.nonNull(contactInformation)) {
+            contactInformation = contactInformation.toLowerCase();
         }
         String openId = request.getOpenId();
         String ssn = request.getSsn();
@@ -85,7 +84,7 @@ public class CustomerGeneralController {
 
     }
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER)
+    @PostMapping("/general/customer/save")
     public SaveCustomerResponse saveCustomer(
             @RequestBody SaveCustomerRequest request
     ) throws ProcedureException {
@@ -97,7 +96,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customer);
     }
 
-    @GetMapping(CustomerAction.GET_PERSONAL)
+    @GetMapping("/general/personal/get")
     public GetCustomerIdentityResponse getCustomerPersonalData(
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
@@ -107,7 +106,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.PersonalToPersonalView(customerIdentityInfo);
     }
 
-    @PostMapping(CustomerAction.SAVE_PERSONAL)
+    @PostMapping("/general/personal/save")
     public SaveCustomerIdentityResponse saveCustomerIdentity(
             @RequestBody SaveCustomerIdentityRequest request
     ) throws ProcedureException {
@@ -122,7 +121,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.PersonalDataToSaveResponse(identityInfo);
     }
 
-    @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
+    @GetMapping("/general/bank-account/list")
     public ListBankAccountResponse listBankAccount(
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
@@ -142,7 +141,7 @@ public class CustomerGeneralController {
         return response;
     }
 
-    @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
+    @PostMapping("/general/bank-account/save")
     public CustomerBankAccountDataView saveBankAccount(
             @RequestBody SaveCustomerBankAccountRequest request
     ) throws ProcedureException {
@@ -160,7 +159,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.BankAccountDataToView(bankAccountData);
     }
 
-    @GetMapping(CustomerAction.GET_BANK_ACCOUNT)
+    @GetMapping("/general/bank-account/get")
     public CustomerBankAccountDataView getBankAccount(
             GetBankAccountRequest request
     ) throws ProcedureException {
@@ -189,7 +188,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
 
-    @GetMapping(CustomerAction.GET_EMPLOYMENT)
+    @GetMapping("/general/employment/get")
     public GetCustomerEmploymentResponse getCustomerEmployment(
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
@@ -198,7 +197,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusEmploymentToView(employmentData);
     }
 
-    @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
+    @PostMapping("/general/employment/save")
     public SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
     ) throws ProcedureException {
@@ -211,7 +210,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusEmploymentToSaveCusEmploymentResponse(employmentData);
     }
 
-    @GetMapping(CustomerAction.GET_PAYROLL)
+    @GetMapping("/general/payroll/get")
     public GetCustomerPayrollResponse getCustomerPayroll(
             GetCustomerRelatedRequest request
     ) throws ProcedureException, ParseException {
@@ -220,7 +219,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusPayrollToView(payrollData);
     }
 
-    @PostMapping(CustomerAction.SAVE_PAYROLL)
+    @PostMapping("/general/payroll/save")
     public SaveCustomerPayrollResponse saveCustomerPayroll(
             @RequestBody SaveCustomerPayrollRequest request
     ) throws ProcedureException, ParseException {
@@ -230,7 +229,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusPayrollToSaveCusPayrollResponse(payrollData);
     }
 
-    @GetMapping(CustomerAction.LIST_CUSTOMER_CONTACT)
+    @GetMapping("/general/contact/list")
     public ListCustomerContactResponse listCustomerContact(
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
@@ -255,7 +254,7 @@ public class CustomerGeneralController {
         return response;
     }
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
+    @PostMapping("/general/contact/save")
     public void saveCustomerContactData(
             @RequestBody SaveCustomerContactInfoRequest request
     ) throws ProcedureException {
@@ -264,7 +263,7 @@ public class CustomerGeneralController {
         generalService.saveCustomerContactData(customerContactInfo, request.getIsVerified());
     }
 
-    @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
+    @PostMapping("/general/contact/batch-save")
     public void batchSaveCustomerContact(
             @RequestBody BatchSaveContactRequest request
     ) throws ProcedureException {
@@ -304,7 +303,7 @@ public class CustomerGeneralController {
         generalService.saveCreditEvaluation(customerCreditEvaluation);
     }
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
+    @GetMapping("/general/contact/get")
     public GetCustomerContactDataResponse getCustomerContactData(
             GetCustomerContactDataRequest request
     ) throws ProcedureException {
@@ -319,7 +318,7 @@ public class CustomerGeneralController {
         return CustomerContactDataConverter.INSTANCE.CustomerContactDataToView(customerContactData);
     }
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITION)
+    @GetMapping("/general/customer/get/condition")
     public GetCustomerByConditionResponse getCustomerByCondition(
             GetCustomerByConditionRequest request
     ) throws ProcedureException {
@@ -329,7 +328,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CustomerToGetCustomerByConditionResponse(customer);
     }
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_ACCOUNT)
+    @GetMapping("/general/customer-account/get")
     public GetCustomerAccountResponse getCustomerAccount(
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
@@ -338,7 +337,7 @@ public class CustomerGeneralController {
         return CustomerConverter.INSTANCE.CusAccountToView(customerAccount);
     }
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER_ACCOUNT)
+    @PostMapping("/general/customer-account/save")
     public SaveCustomerAccountResponse saveCustomerAccount(
             @RequestBody SaveCustomerAccountRequest request
     ) throws ProcedureException {
