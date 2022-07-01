@@ -8,10 +8,12 @@ import com.sztus.azeroth.microservice.customer.client.object.parameter.response.
 import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerContactInfoView;
+import com.sztus.azeroth.microservice.customer.client.object.view.IbvAuthorizationView;
 import com.sztus.azeroth.microservice.customer.server.converter.CustomerContactDataConverter;
 import com.sztus.azeroth.microservice.customer.server.converter.CustomerConverter;
+import com.sztus.azeroth.microservice.customer.server.converter.CustomerIbvAuthorizationConverter;
 import com.sztus.azeroth.microservice.customer.server.object.domain.*;
-import com.sztus.azeroth.microservice.customer.server.service.CustomerGeneralService;
+import com.sztus.azeroth.microservice.customer.server.service.CustomerInformationService;
 import com.sztus.azeroth.microservice.customer.server.util.CustomerUtil;
 import com.sztus.framework.component.core.type.ProcedureException;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +27,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-public class CustomerGeneralController {
+public class CustomerInformationController {
 
     @Autowired
-    private CustomerGeneralService generalService;
+    private CustomerInformationService informationService;
 
     @GetMapping("/general/customer/get")
     public GetCustomerResponse getCustomer(
@@ -52,18 +54,18 @@ public class CustomerGeneralController {
 
         Customer customer = null;
         if (Objects.nonNull(customerId)) {
-            customer = generalService.getCustomerByCustomerId(customerId);
+            customer = informationService.getCustomerByCustomerId(customerId);
         }
 
         if (Objects.isNull(customer) && StringUtils.isNotBlank(contactInformation)) {
-            CustomerContactInfo customerContactInfo = generalService.getCustomerContactByContact(contactInformation);
+            CustomerContactInfo customerContactInfo = informationService.getCustomerContactByContact(contactInformation);
             if (Objects.nonNull(customerContactInfo)) {
-                customer = generalService.getCustomerByCustomerId(customerContactInfo.getCustomerId());
+                customer = informationService.getCustomerByCustomerId(customerContactInfo.getCustomerId());
             }
         }
 
         if (Objects.isNull(customer) && StringUtils.isNotBlank(openId)) {
-            customer = generalService.getCustomerByOpenId(openId);
+            customer = informationService.getCustomerByOpenId(openId);
         }
 
         if (Objects.isNull(customer) && (
@@ -73,7 +75,7 @@ public class CustomerGeneralController {
         )) {
             CustomerUtil.generateUniqueCode(ssn, routingNo, accountNo);
             //todo 是openid还是上面的结果
-            customer = generalService.getCustomerByUniqueCode(openId);
+            customer = informationService.getCustomerByUniqueCode(openId);
         }
 
         if (Objects.isNull(customer)) {
@@ -91,7 +93,7 @@ public class CustomerGeneralController {
         JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
         request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerRequest.class);
         Customer customer = CustomerConverter.INSTANCE.CustomerViewToCustomer(request);
-        generalService.saveCustomer(customer);
+        informationService.saveCustomer(customer);
 
         return CustomerConverter.INSTANCE.CustomerToSaveCustomerResponse(customer);
     }
@@ -99,10 +101,10 @@ public class CustomerGeneralController {
     @GetMapping("/general/personal/get")
     public GetCustomerIdentityResponse getCustomerPersonalData(
             GetCustomerRelatedRequest request
-    ) throws ProcedureException {
+    ) {
         Long customerId = request.getCustomerId();
 
-        CustomerIdentityInfo customerIdentityInfo = generalService.getCustomerPersonalData(customerId);
+        CustomerIdentityInfo customerIdentityInfo = informationService.getCustomerPersonalData(customerId);
         return CustomerConverter.INSTANCE.PersonalToPersonalView(customerIdentityInfo);
     }
 
@@ -117,7 +119,7 @@ public class CustomerGeneralController {
         if (Objects.isNull(identityInfo.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
-        generalService.saveCustomerPersonal(identityInfo);
+        informationService.saveCustomerPersonal(identityInfo);
         return CustomerConverter.INSTANCE.PersonalDataToSaveResponse(identityInfo);
     }
 
@@ -130,7 +132,7 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        List<CustomerBankAccount> bankAccountDataList = generalService.listBankAccountByCustomerId(customerId);
+        List<CustomerBankAccount> bankAccountDataList = informationService.listBankAccountByCustomerId(customerId);
         List<CustomerBankAccountDataView> items = CustomerConverter.INSTANCE.BankAccountListToViewList(bankAccountDataList);
         for (CustomerBankAccountDataView item : items) {
             item.setBankAccountNo(EncryptUtil.AESDecode(item.getBankAccountNo()));
@@ -152,7 +154,7 @@ public class CustomerGeneralController {
         request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerBankAccountRequest.class);
 
         CustomerBankAccount bankAccountData = CustomerConverter.INSTANCE.ViewToBankAccountData(request);
-        Long result = generalService.saveBankAccount(bankAccountData);
+        Long result = informationService.saveBankAccount(bankAccountData);
         if (Objects.isNull(request.getId())) {
             bankAccountData.setId(result);
         }
@@ -167,9 +169,9 @@ public class CustomerGeneralController {
         Long customerId = request.getCustomerId();
         CustomerBankAccount dbBankAccountData;
         if (Objects.nonNull(id)) {
-            dbBankAccountData = generalService.getEntity(CustomerBankAccount.class, id);
+            dbBankAccountData = informationService.getEntity(CustomerBankAccount.class, id);
         } else {
-            dbBankAccountData = generalService.getCustomerBankAccountByCustomerId(customerId);
+            dbBankAccountData = informationService.getCustomerBankAccountByCustomerId(customerId);
         }
         if (Objects.nonNull(dbBankAccountData)) {
             dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
@@ -181,7 +183,7 @@ public class CustomerGeneralController {
     public CustomerBankAccountDataView getBankByPrecedence(
             @RequestParam("customerId") Long customerId
     ) {
-        CustomerBankAccount dbBankAccountData = generalService.getBankByPrecedence(customerId);
+        CustomerBankAccount dbBankAccountData = informationService.getBankByPrecedence(customerId);
         if (Objects.nonNull(dbBankAccountData)) {
             dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
         }
@@ -193,7 +195,7 @@ public class CustomerGeneralController {
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        CustomerEmploymentInfo employmentData = generalService.getEntity(CustomerEmploymentInfo.class, customerId);
+        CustomerEmploymentInfo employmentData = informationService.getEntity(CustomerEmploymentInfo.class, customerId);
         return CustomerConverter.INSTANCE.CusEmploymentToView(employmentData);
     }
 
@@ -205,7 +207,7 @@ public class CustomerGeneralController {
         request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerEmploymentRequest.class);
 
         CustomerEmploymentInfo employmentData = CustomerConverter.INSTANCE.CusEmploymentViewToData(request);
-        generalService.saveCustomerEmployment(employmentData);
+        informationService.saveCustomerEmployment(employmentData);
 
         return CustomerConverter.INSTANCE.CusEmploymentToSaveCusEmploymentResponse(employmentData);
     }
@@ -215,7 +217,7 @@ public class CustomerGeneralController {
             GetCustomerRelatedRequest request
     ) throws ProcedureException, ParseException {
         Long customerId = request.getCustomerId();
-        CustomerPayrollInfo payrollData = generalService.getEntity(CustomerPayrollInfo.class, customerId);
+        CustomerPayrollInfo payrollData = informationService.getEntity(CustomerPayrollInfo.class, customerId);
         return CustomerConverter.INSTANCE.CusPayrollToView(payrollData);
     }
 
@@ -224,7 +226,7 @@ public class CustomerGeneralController {
             @RequestBody SaveCustomerPayrollRequest request
     ) throws ProcedureException, ParseException {
         CustomerPayrollInfo payrollData = CustomerConverter.INSTANCE.CusPayrollViewToData(request);
-        generalService.saveCustomerPayroll(payrollData);
+        informationService.saveCustomerPayroll(payrollData);
 
         return CustomerConverter.INSTANCE.CusPayrollToSaveCusPayrollResponse(payrollData);
     }
@@ -238,7 +240,7 @@ public class CustomerGeneralController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        List<CustomerContactInfo> list = generalService.listCustomerContact(customerId);
+        List<CustomerContactInfo> list = informationService.listCustomerContact(customerId);
         List<CustomerContactInfoView> viewList =
                 CustomerContactDataConverter.INSTANCE.ListCustomerContactDataToView(list);
 
@@ -260,7 +262,7 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         CustomerContactInfo customerContactInfo = CustomerContactDataConverter.INSTANCE.CustomerContactViewToData(request);
 
-        generalService.saveCustomerContactData(customerContactInfo, request.getIsVerified());
+        informationService.saveCustomerContactData(customerContactInfo, request.getIsVerified());
     }
 
     @PostMapping("/general/contact/batch-save")
@@ -275,7 +277,7 @@ public class CustomerGeneralController {
         List<CustomerContactInfo> customerContactList = CustomerContactDataConverter.INSTANCE.ListCustomerContactViewToDate(list);
 
         for (CustomerContactInfo customerContactInfo : customerContactList) {
-            generalService.saveCustomerContactData(customerContactInfo, isVerified);
+            informationService.saveCustomerContactData(customerContactInfo, isVerified);
         }
     }
 
@@ -285,7 +287,7 @@ public class CustomerGeneralController {
             @RequestParam("customerId") Long customerId
     ) throws ProcedureException {
 
-        CustomerCreditEvaluation creditEvaluation = generalService.getEntity(CustomerCreditEvaluation.class, customerId);
+        CustomerCreditEvaluation creditEvaluation = informationService.getEntity(CustomerCreditEvaluation.class, customerId);
 
         return CustomerConverter.INSTANCE.CustomerCreditEvaluationToView(creditEvaluation);
     }
@@ -300,7 +302,7 @@ public class CustomerGeneralController {
         }
 
         CustomerCreditEvaluation customerCreditEvaluation = CustomerConverter.INSTANCE.CustomerCreditEvaluationViewToData(request);
-        generalService.saveCreditEvaluation(customerCreditEvaluation);
+        informationService.saveCreditEvaluation(customerCreditEvaluation);
     }
 
     @GetMapping("/general/contact/get")
@@ -310,7 +312,7 @@ public class CustomerGeneralController {
         Long customerId = request.getCustomerId();
         Integer type = request.getType();
 
-        CustomerContactInfo customerContactData = generalService.getCustomerContactData(customerId, type);
+        CustomerContactInfo customerContactData = informationService.getCustomerContactData(customerId, type);
         //联系方式解密
         if (Objects.nonNull(customerContactData)) {
             customerContactData.setValue(EncryptUtil.AESDecode(customerContactData.getValue()));
@@ -324,7 +326,7 @@ public class CustomerGeneralController {
     ) throws ProcedureException {
         String phone = request.getPhone();
         String email = request.getEmail();
-        Customer customer = generalService.getCustomerByCondition(phone, email);
+        Customer customer = informationService.getCustomerByCondition(phone, email);
         return CustomerConverter.INSTANCE.CustomerToGetCustomerByConditionResponse(customer);
     }
 
@@ -333,7 +335,7 @@ public class CustomerGeneralController {
             GetCustomerRelatedRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        CustomerAccount customerAccount = generalService.getEntity(CustomerAccount.class, customerId);
+        CustomerAccount customerAccount = informationService.getEntity(CustomerAccount.class, customerId);
         return CustomerConverter.INSTANCE.CusAccountToView(customerAccount);
     }
 
@@ -342,7 +344,7 @@ public class CustomerGeneralController {
             @RequestBody SaveCustomerAccountRequest request
     ) throws ProcedureException {
         CustomerAccount customerAccount = CustomerConverter.INSTANCE.CusAccountViewToData(request);
-        generalService.saveCustomerAccount(customerAccount);
+        informationService.saveCustomerAccount(customerAccount);
         return CustomerConverter.INSTANCE.CusAccountToSaveCusEmploymentResponse(customerAccount);
     }
 
@@ -395,12 +397,48 @@ public class CustomerGeneralController {
         if (StringUtils.isBlank(email)) {
             return;
         }
-        List<CustomerContactInfo> list = generalService.listCustomerContact(email);
+        List<CustomerContactInfo> list = informationService.listCustomerContact(email);
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
         List<Long> customerIds = list.stream().map(CustomerContactInfo::getCustomerId).collect(Collectors.toList());
 
-        generalService.deleteCustomerInformation(customerIds);
+        informationService.deleteCustomerInformation(customerIds);
+    }
+
+    @PostMapping("/ibv-authorization/save")
+    public SaveIbvAuthorizationResponse saveIbvAuthorization(
+            @RequestBody SaveIbvAuthorizationRequest request
+    ) throws ProcedureException {
+        Long customerId = request.getCustomerId();
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        CustomerIbvAuthorizationRecord ibvAuthorizationRecord = CustomerIbvAuthorizationConverter.INSTANCE.ibvRequestToData(request);
+        Long result = informationService.saveIbvAuthorization(ibvAuthorizationRecord);
+        if (result > 1) {
+            ibvAuthorizationRecord.setId(result);
+        }
+
+        return CustomerIbvAuthorizationConverter.INSTANCE.ibvViewToResponse(ibvAuthorizationRecord);
+    }
+
+    @GetMapping("/ibv-authorization/list")
+    public ListIbvAuthorizationResponse listIbvAuthorization(
+            @RequestParam(value = "customerId") Long customerId,
+            @RequestParam(value = "portfolioId", required = false) Long portfolioId
+    ) throws ProcedureException {
+        if (Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
+        List<CustomerIbvAuthorizationRecord> ibvAuthorizationRecords = informationService.listIbvAuthorization(customerId, portfolioId);
+        List<IbvAuthorizationView> ibvAuthorizationViews = CustomerIbvAuthorizationConverter.INSTANCE.ibvDataListToView(ibvAuthorizationRecords);
+
+        ListIbvAuthorizationResponse response = new ListIbvAuthorizationResponse();
+        response.setCount(ibvAuthorizationViews.size());
+        response.setItems(ibvAuthorizationViews);
+        return response;
     }
 }
