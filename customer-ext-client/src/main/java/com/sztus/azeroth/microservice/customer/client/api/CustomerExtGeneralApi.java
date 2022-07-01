@@ -1,42 +1,44 @@
 package com.sztus.azeroth.microservice.customer.client.api;
 
-import com.sztus.azeroth.microservice.customer.client.object.constant.CustomerAction;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.*;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.*;
 import com.sztus.azeroth.microservice.customer.client.object.view.CustomerBankAccountDataView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "microservice-customer-ext", path = "/v4", contextId = "customer-ext-api")
 public interface CustomerExtGeneralApi {
 
-    @GetMapping(CustomerAction.GET_CUSTOMER)
+    @GetMapping("/general/customer/get")
     GetCustomerResponse getCustomer(
             @SpringQueryMap GetCustomerRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER)
+    @PostMapping("/general/customer/save")
     SaveCustomerResponse saveCustomer(
             @RequestBody SaveCustomerRequest request
     );
 
-    @GetMapping(CustomerAction.GET_PERSONAL)
+    @GetMapping("/general/personal/get")
     GetCustomerIdentityResponse getCustomerPersonalData(
             @SpringQueryMap GetCustomerRelatedRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_PERSONAL)
+    @PostMapping("/general/personal/save")
     SaveCustomerIdentityResponse saveCustomerPersonalData(
             @RequestBody SaveCustomerIdentityRequest request
     );
 
-    @GetMapping(CustomerAction.LIST_BANK_ACCOUNT)
+    @GetMapping("/general/bank-account/list")
     ListBankAccountResponse listBankAccount(
             @SpringQueryMap GetCustomerRelatedRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_BANK_ACCOUNT)
+    @PostMapping("/general/bank-account/save")
     SaveBankAccountResponse saveBankAccount(
             @RequestBody SaveCustomerBankAccountRequest request
     );
@@ -46,52 +48,52 @@ public interface CustomerExtGeneralApi {
             @RequestParam("customerId") Long customerId
     );
 
-    @GetMapping(CustomerAction.GET_EMPLOYMENT)
+    @GetMapping("/general/employment/get")
     GetCustomerEmploymentResponse getCustomerEmployment(
             @SpringQueryMap GetCustomerRelatedRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_EMPLOYMENT)
+    @PostMapping("/general/employment/save")
     SaveCustomerEmploymentResponse saveCustomerEmployment(
             @RequestBody SaveCustomerEmploymentRequest request
     );
 
-    @GetMapping(CustomerAction.GET_PAYROLL)
+    @GetMapping("/general/payroll/get")
     GetCustomerPayrollResponse getCustomerPayroll(
             @SpringQueryMap GetCustomerRelatedRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_PAYROLL)
+    @PostMapping("/general/payroll/save")
     SaveCustomerPayrollResponse saveCustomerPayroll(
             @RequestBody SaveCustomerPayrollRequest request
     );
 
-    @GetMapping(CustomerAction.LIST_CUSTOMER_CONTACT)
+    @GetMapping("/general/contact/list")
     ListCustomerContactResponse listCustomerContact(
             @SpringQueryMap GetCustomerRelatedRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER_CONTACT)
+    @PostMapping("/general/contact/save")
     void saveCustomerContactData(
             @RequestBody SaveCustomerContactInfoRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_CONTACT)
+    @GetMapping("/general/contact/get")
     GetCustomerContactDataResponse getCustomerContact(
             @SpringQueryMap GetCustomerContactDataRequest request
     );
 
-    @GetMapping(CustomerAction.GET_BANK_ACCOUNT)
+    @GetMapping("/general/bank-account/get")
     CustomerBankAccountDataView getBankAccount(
             @SpringQueryMap GetBankAccountRequest request
     );
 
-    @PostMapping(CustomerAction.BATCH_SAVE_CUSTOMER_CONTACT)
+    @PostMapping("/general/contact/batch-save")
     void batchSaveCustomerContact(
             @RequestBody BatchSaveContactRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_BY_CONDITION)
+    @GetMapping("/general/customer/get/condition")
     GetCustomerByConditionResponse getCustomerByCondition(
             @SpringQueryMap GetCustomerByConditionRequest request
     );
@@ -106,12 +108,12 @@ public interface CustomerExtGeneralApi {
             @RequestBody SaveCreditEvaluationRequest request
     );
 
-    @GetMapping(CustomerAction.GET_CUSTOMER_ACCOUNT)
+    @GetMapping("/general/bank-account/get")
     GetCustomerAccountResponse getCustomerAccount(
             @SpringQueryMap GetCustomerRelatedRequest request
     );
 
-    @PostMapping(CustomerAction.SAVE_CUSTOMER_ACCOUNT)
+    @PostMapping("/general/customer-account/save")
     SaveCustomerAccountResponse saveCustomerAccount(
             @RequestBody SaveCustomerAccountRequest request
     );
