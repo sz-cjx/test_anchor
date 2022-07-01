@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sztus.azeroth.microservice.customer.client.object.util.EncryptUtil;
 import com.sztus.azeroth.microservice.customer.server.object.domain.Customer;
-import com.sztus.azeroth.microservice.customer.server.object.util.CustomerEncryptedFieldUtil;
+import com.sztus.azeroth.microservice.customer.server.util.CustomerEncryptedFieldUtil;
 import com.sztus.framework.component.database.constant.ConditionTypeConst;
 import com.sztus.framework.component.database.core.BaseJdbcWriter;
 import com.sztus.framework.component.database.kit.SqlBuilder;

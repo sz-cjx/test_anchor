@@ -1,4 +1,4 @@
-package com.sztus.azeroth.microservice.customer.server.object.util;
+package com.sztus.azeroth.microservice.customer.server.util;
 
 import com.sztus.azeroth.microservice.customer.server.type.constant.CustomerJsonKey;
 
