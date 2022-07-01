@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(value = "microservice-customer-ext", path = "/v4", contextId = "customer-ext-api")
-public interface CustomerExtGeneralApi {
+@FeignClient(value = "microservice-customer-ext", path = "/v4", contextId = "customer-information-api")
+public interface CustomerInformationApi {
 
     @GetMapping("/general/customer/get")
     GetCustomerResponse getCustomer(
@@ -126,6 +126,17 @@ public interface CustomerExtGeneralApi {
     @PostMapping("/emulator/delete")
     void emulatorDeleteCustomer(
             @RequestBody EmulatorDeleteRequest request
+    );
+
+    @PostMapping("/ibv-authorization/save")
+    SaveIbvAuthorizationResponse saveIbvAuthorization(
+            @RequestBody SaveIbvAuthorizationRequest request
+    );
+
+    @GetMapping("/ibv-authorization/list")
+    ListIbvAuthorizationResponse listIbvAuthorization(
+            @RequestParam(value = "customerId") Long customerId,
+            @RequestParam(value = "portfolioId", required = false) Long portfolioId
     );
 
 }
