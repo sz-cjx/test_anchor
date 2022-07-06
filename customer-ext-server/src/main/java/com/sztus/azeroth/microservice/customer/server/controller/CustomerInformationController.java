@@ -168,13 +168,20 @@ public class CustomerInformationController {
         Long id = request.getId();
         Long customerId = request.getCustomerId();
         CustomerBankAccount dbBankAccountData;
+
+        if (Objects.isNull(id) && Objects.isNull(customerId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+
         if (Objects.nonNull(id)) {
             dbBankAccountData = informationService.getEntity(CustomerBankAccount.class, id);
         } else {
             dbBankAccountData = informationService.getCustomerBankAccountByCustomerId(customerId);
         }
         if (Objects.nonNull(dbBankAccountData)) {
-            dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
+            if (StringUtils.isNotBlank(dbBankAccountData.getBankAccountNo())) {
+                dbBankAccountData.setBankAccountNo(EncryptUtil.AESDecode(dbBankAccountData.getBankAccountNo()));
+            }
         }
         return CustomerConverter.INSTANCE.BankAccountDataToView(dbBankAccountData);
     }
