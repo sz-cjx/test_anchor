@@ -150,6 +150,7 @@ public class CustomerInformationController {
         if (Objects.isNull(request.getCustomerId())) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
+
         JSONObject pretreatment = CustomerUtil.pretreatment(JSON.parseObject(JSON.toJSONString(request)));
         request = JSON.parseObject(JSON.toJSONString(pretreatment), SaveCustomerBankAccountRequest.class);
 
