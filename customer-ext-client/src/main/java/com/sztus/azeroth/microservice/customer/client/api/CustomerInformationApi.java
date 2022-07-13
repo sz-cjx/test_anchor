@@ -98,17 +98,6 @@ public interface CustomerInformationApi {
             @SpringQueryMap GetCustomerByConditionRequest request
     );
 
-    @GetMapping("/general/credit-evaluation/get")
-    GetCreditEvaluationResponse getCreditEvaluation(
-            @RequestParam("customerId") Long customerId,
-            @RequestParam("portfolioId") Long portfolioId
-    );
-
-    @PostMapping("/general/credit-evaluation/save")
-    void saveCreditEvaluation(
-            @RequestBody SaveCreditEvaluationRequest request
-    );
-
     @GetMapping("/general/bank-account/get")
     GetCustomerAccountResponse getCustomerAccount(
             @SpringQueryMap GetCustomerRelatedRequest request

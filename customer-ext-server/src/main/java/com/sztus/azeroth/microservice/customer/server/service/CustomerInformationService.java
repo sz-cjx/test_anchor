@@ -57,7 +57,7 @@ public class CustomerInformationService {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.VALUE, EncryptUtil.AESEncode(contactInformation));
         sqlOption.whereIN(DbKey.TYPE, Lists.newArrayList(CustomerContactTypeEnum.CELL_PHONE.getValue(), CustomerContactTypeEnum.EMAIL.getValue()));
-        sqlOption.whereEqual(DbKey.VERIFIED_STATUS,StatusConst.ENABLED);
+        sqlOption.whereEqual(DbKey.VERIFIED_STATUS, StatusConst.ENABLED);
         return customerReader.findByOptions(CustomerContactInfo.class, sqlOption.toString());
     }
 
@@ -270,7 +270,7 @@ public class CustomerInformationService {
         if (isVerified) {
             contactData.setVerifiedStatus(StatusConst.ENABLED);
         } else {
-            if (Objects.isNull(contactDataDb) || Objects.isNull(contactDataDb.getVerifiedStatus())){
+            if (Objects.isNull(contactDataDb) || Objects.isNull(contactDataDb.getVerifiedStatus())) {
                 contactData.setVerifiedStatus(StatusConst.DISABLED);
             }
         }
@@ -383,20 +383,6 @@ public class CustomerInformationService {
         return customerReader.findByOptions(tClass, sqlOption.toString());
     }
 
-    public void saveCreditEvaluation(CustomerCreditEvaluationInfo creditEvaluation) throws ProcedureException {
-        Long currentTimestamp = DateUtil.getCurrentTimestamp();
-        CustomerCreditEvaluationInfo customerCreditEvaluation = getCustomerCreditEvaluation(creditEvaluation.getCustomerId(), creditEvaluation.getPortfolioId());
-        if (Objects.nonNull(customerCreditEvaluation)) {
-            creditEvaluation.setCreatedAt(customerCreditEvaluation.getCreatedAt());
-        } else {
-            creditEvaluation.setCreatedAt(currentTimestamp);
-        }
-
-        creditEvaluation.setUpdatedAt(currentTimestamp);
-        Long result = commonWriter.saveEntity(creditEvaluation);
-        CustomerCheckUtil.checkSaveResult(result);
-    }
-
     public CustomerIdentityInfo getCustomerPersonalData(Long customerId) {
         SqlOption sqlOption = SqlOption.getInstance();
         sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
@@ -458,13 +444,4 @@ public class CustomerInformationService {
         sqlOption.order("authorized_at DESC");
         return commonReader.findAllByOptions(CustomerIbvAuthorizationRecord.class, sqlOption.toString());
     }
-
-    public CustomerCreditEvaluationInfo getCustomerCreditEvaluation(Long customerId, Long portfolioId) {
-        SqlOption sqlOption = SqlOption.getInstance();
-        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
-        sqlOption.whereEqual(DbKey.PORTFOLIO_ID, portfolioId);
-        return commonReader.findByOptions(CustomerCreditEvaluationInfo.class, sqlOption.toString());
-    }
-
-
 }
