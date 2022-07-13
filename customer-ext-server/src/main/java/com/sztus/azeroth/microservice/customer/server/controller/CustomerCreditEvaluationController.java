@@ -1,6 +1,5 @@
 package com.sztus.azeroth.microservice.customer.server.controller;
 
-import com.sztus.azeroth.microservice.customer.client.object.parameter.enumerate.CustomerErrorCode;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.SaveCreditEvaluationRequest;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.request.UpdateCreditAmountRequest;
 import com.sztus.azeroth.microservice.customer.client.object.parameter.response.GetCreditEvaluationResponse;
