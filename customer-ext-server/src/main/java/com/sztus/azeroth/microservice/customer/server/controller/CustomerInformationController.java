@@ -295,7 +295,7 @@ public class CustomerInformationController {
             @RequestParam("customerId") Long customerId
     ) throws ProcedureException {
 
-        CustomerCreditEvaluation creditEvaluation = informationService.getEntity(CustomerCreditEvaluation.class, customerId);
+        CustomerCreditEvaluationInfo creditEvaluation = informationService.getEntity(CustomerCreditEvaluationInfo.class, customerId);
 
         return CustomerConverter.INSTANCE.CustomerCreditEvaluationToView(creditEvaluation);
     }
@@ -309,8 +309,8 @@ public class CustomerInformationController {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 
-        CustomerCreditEvaluation customerCreditEvaluation = CustomerConverter.INSTANCE.CustomerCreditEvaluationViewToData(request);
-        informationService.saveCreditEvaluation(customerCreditEvaluation);
+        CustomerCreditEvaluationInfo customerCreditEvaluationInfo = CustomerConverter.INSTANCE.CustomerCreditEvaluationViewToData(request);
+        informationService.saveCreditEvaluation(customerCreditEvaluationInfo);
     }
 
     @GetMapping("/general/contact/get")

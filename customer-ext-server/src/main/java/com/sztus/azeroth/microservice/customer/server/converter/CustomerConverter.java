@@ -64,9 +64,9 @@ public interface CustomerConverter {
 
     GetCustomerByConditionResponse CustomerToGetCustomerByConditionResponse(Customer customer);
 
-    GetCreditEvaluationResponse CustomerCreditEvaluationToView(CustomerCreditEvaluation customerCreditEvaluation);
+    GetCreditEvaluationResponse CustomerCreditEvaluationToView(CustomerCreditEvaluationInfo customerCreditEvaluationInfo);
 
-    CustomerCreditEvaluation CustomerCreditEvaluationViewToData(CustomerCreditEvaluationView creditEvaluationView);
+    CustomerCreditEvaluationInfo CustomerCreditEvaluationViewToData(CustomerCreditEvaluationView creditEvaluationView);
 
     GetCustomerAccountResponse CusAccountToView(CustomerAccount customerAccount);
 

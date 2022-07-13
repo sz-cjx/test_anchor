@@ -383,7 +383,7 @@ public class CustomerInformationService {
         return customerReader.findByOptions(tClass, sqlOption.toString());
     }
 
-    public void saveCreditEvaluation(CustomerCreditEvaluation creditEvaluation) throws ProcedureException {
+    public void saveCreditEvaluation(CustomerCreditEvaluationInfo creditEvaluation) throws ProcedureException {
         creditEvaluation.setUpdatedAt(DateUtil.getCurrentTimestamp());
         Long result = commonWriter.saveEntity(creditEvaluation);
         CustomerCheckUtil.checkSaveResult(result);
@@ -419,7 +419,7 @@ public class CustomerInformationService {
 
         commonWriter.deleteByIdList(CustomerContactInfo.class, customerIds);
 
-        commonWriter.deleteByIdList(CustomerCreditEvaluation.class, customerIds);
+        commonWriter.deleteByIdList(CustomerCreditEvaluationInfo.class, customerIds);
 
         commonWriter.deleteByIdList(CustomerEmploymentInfo.class, customerIds);
 
