@@ -292,10 +292,13 @@ public class CustomerInformationController {
 
     @GetMapping("/general/credit-evaluation/get")
     public GetCreditEvaluationResponse getCreditEvaluation(
-            @RequestParam("customerId") Long customerId
+            @RequestParam("customerId") Long customerId,
+            @RequestParam("portfolioId") Long portfolioId
     ) throws ProcedureException {
-
-        CustomerCreditEvaluationInfo creditEvaluation = informationService.getEntity(CustomerCreditEvaluationInfo.class, customerId);
+        if (Objects.isNull(customerId) || Objects.isNull(portfolioId)) {
+            throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
+        }
+        CustomerCreditEvaluationInfo creditEvaluation = informationService.getCustomerCreditEvaluation(customerId, portfolioId);
 
         return CustomerConverter.INSTANCE.CustomerCreditEvaluationToView(creditEvaluation);
     }
@@ -305,7 +308,8 @@ public class CustomerInformationController {
             @RequestBody SaveCreditEvaluationRequest request
     ) throws ProcedureException {
         Long customerId = request.getCustomerId();
-        if (Objects.isNull(customerId)) {
+        Long portfolioId = request.getPortfolioId();
+        if (Objects.isNull(customerId) || Objects.isNull(portfolioId)) {
             throw new ProcedureException(CustomerErrorCode.PARAMETER_IS_INCOMPLETE);
         }
 

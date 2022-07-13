@@ -384,7 +384,15 @@ public class CustomerInformationService {
     }
 
     public void saveCreditEvaluation(CustomerCreditEvaluationInfo creditEvaluation) throws ProcedureException {
-        creditEvaluation.setUpdatedAt(DateUtil.getCurrentTimestamp());
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        CustomerCreditEvaluationInfo customerCreditEvaluation = getCustomerCreditEvaluation(creditEvaluation.getCustomerId(), creditEvaluation.getPortfolioId());
+        if (Objects.nonNull(customerCreditEvaluation)) {
+            creditEvaluation.setCreatedAt(customerCreditEvaluation.getCreatedAt());
+        } else {
+            creditEvaluation.setCreatedAt(currentTimestamp);
+        }
+
+        creditEvaluation.setUpdatedAt(currentTimestamp);
         Long result = commonWriter.saveEntity(creditEvaluation);
         CustomerCheckUtil.checkSaveResult(result);
     }
@@ -449,6 +457,13 @@ public class CustomerInformationService {
         }
         sqlOption.order("authorized_at DESC");
         return commonReader.findAllByOptions(CustomerIbvAuthorizationRecord.class, sqlOption.toString());
+    }
+
+    public CustomerCreditEvaluationInfo getCustomerCreditEvaluation(Long customerId, Long portfolioId) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        sqlOption.whereEqual(DbKey.PORTFOLIO_ID, portfolioId);
+        return commonReader.findByOptions(CustomerCreditEvaluationInfo.class, sqlOption.toString());
     }
 
 
