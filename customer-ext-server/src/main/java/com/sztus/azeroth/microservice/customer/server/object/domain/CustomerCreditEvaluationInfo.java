@@ -1,19 +1,32 @@
-package com.sztus.azeroth.microservice.customer.client.object.view;
+package com.sztus.azeroth.microservice.customer.server.object.domain;
 
 import java.math.BigDecimal;
 
-public class CustomerCreditEvaluationView {
+import com.sztus.framework.component.database.annotation.Column;
+import com.sztus.framework.component.database.annotation.Entity;
+import com.sztus.framework.component.database.annotation.Id;
 
+@Entity
+public class CustomerCreditEvaluationInfo {
+
+    @Id
+    @Column
     private Long customerId;
 
+    @Id
+    @Column
     private Long portfolioId;
 
+    @Column
     private Integer creditPoint;
 
+    @Column
     private BigDecimal creditAmount;
 
+    @Column
     private Long updatedAt;
 
+    @Column
     private Long createdAt;
 
     public Long getCustomerId() {
@@ -54,5 +67,13 @@ public class CustomerCreditEvaluationView {
 
     public void setPortfolioId(Long portfolioId) {
         this.portfolioId = portfolioId;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 }

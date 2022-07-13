@@ -1,26 +1,35 @@
 package com.sztus.azeroth.microservice.customer.server.object.domain;
 
-import java.math.BigDecimal;
-
 import com.sztus.framework.component.database.annotation.Column;
 import com.sztus.framework.component.database.annotation.Entity;
 import com.sztus.framework.component.database.annotation.Id;
 
+import java.math.BigDecimal;
+
 @Entity
-public class CustomerCreditEvaluation {
+public class CustomerCreditEvaluationRecord {
 
     @Id
     @Column
+    private Long id;
+
+    @Column
     private Long customerId;
+
+    @Column
+    private Long portfolioId;
 
     @Column
     private Integer creditPoint;
 
     @Column
-    private BigDecimal maximumCreditAmount;
+    private BigDecimal creditAmount;
 
     @Column
     private Long updatedAt;
+
+    @Column
+    private Long createdAt;
 
     public Long getCustomerId() {
         return customerId;
@@ -38,12 +47,12 @@ public class CustomerCreditEvaluation {
         this.creditPoint = creditPoint;
     }
 
-    public BigDecimal getMaximumCreditAmount() {
-        return maximumCreditAmount;
+    public BigDecimal getCreditAmount() {
+        return creditAmount;
     }
 
-    public void setMaximumCreditAmount(BigDecimal maximumCreditAmount) {
-        this.maximumCreditAmount = maximumCreditAmount;
+    public void setCreditAmount(BigDecimal creditAmount) {
+        this.creditAmount = creditAmount;
     }
 
     public Long getUpdatedAt() {
@@ -52,5 +61,21 @@ public class CustomerCreditEvaluation {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 }

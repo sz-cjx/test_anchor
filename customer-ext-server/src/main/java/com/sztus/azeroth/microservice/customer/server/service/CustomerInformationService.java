@@ -383,8 +383,16 @@ public class CustomerInformationService {
         return customerReader.findByOptions(tClass, sqlOption.toString());
     }
 
-    public void saveCreditEvaluation(CustomerCreditEvaluation creditEvaluation) throws ProcedureException {
-        creditEvaluation.setUpdatedAt(DateUtil.getCurrentTimestamp());
+    public void saveCreditEvaluation(CustomerCreditEvaluationInfo creditEvaluation) throws ProcedureException {
+        Long currentTimestamp = DateUtil.getCurrentTimestamp();
+        CustomerCreditEvaluationInfo customerCreditEvaluation = getCustomerCreditEvaluation(creditEvaluation.getCustomerId(), creditEvaluation.getPortfolioId());
+        if (Objects.nonNull(customerCreditEvaluation)) {
+            creditEvaluation.setCreatedAt(customerCreditEvaluation.getCreatedAt());
+        } else {
+            creditEvaluation.setCreatedAt(currentTimestamp);
+        }
+
+        creditEvaluation.setUpdatedAt(currentTimestamp);
         Long result = commonWriter.saveEntity(creditEvaluation);
         CustomerCheckUtil.checkSaveResult(result);
     }
@@ -419,7 +427,7 @@ public class CustomerInformationService {
 
         commonWriter.deleteByIdList(CustomerContactInfo.class, customerIds);
 
-        commonWriter.deleteByIdList(CustomerCreditEvaluation.class, customerIds);
+        commonWriter.deleteByIdList(CustomerCreditEvaluationInfo.class, customerIds);
 
         commonWriter.deleteByIdList(CustomerEmploymentInfo.class, customerIds);
 
@@ -449,6 +457,13 @@ public class CustomerInformationService {
         }
         sqlOption.order("authorized_at DESC");
         return commonReader.findAllByOptions(CustomerIbvAuthorizationRecord.class, sqlOption.toString());
+    }
+
+    public CustomerCreditEvaluationInfo getCustomerCreditEvaluation(Long customerId, Long portfolioId) {
+        SqlOption sqlOption = SqlOption.getInstance();
+        sqlOption.whereEqual(DbKey.CUSTOMER_ID, customerId);
+        sqlOption.whereEqual(DbKey.PORTFOLIO_ID, portfolioId);
+        return commonReader.findByOptions(CustomerCreditEvaluationInfo.class, sqlOption.toString());
     }
 
 
