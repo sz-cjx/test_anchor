@@ -12,7 +12,7 @@ public enum CustomerErrorCode implements BaseError {
     UNKNOWN_CONTACT_TYPE (95280006,"Incorrect Contact Info"),
     CUSTOMER_IS_EXISTED(95280007,"customer is existed"),
     CONTACT_INFORMATION_USED(95280008,"contact information has already been used"),
-    CREDIT_EVALUATION_NOT_FIND(95280008, "customer "),
+    CREDIT_EVALUATION_NOT_FIND(95280008, "customer credit evaluation data not find"),
     ;
 
     CustomerErrorCode(Integer code, String message) {
