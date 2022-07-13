@@ -26,10 +26,18 @@ public class CustomerCreditEvaluationRecord {
     private BigDecimal creditAmount;
 
     @Column
-    private Long updatedAt;
+    private Long evaluatedAt;
 
     @Column
     private Long createdAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getCustomerId() {
         return customerId;
@@ -37,6 +45,14 @@ public class CustomerCreditEvaluationRecord {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 
     public Integer getCreditPoint() {
@@ -55,20 +71,12 @@ public class CustomerCreditEvaluationRecord {
         this.creditAmount = creditAmount;
     }
 
-    public Long getUpdatedAt() {
-        return updatedAt;
+    public Long getEvaluatedAt() {
+        return evaluatedAt;
     }
 
-    public void setUpdatedAt(Long updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getPortfolioId() {
-        return portfolioId;
-    }
-
-    public void setPortfolioId(Long portfolioId) {
-        this.portfolioId = portfolioId;
+    public void setEvaluatedAt(Long evaluatedAt) {
+        this.evaluatedAt = evaluatedAt;
     }
 
     public Long getCreatedAt() {
