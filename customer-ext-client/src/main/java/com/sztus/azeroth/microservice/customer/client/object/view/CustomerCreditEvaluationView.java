@@ -6,11 +6,15 @@ public class CustomerCreditEvaluationView {
 
     private Long customerId;
 
+    private Long portfolioId;
+
     private Integer creditPoint;
 
-    private BigDecimal maximumCreditAmount;
+    private BigDecimal creditAmount;
 
     private Long updatedAt;
+
+    private Long createdAt;
 
     public Long getCustomerId() {
         return customerId;
@@ -28,12 +32,12 @@ public class CustomerCreditEvaluationView {
         this.creditPoint = creditPoint;
     }
 
-    public BigDecimal getMaximumCreditAmount() {
-        return maximumCreditAmount;
+    public BigDecimal getCreditAmount() {
+        return creditAmount;
     }
 
-    public void setMaximumCreditAmount(BigDecimal maximumCreditAmount) {
-        this.maximumCreditAmount = maximumCreditAmount;
+    public void setCreditAmount(BigDecimal creditAmount) {
+        this.creditAmount = creditAmount;
     }
 
     public Long getUpdatedAt() {
@@ -42,5 +46,13 @@ public class CustomerCreditEvaluationView {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 }

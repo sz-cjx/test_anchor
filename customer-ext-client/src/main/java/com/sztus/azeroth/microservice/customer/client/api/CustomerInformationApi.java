@@ -100,7 +100,8 @@ public interface CustomerInformationApi {
 
     @GetMapping("/general/credit-evaluation/get")
     GetCreditEvaluationResponse getCreditEvaluation(
-            @RequestParam("customerId") Long customerId
+            @RequestParam("customerId") Long customerId,
+            @RequestParam("portfolioId") Long portfolioId
     );
 
     @PostMapping("/general/credit-evaluation/save")
