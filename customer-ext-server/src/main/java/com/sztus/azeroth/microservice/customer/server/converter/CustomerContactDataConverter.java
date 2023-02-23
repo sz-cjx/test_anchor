@@ -13,6 +13,11 @@ public interface CustomerContactDataConverter {
 
     CustomerContactDataConverter INSTANCE = Mappers.getMapper(CustomerContactDataConverter.class);
 
+    /**
+     *
+     * @param customerContactInfoView
+     * @return
+     */
     CustomerContactInfo CustomerContactViewToData(CustomerContactInfoView customerContactInfoView);
 
     GetCustomerContactDataResponse CustomerContactDataToView(CustomerContactInfo customerContactInfo);
