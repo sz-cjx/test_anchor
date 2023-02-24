@@ -15,6 +15,10 @@ import java.util.TimeZone;
 @EnableTransactionManagement
 public class CustomerExtApplication {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
         SpringApplication.run(CustomerExtApplication.class, args);
